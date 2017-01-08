@@ -5,7 +5,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Loowoo.Web.Security
+namespace Loowoo.Security
 {
     public class UserPrincipal : IPrincipal
     {

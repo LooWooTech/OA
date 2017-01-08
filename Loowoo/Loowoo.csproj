@@ -61,7 +61,7 @@
     <Compile Include="Common\EncryptExtensions.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\ExceptionExtension.cs" />
-    <Compile Include="Common\HttpUtils.cs" />
+    <Compile Include="Common\HttpRequestHelper.cs" />
     <Compile Include="Common\JsonExtension.cs" />
     <Compile Include="Common\LogWriter.cs" />
     <Compile Include="Common\PageParameter.cs" />
@@ -69,10 +69,18 @@
     <Compile Include="Common\ServiceFactory.cs" />
     <Compile Include="Common\TimeExtensions.cs" />
     <Compile Include="Common\ValidateCode.cs" />
+    <Compile Include="Common\PageView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\AuthenticateModule.cs" />
+    <Compile Include="Security\AuthorizeHelper.cs" />
+    <Compile Include="Security\UserIdentity.cs" />
+    <Compile Include="Security\UserPrincipal.cs" />
+    <Compile Include="Security\UserRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\" />
     <Folder Include="Web\" />
   </ItemGroup>
   <ItemGroup>

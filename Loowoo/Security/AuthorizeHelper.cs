@@ -1,14 +1,11 @@
 ﻿using Loowoo.Common;
-using Loowoo.Land.OA;
-using Loowoo.Web;
-using Loowoo.Web.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
 
-namespace Loowoo.Web
+namespace Loowoo.Security
 {
     public class AuthorizeHelper
     {
@@ -42,10 +39,10 @@ namespace Loowoo.Web
             return UserIdentity.Anonymouse;
         }
 
-        public static void Login(HttpContextBase context, User user)
+        public static void Login(HttpContextBase context, UserIdentity identity)
         {
             var tokenKey = AppSettings.Get("CookieName");
-            var tokenValue = user.ID + "|" + user.Name + "|" + user.Role;
+            var tokenValue = identity.ID + "|" + identity.Name + "|" + identity.Role;
             var ticket = new FormsAuthenticationTicket(tokenValue, false, int.MaxValue);
             var cookie = new HttpCookie(tokenKey, FormsAuthentication.Encrypt(ticket));
             cookie.Expires = DateTime.Now.AddDays(1);

@@ -1,12 +1,10 @@
-﻿using Loowoo.Land.OA;
-using Loowoo.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Loowoo.Web.Security
+namespace Loowoo.Security
 {
     public class UserIdentity : System.Security.Principal.IIdentity
     {

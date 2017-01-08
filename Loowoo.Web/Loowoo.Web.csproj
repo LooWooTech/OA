@@ -73,16 +73,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticateModule.cs" />
-    <Compile Include="AuthorizeHelper.cs" />
     <Compile Include="ControllerBase.cs" />
-    <Compile Include="PageView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\UserIdentity.cs" />
-    <Compile Include="Security\UserPrincipal.cs" />
     <Compile Include="UserRoleFilterAttribute.cs" />
     <Compile Include="ValidateCodeHelper.cs" />
-    <Compile Include="WebUtility.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

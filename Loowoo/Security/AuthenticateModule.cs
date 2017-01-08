@@ -1,10 +1,9 @@
-﻿using Loowoo.Web.Security;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Loowoo.Web
+namespace Loowoo.Security
 {
     public class AuthenticateModule : IHttpModule
     {
@@ -21,7 +20,6 @@ namespace Loowoo.Web
                 context.Context.User = new UserPrincipal(userIdentity);
             });
         }
-
 
     }
 }

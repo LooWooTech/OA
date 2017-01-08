@@ -1,5 +1,5 @@
 ﻿using Loowoo.Common;
-using Loowoo.Web.Security;
+using Loowoo.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;

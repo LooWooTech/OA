@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Loowoo.Land.OA.Web.Controllers
 {
-    public class HomeController : ControllerBase
+    public class HomeController : Controller
     {
-        public ActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Error()
+        public IActionResult Error()
         {
             return View();
         }

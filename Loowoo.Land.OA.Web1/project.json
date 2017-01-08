@@ -1,4 +1,4 @@
-﻿{
+{
   "dependencies": {
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
@@ -27,7 +27,19 @@
   },
 
   "frameworks": {
-    "net46": { }
+    "net46": {
+      "dependencies": {
+        "Loowoo": {
+          "target": "project"
+        },
+        "Loowoo.Land.OA": {
+          "target": "project"
+        },
+        "Loowoo.Web": {
+          "target": "project"
+        }
+      }
+    }
   },
 
   "buildOptions": {

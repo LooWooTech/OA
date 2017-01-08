@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Security;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -41,13 +42,5 @@ namespace Loowoo.Land.OA
                 }
             }
         }
-    }
-
-    public enum UserRole
-    {
-        Guest,
-        User,
-        Manager,
-        Administrator
     }
 }

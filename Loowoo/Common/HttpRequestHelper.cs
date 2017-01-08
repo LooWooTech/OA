@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Common
 {
-    public class HttpUtils
+    public class HttpRequestHelper
     {
         public static string Request(string url, string method = "GET")
         {
