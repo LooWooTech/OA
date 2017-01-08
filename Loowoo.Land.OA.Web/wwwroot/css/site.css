@@ -1,0 +1,5 @@
+﻿body { padding-top: 50px; padding-bottom: 20px; font-family: 'Microsoft YaHei'; }
+#content { position: absolute; top: 50px; bottom: 0; left: 0; right: 0; overflow: hidden; }
+#sidebar { height: 100%; background-attachment: fixed; position: fixed; z-index: 5; left: 0; top: 50px; bottom: 0; width: 250px; overflow: hidden; border-right: solid 1px #ddd; background: #efefef; }
+    #sidebar .active { background: #fff; }
+#main { position: relative; left: 250px; top: 0; right: 0; margin: 18px; overflow: auto; }
