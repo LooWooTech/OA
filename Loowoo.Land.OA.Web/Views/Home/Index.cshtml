@@ -1,1 +1,95 @@
-﻿
+﻿@{
+
+}
+<div class="container">
+
+    <div class="card">
+        <div class="media feed">
+            <div class="media-left">
+                <a href="#">
+                    <span class="face face-md">李</span>
+                </a>
+            </div>
+            <div class="media-body">
+                <div class="top-toolbar row">
+                    <a href="#">李晓夕</a>
+                    发起了
+                    <a href="#">用车请求</a>
+                </div>
+                <div class="description row" style="min-height:60px;">
+                    后天要去乡里，申请用车，我喜欢那个大的SUV
+                </div>
+                <div class="bottom-toolbar row">
+                    <div class="left">
+                        <span class="datetime">2017-01-03  13:31 </span>
+                    </div>
+                    <div class="right">
+                        <a href="#"><i class="fa fa-pencil"></i> 修改</a>
+                        <a href="#"><i class="fa fa-trash"></i> 删除</a>
+
+                        <a href="#"><i class="fa fa-comment-o"></i> 评论(1)</a>
+                        <a href="#"><i class="fa fa-star-o"></i> 星标</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="comments">
+            @Html.Partial("_CommentBox")
+            <div class="media comment">
+                <div class="media-left">
+                    <a href="#">
+                        <span class="face face-xs">王</span>
+                    </a>
+                </div>
+                <div class="media-body">
+                    <div class="top-toolbar row">
+                        <a href="#">王敬业</a>
+                    </div>
+                    <div class="description row">
+                        不好意思，小夕，你这个申请恐怕是通不过了，因为明天我也要用这车，要不你换一辆吧
+                    </div>
+                    <div class="bottom-toolbar row">
+                        <div class="left">
+                            <span class="datetime">2017-01-03  13:31 </span>
+                        </div>
+                        <div class="right">
+                            <a href="#"><i class="fa fa-reply"></i> 回复</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="media feed">
+            <div class="media-left">
+                <a href="#">
+                    <span class="face face-md">李</span>
+                </a>
+            </div>
+            <div class="media-body">
+                <div class="top-toolbar row">
+                    <a href="#">李晓夕</a>
+                    发起了
+                    <a href="#">会议请求</a>
+                </div>
+                <div class="description row" style="min-height:60px;">
+                    明天早上9：30请收到通知的同事准时参加，一号会议室
+                </div>
+                <div class="bottom-toolbar row">
+                    <div class="left">
+                        <span class="datetime">2017-01-03  13:31 </span>
+                    </div>
+                    <div class="right">
+                        <a href="#"><i class="fa fa-pencil"></i> 修改</a>
+                        <a href="#"><i class="fa fa-trash"></i> 删除</a>
+
+                        <a href="#"><i class="fa fa-comment-o"></i> 评论(1)</a>
+                        <a href="#"><i class="fa fa-star-o"></i> 星标</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

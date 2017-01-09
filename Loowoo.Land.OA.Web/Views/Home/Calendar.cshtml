@@ -1,0 +1,45 @@
+﻿@{
+    Layout = null;
+    DateTime date = ViewBag.Date;
+    var prevMonth = date.AddMonths(-1);
+    var nextMonth = date.AddMonths(1);
+}
+
+<div class="calendar">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>周一</th>
+                <th>周二</th>
+                <th>周三</th>
+                <th>周四</th>
+                <th>周五</th>
+                <th>周六</th>
+                <th>周日</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var startDate = date.AddDays(-(date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek) + 1);
+                var currentMonthEndDate = nextMonth.AddDays(-1);
+                var endDate = currentMonthEndDate.AddDays(7 - (currentMonthEndDate.DayOfWeek == 0 ? 7 : (int)currentMonthEndDate.DayOfWeek));
+                <tr>
+                    @for (var d = startDate; d <= endDate; d = d.AddDays(1))
+                    {
+                        var isToday = d == DateTime.Today;
+
+                        <td data-date="@(d.ToString("yyyy-MM-dd"))" class="date @(isToday?"today":null )">
+                            <span class="day">@(d.Day) </span>
+                        </td>
+                        if (d.DayOfWeek == 0)
+                        {
+                            @Html.Raw("</tr></tr>");
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

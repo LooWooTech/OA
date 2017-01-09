@@ -1,1 +1,58 @@
-﻿我的日程
+﻿<style>
+    #appcalendar .calendar .table td {
+        height: 130px;
+    }
+
+        #appcalendar .calendar .table td.today {
+            border-top: solid 2px #ff0000;
+            background-color: rgb(252, 215, 215);
+        }
+</style>
+@{
+    var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+}
+<div id="appcalendar">
+    <div class="toolbar">
+        <div class="left">
+            <div class="btn-group">
+                <a href="#" class="btn btn-default btn-sm">
+                    今天
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-left"></i>
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+            <strong> @(date.Year)年@(date.Month)月 </strong>
+        </div>
+    </div>
+    <div class="content">
+        @Html.Action("Calendar", "Home", new { date })
+    </div>
+</div>
+<script>
+    $(function () {
+        $(".calendar td").dblclick(function () {
+            var date = $(this).attr("data-date");
+            $.openWindow("@(Url.Action("edit"))")
+        });
+
+        $(".date").each(function (k, v) {
+            var val = new Date($(this).attr("data-date"));
+            var date = val.getDate();
+            switch (date) {
+                case 11:
+                    $(v).append('<a href="#"><span class="label label-primary">你申请的车辆归还日期</span></a>');
+                    break;
+                case 15:
+                    $(v).append('<a href="#"><span class="label label-danger">这里是一条任务提醒</span></a>');
+                    break;
+                case 23:
+                    $(v).append('<a href="#"><span class="label label-info">一号会议室全体会议</span></a>');
+                    break;
+            }
+        });
+    });
+</script>

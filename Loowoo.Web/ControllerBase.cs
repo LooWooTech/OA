@@ -9,7 +9,6 @@ using System.Web.Mvc;
 
 namespace Loowoo.Web
 {
-    [Authorize]
     public class ControllerBase : Controller
     {
         protected UserIdentity CurrentUser { get; set; }

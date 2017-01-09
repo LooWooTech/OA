@@ -1,11 +1,11 @@
 ﻿<ul class="nav navbar-nav">
     @{
-        string controller = ViewBag.Controller ?? "Home";
+        var controller = Request.RequestContext.RouteData.Values["controller"].ToString();
         var navList = new List<dynamic>()
         {
             new { controller = "Home",text = "动态", icon = "commenting" },
             new { controller = "calendar",text = "日程", icon = "calendar" },
-            new { controller = "OfficeDocument",text = "公文", icon = "files" },
+            new { controller = "OfficeDocument",text = "公文", icon = "file" },
             new { controller = "Task",text = "任务", icon = "tasks" },
             new { controller = "Attendance",text = "考勤", icon = "calendar-check-o" },
             new { controller = "Information",text = "信息", icon = "newspaper-o" },
@@ -18,7 +18,11 @@
         {
             var isChecked = controller.ToLower() == item.controller.ToLower();
 
-            <li class="@(isChecked?"active":null)"><a asp-controller="@(item.controller)" asp-action="Index"><i class="fa fa-@(item.icon)"></i> @(item.text)</a></li>
+            <li class="@(isChecked?"active":null)">
+                <a href="@(Url.Action("index", (string)item.controller))">
+                    <i class="fa fa-@(item.icon)"></i> @(item.text)
+                </a>
+            </li>
         }
     }
 </ul>
