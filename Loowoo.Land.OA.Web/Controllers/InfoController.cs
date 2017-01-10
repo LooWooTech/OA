@@ -6,19 +6,9 @@ using System.Web.Mvc;
 
 namespace Loowoo.Land.OA.Web.Controllers
 {
-    public class ArchiveController : ControllerBase
+    public class InfoController : ControllerBase
     {
         public ActionResult Index()
-        {
-            return View();
-        }
-
-        public ActionResult List()
-        {
-            return View();
-        }
-
-        public ActionResult Apply()
         {
             return View();
         }

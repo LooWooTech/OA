@@ -244,8 +244,11 @@
     <Compile Include="Controllers\ArchiveController.cs" />
     <Compile Include="Controllers\AttendanceController.cs" />
     <Compile Include="Controllers\CalendarController.cs" />
+    <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InfoController.cs" />
+    <Compile Include="Controllers\MeetingController.cs" />
     <Compile Include="Controllers\OfficeDocumentController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
@@ -281,8 +284,16 @@
     <Content Include="Views\Attendance\_Sidebar.cshtml" />
     <Content Include="Views\Archive\Index.cshtml" />
     <Content Include="Views\Archive\_Sidebar.cshtml" />
-    <Content Include="Views\Archive\RequestRead.cshtml" />
+    <Content Include="Views\Archive\Apply.cshtml" />
     <Content Include="Views\Archive\List.cshtml" />
+    <Content Include="Views\Meeting\Index.cshtml" />
+    <Content Include="Views\Meeting\_Sidebar.cshtml" />
+    <Content Include="Views\Car\Index.cshtml" />
+    <Content Include="Views\Info\Index.cshtml" />
+    <Content Include="Views\Info\_Sidebar.cshtml" />
+    <Content Include="Views\Car\_Sidebar.cshtml" />
+    <Content Include="Views\Meeting\Apply.cshtml" />
+    <Content Include="Views\Car\Apply.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -292,7 +303,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">

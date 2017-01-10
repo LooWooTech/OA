@@ -1,0 +1,12 @@
+﻿@{
+    var action = Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
+}
+<ul class="nav navbar-stacked">
+    <li class="@(action == "index"?"active":null)"><a href="@Url.Action("Index")"><i class="fa fa-home"></i> 会议安排</a></li>
+    <li><a href="#"><i class="fa fa-history"></i> 我的申请记录</a></li>
+</ul>
+<hr />
+<ul class="nav navbar-stacked">
+    <li><a href="#1"><i class="fa fa-check-circle-o"></i> 申请审批</a></li>
+    <li><a href="#1"><i class="fa fa-desktop"></i> 会议室管理</a></li>
+</ul>

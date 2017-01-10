@@ -1,0 +1,81 @@
+﻿@{
+    var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+}
+<style>
+    #app-meeting .calendar .table td { height: 100px; }
+    #appcalendar .calendar .table td.today { border-top: solid 2px #ff0000; background-color: rgb(252, 215, 215); }
+</style>
+<div id="app-meeting">
+    <div class="toolbar">
+        <div class="left">
+            <a href="@Url.Action("Apply")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 申请会议</a>
+            <div class="dropdown btn btn-default">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-filter"></i> 全部会议室
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">一楼会议室1</a></li>
+                    <li><a href="#">一楼会议室2</a></li>
+                    <li><a href="#">二楼会议室1</a></li>
+                    <li><a href="#">二楼会议室2</a></li>
+                    <li><a href="#">三楼会议室1</a></li>
+                    <li><a href="#">三楼会议室2</a></li>
+                    <li><a href="#">四楼会议室1</a></li>
+                    <li><a href="#">四楼会议室2</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="right">
+            <strong> @(date.Year)年@(date.Month)月 </strong>
+            <div class="btn-group">
+                <a href="#" class="btn btn-default btn-sm">
+                    今天
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-left"></i> 上月
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-right"></i> 下月
+                </a>
+            </div>
+        </div>
+  </div>
+    <div class="content">
+        <div class="col-lg-8">
+            @Html.Action("Calendar", "Home", new { date })
+        </div>
+        <div class="col-lg-4">
+            <table class="table table-hover">
+                <tr>
+                    <th style="width:80px;">时间</th>
+                @for (var i = 8; i < 21; i++)
+                {
+                    <tr>
+                        <th>
+                            @(i):00
+                        </th>
+                        <td class="hour-@(i)"></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#app-meeting .calendar td").dblclick(function () {
+            var date = $(this).attr("data-date");
+            $.openWindow("@(Url.Action("edit"))")
+        });
+
+        UpdateCalendar([
+            { date: "2017-01-11", value: '<span class="label label-primary">一楼会议室1</span>' },
+            { date: "2017-01-05", value: '<span class="label label-primary">一楼会议室1</span>' },
+            { date: "2017-01-09", value: '<span class="label label-primary">一楼会议室1</span>' },
+        ]);
+
+        $(".hour-9").append('<span class="label label-primary">一楼会议室1</span>');
+        $(".hour-13").append('<span class="label label-primary">三楼会议室1</span>');
+    });
+</script>

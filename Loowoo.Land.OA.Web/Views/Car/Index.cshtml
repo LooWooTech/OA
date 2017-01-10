@@ -1,0 +1,68 @@
+﻿@{
+    List<Car> list = new List<Car>
+    {
+        new Car { ID =1 , Name = "奇瑞 瑞虎5 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Using, EndTime = DateTime.Now.AddDays(3) },
+        new Car { ID =2 , Name = "吉利 博越 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Using },
+        new Car { ID =3 , Name = "吉利 博瑞 轿车", Number = "浙L·12345",  },
+        new Car { ID =4 , Name = "奇瑞 瑞虎3 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Repair },
+        new Car { ID =5 , Name = "比亚迪·秦 电动轿车", Number = "浙L·12345", State = CarState.Unused },
+        new Car { ID =6 , Name = "比亚迪·唐 电动车 SUV", Number = "浙L·12345", State = CarState.Unused },
+    };
+}
+<div id="app-car">
+    <div class="toolbar">
+        <div class="left">
+            <a href="@Url.Action("apply")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 申请用车</a>
+        </div>
+    </div>
+    <div class="content">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width:110px;">车牌号</th>
+                    <th>车辆描述</th>
+                    <th style="width:120px;">状态</th>
+                    <th style="width:150px;">申请时间</th>
+                    <th style="width:150px;">预计归还</th>
+                    <th style="width:200px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in list)
+                {
+                    <tr>
+                        <td>@(item.Number)</td>
+                        <td>@(item.Name)</td>
+                        <td>
+                            @if (item.State == CarState.Using)
+                            {
+                                <span class="label label-danger">@(item.State.GetDescription())</span>
+                            }
+                            @if (item.State == CarState.Repair)
+                            {
+                                <span class="label label-default">@(item.State.GetDescription())</span>
+                            }
+                            @if (item.State == CarState.Unused)
+                            {
+                                <span class="label label-success">@(item.State.GetDescription())</span>
+                            }
+                        </td>
+                        <td>@(item.BeginTime.HasValue ? item.BeginTime.Value.ToString("yyyy-MM-dd HH:mm") : null)</td>
+                        <td>@(item.EndTime.HasValue ? item.EndTime.Value.ToString("yyyy-MM-dd HH:mm") : null)</td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-plus-square-o"></i> 申请</a>
+                            @if (item.State == CarState.Repair)
+                            {
+                                <a href="#" class="btn btn-info btn-sm"><i class="fa fa-wrench"></i> 维修完毕</a>
+                            }
+                            @if (item.State == CarState.Using)
+                            {
+                                <a href="#" class="btn btn-success btn-sm"><i class="fa fa-check"></i> 用车完毕</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

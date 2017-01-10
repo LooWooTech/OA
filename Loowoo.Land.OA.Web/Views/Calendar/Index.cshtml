@@ -16,6 +16,9 @@
     <div class="toolbar">
         <div class="left">
             <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 新建日程</a>
+        </div>
+        <div class="right">
+            <strong> @(date.Year)年@(date.Month)月 </strong>
             <div class="btn-group">
                 <a href="#" class="btn btn-default btn-sm">
                     今天
@@ -27,7 +30,6 @@
                     <i class="fa fa-chevron-right"></i> 下月
                 </a>
             </div>
-            <strong> @(date.Year)年@(date.Month)月 </strong>
         </div>
     </div>
     <div class="content">
