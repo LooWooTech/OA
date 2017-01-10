@@ -247,7 +247,7 @@
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\InfoController.cs" />
+    <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\MeetingController.cs" />
     <Compile Include="Controllers\OfficeDocumentController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
@@ -289,8 +289,8 @@
     <Content Include="Views\Meeting\Index.cshtml" />
     <Content Include="Views\Meeting\_Sidebar.cshtml" />
     <Content Include="Views\Car\Index.cshtml" />
-    <Content Include="Views\Info\Index.cshtml" />
-    <Content Include="Views\Info\_Sidebar.cshtml" />
+    <Content Include="Views\Article\Index.cshtml" />
+    <Content Include="Views\Article\_Sidebar.cshtml" />
     <Content Include="Views\Car\_Sidebar.cshtml" />
     <Content Include="Views\Meeting\Apply.cshtml" />
     <Content Include="Views\Car\Apply.cshtml" />
