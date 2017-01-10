@@ -1,0 +1,131 @@
+﻿<style>
+    #app-attendance .calendar .table td
+    {
+        height: 130px;
+    }
+</style>
+@{
+    var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+}
+<div id="app-attendance">
+    <div class="toolbar">
+        <div class="left">
+            <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 申请假期</a>
+            <a href="@Url.Action("export")" class="btn btn-warning btn-sm"><i class="fa fa-mail-forward"></i> 导出记录</a>
+            <div class="btn-group">
+                <a href="#" class="btn btn-default btn-sm">
+                    今天
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-left"></i> 上月
+                </a>
+                <a href="#" class="btn btn-default btn-sm">
+                    <i class="fa fa-chevron-right"></i> 下月
+                </a>
+            </div>
+            <strong> @(date.Year)年@(date.Month)月 </strong>
+        </div>
+    </div>
+    <div class="content">
+        <div class="col-lg-8">
+            @Html.Action("Calendar", "Home", new { date })
+        </div>
+        <div class="col-lg-4">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>打卡记录</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2017-01-11 08:30:01</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 10:10:21</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 11:30:11</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 12:00:12</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 14:30:01</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 15:30:01</td>
+                    </tr>
+                    <tr>
+                        <td>2017-01-11 16:30:01</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>请假记录</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="form-group row">
+                                <label class="control-label col-lg-3">
+                                    请假原因：
+                                </label>
+                                <div class="col-lg-9">
+                                    这里填写的是当时申请时的请假原因<br />
+                                    这里填写的是当时申请时的请假原因
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-lg-3">
+                                    假期范围：
+                                </label>
+                                <div class="col-lg-9">
+                                    2017-01-03 ~ 2017-01-05
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-lg-3">
+                                    审批结果：
+                                </label>
+                                <div class="col-lg-9">
+                                    同意
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+        UpdateCalendar([
+            { date: "2016-12-31", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-01", value: '<span class="label label-success">元旦</span></a>' },
+            { date: "2017-01-02", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-05", value: '<span class="label label-warning">早退</span></a>' },
+            { date: "2017-01-07", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-08", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-14", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-15", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-21", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-09", value: '<span class="label label-primary">请假</span></a>' },
+            { date: "2017-01-13", value: '<span class="label label-danger">未打卡</span></a>' },
+            { date: "2017-01-22", value: '<span class="label label-default">班</span></a>' },
+            { date: "2017-01-27", value: '<span class="label label-success">除夕</span></a>' },
+            { date: "2017-01-28", value: '<span class="label label-success">春节</span></a>' },
+            { date: "2017-01-29", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-30", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-01-31", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-02-01", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-02-02", value: '<span class="label label-info">休</span></a>' },
+            { date: "2017-02-04", value: '<span class="label label-default">班</span></a>' }
+        ]);
+    });
+</script>

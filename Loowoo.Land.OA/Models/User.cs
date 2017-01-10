@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Loowoo.Land.OA
+namespace Loowoo.Land.OA.Models
 {
     [Table("User")]
     public class User

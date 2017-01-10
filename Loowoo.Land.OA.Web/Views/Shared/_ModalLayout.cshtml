@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+    var formId = ViewBag.FormId ?? "edit";
+    var formAction = ViewBag.FormAction ?? Url.Action("Save");
+}
+<form id="form-@(formId)" action="@(formAction)" method="post" class="form-horizontal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="@(ViewBag.Icon)"></i> @(ViewBag.Title)</h4>
+    </div>
+    <div class="modal-body">
+        @RenderBody()
+    </div>
+    <div class="modal-footer">
+        <div class="col-sm-8 col-sm-offset-3">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 确定</button>
+        </div>
+    </div>
+</form>
+@RenderSection("js", false)
+

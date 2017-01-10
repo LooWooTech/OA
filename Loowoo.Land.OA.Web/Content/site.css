@@ -1,293 +1,91 @@
-﻿body
-{
-    padding-top: 50px;
-    padding-bottom: 20px;
-    font-family: 'Microsoft YaHei';
-    overflow: hidden;
-}
+﻿body { padding-top: 50px; padding-bottom: 20px; font-family: 'Microsoft YaHei'; overflow: hidden; }
 
-.navbar-inverse .navbar-nav > li > a
-{
-    color: #eee;
-}
+.text-default { color: #888; }
 
-.navbar-inverse
-{
-    background-color: #216DB3;
-    border-color: #323B5D;
-    border: none;
-}
+.navbar-inverse .navbar-nav > li > a { color: #eee; }
 
-    .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > .active > a:hover
-    {
-        background-color: rgba(0,0,0,.15);
-    }
+.navbar-inverse { background-color: #337AB7; border-color: #323B5D; border: none; }
 
-    .navbar-inverse .navbar-nav > li > a:focus, .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus
-    {
-        background-color: rgba(0,0,0,.2);
-    }
+    .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > .active > a:hover { background-color: rgba(0,0,0,.15); }
 
-.clearfix:after
-{
-    content: "";
-    display: table;
-    clear: both;
-}
+    .navbar-inverse .navbar-nav > li > a:focus, .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus { background-color: rgba(0,0,0,.2); }
 
-.badge
-{
-    background: #e99002;
-}
+.table { background: #fff; }
 
-#header
-{
-    height: 50px;
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    width: 100%;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    color: #fff;
-    box-shadow: 0 1px 4px 0 rgba(0,0,0,.2),0 3px 12px 0 rgba(0,0,0,.2);
-}
+.clearfix:after { content: ""; display: table; clear: both; }
 
-#containerBg
-{
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: right bottom;
-    -webkit-transition: all .7s;
-    -moz-transition: all .7s;
-    transition: all .7s;
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    background-image: url(bg.jpg);
-    background-repeat: no-repeat;
-}
+.badge { background: #e99002; }
 
-#container
-{
-    position: absolute;
-    width: 100%;
-    top: 0;
-    bottom: 0;
-}
+#header { height: 50px; position: fixed; z-index: 10; top: 0; left: 0; width: 100%; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-transform: translateZ(0); transform: translateZ(0); color: #fff; box-shadow: 0 1px 4px 0 rgba(0,0,0,.2),0 3px 12px 0 rgba(0,0,0,.2); }
 
-#sidebarBg
-{
-    -webkit-filter: blur(10px) saturate(1.5);
-    height: 100%;
-    background-attachment: fixed;
-    position: fixed;
-    z-index: 5;
-    left: 0;
-    top: 50px;
-    bottom: 0;
-    width: 200px;
-    overflow: hidden;
-}
+#containerBg { background-repeat: no-repeat; background-size: cover; background-position: right bottom; -webkit-transition: all .7s; -moz-transition: all .7s; transition: all .7s; position: fixed; height: 100%; width: 100%; top: 0; left: 0; z-index: -1; background-image: url(bg.jpg); background-repeat: no-repeat; }
 
-#sidebar
-{
-    height: 100%;
-    background-attachment: fixed;
-    position: fixed;
-    z-index: 5;
-    left: 0;
-    top: 50px;
-    bottom: 0;
-    width: 200px;
-    overflow: hidden;
-    border-right: solid 1px rgba(255, 255, 255, 0.3);
-    background: rgba(0, 0, 0, 0.3);
-}
+#container { position: absolute; width: 100%; top: 0; bottom: 0; }
 
-    #sidebar hr
-    {
-        border-top-color: rgba(255, 255, 255, 0.43);
-    }
+#sidebarBg { -webkit-filter: blur(10px) saturate(1.5); height: 100%; background-attachment: fixed; position: fixed; z-index: 5; left: 0; top: 50px; bottom: 0; width: 200px; overflow: hidden; }
 
-    #sidebar a
-    {
-        color: #bbb;
-    }
+#sidebar { height: 100%; background-attachment: fixed; position: fixed; z-index: 5; left: 0; top: 50px; bottom: 0; width: 200px; overflow: hidden; border-right: solid 1px rgba(255, 255, 255, 0.3); background: rgba(0, 0, 0, 0.3); }
 
-    #sidebar .active
-    {
-        background: rgba(255, 255, 255, 0.1);
-    }
+    #sidebar hr { border-top-color: rgba(255, 255, 255, 0.1); }
 
-        #sidebar .active a
-        {
-            color: #eee;
-        }
+    #sidebar a { color: #bbb; }
 
-    #sidebar a:hover, #sidebar a:focus
-    {
-        color: #eee;
-        background: rgba(255, 255, 255, 0.15);
-    }
+    #sidebar .active { background: rgba(255, 255, 255, 0.2); }
 
-#main
-{
-    position: absolute;
-    left: 200px;
-    right: 0;
-    bottom: 0;
-    margin-top: 45px;
-    -webkit-transform: translateZ(0);
-}
+        #sidebar .active a { color: #eee; }
 
-    #main .toolbar
-    {
-        background-color: #fff;
-        height: 45px;
-        padding: 5px;
-        position: fixed;
-        top: 0;
-        z-index: 9;
-        width: 100%;
-        box-shadow: 0 2px 3px -2px rgba(0,0,0,.3);
-        padding-top: 10px;
-    }
+    #sidebar a:hover, #sidebar a:focus { color: #eee; background: rgba(255, 255, 255, 0.1); }
 
-    #main .content
-    {
-        margin: 20px;
-        background: #fff;
-        margin-top: 60px;
-    }
+.dropdown-menu { border: none; }
 
-        #main .content .table th
-        {
-            line-height: 30px;
-            border: none;
-        }
+#main { position: absolute; left: 200px; right: 0; bottom: 0; margin-top: 45px; -webkit-transform: translateZ(0); }
 
-.card
-{
-    padding: 15px;
-    position: relative;
-    background: #fff;
-    margin: 15px 0;
-}
+    #main .toolbar { background-color: rgba(255,255,255,.9); height: 50px; top: 0; z-index: 9; width: 100%; box-shadow: 0 2px 3px -2px rgba(0,0,0,.3); padding-top: 10px; padding-left: 20px; line-height: 30px; }
 
-    .card .comments
-    {
-        margin: 10px -15px -15px -15px;
-        background: #f5f5f5;
-        padding: 20px 70px 20px 71px;
-        overflow: hidden;
-    }
+        #main .toolbar .selector { margin: 0 15px; }
 
-.comment-box
-{
-    background: #f5f5f5;
-    margin: 0 -20px 0 -15px;
-    padding: 0 20px 0 20px;
-    overflow: hidden;
-}
+        #main .toolbar h3 { float: left; margin: 0; padding: 0; line-height: 30px; color: #808080; font-weight: 300; font-size: 1.2em; }
 
-    .comment-box textarea
-    {
-        min-height: 40px;
-    }
+    #main .content { margin: 20px; overflow: hidden; }
 
-.face
-{
-    border-radius: 50%;
-    display: inline;
-    background-color: #ddd;
-    display: inline-block;
-    text-align: center;
-    overflow: hidden;
-    color: #fff;
-}
+        #main .content .table th { line-height: 30px; border: none; }
 
-.face-md
-{
-    height: 46px;
-    width: 46px;
-    font-size: 24px;
-    line-height: 40px;
-}
+.card { padding: 15px; position: relative; background: #fff; margin: 15px 0; overflow: hidden;}
 
-.face-xs
-{
-    height: 32px;
-    width: 32px;
-    font-size: 18px;
-    line-height: 28px;
-}
+    .card .comments { margin: 10px -15px -15px -15px; background: #f5f5f5; padding: 20px 70px 20px 71px; overflow: hidden; }
 
-.left
-{
-    float: left;
-}
+.comment-box { background: #f5f5f5; margin: 0 -20px 0 -15px; padding: 0 20px 0 20px; overflow: hidden; }
 
-.right
-{
-    float: right;
-}
+    .comment-box textarea { min-height: 40px; }
 
-.row
-{
-    margin: unset;
-}
+.face { border-radius: 50%; display: inline; background-color: #ddd; display: inline-block; text-align: center; overflow: hidden; color: #fff; }
 
-.datetime
-{
-    color: #666;
-    font-size: 0.8em;
-}
+.face-md { height: 46px; width: 46px; font-size: 24px; line-height: 40px; }
 
-.calendar
-{
-    position: relative;
-    bottom: 0;
-    background: #fff;
-}
+.face-xs { height: 32px; width: 32px; font-size: 18px; line-height: 28px; }
 
-    .calendar .table th
-    {
-        border: unset;
-        border: none;
-        line-height: 30px;
-        text-align: center;
-    }
+.left { float: left; }
 
-    .calendar .table td
-    {
-        padding: 0;
-        width: 14%;
-    }
+.right { float: right; }
 
-        .calendar .table td:hover
-        {
-            background: rgba(191, 232, 241, 0.4);
-        }
+.row { margin: unset; }
 
-    .calendar .day
-    {
-        color: #999;
-        display: block;
-        margin: 5px;
-        text-align: right;
-    }
+.datetime { color: #666; font-size: 0.8em; }
 
-.table th
-{
-    background: #f2f2f2;
-    line-height: 25px;
-}
+.calendar { position: relative; bottom: 0; background: #fff; }
+
+    .calendar .table th { border: unset; border: none; line-height: 30px; text-align: center; }
+
+    .calendar .table td { padding: 0; width: 14%; }
+
+        .calendar .table td:hover { background: rgba(191, 232, 241, 0.4); }
+
+    .calendar .day { color: #999; display: block; margin: 5px; text-align: right; }
+
+.table th { background: #f2f2f2; line-height: 25px; }
+
+.chart-bar > div { width: 14%; text-align: center; box-sizing: border-box; display: inline-block; font-size: 12px; color: rgba(0,0,0,.5); height: 60px; vertical-align: top; margin-top: 15px; border-right: solid 1px #efefef; }
+
+.chart-bar .chart-bar-num { font-size: 34px; margin-top: -6px; display: inline-block; }
+
+.chart-bar .block { display: block; vertical-align: top; margin-top: -3px; }

@@ -19,4 +19,25 @@
 
 });
 
+function UpdateCalendar(list) {
+
+    $(".calendar .date").each(function () {
+        var self = $(this);
+        var date = self.attr("data-date");
+        var val = getDateValue(date);
+        if (val) {
+            self.append(val);
+        }
+    });
+
+    function getDateValue(date) {
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            if (item.date == date) {
+                return item.value;
+            }
+        }
+    }
+};
+
 

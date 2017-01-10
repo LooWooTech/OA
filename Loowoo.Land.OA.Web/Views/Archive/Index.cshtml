@@ -1,0 +1,81 @@
+﻿<div id="app-archive">
+    <div class="content">
+        <div class="card">
+            <div class="chart-bar">
+                <div>
+                    <span data-toggle="tooltip" data-placement="top" title="" data-original-title="Tooltip on top">
+                        <span class="chart-bar-num">1024</span>个
+                        <span class="block">档案总数</span>
+                    </span>
+                </div>
+                <div>
+                    <span data-toggle="tooltip" data-placement="top" title="" data-original-title="Tooltip on top">
+                        <span class="chart-bar-num">2011</span>次
+                        <span class="block">本月查询</span>
+                    </span>
+                </div>
+                <div>
+                    <span data-toggle="tooltip" data-placement="top" title="" data-original-title="Tooltip on top">
+                        <span class="chart-bar-num text-primary">198</span>人
+                        <span class="block">查询人数</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="padding:0 20px 20px 20px;">
+            <div class="col-lg-3">
+                <h3>档案分类个数统计</h3>
+                <canvas id="chart-category" height="200"></canvas>
+            </div>
+            <div class="col-lg-9" style="height:250px;">
+                <h3>查询次数统计</h3>
+                <canvas id="chart-search" style="height:200px;width:90%;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        new Chart(document.getElementById("chart-category").getContext("2d"), {
+            type: 'pie',
+            data: {
+                labels: [
+                    "分类1",
+                    "分类2",
+                    "分类3"
+                ],
+                datasets: [
+                    {
+                        data: [300, 50, 100],
+                        backgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ],
+                        hoverBackgroundColor: [
+                            "#FF6384",
+                            "#36A2EB",
+                            "#FFCE56"
+                        ]
+                    }]
+            },
+        });
+        new Chart(document.getElementById("chart-search").getContext("2d"), {
+            type: 'line',
+            data: {
+                labels: ["2016/7", "2016/8", "2016/9", "2016/10", "2016/11", "2016/12", "2017/1"],
+                datasets: [
+		                {
+		                    label: "查询次数统计",
+		                    strokeColor: "rgba(220,220,220,1)",
+		                    pointColor: "rgba(220,220,220,1)",
+		                    pointStrokeColor: "#fff",
+		                    data: [65, 59, 90, 81, 56, 55, 40, 39]
+		                }
+                ]
+            },
+        });
+    });
+</script>

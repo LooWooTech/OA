@@ -1,9 +1,10 @@
 ﻿<style>
-    #appcalendar .calendar .table td {
+    #appcalendar .calendar .table td
+    {
         height: 130px;
     }
-
-        #appcalendar .calendar .table td.today {
+        #appcalendar .calendar .table td.today
+        {
             border-top: solid 2px #ff0000;
             background-color: rgb(252, 215, 215);
         }
@@ -14,15 +15,16 @@
 <div id="appcalendar">
     <div class="toolbar">
         <div class="left">
+            <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 新建日程</a>
             <div class="btn-group">
                 <a href="#" class="btn btn-default btn-sm">
                     今天
                 </a>
                 <a href="#" class="btn btn-default btn-sm">
-                    <i class="fa fa-chevron-left"></i>
+                    <i class="fa fa-chevron-left"></i> 上月
                 </a>
                 <a href="#" class="btn btn-default btn-sm">
-                    <i class="fa fa-chevron-right"></i>
+                    <i class="fa fa-chevron-right"></i> 下月
                 </a>
             </div>
             <strong> @(date.Year)年@(date.Month)月 </strong>
@@ -39,20 +41,13 @@
             $.openWindow("@(Url.Action("edit"))")
         });
 
-        $(".date").each(function (k, v) {
-            var val = new Date($(this).attr("data-date"));
-            var date = val.getDate();
-            switch (date) {
-                case 11:
-                    $(v).append('<a href="#"><span class="label label-primary">你申请的车辆归还日期</span></a>');
-                    break;
-                case 15:
-                    $(v).append('<a href="#"><span class="label label-danger">这里是一条任务提醒</span></a>');
-                    break;
-                case 23:
-                    $(v).append('<a href="#"><span class="label label-info">一号会议室全体会议</span></a>');
-                    break;
-            }
-        });
+        UpdateCalendar([
+            { date: "2017-01-11", value: '<a href="#"><span class="label label-primary">你申请的车辆归还日期</span></a>' },
+            { date: "2017-01-05", value: '<a href="#"><span class="label label-info">这里是一条任务提醒</span></a>' },
+            { date: "2017-01-09", value: '<a href="#"><span class="label label-warning">一号会议室全体会议</span></a>' },
+            { date: "2017-01-15", value: '<a href="#"><span class="label label-default">这是自定义事件</span></a>' },
+            { date: "2017-01-23", value: '<a href="#"><span class="label label-primary">这是一条测试工作日程</span></a>' },
+            { date: "2017-01-28", value: '<a href="#"><span class="label label-danger">这是一条流程通知</span></a>' },
+        ]);
     });
 </script>

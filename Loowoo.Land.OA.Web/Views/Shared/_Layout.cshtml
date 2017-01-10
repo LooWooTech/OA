@@ -8,34 +8,40 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@(ViewBag.Title) @(systemName)</title>
+    <script type="text/javascript" src="~/Scripts/jquery-1.9.1.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.custom.css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-datepicker.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/nanoscroller.css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/site.css" />
-
-    <script type="text/javascript" src="~/Scripts/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-datepicker.min.css" />
     <script src="~/scripts/bootstrap-datepicker.min.js"></script>
     <script src="~/scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+
+    <script src="~/Scripts/Chart.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/nanoscroller.css" />
     <script src="~/scripts/jquery.nanoscroller.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/site.css" />
     <script type="text/javascript" src="~/Scripts/common.js"></script>
     <script type="text/javascript" src="~/Scripts/Site.js"></script>
 </head>
 <body>
-    <div id="header" class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-collapse collapse">
-            @Html.Partial("_Topbar")
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#">郑良军 <span id="notice" class="badge"><i class="fa fa-bell"></i> 12</span></a>
-                </li>
-            </ul>
-        </div>
-    </div>
     <div id="containerBg"></div>
     <div id="container" class="nano">
+        <div id="header" class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-collapse collapse">
+                @Html.Partial("_Topbar")
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#">郑良军 <span id="notice" class="badge"><i class="fa fa-bell"></i> 12</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <div id="sidebarBg"></div>
         <div id="sidebar">
             @Html.Partial("~/Views/" + controller + "/_sidebar.cshtml")
