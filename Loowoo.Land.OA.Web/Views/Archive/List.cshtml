@@ -38,7 +38,7 @@
                 <th>标题    </th>
                 <th width="120">档案分类</th>
                 <th width="150">归档时间</th>
-                <th width="120">操作    </th>
+                <th width="150">操作    </th>
             </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@
                     <td>@(item.Category.Name)</td>
                     <td>@(item.CreateTime.ToString("yyyy-MM-dd"))</td>
                     <td>
-                        <a href="@Url.Action("read",new { item.ID})" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> 查阅</a>
+                        <a href="@Url.Action("read",new { item.ID})" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i> 查阅</a>
                     </td>
                 </tr>
             }

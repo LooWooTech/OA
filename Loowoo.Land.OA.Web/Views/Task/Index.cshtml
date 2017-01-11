@@ -35,29 +35,27 @@
 <div id="app-task">
     <div class="toolbar">
         <div class="left">
-
             <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 新建任务</a>
-            <div class="dropdown label">
+            
+            <div class="dropdown btn btn-default">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <i class="fa fa-filter"></i> 全部状态
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#"><i class="fa fa-hourglass-1"></i> 进行中</a></li>
-                    <li><a href="#"><i class="fa fa-check"></i> 已完成</a></li>
-                    <li><a href="#"><i class="fa fa-list"></i> 全部</a></li>
-                </ul>
-            </div>
-            <div class="dropdown label">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <i class="fa fa-arrows-v"></i> 按优先级排序
-                    <span class="caret"></span>
+                    <i class="fa fa-arrows-v"></i> 按优先级排序<span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="#"><i class="fa fa-angle-double-up"></i> 按优先级排序</a></li>
                     <li><a href="#"><i class="fa fa-calendar-plus-o"></i> 按创建时间排序</a></li>
                     <li><a href="#"><i class="fa fa-calendar-check-o"></i> 按完成时间排序</a></li>
                     <li><a href="#"><i class="fa fa-history"></i> 按更新时间排序</a></li>
+                </ul>
+            </div>
+            <div class="dropdown btn btn-default">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <i class="fa fa-filter"></i> 全部状态<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#"><i class="fa fa-hourglass-1"></i> 进行中</a></li>
+                    <li><a href="#"><i class="fa fa-check"></i> 已完成</a></li>
+                    <li><a href="#"><i class="fa fa-list"></i> 全部</a></li>
                 </ul>
             </div>
         </div>

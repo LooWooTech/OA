@@ -2,8 +2,8 @@
     var action = Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
 }
 <ul class="nav navbar-stacked">
-    <li class="@(action == "index"?"active":null)"><a href="@Url.Action("Index")"><i class="fa fa-bar-chart"></i> 档案统计</a></li>
-    <li class="@(action == "list"?"active":null)"><a href="@Url.Action("List")"><i class="fa fa-search"></i> 档案查询</a></li>
+    <li class="@(action == "index"?"active":null)"><a href="@Url.Action("Index")"><i class="fa fa-bar-chart"></i> 查询统计</a></li>
+    @*<li><a href="@Url.Action("apply")" data-toggle="modal" data-target="#modal"><i class="fa fa-sign-in"></i> 申请查询</a></li>*@
     <li><a href="#"><i class="fa fa-history"></i> 我的查询记录</a></li>
 </ul>
 <hr />

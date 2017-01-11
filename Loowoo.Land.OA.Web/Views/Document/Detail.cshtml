@@ -1,0 +1,155 @@
+﻿<style>
+    .document-panel { min-height: 500px; background: rgb(192, 194, 204); text-align: center; /* padding: 20px; */ }
+    .document { width: 964px; margin: 0 auto; background: #fff; }
+    .document-content { width: 600px; text-align: center; overflow: hidden; background: #fff; margin: 0 auto; }
+
+    #approval-form { width: 290px; /* height: 300px; */ position: fixed; bottom: 0px; background: #fff; border: solid 1px #ddd; padding: 20px; margin: 20px; border-radius: 5px; right: 0; }
+</style>
+<div id="app-document-detail">
+    <div class="toolbar">
+        <div class="left">
+            <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-chevron-left"></i> 返回</a>
+        </div>
+        <ul class="nav nav-tabs" role="tablist" style="margin:0 auto;width:300px;">
+            <li role="presentation" class="active"><a href="#doc-content" aria-controls="doc-content" role="tab" data-toggle="tab">公文内容</a></li>
+            <li role="presentation"><a href="#doc-files" aria-controls="doc-files" role="tab" data-toggle="tab">附件清单</a></li>
+            <li role="presentation"><a href="#doc-flow" aria-controls="doc-flow" role="tab" data-toggle="tab">审批记录</a></li>
+        </ul>
+    </div>
+</div>
+<div id="doc-tab-content" class="tab-content">
+    <div class="tab-pane active in" id="doc-content">
+        <div class="document-panel">
+            <div class="document">
+                <img src="~/images/doc.png" />
+            </div>
+        </div>
+        <div id="approval-form">
+            <div class="form-group">
+                <label class="control-label">
+                    附件清单：
+                </label>
+                <div class="media">
+                    <div class="media-left">
+                        <i class="fa fa-file-word-o fa-2x text-primary"></i>
+                    </div>
+                    <div class="media-body">
+                        <a href="#">公文Word文件</a><br />
+                        12k
+                    </div>
+                </div>
+                <div class="media">
+                    <div class="media-left">
+                        <i class="fa fa-file-excel-o fa-2x text-success"></i>
+                    </div>
+                    <div class="media-body">
+                        <a href="#">附带表格文件</a><br />
+                        32k
+                    </div>
+                </div>
+            </div>
+
+            <form class="">
+                <div class="form-group">
+                    <label class="control-label">
+                        审批意见：
+                    </label>
+                    <div class="">
+                        <textarea class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="">
+                        <button class="btn btn-success"><i class="fa fa-check"></i>同意</button>
+                        <button class="btn btn-danger"><i class="fa fa-remove"></i>不同意</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tab-pane" id="doc-files">
+        <div class="content">
+            <table class="table table-bordered">
+                <tr>
+                    <th style="width:80px;"></th>
+                    <th>文件名</th>
+                    <th style="width:100px;">文件大小</th>
+                    <th style="width:150px;">操作</th>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fa fa-file-word-o fa-2x"></i>
+                    </td>
+                    <td>
+                        公文Word文件
+                    </td>
+                    <td>
+                        123K
+                    </td>
+                    <td>
+                        <a href="#"><i class="fa fa-download"></i> 下载</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <i class="fa fa-file-excel-o fa-2x"></i>
+                    </td>
+                    <td>
+                        附带表格文件
+                    </td>
+                    <td>
+                        32K
+                    </td>
+                    <td>
+                        <a href="#"><i class="fa fa-download"></i> 下载</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane" id="doc-flow">
+        <div class="content bg">
+            <div class="card">
+                <ul class="timeline">
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-green"></div>
+                        <div class="timeline-item-content">部门1 -  张某某 2015-09-01</div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-green"></div>
+                        <div class="timeline-item-content">部门1 主管 王某某 2015-09-02</div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-red"></div>
+                        <div class="timeline-item-content">
+                            <p>部门2 李某 2015-09-03</p>
+                            <p>资料不全，退回重写</p>
+                        </div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-blue"></div>
+                        <div class="timeline-item-content">
+                            部门1 张某某 2015-09-04
+                        </div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-gray"></div>
+                        <div class="timeline-item-content">部门1 </div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-item-tail"></div>
+                        <div class="timeline-item-head timeline-item-head-gray"></div>
+                        <div class="timeline-item-content">部门2 </div>
+                    </li>
+                    <li class="timeline-item timeline-item-last">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    public class OfficeDocument
+    public class Document
     {
         public int ID { get; set; }
 

@@ -65,11 +65,16 @@
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\Directory.cs" />
     <Compile Include="Models\Feed.cs" />
-    <Compile Include="Models\OfficeDocument.cs" />
-    <Compile Include="Models\Organization.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

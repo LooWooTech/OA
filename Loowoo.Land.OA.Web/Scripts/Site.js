@@ -15,7 +15,15 @@
         $(this).removeData('bs.modal');
     });
 
+    $("#contact").load("/contact")
+
     $(".nano").nanoScroller();
+
+    $("#btn-contact").click(function () {
+        var contact = $("#contact");
+        var right = contact.css("right");
+        contact.animate({ right: right == '5px' ? '-245px' : '5px' }, 100);
+    });
 
 });
 

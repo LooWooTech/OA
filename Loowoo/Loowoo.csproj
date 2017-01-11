@@ -57,7 +57,6 @@
     <Compile Include="Caching\LocalCacheService.cs" />
     <Compile Include="Caching\RedisCacheService.cs" />
     <Compile Include="Common\AppSettings.cs" />
-    <Compile Include="Common\Document.cs" />
     <Compile Include="Common\EncryptExtensions.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\ExceptionExtension.cs" />

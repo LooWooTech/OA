@@ -117,7 +117,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bg.jpg" />
+    <Content Include="images\bg.jpg" />
     <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap-datepicker.standalone.css" />
@@ -160,6 +160,7 @@
     <Content Include="Content\bootstrap-datepicker.min.css.map" />
     <Content Include="Content\bootstrap-datepicker.css.map" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="images\doc.png" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -246,11 +247,13 @@
     <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\MeetingController.cs" />
-    <Compile Include="Controllers\OfficeDocumentController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -274,8 +277,8 @@
     <Content Include="Views\Shared\_CommentBox.cshtml" />
     <Content Include="Views\Calendar\Edit.cshtml" />
     <Content Include="Views\Home\Calendar.cshtml" />
-    <Content Include="Views\OfficeDocument\Index.cshtml" />
-    <Content Include="Views\OfficeDocument\_Sidebar.cshtml" />
+    <Content Include="Views\Document\Index.cshtml" />
+    <Content Include="Views\Document\_Sidebar.cshtml" />
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Task\_Sidebar.cshtml" />
     <Content Include="Views\Task\Edit.cshtml" />
@@ -294,6 +297,11 @@
     <Content Include="Views\Car\_Sidebar.cshtml" />
     <Content Include="Views\Meeting\Apply.cshtml" />
     <Content Include="Views\Car\Apply.cshtml" />
+    <Content Include="Views\Contact\Index.cshtml" />
+    <Content Include="Views\Contact\_ContactItem.cshtml" />
+    <Content Include="Views\Document\Detail.cshtml" />
+    <Content Include="Views\File\Index.cshtml" />
+    <Content Include="Views\File\_Sidebar.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

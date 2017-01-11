@@ -36,8 +36,11 @@
             <div class="navbar-collapse collapse">
                 @Html.Partial("_Topbar")
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#">郑良军 <span id="notice" class="badge"><i class="fa fa-bell"></i> 12</span></a>
+                    <li id="btn-contact" style="padding-right:10px;">
+                        <span class="face face-xs left" style="margin-top:10px;">郑良军</span>
+                        <a href="#" class="left">郑良军
+                        <span id="notice" class="badge"><i class="fa fa-bell"></i> 12</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -48,6 +51,7 @@
         </div>
         <div id="main" class="nano-content">@RenderBody() </div>
     </div>
+    <div id="contact"></div>
     <div id="modal" class="modal" aria-hidden="true" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
