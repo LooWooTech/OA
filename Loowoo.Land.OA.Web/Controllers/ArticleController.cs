@@ -14,6 +14,11 @@ namespace Loowoo.Land.OA.Web.Controllers
             return View();
         }
 
+        public ActionResult List()
+        {
+            return View();
+        }
+
         public ActionResult Edit(int id = 0)
         {
             return View();

@@ -4,7 +4,7 @@
 .navbar-inverse { background-color: rgba(51, 122, 183, 0.52); border-color: #323B5D; border: none; }
     .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > .active > a:hover { background-color: rgba(0,0,0,.15); }
     .navbar-inverse .navbar-nav > li > a:focus, .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus { background-color: rgba(0,0,0,.2); }
-.table { background: #fff; }
+.table { background:#fff; }
 .clearfix:after { content: ""; display: table; clear: both; }
 .badge { background: #e99002; }
 .dropdown-menu { border: none; }

@@ -292,7 +292,7 @@
     <Content Include="Views\Meeting\Index.cshtml" />
     <Content Include="Views\Meeting\_Sidebar.cshtml" />
     <Content Include="Views\Car\Index.cshtml" />
-    <Content Include="Views\Article\Index.cshtml" />
+    <Content Include="Views\Article\List.cshtml" />
     <Content Include="Views\Article\_Sidebar.cshtml" />
     <Content Include="Views\Car\_Sidebar.cshtml" />
     <Content Include="Views\Meeting\Apply.cshtml" />
@@ -302,6 +302,7 @@
     <Content Include="Views\Document\Detail.cshtml" />
     <Content Include="Views\File\Index.cshtml" />
     <Content Include="Views\File\_Sidebar.cshtml" />
+    <Content Include="Views\Article\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
