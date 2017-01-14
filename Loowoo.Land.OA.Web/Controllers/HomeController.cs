@@ -19,6 +19,11 @@ namespace Loowoo.Land.OA.Web.Controllers
             return View();
         }
 
+        public ActionResult SelectUser()
+        {
+            return View();
+        }
+
         public ActionResult Error()
         {
             return View();

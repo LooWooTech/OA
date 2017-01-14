@@ -316,6 +316,7 @@
     <Content Include="Views\Task\_Flow.cshtml" />
     <Content Include="Views\Task\_Result.cshtml" />
     <Content Include="Views\Task\_Files.cshtml" />
+    <Content Include="Views\Home\SelectUser.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

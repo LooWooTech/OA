@@ -56,14 +56,6 @@
 .chart-bar .chart-bar-num { font-size: 34px; margin-top: -6px; display: inline-block; }
 .chart-bar .block { display: block; vertical-align: top; margin-top: -3px; }
 
-#contact .nav-tabs { background: #337AB7; margin-bottom: 0; }
-#contact { z-index: 10; position: absolute; right: -243px; display: block; bottom: 5px; background: #fefefe; width: 243px; top: 55px; right: -245px; border: solid 1px #337AB7; }
-    #contact .nav-tabs > li { font-size: 1.5em; margin-bottom: 0; width: 60px; text-align: center; border: none; display: inline-block; }
-        #contact .nav-tabs .active a, #contact .nav-tabs > li > a:hover { color: #FFFFFF; background: rgba(255,255,255,0.3); }
-    #contact .nav-tabs a { border: none; color: rgba(255, 255, 255, 0.6); border-radius: 0; }
-    #contact .contact { margin: 1px 0px; padding: 10px 5px; display: block; overflow: hidden; border-bottom: solid 1px #eee; }
-        #contact .contact:hover { background: rgba(0, 148, 255, 0.1); }
-    #contact .org-name { line-height: 35px; background: #eee; text-align: center; border-bottom: solid 1px #ddd; }
 
 .toolbar .nav-tabs, .toolbar .nav-tabs > li, .toolbar .nav-tabs > li > a { margin: 0; border: none; }
     .toolbar .nav-tabs > li.active > a, .toolbar .nav-tabs > li.active > a:focus, .toolbar .nav-tabs > li.active > a:hover { border: none; }

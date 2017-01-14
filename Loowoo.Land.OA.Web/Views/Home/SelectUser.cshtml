@@ -1,0 +1,45 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    #select-source, #select-target { overflow: hidden; border: solid 1px #ddd; border-radius: 5px; /* background: #ddd; */ height: 400px; }
+        #select-source .nav-tabs .active a { border: none; border-bottom: solid 1px #337ab7; color: #337ab7; }
+        #select-source .nav-tabs a { color: #666; }
+    #select-button { margin-top: 150px; text-align: center; padding: 0; }
+        #select-button .btn { margin :5px 0;}
+</style>
+<div id="select-users">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><i class="fa fa-address-book"></i> 人员选择</h4>
+    </div>
+    <div class="modal-body" style="overflow:hidden;">
+        <div id="select-source" class="col-sm-6">
+            <div class="input-group" style="margin:5px 0;">
+                <input type="text" class="form-control" id="txt-select-search" />
+                <div class="input-group-btn">
+                    <button type="button" id="btn-select-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+            <div class="tab-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#users" data-toggle="tab" aria-expanded="false"><i class="fa fa-history"></i> 常用</a></li>
+                    <li class=""><a href="#groups" data-toggle="tab" aria-expanded="false"><i class="fa fa-group"></i> 群组</a></li>
+                    <li class=""><a href="#departments" data-toggle="tab" aria-expanded="false"><i class="fa fa-sitemap"></i> 部门</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="select-button" class="col-sm-1">
+            <button class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
+            <button class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
+        </div>
+        <div id="select-target" class="col-sm-5">
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-sm-8 col-sm-offset-3">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 确定</button>
+        </div>
+    </div>
+</div>
