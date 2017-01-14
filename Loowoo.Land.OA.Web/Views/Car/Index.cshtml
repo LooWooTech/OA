@@ -1,13 +1,31 @@
 ﻿@{
-    List<Car> list = new List<Car>
+    var carId = int.Parse(Request.QueryString["carId"] ?? "0");
+
+    List<Car> cars = new List<Car>
     {
-        new Car { ID =1 , Name = "奇瑞 瑞虎5 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Using, EndTime = DateTime.Now.AddDays(3) },
-        new Car { ID =2 , Name = "吉利 博越 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Using },
-        new Car { ID =3 , Name = "吉利 博瑞 轿车", Number = "浙L·12345",  },
-        new Car { ID =4 , Name = "奇瑞 瑞虎3 SUV", Number = "浙L·12345", BeginTime = DateTime.Now, State = CarState.Repair },
-        new Car { ID =5 , Name = "比亚迪·秦 电动轿车", Number = "浙L·12345", State = CarState.Unused },
-        new Car { ID =6 , Name = "比亚迪·唐 电动车 SUV", Number = "浙L·12345", State = CarState.Unused },
+        new Car { ID =1 , Name = "奇瑞 瑞虎5",  Type = CarType.Suv, Number = "浙L·11111", State = CarState.Using },
+        new Car { ID =2 , Name = "吉利 博越",   Type = CarType.Suv,  Number = "浙L·22222", State = CarState.Using },
+        new Car { ID =3 , Name = "吉利 博瑞",   Type = CarType.Sedan,  Number = "浙L·33333", State = CarState.Repair  },
+        new Car { ID =4 , Name = "比亚迪·秦",   Type = CarType.Sedan,  Number = "浙L·44444", State = CarState.Unused },
     };
+    List<CarEventLog> logs = new List<CarEventLog>
+    {
+        new CarEventLog { CarID = 1,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-7) },
+        new CarEventLog { CarID = 1,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-10), EndTime = DateTime.Now.AddDays(-8) },
+        new CarEventLog { CarID = 1,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-15), EndTime = DateTime.Now.AddDays(-10) },
+        new CarEventLog { CarID = 2,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-7) },
+        new CarEventLog { CarID = 2,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-10), EndTime = DateTime.Now.AddDays(-8) },
+        new CarEventLog { CarID = 2,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-15), EndTime = DateTime.Now.AddDays(-10) },
+        new CarEventLog { CarID = 3,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-3) },
+        new CarEventLog { CarID = 3,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-10), EndTime = DateTime.Now.AddDays(-8) },
+        new CarEventLog { CarID = 3,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-15), EndTime = DateTime.Now.AddDays(-10) },
+        new CarEventLog { CarID = 4,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-10), EndTime = DateTime.Now.AddDays(-8) },
+        new CarEventLog { CarID = 4,Description = "这里是用车理由", BeginTime = DateTime.Now.AddDays(-15), EndTime = DateTime.Now.AddDays(-10) },
+    };
+    if (carId > 0)
+    {
+        logs = logs.Where(e => e.CarID == carId).ToList();
+    }
 }
 <div id="app-car">
     <div class="toolbar">
@@ -15,49 +33,42 @@
             <a href="@Url.Action("apply")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 申请用车</a>
         </div>
     </div>
-    <div class="content">
+    <div class="main-content" style="margin:20px;">
+        @foreach (var car in cars)
+            {
+            <div class="car btn car-@(car.State.ToString().ToLower())" data-id="@(car.ID)">
+                <div class="number">@(car.Number)</div>
+                <div class="name">@(car.Name)</div>
+                <div class="state">
+                    @(car.Type.GetDescription()) - @(car.State.GetDescription())
+                </div>
+                <img src="~/images/icon_@(car.Type).png" />
+            </div>
+        }
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th style="width:110px;">车牌号</th>
-                    <th>车辆描述</th>
-                    <th style="width:120px;">状态</th>
-                    <th style="width:150px;">申请时间</th>
-                    <th style="width:150px;">预计归还</th>
-                    <th style="width:200px;">操作</th>
+
+                    <th style="width:120px;">车牌号</th>
+                    <th>用车理由</th>
+                    <th style="width:150px;">用车时间</th>
+                    <th style="width:150px;">还车时间</th>
+                    <th style="width:100px;">操作</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in list)
+                @foreach (var item in logs)
                 {
+                    var car = cars.FirstOrDefault(e => e.ID == item.CarID);
                     <tr>
-                        <td>@(item.Number)</td>
-                        <td>@(item.Name)</td>
-                        <td>
-                            @if (item.State == CarState.Using)
-                            {
-                                <span class="label label-danger">@(item.State.GetDescription())</span>
-                            }
-                            @if (item.State == CarState.Repair)
-                            {
-                                <span class="label label-default">@(item.State.GetDescription())</span>
-                            }
-                            @if (item.State == CarState.Unused)
-                            {
-                                <span class="label label-success">@(item.State.GetDescription())</span>
-                            }
-                        </td>
-                        <td>@(item.BeginTime.HasValue ? item.BeginTime.Value.ToString("yyyy-MM-dd HH:mm") : null)</td>
+                        <td>@(car.Number)</td>
+                        <td>@(item.Description)</td>
+                        <td>@(item.BeginTime.ToString("yyyy-MM-dd HH:mm"))</td>
                         <td>@(item.EndTime.HasValue ? item.EndTime.Value.ToString("yyyy-MM-dd HH:mm") : null)</td>
                         <td>
-                            <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-plus-square-o"></i> 申请</a>
-                            @if (item.State == CarState.Repair)
+                            @if (item.EndTime == null)
                             {
-                                <a href="#" class="btn btn-info btn-sm"><i class="fa fa-wrench"></i> 还车</a>
-                            }
-                            @if (item.State == CarState.Using)
-                            {
-                                <a href="#" class="btn btn-success btn-sm"><i class="fa fa-check"></i> 还车</a>
+                                <a href="#" class="btn btn-success btn-xs"><i class="fa fa-check"></i> 还车</a>
                             }
                         </td>
                     </tr>
@@ -66,3 +77,11 @@
         </table>
     </div>
 </div>
+<script>
+    $(function () {
+        $(".car").click(function () {
+            var id = $(this).attr("data-id");
+            window.location.href = "?carId=" + id;
+        });
+    })
+</script>

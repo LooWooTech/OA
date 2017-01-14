@@ -1,0 +1,123 @@
+﻿<div class="container">
+    <h3 class="page-header">定海分局发文拟稿件</h3>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                发文字号：
+            </label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label">
+                发文日期：
+            </label>
+            <div class="col-sm-2">
+                <input type="date" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                文件标题：
+            </label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                主题词：
+            </label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                主送机关：
+            </label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                抄送机关：
+            </label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                政务公开：
+            </label>
+            <div class="col-sm-4">
+                <label class="radio-inline"><input type="radio" class="radio" name="ZWGK" />主动公开</label>
+                <label class="radio-inline"><input type="radio" class="radio" name="ZWGK" />依申请公开</label>
+                <label class="radio-inline"><input type="radio" class="radio" name="ZWGK" />不公开</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                是否上互联网发布：
+            </label>
+            <div class="col-sm-2">
+                <label class="checkbox-inline"><input type="checkbox" class="checkbox" />是</label>
+            </div>
+            <label class="col-sm-2 control-label">
+                责任人：
+            </label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                密级：
+            </label>
+            <div class="col-sm-2">
+                <select class="form-control">
+                    <option>普件</option>
+                    <option>秘密</option>
+                    <option>机密</option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label">
+                期限：
+            </label>
+            <div class="col-sm-2">
+                <input type="date" class="form-control datepicker" />
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                审核意见：
+            </label>
+            <div class="col-sm-6">
+                <textarea class="form-control" rows="2"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                审核结果：
+            </label>
+            <div class="col-sm-2">
+                <label class="radio-inline"><input type="radio" class="radio" name="approval_result" checked />通过</label>
+                <label class="radio-inline"><input type="radio" class="radio" name="approval_result" />不通过</label>
+            </div>
+            <label class="col-sm-2 control-label">
+                审核日期：
+            </label>
+            <div class="col-sm-2">
+                <input type="date" class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" />
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-sm-2 col-sm-offset-2">
+                <button class="btn btn-success"><i class="fa fa-check"></i>提交</button>
+            </div>
+        </div>
+    </form>
+</div>

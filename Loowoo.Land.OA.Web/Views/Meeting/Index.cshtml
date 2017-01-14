@@ -40,45 +40,45 @@
                 </a>
             </div>
         </div>
-  </div>
-    <div class="content">
-        <div class="col-lg-8">
+    </div>
+    <div class="main-content" style="margin-top:20px;">
+        <div class="col-sm-8">
             @Html.Action("Calendar", "Home", new { date })
         </div>
-        <div class="col-lg-4">
+        <div class="col-sm-4">
             <table class="table table-hover">
                 <tr>
                     <th style="width:80px;">时间</th>
-                @for (var i = 8; i < 21; i++)
-                {
+                    @for (var i = 8; i < 21; i++)
+                    {
                     <tr>
                         <th>
                             @(i):00
                         </th>
                         <td class="hour-@(i)"></td>
                     </tr>
-                }
-            </table>
+                    }
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<script>
-    $(function () {
-        $("#app-meeting .calendar td").dblclick(function () {
-            var date = $(this).attr("data-date");
-            $.openWindow("@(Url.Action("edit"))")
+    <script>
+        $(function () {
+            $("#app-meeting .calendar td").dblclick(function () {
+                var date = $(this).attr("data-date");
+                $.openWindow("@(Url.Action("edit"))")
+            });
+
+            UpdateCalendar([
+                { date: "2017-01-11", value: '<span class="label label-primary">一楼会议室1</span>' },
+                { date: "2017-01-05", value: '<span class="label label-primary">一楼会议室1</span>' },
+                { date: "2017-01-09", value: '<span class="label label-primary">一楼会议室1</span>' },
+            ]);
+
+            $(".hour-9").append('<span class="label label-primary">一楼会议室1</span>');
+            $(".hour-9,.hour-10").css("background", "rgba(255, 0, 0, 0.1)");
+
+            $(".hour-13").append('<span class="label label-primary">三楼会议室1</span>');
+            $(".hour-13,.hour-14,.hour-15").css("background", "rgba(0, 255, 0, 0.1)");
         });
-
-        UpdateCalendar([
-            { date: "2017-01-11", value: '<span class="label label-primary">一楼会议室1</span>' },
-            { date: "2017-01-05", value: '<span class="label label-primary">一楼会议室1</span>' },
-            { date: "2017-01-09", value: '<span class="label label-primary">一楼会议室1</span>' },
-        ]);
-
-        $(".hour-9").append('<span class="label label-primary">一楼会议室1</span>');
-        $(".hour-9,.hour-10").css("background", "rgba(255, 0, 0, 0.1)");
-
-        $(".hour-13").append('<span class="label label-primary">三楼会议室1</span>');
-        $(".hour-13,.hour-14,.hour-15").css("background", "rgba(0, 255, 0, 0.1)");
-    });
-</script>
+    </script>

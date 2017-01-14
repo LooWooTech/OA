@@ -161,6 +161,8 @@
     <Content Include="Content\bootstrap-datepicker.css.map" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="images\doc.png" />
+    <Content Include="images\icon_sedan.png" />
+    <Content Include="images\icon_suv.png" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -299,10 +301,21 @@
     <Content Include="Views\Car\Apply.cshtml" />
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\Contact\_ContactItem.cshtml" />
-    <Content Include="Views\Document\Detail.cshtml" />
+    <Content Include="Views\Document\Edit.cshtml" />
     <Content Include="Views\File\Index.cshtml" />
     <Content Include="Views\File\_Sidebar.cshtml" />
     <Content Include="Views\Article\Index.cshtml" />
+    <Content Include="Views\Document\SendList.cshtml" />
+    <Content Include="Views\Document\ReceiveList.cshtml" />
+    <Content Include="Views\Document\_FlowStep.cshtml" />
+    <Content Include="Views\Document\_Form.cshtml" />
+    <Content Include="Views\Document\_Content.cshtml" />
+    <Content Include="Views\Document\_Flow.cshtml" />
+    <Content Include="Views\Document\_Result.cshtml" />
+    <Content Include="Views\Task\_Form.cshtml" />
+    <Content Include="Views\Task\_Flow.cshtml" />
+    <Content Include="Views\Task\_Result.cshtml" />
+    <Content Include="Views\Task\_Files.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

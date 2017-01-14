@@ -1,39 +1,133 @@
 ﻿@{
     Layout = "~/Views/Shared/_ModalLayout.cshtml";
-    ViewBag.Title = "新建日程";
+    ViewBag.Title = "新建提醒";
     ViewBag.FormId = "calendar";
 }
 <div class="form-group">
     <label class="control-label col-sm-3">名称：</label>
     <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder="请输入日程名称" />
-    </div>
-</div>
-<div class="form-group">
-    <label class="control-label col-sm-3">起止时间：</label>
-    <div class="col-sm-8">
-        <div class="input-daterange input-group" id="datepicker">
-            <input type="text" class="input-sm form-control" name="start" />
-            <span class="input-group-addon">到</span>
-            <input type="text" class="input-sm form-control" name="end" />
-        </div>
+        <input type="text" class="form-control" placeholder="请输入事件名称" />
     </div>
 </div>
 <div class="form-group">
     <label class="control-label col-sm-3">提醒：</label>
     <div class="col-sm-6">
-        提前 <input type="number" class="form-control" value="1" size="1" style="width:50px;display:inline-block;" /> 小时
+        <select class="form-control">
+            <option>无</option>
+            <option>5分钟</option>
+            <option>15分钟</option>
+            <option>30分钟</option>
+            <option>1小时</option>
+            <option>12小时</option>
+            <option>1天</option>
+            <option>1周</option>
+        </select>
     </div>
 </div>
 <div class="form-group">
     <label class="control-label col-sm-3">描述：</label>
-    <div class="col-sm-8">
-        <textarea class="form-control"></textarea>
+    <div class="col-sm-6">
+        <textarea class="form-control" rows="2"></textarea>
     </div>
+</div>
+<hr />
+<h4>时间设置</h4>
+<div class="form-group">
+    <label class="control-label col-sm-3">重复：</label>
+    <div class="col-sm-6">
+        <label class="checkbox-inline"><input id="isrepeat" name="isrepeat" type="checkbox" class="checkbox" />这是一个重复任务</label>
+    </div>
+</div>
+<div id="panel-time-normal">
+    <div class="form-group">
+        <label class="control-label col-sm-3">开始时间：</label>
+        <div class="col-sm-4">
+            <input type="date" class="input-sm form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" />
+        </div>
+        <div class="col-sm-3">
+            <input type="time" class="input-sm form-control" value="@(DateTime.Now.ToString("HH:mm"))" />
+        </div>
+        <div class="col-sm-2">
+            <label class="checkbox-inline"><input type="checkbox" class="checkbox fullday" />全天</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-3">结束时间：</label>
+        <div class="col-sm-4">
+            <input type="date" class="input-sm form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" />
+        </div>
+        <div class="col-sm-3">
+            <input type="time" class="input-sm form-control" value="@(DateTime.Now.ToString("HH:mm"))" />
+        </div>
+        <div class="col-sm-2">
+            <label class="checkbox-inline"><input type="checkbox" class="checkbox fullday" />全天</label>
+        </div>
+    </div>
+</div>
+<div id="panel-time-repeat" style="display:none;">
+    <div class="form-group">
+        <label class="control-label col-sm-3">起止日期：</label>
+        <div class="col-sm-4">
+            <input type="date" class="input-sm form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" />
+        </div>
+        <div class="col-sm-4">
+            <input type="date" class="input-sm form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-3">起止时段：</label>
+        <div class="col-sm-3">
+            <input type="time" class="input-sm form-control" value="@(DateTime.Now.ToString("HH:mm"))" />
+        </div>
+        <div class="col-sm-3">
+            <input type="time" class="input-sm form-control" value="@(DateTime.Now.AddHours(1).ToString("HH:mm"))" />
+        </div>
+        <div class="col-sm-3">
+            <label class="checkbox-inline"><input type="checkbox" class="checkbox fullday" />全天</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-3">重复选项：</label>
+        <div class="col-sm-4">
+            <select class="form-control" name="repeattype" id="repeat-type">
+                <option>每天</option>
+                <option>每周</option>
+                <option>每月</option>
+                <option>每年</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-8 col-sm-offset-3">
+            <label class="radio-inline">
+                <input type="radio" name="interval" />
+                每 <input type="number" style="border:none;border-bottom:solid 1px #ddd; width:40px;" value="1" /> 天
+            </label>
+            <label class="radio-inline">
+                <input type="radio" class="radio" name="interval" />
+                每个工作日
+            </label>
+        </div>
+    </div>
+
 </div>
 @section js{
     <script>
         $(function () {
+            $("#isrepeat").click(function () {
+                if (this.checked) {
+                    $("#panel-time-normal").hide();
+                    $("#panel-time-repeat").show();
+                } else {
+                    $("#panel-time-normal").show();
+                    $("#panel-time-repeat").hide();
+                }
+            });
+
+            $("#repeat-type").change(function () {
+
+            });
+
             $('#form-calendar .input-daterange').datepicker({
                 language: "zh-CN",
                 autoclose: true

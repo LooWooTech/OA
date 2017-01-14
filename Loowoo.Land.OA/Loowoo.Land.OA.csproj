@@ -69,6 +69,7 @@
     <Compile Include="Models\Directory.cs" />
     <Compile Include="Models\Feed.cs" />
     <Compile Include="Models\File.cs" />
+    <Compile Include="Models\Flow.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Department.cs" />

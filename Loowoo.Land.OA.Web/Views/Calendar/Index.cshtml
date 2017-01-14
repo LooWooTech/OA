@@ -1,41 +1,37 @@
 ﻿<style>
-    #appcalendar .calendar .table td
-    {
-        height: 130px;
-    }
-        #appcalendar .calendar .table td.today
-        {
-            border-top: solid 2px #ff0000;
-            background-color: rgb(252, 215, 215);
-        }
+    #appcalendar { padding:20px 20px 0 20px;}
+    #appcalendar .calendar .table td { height: 130px; }
+        #appcalendar .calendar .table td.today { border-top: solid 2px #ff0000; background-color: rgb(252, 215, 215); }
 </style>
 @{
     var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 }
-<div id="appcalendar">
-    <div class="toolbar">
-        <div class="left">
-            <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 新建日程</a>
-        </div>
-        <div class="right">
-            <strong> @(date.Year)年@(date.Month)月 </strong>
-            <div class="btn-group">
-                <a href="#" class="btn btn-default btn-sm">
-                    今天
-                </a>
-                <a href="#" class="btn btn-default btn-sm">
-                    <i class="fa fa-chevron-left"></i> 上月
-                </a>
-                <a href="#" class="btn btn-default btn-sm">
-                    <i class="fa fa-chevron-right"></i> 下月
-                </a>
-            </div>
+<div class="toolbar">
+    <div class="left">
+        <a href="@Url.Action("edit")" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal"><i class="fa fa-plus"></i> 新建提醒</a>
+    </div>
+    <div class="right">
+        <strong> @(date.Year)年@(date.Month)月 </strong>
+        <div class="btn-group">
+            <a href="#" class="btn btn-default btn-sm">
+                今天
+            </a>
+            <a href="#" class="btn btn-default btn-sm">
+                <i class="fa fa-chevron-left"></i> 上月
+            </a>
+            <a href="#" class="btn btn-default btn-sm">
+                <i class="fa fa-chevron-right"></i> 下月
+            </a>
         </div>
     </div>
+</div>
+
+<div id="appcalendar" class="main-content">
     <div class="content">
         @Html.Action("Calendar", "Home", new { date })
     </div>
 </div>
+
 <script>
     $(function () {
         $(".calendar td").dblclick(function () {

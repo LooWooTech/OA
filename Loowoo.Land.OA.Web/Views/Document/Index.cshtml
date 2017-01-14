@@ -2,12 +2,6 @@
     ViewBag.Title = "Index";
     List<Document> list = new List<Document>
     {
-        new Document { ID =1, ApproveResult= ApproveResult.Wait, FlowStep = "行政审批", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
-        new Document { ID =1,ApproveResult= ApproveResult.Agreed, FlowStep = "耕保科", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
-        new Document { ID =1,ApproveResult= ApproveResult.Agreed, FlowStep = "规划科", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
-        new Document { ID =1,ApproveResult= ApproveResult.Disagreed, FlowStep = "地籍科", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
-        new Document { ID =1,ApproveResult= ApproveResult.Wait, FlowStep = "统征办", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
-        new Document { ID =1,ApproveResult= ApproveResult.Wait, FlowStep = "局长办公室", Number = "L0678",Title = "这里是公文标题一", Organ = "测试发文机关名称" , SendTime = DateTime.Now, Category = new Category { Name = "测试分类1" } },
     };
 }
 <div id="app-document">
@@ -16,7 +10,7 @@
             <a href="@(Url.Action("Edit"))" class="btn btn-sm btn-primary"><i class="fa fa-file-o"></i> 新建公文</a>
             <a href="@Url.Action("Export")" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-export"></i> 导出公文</a>
         </div>
-        <div class="right col-lg-3">
+        <div class="right col-sm-4">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="档案关键词" />
                 <div class="input-group-btn">
@@ -24,7 +18,7 @@
                 </div>
             </div>
         </div>
-   </div>
+    </div>
     <div class="content">
         <table class="table table-hover table-bordered">
             <thead>
@@ -47,7 +41,7 @@
                         <td><a href="@(Url.Action("Detail", new { item.ID }))">@(item.Title)</a></td>
                         <td>@(item.Category.Name)</td>
                         <td>@(item.Organ)</td>
-                        <td>@(item.SendTime.ToString("yyyy-MM-dd"))</td>
+                        <td>@(item.CreateTime.ToString("yyyy-MM-dd"))</td>
                         <td>@(item.FlowStep)</td>
                         <td>
                             @switch (item.ApproveResult)

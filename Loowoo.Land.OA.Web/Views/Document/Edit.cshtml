@@ -4,8 +4,8 @@
     </div>
     <ul class="nav nav-tabs" role="tablist" style="margin:0 auto;width:400px;">
         <li role="presentation" class="active"><a href="#doc-form" aria-controls="doc-form" role="tab" data-toggle="tab">基本信息</a></li>
-        <li role="presentation"><a href="#doc-files" aria-controls="doc-files" role="tab" data-toggle="tab">附件清单</a></li>
-        <li role="presentation"><a href="#doc-flow" aria-controls="doc-flow" role="tab" data-toggle="tab">审批记录</a></li>
+        <li role="presentation"><a href="#doc-content" aria-controls="doc-content" role="tab" data-toggle="tab">文件预览</a></li>
+        <li role="presentation"><a href="#doc-flow" aria-controls="doc-flow" role="tab" data-toggle="tab">办理记录</a></li>
         <li role="presentation"><a href="#doc-result" aria-controls="doc-result" role="tab" data-toggle="tab">成果预览</a></li>
     </ul>
 </div>
@@ -14,8 +14,8 @@
         <div class="tab-pane active in" id="doc-form">
             @Html.Partial("_Form")
         </div>
-        <div class="tab-pane" id="doc-files">
-            @Html.Partial("_Files")
+        <div class="tab-pane" id="doc-content">
+            @Html.Partial("_Content")
         </div>
         <div class="tab-pane" id="doc-flow">
             @Html.Partial("_Flow")

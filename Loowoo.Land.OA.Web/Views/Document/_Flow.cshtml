@@ -1,0 +1,42 @@
+﻿<div class="container">
+    <h3 class="page-header">这里是公文标题-流程</h3>
+    @{
+        var steps = new List<FlowStep>
+                {
+                    new FlowStep { Name = "拟稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "朱梦娜" } } ,
+                    new FlowStep { Name = "处室核稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "徐文军" } } ,
+                    new FlowStep { Name = "办公室核稿", Result=false,Content="内容不完整，请重新修改", CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "徐文军" } } ,
+                    new FlowStep { Name = "拟稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "朱梦娜" } } ,
+                    new FlowStep { Name = "处室核稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "徐文军" } } ,
+                    new FlowStep { Name = "办公室核稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "徐文军" } } ,
+                    new FlowStep { Name = "分管领导核稿", Result=true, CreateTime = DateTime.Parse("2016-10-27 10:46"), UpdateTime = DateTime.Parse("2016-10-27 10:46") , User = new User { Name = "徐文军" } } ,
+                    new FlowStep { Name = "领导签发" , CreateTime = DateTime.Parse("2016-10-27 10:46"), User = new User { Name = "朱梦娜" } } ,
+                };
+    }
+    @foreach (var step in steps)
+    {
+        <ul class="timeline">
+            <li class="timeline-item">
+                <div class="timeline-item-tail"></div>
+                <div class="timeline-item-head timeline-item-head-@(step.Result.HasValue? (step.Result.Value?"green":"red") : "blue")"></div>
+                <div class="timeline-item-content">
+                    <label>@(step.Name)</label>
+                    <br />
+                    @(step.User.Name) （@(step.Result.HasValue ? (step.Result.Value ? "已办结" : "已退回") : "在办")）
+                    <br />
+                    @if (!string.IsNullOrEmpty(step.Content))
+                    {
+                        <span>@(step.Content)</span><br />
+                    }
+                    发送时间：<span class="datetime">@(step.CreateTime.ToString("yyyy-MM-dd HH:mm"))</span>
+                    @if (step.UpdateTime.HasValue)
+                    {
+                        <span>办结时间：<span class="datetime">@(step.UpdateTime.Value.ToString("yyyy-MM-dd HH:mm"))</span></span>
+                    }
+                </div>
+            </li>
+        </ul>
+    }
+</div>
+
+

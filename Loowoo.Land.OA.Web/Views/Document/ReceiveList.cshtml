@@ -1,0 +1,53 @@
+﻿@{
+    var list = new List<ReceiveDocument>()
+    {
+        new ReceiveDocument { Number = "舟土资办〔2016〕1号", FromOrgan = "来文单位名称1", ReceiveDate = DateTime.Now, Title = "这是一条收文测试的标题1", },
+        new ReceiveDocument { Number = "舟土资办〔2016〕2号", FromOrgan = "来文单位名称2", ReceiveDate = DateTime.Now, Title = "这是一条收文测试的标题2", },
+        new ReceiveDocument { Number = "舟土资办〔2016〕3号", FromOrgan = "来文单位名称3", ReceiveDate = DateTime.Now, Title = "这是一条收文测试的标题3", },
+        new ReceiveDocument { Number = "舟土资办〔2016〕4号", FromOrgan = "来文单位名称4", ReceiveDate = DateTime.Now, Title = "这是一条收文测试的标题4", },
+        new ReceiveDocument { Number = "舟土资办〔2016〕5号", FromOrgan = "来文单位名称5", ReceiveDate = DateTime.Now, Title = "这是一条收文测试的标题5", },
+    };
+}
+<div id="app-document">
+    <div class="toolbar">
+        <div class="left">
+        </div>
+        <div class="right col-sm-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="档案关键词" />
+                <div class="input-group-btn">
+                    <button class="btn btn-primary"><i class="fa fa-search"></i>查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:200px;">字号</th>
+                    <th>标题    </th>
+                    <th style="width:240px;">来文单位    </th>
+                    <th style="width:150px;">签收日期</th>
+                    <th style="width:150px;">文件状态    </th>
+                    <th style="width:150px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in list)
+                {
+                    <tr>
+                        <td>@(item.Number)</td>
+                        <td><a href="#@(Url.Action("detail",new { item.ID }))">@(item.Title)</a></td>
+                        <td>@(item.FromOrgan)</td>
+                        <td>@(item.ReceiveDate.ToString("yyyy-MM-dd"))</td>
+                        <td>完成</td>
+                        <td>
+                            <a href="@Url.Action("download")" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> 下载</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

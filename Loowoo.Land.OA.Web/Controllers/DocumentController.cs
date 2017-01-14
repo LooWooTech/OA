@@ -10,6 +10,21 @@ namespace Loowoo.Land.OA.Web.Controllers
     {
         public ActionResult Index()
         {
+            return RedirectToAction("SendList", Request.RequestContext.RouteData.Values);
+        }
+
+        public ActionResult Edit(int id = 0)
+        {
+            return View();
+        }
+
+        public ActionResult SendList(int page = 1, int rows = 20)
+        {
+            return View();
+        }
+
+        public ActionResult ReceiveList(int page = 1, int rows = 20)
+        {
             return View();
         }
 

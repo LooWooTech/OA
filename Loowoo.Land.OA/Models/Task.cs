@@ -23,6 +23,7 @@ namespace Loowoo.Land.OA.Models
         public string Title { get; set; }
 
         public string Content { get; set; }
+
         /// <summary>
         /// 计划完成时间
         /// </summary>
@@ -39,6 +40,9 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public User Creator { get; set; }
 
+        [NotMapped]
+        public User Receiver { get; set; }
+
         public int ParentID { get; set; }
 
         public DateTime CreateTime { get; set; }
@@ -46,5 +50,7 @@ namespace Loowoo.Land.OA.Models
         public DateTime? UpdateTime { get; set; }
 
         public bool Deleted { get; set; }
+
+        public FlowStep FlowStep { get; set; }
     }
 }

@@ -10,38 +10,68 @@ namespace Loowoo.Land.OA.Models
 {
     public class Document
     {
+        public Document()
+        {
+            CreateTime = DateTime.Now;
+        }
+
         public int ID { get; set; }
 
         /// <summary>
         /// 编号
         /// </summary>
         public string Number { get; set; }
+        /// <summary>
+        /// 文件标题
+        /// </summary>
+        public string Title { get; set; }
 
-        public Category Category { get; set; }
+        public DateTime CreateTime { get; set; }
 
-        public string Title
-        { get; set; }
-
-        public string Organ { get; set; }
-
-        public string FlowStep { get; set; }
-
-        public DateTime SendTime { get; set; }
-
-        public ApproveResult ApproveResult { get; set; } 
+        public bool Deleted { get; set; }
+        /// <summary>
+        /// 密级
+        /// </summary>
+        public int ConfidentialLevel { get; set; }
     }
 
-    
-
-    public enum ApproveResult
+    public class ReceiveDocument : Document
     {
-        [Description("未审核")]
-        Wait,
+        /// <summary>
+        /// 来文单位
+        /// </summary>
+        public string FromOrgan { get; set; }
+        /// <summary>
+        /// 签收日期
+        /// </summary>
+        public DateTime ReceiveDate { get; set; }
+    }
 
-        [Description("已通过")]
-        Agreed,
+    public class SendDocument : Document
+    {
+        /// <summary>
+        /// 主题词
+        /// </summary>
+        public string Keywords { get; set; }
+        /// <summary>
+        /// 主送机关
+        /// </summary>
+        public string ToOrgan { get; set; }
+        /// <summary>
+        /// 抄送机关
+        /// </summary>
+        public string CcOrgan { get; set; }
+        /// <summary>
+        /// 期限日
+        /// </summary>
+        public DateTime? ExpiredDate { get; set; }
+        /// <summary>
+        /// 发文日期
+        /// </summary>
+        public DateTime SendTime { get; set; }
 
-        [Description("已退回")]
-        Disagreed
+        public User Creator { get; set; }
+
+        public FlowStep FlowStep { get; set; }
     }
 }
