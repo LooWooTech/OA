@@ -30,5 +30,10 @@ namespace Loowoo.Common
             var filePath = GetFilePath(filePrefix);
             File.AppendAllText(filePath, content);
         }
+
+        public void WriteException(Exception ex)
+        {
+            WriteLog(string.Format("Ex.Message:{0};Ex.Stacktrace:{1}", ex.Message, ex.StackTrace));
+        }
     }
 }

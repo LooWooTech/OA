@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ namespace Loowoo.Land.OA.Models
             CreateTime = DateTime.Now;
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public DateTime ReceiveDate { get; set; }
     }
-
+    [Table("Send_Document")]
     public class SendDocument : Document
     {
         /// <summary>
@@ -69,9 +73,11 @@ namespace Loowoo.Land.OA.Models
         /// 发文日期
         /// </summary>
         public DateTime SendTime { get; set; }
-
+        [NotMapped]
         public User Creator { get; set; }
-
+        [NotMapped]
+        public Flow Flow { get; set; }
+        [NotMapped]
         public FlowStep FlowStep { get; set; }
     }
 }

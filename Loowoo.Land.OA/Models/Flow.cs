@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,9 +38,11 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int Step { get; set; }
     }
-
+    [Table("Flow")]
     public class Flow
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public string Name { get; set; }
@@ -46,23 +50,24 @@ namespace Loowoo.Land.OA.Models
         public int InfoID { get; set; }
 
         public int InfoType { get; set; }
-
+        [NotMapped]
         public List<FlowStep> Steps { get; set; }
     }
-
+    [Table("FlowStep")]
     public class FlowStep
     {
         public FlowStep()
         {
             CreateTime = DateTime.Now;
         }
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public string Name { get; set; }
 
         public int FlowID { get; set; }
-
+        [NotMapped]
         public User User { get; set; }
 
         public bool? Result { get; set; }
