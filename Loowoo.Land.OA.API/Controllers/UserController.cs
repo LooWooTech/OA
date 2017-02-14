@@ -19,8 +19,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="name">登陆名</param>
         /// <param name="password">密码</param>
         /// <returns></returns>
-        [HttpGet]
-        public IHttpActionResult Login(string name,string password)
+        [HttpPost]
+        public IHttpActionResult Login([FromBody]string name,[FromBody]string password)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
@@ -90,7 +90,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public List<User> GetList(int page = 1, int rows = 20)
+        public List<User> GetList(int page, int rows)
         {
             var parameter = new UserParameter
             {
@@ -100,6 +100,14 @@ namespace Loowoo.Land.OA.API.Controllers
             return list;
         }
 
+        /// <summary>
+        /// 作用：用户编辑
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月14日15:05:44
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        [HttpPut]
         public IHttpActionResult Edit([FromBody] User user)
         {
             if (user == null 
@@ -113,23 +121,21 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.UserManager.Edit(user);
             }catch(Exception ex)
             {
-                LogWriter.WriteException(ex);
+                LogWriter.WriteException(ex,"编辑用户");
                 return BadRequest("编辑用户发生错误");
             }
             return Ok();
         }
-
-        public IHttpActionResult Delete(int id)
+        [HttpDelete]
+        public void Delete(int id)
         {
             try
             {
                 Core.UserManager.Delete(id);
             }catch(Exception ex)
             {
-                LogWriter.WriteException(ex);
-                return BadRequest("删除用户失败！");
+                LogWriter.WriteException(ex,"用户删除");
             }
-            return Ok();
         }
 
         public void LogOut()

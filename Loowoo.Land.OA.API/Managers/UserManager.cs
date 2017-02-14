@@ -57,13 +57,14 @@ namespace Loowoo.Land.OA.API.Managers
             }
         }
         /// <summary>
-        /// 作用：添加新用户
+        /// 作用：添加新用户  传入的用户密码为明文，函数自动加密
         /// 作者：汪建龙
         /// 编写时间：2017年2月11日13:00:18
         /// </summary>
         /// <param name="user"></param>
         public void Register(User user)
         {
+            user.Password = user.Password.MD5();
             using (var db = GetDbContext())
             {
                 db.Users.Add(user);

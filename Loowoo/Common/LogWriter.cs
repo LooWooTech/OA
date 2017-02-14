@@ -31,9 +31,9 @@ namespace Loowoo.Common
             File.AppendAllText(filePath, content);
         }
 
-        public void WriteException(Exception ex)
+        public void WriteException(Exception ex,string operateName)
         {
-            WriteLog(string.Format("Ex.Message:{0};Ex.Stacktrace:{1}", ex.Message, ex.StackTrace));
+            WriteLog(string.Format("进行操作：{0} 发生错误，错误信息：Ex.Message:{1};Ex.Stacktrace:{2}",operateName, ex.Message, ex.StackTrace));
         }
     }
 }

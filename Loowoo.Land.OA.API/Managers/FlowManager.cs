@@ -8,11 +8,35 @@ namespace Loowoo.Land.OA.API.Managers
 {
     public class FlowManager:ManagerBase
     {
-        public Flow Get(int infoId)
+        /// <summary>
+        /// 作用：通过信息ID和信息类型获取Flow
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月14日13:52:43
+        /// </summary>
+        /// <param name="infoId"></param>
+        /// <param name="infoType"></param>
+        /// <returns></returns>
+        public Flow Get(int infoId,int infoType)
         {
             using (var db = GetDbContext())
             {
-                return db.Flows.FirstOrDefault(e => e.InfoID == infoId);
+                return db.Flows.FirstOrDefault(e => e.InfoID == infoId&&e.InfoType==infoType);
+            }
+        }
+        /// <summary>
+        /// 作用：添加
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月14日15:15:44
+        /// </summary>
+        /// <param name="flow"></param>
+        /// <returns></returns>
+        public int Save(Flow flow)
+        {
+            using (var db = GetDbContext())
+            {
+                db.Flows.Add(flow);
+                db.SaveChanges();
+                return flow.ID;
             }
         }
     }

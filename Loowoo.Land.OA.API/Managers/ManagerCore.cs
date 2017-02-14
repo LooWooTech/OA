@@ -28,8 +28,23 @@ namespace Loowoo.Land.OA.API.Managers
      
 
         public UserManager UserManager { get; private set; }
+
+        #region  公文部分
+        /// <summary>
+        /// 收文
+        /// </summary>
+        public ReceiveDocumentManager Receive_DocumentManager { get; private set; }
+        /// <summary>
+        /// 发文
+        /// </summary>
+        public SendDocumentManager Send_DocumentManager { get; private set; }
+
+        public FlowStepManager FlowStepManager { get; private set; }
+
+        #endregion
+
         public DocumentManager DocumentManager { get; private set; }
         public FlowManager FlowManager { get; private set; }
-        public FlowStepManager FlowStepManager { get; private set; }
+        
     }
 }

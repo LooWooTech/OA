@@ -18,7 +18,7 @@ namespace Loowoo.Land.OA.API.Models
 
 
         #region  公文部分
-
+        public DbSet<ReceiveDocument> Receive_Documents { get; set; }
         public DbSet<SendDocument> Send_Documents { get; set; }
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowStep> Flow_Steps { get; set; }

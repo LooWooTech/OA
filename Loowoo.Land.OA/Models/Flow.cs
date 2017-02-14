@@ -48,11 +48,17 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public int InfoID { get; set; }
-
+        /// <summary>
+        /// 信息类型 0：收文 1：发文
+        /// </summary>
         public int InfoType { get; set; }
         [NotMapped]
         public List<FlowStep> Steps { get; set; }
     }
+
+    /// <summary>
+    /// 办理情况
+    /// </summary>
     [Table("FlowStep")]
     public class FlowStep
     {
