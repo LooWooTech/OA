@@ -13,5 +13,11 @@ namespace Loowoo.Land.OA.API
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
+
+        public override void Init()
+        {
+            this.PostAuthenticateRequest += (sender, e) => HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
+            base.Init();
+        }
     }
 }

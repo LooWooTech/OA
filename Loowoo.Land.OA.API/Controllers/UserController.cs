@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
+using System.Web.Security;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
@@ -19,8 +21,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="name">登陆名</param>
         /// <param name="password">密码</param>
         /// <returns></returns>
-        [HttpPost]
-        public IHttpActionResult Login([FromBody]string name,[FromBody]string password)
+        [HttpGet]
+        public IHttpActionResult Login(string name,string password)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
@@ -31,6 +33,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
+
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}", name, password), FormsAuthentication.FormsCookiePath);
+            user.Ticket = FormsAuthentication.Encrypt(ticket);
+            HttpContext.Current.Session.Add(name, user);
             return Ok(user);
         }
 
@@ -42,6 +48,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="id">用户ID</param>
         /// <returns></returns>
         [HttpGet]
+        [RequestAuthorize(Role =Security.UserRole.Administrator)]
+        //[AllowAnonymous]
         public IHttpActionResult Get(int id)
         {
             if (id <= 0)
@@ -90,6 +98,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
+        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public List<User> GetList(int page, int rows)
         {
             var parameter = new UserParameter
@@ -108,6 +117,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
+        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public IHttpActionResult Edit([FromBody] User user)
         {
             if (user == null 
@@ -127,6 +137,7 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok();
         }
         [HttpDelete]
+        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public void Delete(int id)
         {
             try

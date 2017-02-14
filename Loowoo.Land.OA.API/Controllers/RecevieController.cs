@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 收文管理
     /// </summary>
-    public class RecevieController : ControllerBase
+    public class RecevieController : LoginControllerBase
     {
         /// <summary>
         /// 作用：收文登记

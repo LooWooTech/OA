@@ -11,7 +11,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 收文办理、发文领导审核
     /// </summary>
-    public class FlowStepController : ControllerBase
+    public class FlowStepController : LoginControllerBase
     {
         /// <summary>
         /// 作用：添加审核流程步骤

@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 发文管理
     /// </summary>
-    public class SendController : ControllerBase
+    public class SendController : LoginControllerBase
     {
         /// <summary>
         /// 作用：通过ID获取发文信息

@@ -27,6 +27,8 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public UserRole Role { get; set; }
+        [NotMapped]
+        public string Ticket { get; set; }
 
         public void Validate()
         {
