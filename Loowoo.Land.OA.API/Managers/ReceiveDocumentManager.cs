@@ -39,6 +39,8 @@ namespace Loowoo.Land.OA.API.Managers
                 var entry = db.Receive_Documents.Find(recDoc.ID);
                 if (entry != null)
                 {
+                    //entry.Number = recDoc.Number;
+                    //entry.Title = recDoc.Title;
                     db.Entry(entry).CurrentValues.SetValues(recDoc);
                     db.SaveChanges();
                 }

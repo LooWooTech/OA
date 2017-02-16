@@ -33,6 +33,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Area\HelpPage\WebApiHelp.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -172,12 +173,13 @@
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
     <Compile Include="Controllers\LoginControllerBase.cs" />
-    <Compile Include="Controllers\RecevieController.cs" />
+    <Compile Include="Controllers\ReceiveController.cs" />
     <Compile Include="Controllers\SendController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Managers\DiaryManager.cs" />
     <Compile Include="Managers\DocumentManager.cs" />
     <Compile Include="Managers\FlowManager.cs" />
     <Compile Include="Managers\FlowStepManager.cs" />

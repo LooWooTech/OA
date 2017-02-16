@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 收文管理
     /// </summary>
-    public class RecevieController : LoginControllerBase
+    public class ReceiveController : LoginControllerBase
     {
         /// <summary>
         /// 作用：收文登记
@@ -28,6 +28,15 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("收文登记：请核对收文内容，收文对象不正确、收文编号不能为空、收文标题不能为空");
             }
+            if (recDoc.UID == 0)
+            {
+                return BadRequest("收文登记：承办人ID不能为0");
+            }
+            var user = Core.UserManager.Get(recDoc.UID);
+            if (user == null)
+            {
+                return BadRequest("收文登记：系统中未找到承办人");
+            }
             var id = 0;
             try
             {
@@ -40,12 +49,19 @@ namespace Loowoo.Land.OA.API.Controllers
             }catch(Exception ex)
             {
                 LogWriter.WriteException(ex,"收文登记");
-                return BadRequest("收文登记发生错误");
+                return BadRequest($"收文登记发生错误,{ex.InnerException.InnerException.Message}");
             }
-            var flowId = Core.FlowManager.Save(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 });
-            if (flowId > 0)
+            try
             {
-                return Ok();
+                var flowId = Core.FlowManager.Save(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 });
+                if (flowId > 0)
+                {
+                    return Ok();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogWriter.WriteException(ex, "FLOW信息录入");
             }
             return BadRequest("收文登记成功，但是FLOW信息录入失败");
         }
@@ -67,6 +83,7 @@ namespace Loowoo.Land.OA.API.Controllers
             try
             {
                 Core.Receive_DocumentManager.Edit(recDoc);
+
             }catch(Exception ex)
             {
                 LogWriter.WriteException(ex,"收文编辑修改");

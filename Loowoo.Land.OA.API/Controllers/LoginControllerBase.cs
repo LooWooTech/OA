@@ -7,7 +7,7 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-    [RequestAuthorize(Role =Security.UserRole.User)]
+   // [RequestAuthorize(Role =Security.UserRole.User)]
     public class LoginControllerBase : ControllerBase
     {
 

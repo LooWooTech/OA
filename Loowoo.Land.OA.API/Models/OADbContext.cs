@@ -15,7 +15,7 @@ namespace Loowoo.Land.OA.API.Models
         }
 
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Diary> Diarys { get; set; }
 
         #region  公文部分
         public DbSet<ReceiveDocument> Receive_Documents { get; set; }

@@ -28,6 +28,7 @@ namespace Loowoo.Land.OA.API.Managers
      
 
         public UserManager UserManager { get; private set; }
+        public DiaryManager DiaryManager { get; private set; }
 
         #region  公文部分
         /// <summary>

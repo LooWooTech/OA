@@ -49,7 +49,6 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [RequestAuthorize(Role =Security.UserRole.Administrator)]
-        //[AllowAnonymous]
         public IHttpActionResult Get(int id)
         {
             if (id <= 0)
@@ -72,7 +71,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="user">用户对象</param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Register([FromBody] User user)
+        public IHttpActionResult Register([FromBody]User user)
         {
             if(user==null
                 ||string.IsNullOrEmpty(user.Name)
@@ -149,10 +148,10 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
-        public void LogOut()
-        {
+        //public void LogOut()
+        //{
 
-        }
+        //}
 
         
     }
