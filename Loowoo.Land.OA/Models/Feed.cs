@@ -30,5 +30,6 @@ namespace Loowoo.Land.OA.Models
         public int CommentCount { get; set; }
 
         public int StarCount { get; set; }
+        public bool Deleted { get; set; }
     }
 }

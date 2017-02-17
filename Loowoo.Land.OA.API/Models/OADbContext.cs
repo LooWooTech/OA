@@ -15,6 +15,8 @@ namespace Loowoo.Land.OA.API.Models
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<UserGroup> User_Groups { get; set; }
         public DbSet<Diary> Diarys { get; set; }
 
         #region  公文部分
@@ -23,6 +25,22 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowStep> Flow_Steps { get; set; }
 
+        #endregion
+
+        #region  公文部分
+
+        public DbSet<Task> Tasks { get; set; }
+        #endregion
+
+
+        #region  车辆部分
+
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<CarEventLog> Car_Eventlogs { get; set; }
+        #endregion
+
+        #region  动态部分
+        public DbSet<Feed> Feeds { get; set; }
         #endregion
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />
+    <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\UserParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

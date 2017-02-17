@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoID { get; set; }
         /// <summary>
-        /// 信息类型 0：收文 1：发文
+        /// 信息类型 0：收文 1：发文  2：任务 3:车辆审批
         /// </summary>
         public int InfoType { get; set; }
         [NotMapped]

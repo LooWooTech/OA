@@ -39,5 +39,20 @@ namespace Loowoo.Land.OA.API.Managers
                 return flow.ID;
             }
         }
+
+        /// <summary>
+        /// 作用：通过ID获取FLOW
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月17日14:02:55
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Flow Get(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Flows.Find(id);
+            }
+        }
     }
 }

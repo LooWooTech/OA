@@ -16,5 +16,6 @@ namespace Loowoo.Land.OA.API.Controllers
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected LogWriter LogWriter = LogWriter.Instance;
+        protected string TaskName { get; set; }
     }
 }

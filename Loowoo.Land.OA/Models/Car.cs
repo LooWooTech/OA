@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    [Table("car")]
     public class Car
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public string Name { get; set; }
@@ -21,8 +26,14 @@ namespace Loowoo.Land.OA.Models
 
     }
 
+    /// <summary>
+    /// 用车申请
+    /// </summary>
+    [Table("car_eventlog")]
     public class CarEventLog
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public int CarID { get; set; }
@@ -34,6 +45,7 @@ namespace Loowoo.Land.OA.Models
         public DateTime BeginTime { get; set; }
 
         public DateTime? EndTime { get; set; }
+        public bool Deleted { get; set; }
     }
 
     public enum CarType

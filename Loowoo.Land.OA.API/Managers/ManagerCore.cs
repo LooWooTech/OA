@@ -28,6 +28,9 @@ namespace Loowoo.Land.OA.API.Managers
      
 
         public UserManager UserManager { get; private set; }
+        public GroupManager GroupManager { get; private set; }
+
+        public UserGroupManager User_GroupManager { get; private set; }
         public DiaryManager DiaryManager { get; private set; }
 
         #region  公文部分
@@ -43,6 +46,22 @@ namespace Loowoo.Land.OA.API.Managers
         public FlowStepManager FlowStepManager { get; private set; }
 
         #endregion
+
+
+        #region 任务部分
+        public TaskManager TaskManager { get; private set; }
+
+        #endregion
+
+        #region  车辆部分
+        public CarManager CarManager { get; private set; }
+        public Car_EventLogManager Car_EventLogManager { get; private set; }
+        #endregion
+
+        #region 动态部分
+        public FeedManager FeedManager { get; private set; }
+        #endregion
+
 
         public DocumentManager DocumentManager { get; private set; }
         public FlowManager FlowManager { get; private set; }

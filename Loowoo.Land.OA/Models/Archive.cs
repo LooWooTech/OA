@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    /// <summary>
+    /// 档案
+    /// </summary>
     public class Archive
     {
         public Archive()

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    /// <summary>
+    /// 部门
+    /// </summary>
     [Table("organization")]
     public class Department
     {

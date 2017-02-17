@@ -9,7 +9,7 @@ using System.Web.Http;
 namespace Loowoo.Land.OA.API.Controllers
 {
     /// <summary>
-    /// 收文办理、发文领导审核
+    /// 收文办理、发文领导审核  用车审核
     /// </summary>
     public class FlowStepController : LoginControllerBase
     {
@@ -27,6 +27,12 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("审核流程信息获取失败、审核信息FlowID参数不正确、审核名称不能为空、审核结果不能为NUll");
             }
+            var flow = Core.FlowManager.Get(step.FlowID);
+            if (flow == null)
+            {
+                return NotFound();
+            }
+
             var last = Core.FlowStepManager.GetLastStep(step.FlowID);
             step.Step = last == null ? 0 : step.Step++;
             var id = Core.FlowStepManager.Save(step);

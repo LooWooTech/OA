@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Land.OA.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,9 +8,8 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-   // [RequestAuthorize(Role =Security.UserRole.User)]
-    public class LoginControllerBase : ControllerBase
+    public class FeedController : LoginControllerBase
     {
-      
+
     }
 }
