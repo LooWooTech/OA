@@ -62,6 +62,11 @@ namespace Loowoo.Land.OA.API.Managers
         public FeedManager FeedManager { get; private set; }
         #endregion
 
+        #region 会议部分
+        public Meeting_RoomManager Meeting_RoomManager { get; private set; }
+        public MeetingManager MeetingManager { get; private set; }
+        #endregion
+
 
         public DocumentManager DocumentManager { get; private set; }
         public FlowManager FlowManager { get; private set; }

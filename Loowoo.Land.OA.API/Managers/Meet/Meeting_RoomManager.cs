@@ -7,85 +7,80 @@ using System.Web;
 namespace Loowoo.Land.OA.API.Managers
 {
     /// <summary>
-    /// 用户动态管理  
-    /// 生成动态情况：
-    /// 1、某用户发起申请用车
-    /// 2、用户A对用户B发布任务
-    /// 3、
-    /// 
+    /// 会议室管理
     /// </summary>
-    public class FeedManager:ManagerBase
+    public class Meeting_RoomManager:ManagerBase
     {
         /// <summary>
-        /// 作用：生成一个动态
+        /// 作用：创建会议室
         /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:20:07
+        /// 编写时间：2017年2月20日11:08:08
         /// </summary>
-        /// <param name="feed"></param>
+        /// <param name="room"></param>
         /// <returns></returns>
-        public int Save(Feed feed)
+        public int Save(MeetingRoom room)
         {
             using (var db = GetDbContext())
             {
-                db.Feeds.Add(feed);
+                db.Meeting_Rooms.Add(room);
                 db.SaveChanges();
-                return feed.ID;
+                return room.ID;
             }
         }
-
         /// <summary>
-        /// 作用：编辑修改动态
+        /// 作用：编辑会议室
         /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:24:42
+        /// 编写时间：2017年2月20日11:09:43
         /// </summary>
-        /// <param name="feed"></param>
+        /// <param name="room"></param>
         /// <returns></returns>
-        public bool Edit(Feed feed)
+        public bool Edit(MeetingRoom room)
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Feeds.Find(feed.ID);
+                var entry = db.Meeting_Rooms.Find(room.ID);
                 if (entry == null)
                 {
                     return false;
                 }
-
-                db.Entry(entry).CurrentValues.SetValues(feed);
+                db.Entry(entry).CurrentValues.SetValues(room);
                 db.SaveChanges();
                 return true;
             }
         }
         /// <summary>
-        /// 作用：删除动态
+        /// 作用：删除会议室
         /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:26:04
+        /// 编写时间：2017年2月20日11:11:26
         /// </summary>
         /// <param name="id"></param>
-        public void Delete(int id)
+        /// <returns></returns>
+        public bool Delete(int id)
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Feeds.Find(id);
-                if (entry != null)
+                var entry = db.Meeting_Rooms.Find(id);
+                if (entry == null)
                 {
-                    entry.Deleted = true;
-                    db.SaveChanges();
+                    return false;
                 }
+                entry.Deleted = true;
+                db.SaveChanges();
+                return true;
             }
         }
 
         /// <summary>
-        /// 作用：查询
+        /// 作用：获取所有会议室
         /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:39:27
+        /// 编写时间：2017年2月20日11:27:57
         /// </summary>
         /// <returns></returns>
-        public List<Feed> Search()
+        public List<MeetingRoom> Get()
         {
             using (var db = GetDbContext())
             {
-                var query = db.Feeds.Where(e => e.Deleted == false).AsQueryable();
-                return query.ToList();
+                return db.Meeting_Rooms.Where(e => e.Deleted == false).ToList();
             }
         }
     }
