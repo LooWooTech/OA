@@ -83,5 +83,23 @@ namespace Loowoo.Land.OA.API.Managers
                 return db.Meeting_Rooms.Where(e => e.Deleted == false).ToList();
             }
         }
+        /// <summary>
+        /// 作用：通过ID获取会议室
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日14:02:06
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public MeetingRoom Get(int id)
+        {
+            if (id <= 0)
+            {
+                return null;
+            }
+            using (var db = GetDbContext())
+            {
+                return db.Meeting_Rooms.Find(id);
+            }
+        }
     }
 }

@@ -61,5 +61,57 @@ namespace Loowoo.Land.OA.API.Controllers.Meet
 
             return Ok();
         }
+
+        /// <summary>
+        /// 作用：会议室删除
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日13:52:15
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpDelete]
+        public void Delete(int id)
+        {
+            try
+            {
+                Core.Meeting_RoomManager.Delete(id);
+            }catch(Exception ex)
+            {
+                LogWriter.WriteException(ex, "会议室删除");
+            }
+        }
+
+        /// <summary>
+        /// 作用：获取所有会议室列表  发生错误时：返回null
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日13:54:38
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public List<MeetingRoom> GetList()
+        {
+            try
+            {
+                var list = Core.Meeting_RoomManager.Get();
+                return list;
+            }catch(Exception ex)
+            {
+                LogWriter.WriteException(ex, "获取会议室列表");
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 作用：通过ID获取会议室信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日13:56:15
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public MeetingRoom Get(int id)
+        {
+            var room = Core.Meeting_RoomManager.Get(id);
+            return room;
+        }
     }
 }
