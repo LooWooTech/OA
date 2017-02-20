@@ -43,12 +43,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
-
             var id = 0;
             try
             {
                 id = Core.Car_EventLogManager.Save(log);
-
             }catch(Exception ex)
             {
                 LogWriter.WriteException(ex, TaskName);
@@ -71,7 +69,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 LogWriter.WriteException(ex, TaskName+"生成用车申请，生成审批");
                 return BadRequest($"{TaskName}:生成用车申请，但是生成审批信息发生错误");
             }
-
+            Dynamical(new Feed { CreatorID = log.UserID, InfoID = id, InfoType = 1, Summary = log.Description });
             return Ok();
 
         }
@@ -125,7 +123,6 @@ namespace Loowoo.Land.OA.API.Controllers
                     return BadRequest($"{TaskName}:生成审批信息失败");
                 }
             }
-
             return Ok();
         }
 

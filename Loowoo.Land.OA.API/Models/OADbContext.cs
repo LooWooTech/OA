@@ -42,5 +42,11 @@ namespace Loowoo.Land.OA.API.Models
         #region  动态部分
         public DbSet<Feed> Feeds { get; set; }
         #endregion
+
+
+        #region  会议
+        public DbSet<Meeting> Meetings { get; set; }
+        public DbSet<MeetingRoom> Meeting_Rooms { get; set; }
+        #endregion
     }
 }

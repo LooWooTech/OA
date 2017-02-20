@@ -147,6 +147,7 @@
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
+    <Compile Include="Controllers\Meet\MeetingRoomController.cs" />
     <Compile Include="Controllers\User\GroupController.cs" />
     <Compile Include="Controllers\LoginControllerBase.cs" />
     <Compile Include="Controllers\Document\ReceiveController.cs" />
@@ -164,6 +165,8 @@
     <Compile Include="Managers\FeedManager.cs" />
     <Compile Include="Managers\FlowManager.cs" />
     <Compile Include="Managers\FlowStepManager.cs" />
+    <Compile Include="Managers\Meet\MeetingManager.cs" />
+    <Compile Include="Managers\Meet\Meeting_RoomManager.cs" />
     <Compile Include="Managers\User\GroupManager.cs" />
     <Compile Include="Managers\ManagerBase.cs" />
     <Compile Include="Managers\ManagerCore.cs" />
