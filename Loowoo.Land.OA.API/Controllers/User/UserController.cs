@@ -24,6 +24,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public IHttpActionResult Login(string name,string password)
         {
+            TaskName = "用户登录";
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
                 return BadRequest("登录名以及密码不能为空");

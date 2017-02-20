@@ -141,12 +141,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Controllers\Car\CarController.cs" />
     <Compile Include="Controllers\Car\CarEventLogController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
+    <Compile Include="Controllers\Meet\MeetingController.cs" />
     <Compile Include="Controllers\Meet\MeetingRoomController.cs" />
     <Compile Include="Controllers\User\GroupController.cs" />
     <Compile Include="Controllers\LoginControllerBase.cs" />

@@ -20,7 +20,10 @@ namespace Loowoo.Land.OA.API
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            //全局错误
+            config.Filters.Add(new WebApiExceptionFilterAttribute());
 
+            //返回json类型
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("datatype", "json", "application/json"));
         }

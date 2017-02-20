@@ -8,6 +8,9 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers.Meet
 {
+    /// <summary>
+    /// 会议室管理
+    /// </summary>
     public class MeetingRoomController : LoginControllerBase
     {
         /// <summary>

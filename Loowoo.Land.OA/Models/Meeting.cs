@@ -15,6 +15,10 @@ namespace Loowoo.Land.OA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
+        /// 会议名称
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
         /// 会议时间
         /// </summary>
         public string Time { get; set; }
@@ -34,8 +38,8 @@ namespace Loowoo.Land.OA.Models
         /// 会议室
         /// </summary>
         public int Room { get; set; }
-
     }
+
 
     /// <summary>
     /// 会议室
@@ -49,5 +53,15 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
         public string Address { get; set; }
         public bool Deleted { get; set; }
+    }
+
+    [Table("meeting_user")]
+    public class MeetingUser
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+        public int UserID { get; set; }
+        public int MeetingID { get; set; }
     }
 }

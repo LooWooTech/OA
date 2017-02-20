@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace Loowoo.Land.OA.Models
 {
     
+    [Table("file")]
     public class File
     {
         public File()
@@ -50,6 +51,26 @@ namespace Loowoo.Land.OA.Models
         public DateTime UpdateTime { get; set; }
 
         public FileType Type { get; set; }
+    }
+
+    [Table("file_relation")]
+    public class FileRelation
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+        /// <summary>
+        /// 文件ID
+        /// </summary>
+        public int FileID { get; set; }
+        /// <summary>
+        /// 信息ID
+        /// </summary>
+        public int InfoID { get; set; }
+        /// <summary>
+        /// 信息类型  1：会议文件 
+        /// </summary>
+        public int InfoType { get; set; }
     }
 
     public enum FileType

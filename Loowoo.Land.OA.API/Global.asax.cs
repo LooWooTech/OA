@@ -12,6 +12,7 @@ namespace Loowoo.Land.OA.API
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.Filters.Add(new WebApiExceptionFilterAttribute());
         }
 
         public override void Init()

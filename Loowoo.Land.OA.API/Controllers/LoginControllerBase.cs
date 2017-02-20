@@ -26,6 +26,28 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 LogWriter.WriteException(ex, $"{TaskName}-生成动态");
             }
+        }
+        /// <summary>
+        /// 作用：生成FLOW 审批信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日15:41:59
+        /// </summary>
+        /// <param name="flow"></param>
+        protected bool SaveFlow(Flow flow)
+        {
+            try
+            {
+                var id = Core.FlowManager.Save(flow);
+                if (id > 0)
+                {
+                    return true;
+                }
+
+            }catch(Exception ex)
+            {
+                LogWriter.WriteException(ex, $"{TaskName}-生成审批请求");
+            }
+            return false;
         } 
     }
 }

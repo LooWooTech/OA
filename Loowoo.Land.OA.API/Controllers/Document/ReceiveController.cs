@@ -51,17 +51,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 LogWriter.WriteException(ex,"收文登记");
                 return BadRequest($"收文登记发生错误,{ex.InnerException.InnerException.Message}");
             }
-            try
+            if(SaveFlow(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 }))
             {
-                var flowId = Core.FlowManager.Save(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 });
-                if (flowId > 0)
-                {
-                    return Ok();
-                }
-            }
-            catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, "FLOW信息录入");
+                return Ok();
             }
             return BadRequest("收文登记成功，但是FLOW信息录入失败");
         }
