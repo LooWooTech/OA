@@ -143,6 +143,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Controllers\Base\InfoTypeController.cs" />
+    <Compile Include="Controllers\Base\StepController.cs" />
     <Compile Include="Controllers\Car\CarController.cs" />
     <Compile Include="Controllers\Car\CarEventLogController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Managers\Base\InfoTypeManager.cs" />
     <Compile Include="Managers\Car\CarManager.cs" />
     <Compile Include="Managers\Car\Car_EventLogManager.cs" />
     <Compile Include="Managers\DepartmentManager.cs" />
@@ -175,6 +178,7 @@
     <Compile Include="Managers\FlowStepManager.cs" />
     <Compile Include="Managers\Meet\MeetingManager.cs" />
     <Compile Include="Managers\Meet\Meeting_RoomManager.cs" />
+    <Compile Include="Managers\Base\StepManager.cs" />
     <Compile Include="Managers\User\GroupManager.cs" />
     <Compile Include="Managers\ManagerBase.cs" />
     <Compile Include="Managers\ManagerCore.cs" />

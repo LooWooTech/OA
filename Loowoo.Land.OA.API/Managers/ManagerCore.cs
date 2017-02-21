@@ -34,6 +34,8 @@ namespace Loowoo.Land.OA.API.Managers
         public UserGroupManager User_GroupManager { get; private set; }
         public DiaryManager DiaryManager { get; private set; }
 
+        public InfoTypeManager InfoTypeManager { get; private set; }
+        public StepManager StepManager { get; set; }
         #region  公文部分
         public MissiveManager MissiveManager { get; private set; }
 
