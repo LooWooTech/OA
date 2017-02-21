@@ -17,10 +17,39 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        /// <summary>
+        /// 流程名称
+        /// </summary>
         public string Name { get; set; }
-        public int UserID { get; set; }
+        /// <summary>
+        /// 当前流程属于哪一类
+        /// </summary>
         public int InfoType { get; set; }
+        /// <summary>
+        /// 流程顺序号
+        /// </summary>
         public int SerialNumber { get; set; }
+        [NotMapped]
+        public List<StepUser> StepUser { get; set; }
 
+    }
+    /// <summary>
+    /// 步骤与审核人的关系 
+    /// 当前步骤的审核人 一人 或者多人
+    /// </summary>
+    [Table("step_user")]
+    public class StepUser
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+        /// <summary>
+        /// 审核流程ID
+        /// </summary>
+        public int StepID { get; set; }
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public int UserID { get; set; }
     }
 }

@@ -20,8 +20,12 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<UserGroup> User_Groups { get; set; }
         public DbSet<Diary> Diarys { get; set; }
 
+        #region  基础部分
         public DbSet<Step> Steps { get; set; }
+        public DbSet<StepUser> Step_Uer { get; set; }
         public DbSet<InfoType> InfoTypes { get; set; }
+        #endregion
+
 
         #region  公文部分
         public DbSet<Missive> Missives { get; set; }
