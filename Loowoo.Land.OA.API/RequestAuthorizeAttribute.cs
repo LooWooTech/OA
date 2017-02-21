@@ -46,16 +46,18 @@ namespace Loowoo.Land.OA.API
         private bool ValidateTicket(string encryptTicket)
         {
             var strTicket = FormsAuthentication.Decrypt(encryptTicket).UserData;
-            var index = strTicket.IndexOf("&");
-            var name = strTicket.Substring(0, index);
-            var password = strTicket.Substring(index + 1);
-            var current = HttpContext.Current.Session[name];
+            var array = strTicket.Split('&');
+            if (array.Length != 3)
+            {
+                return false;
+            }
+            var current = HttpContext.Current.Session[array[1]];
             if (current == null)
             {
                 return false;
             }
             var user = current as User;
-            if (user.Name.ToLower() != name.ToLower() || user.Password != password||user.Role<Role)
+            if (user.ID.ToString().ToLower()!=array[0].ToLower()|| user.Name.ToLower() != array[1].ToLower() || user.Role < Role)
             {
                 return false;
             }

@@ -28,12 +28,16 @@ namespace Loowoo.Land.OA.API.Managers
      
 
         public UserManager UserManager { get; private set; }
+        public DepartmentManager DepartmentManager { get; private set; }
         public GroupManager GroupManager { get; private set; }
 
         public UserGroupManager User_GroupManager { get; private set; }
         public DiaryManager DiaryManager { get; private set; }
 
         #region  公文部分
+        public MissiveManager MissiveManager { get; private set; }
+
+
         /// <summary>
         /// 收文
         /// </summary>
@@ -70,6 +74,8 @@ namespace Loowoo.Land.OA.API.Managers
 
         public DocumentManager DocumentManager { get; private set; }
         public FlowManager FlowManager { get; private set; }
+
+        public FileManager FileManager { get; private set; }
         
     }
 }

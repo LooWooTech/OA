@@ -15,11 +15,14 @@ namespace Loowoo.Land.OA.API.Models
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Department> Departments { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> User_Groups { get; set; }
         public DbSet<Diary> Diarys { get; set; }
 
         #region  公文部分
+        public DbSet<Missive> Missives { get; set; }
+
         public DbSet<ReceiveDocument> Receive_Documents { get; set; }
         public DbSet<SendDocument> Send_Documents { get; set; }
         public DbSet<Flow> Flows { get; set; }
@@ -47,6 +50,10 @@ namespace Loowoo.Land.OA.API.Models
         #region  会议
         public DbSet<Meeting> Meetings { get; set; }
         public DbSet<MeetingRoom> Meeting_Rooms { get; set; }
+        #endregion
+
+        #region 文件部分
+        public DbSet<File> Files { get; set; }
         #endregion
     }
 }

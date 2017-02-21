@@ -47,12 +47,14 @@ namespace Loowoo.Land.OA.APITest
     
         public async System.Threading.Tasks.Task AccuracyTest()
         {
-            var page = 1;
-            var rows = 20;
+   
             await _tool.Test($"/api/user/login?name=wjl&&password=123456");
-            await _tool.Test($"/api/user/getlist?page={page}&&rows={rows}");
-            await _tool.Test($"/api/user/get?id=1");
-            await _tool.Test($"/api/user/delete?id=2");
+            await _tool.Test("/api/user/list");
+            //var page = 1;
+            //var rows = 20;
+            //await _tool.Test($"/api/user/getlist?page={page}&&rows={rows}");
+            //await _tool.Test($"/api/user/get?id=1");
+            //await _tool.Test($"/api/user/delete?id=2");
 
         }
 

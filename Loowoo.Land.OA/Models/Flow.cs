@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoID { get; set; }
         /// <summary>
-        /// 信息类型 0：收文 1：发文  2：任务 3:车辆审批 4：会议
+        /// 信息类型  1：公文  2：任务 3:车辆审批 4：会议
         /// </summary>
         public int InfoType { get; set; }
         [NotMapped]
@@ -72,7 +72,14 @@ namespace Loowoo.Land.OA.Models
 
         public string Name { get; set; }
 
+        /// <summary>
+        /// 审核ID
+        /// </summary>
         public int FlowID { get; set; }
+        /// <summary>
+        /// 审核人ID
+        /// </summary>
+        public int UserID { get; set; }
         [NotMapped]
         public User User { get; set; }
 

@@ -76,11 +76,13 @@
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Meeting.cs" />
+    <Compile Include="Models\Missive.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
+    <Compile Include="Parameters\MissiveParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />

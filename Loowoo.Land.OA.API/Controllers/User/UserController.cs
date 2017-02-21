@@ -35,10 +35,27 @@ namespace Loowoo.Land.OA.API.Controllers
                 return NotFound();
             }
 
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}", name, password), FormsAuthentication.FormsCookiePath);
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}",user.ID, name, password), FormsAuthentication.FormsCookiePath);
             user.Ticket = FormsAuthentication.Encrypt(ticket);
             HttpContext.Current.Session.Add(name, user);
             return Ok(user);
+        }
+
+        /// <summary>
+        /// 作用：获取所有用户列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月20日18:29:09
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public List<User> List()
+        {
+            var parameter = new UserParameter
+            {
+                Page = new Common.PageParameter()
+            };
+            var list = Core.UserManager.Search(parameter);
+            return list;
         }
 
         /// <summary>
@@ -49,7 +66,6 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="id">用户ID</param>
         /// <returns></returns>
         [HttpGet]
-        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public IHttpActionResult Get(int id)
         {
             if (id <= 0)
@@ -89,25 +105,27 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok();
 
         }
-        /// <summary>
-        /// 作用：获取用户列表
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月11日13:52:09
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [RequestAuthorize(Role =Security.UserRole.Administrator)]
-        public List<User> GetList(int page, int rows)
-        {
-            var parameter = new UserParameter
-            {
-                Page = new Common.PageParameter(page, rows)
-            };
-            var list = Core.UserManager.Search(parameter);
-            return list;
-        }
+        ///// <summary>
+        ///// 作用：获取用户列表
+        ///// 作者：汪建龙
+        ///// 编写时间：2017年2月11日13:52:09
+        ///// </summary>
+        ///// <param name="page"></param>
+        ///// <param name="rows"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //[RequestAuthorize(Role =Security.UserRole.Administrator)]
+        //public List<User> GetList(int page, int rows)
+        //{
+        //    var parameter = new UserParameter
+        //    {
+        //        Page = new Common.PageParameter(page, rows)
+        //    };
+        //    var list = Core.UserManager.Search(parameter);
+        //    return list;
+        //}
+
+
 
         /// <summary>
         /// 作用：用户编辑
@@ -117,7 +135,6 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public IHttpActionResult Edit([FromBody] User user)
         {
             if (user == null 
@@ -137,7 +154,6 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok();
         }
         [HttpDelete]
-        [RequestAuthorize(Role =Security.UserRole.Administrator)]
         public void Delete(int id)
         {
             try

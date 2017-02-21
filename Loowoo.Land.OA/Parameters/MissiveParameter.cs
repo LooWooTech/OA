@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Parameters
 {
-    public class DocumentParameter:ParameterBase
+    public class MissiveParameter:ParameterBase
     {
-        public DateTime? BeginTime { get; set; }
-
+        public int? UserID { get; set; }
     }
 }

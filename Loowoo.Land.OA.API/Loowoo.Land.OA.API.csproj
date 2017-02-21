@@ -142,11 +142,14 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
+    <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Controllers\Car\CarController.cs" />
     <Compile Include="Controllers\Car\CarEventLogController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
-    <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\Document\DocumentController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
     <Compile Include="Controllers\Meet\MeetingController.cs" />
     <Compile Include="Controllers\Meet\MeetingRoomController.cs" />
@@ -162,9 +165,12 @@
     </Compile>
     <Compile Include="Managers\Car\CarManager.cs" />
     <Compile Include="Managers\Car\Car_EventLogManager.cs" />
+    <Compile Include="Managers\DepartmentManager.cs" />
     <Compile Include="Managers\DiaryManager.cs" />
     <Compile Include="Managers\DocumentManager.cs" />
+    <Compile Include="Managers\Document\MissiveManager.cs" />
     <Compile Include="Managers\FeedManager.cs" />
+    <Compile Include="Managers\FileManager.cs" />
     <Compile Include="Managers\FlowManager.cs" />
     <Compile Include="Managers\FlowStepManager.cs" />
     <Compile Include="Managers\Meet\MeetingManager.cs" />
