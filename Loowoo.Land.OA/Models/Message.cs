@@ -8,23 +8,20 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    /// <summary>
-    /// 动态广播
-    /// </summary>
-    [Table("Feed")]
-    public class Feed
+    [Table("message")]
+    public class Message
     {
-        public Feed()
+        public Message()
         {
             CreateTime = DateTime.Now;
         }
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public int FormId { get; set; }
-        public int InfoId { get; set; }
-        public int Type { get; set; }
-        public int FromUserId { get; set; }
+        public string Content { get; set; }
+        public int FormUserId { get; set; }
         public int ToUserId { get; set; }
         public DateTime CreateTime { get; set; }
+        public int FeedId { get; set; }
     }
 }

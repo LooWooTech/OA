@@ -72,11 +72,16 @@
     <Compile Include="Models\Feed.cs" />
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\Flow.cs" />
+    <Compile Include="Models\FlowData.cs" />
+    <Compile Include="Models\FlowNode.cs" />
+    <Compile Include="Models\FlowNodeData.cs" />
+    <Compile Include="Models\Form.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\InfoType.cs" />
     <Compile Include="Models\Meeting.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Missive.cs" />
     <Compile Include="Models\Step.cs" />
     <Compile Include="Models\Task.cs" />

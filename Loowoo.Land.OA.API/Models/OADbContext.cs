@@ -15,6 +15,15 @@ namespace Loowoo.Land.OA.API.Models
         }
 
         public DbSet<User> Users { get; set; }
+
+        #region 流程
+
+        public DbSet<Form> Forms { get; set; }
+        public DbSet<Flow> Flows { get; set; }
+        public DbSet<FlowNode> Flow_Nodes { get; set; }
+        public DbSet<FlowData> Flow_Datas { get; set; }
+
+        #endregion
         public DbSet<Department> Departments { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> User_Groups { get; set; }
@@ -32,7 +41,7 @@ namespace Loowoo.Land.OA.API.Models
 
         public DbSet<ReceiveDocument> Receive_Documents { get; set; }
         public DbSet<SendDocument> Send_Documents { get; set; }
-        public DbSet<Flow> Flows { get; set; }
+      
         public DbSet<FlowStep> Flow_Steps { get; set; }
 
         #endregion

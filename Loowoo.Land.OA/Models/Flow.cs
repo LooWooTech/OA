@@ -46,14 +46,7 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public string Name { get; set; }
-
-        public int InfoID { get; set; }
-        /// <summary>
-        /// 信息类型  1：公文  2：任务 3:车辆审批 4：会议
-        /// </summary>
-        public int InfoType { get; set; }
-        [NotMapped]
-        public List<FlowStep> Steps { get; set; }
+        public int FormId { get; set; }
     }
 
     /// <summary>

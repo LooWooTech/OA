@@ -152,7 +152,10 @@
     <Compile Include="Controllers\Document\DocumentController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\FileController.cs" />
+    <Compile Include="Controllers\Flow\FlowController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
+    <Compile Include="Controllers\Flow\FlowNodeController.cs" />
+    <Compile Include="Controllers\Flow\FormController.cs" />
     <Compile Include="Controllers\Meet\MeetingController.cs" />
     <Compile Include="Controllers\Meet\MeetingRoomController.cs" />
     <Compile Include="Controllers\User\GroupController.cs" />
@@ -174,8 +177,11 @@
     <Compile Include="Managers\Document\MissiveManager.cs" />
     <Compile Include="Managers\FeedManager.cs" />
     <Compile Include="Managers\FileManager.cs" />
-    <Compile Include="Managers\FlowManager.cs" />
+    <Compile Include="Managers\Flow\FlowDataManager.cs" />
+    <Compile Include="Managers\Flow\FlowManager.cs" />
     <Compile Include="Managers\FlowStepManager.cs" />
+    <Compile Include="Managers\Flow\FlowNodeManager.cs" />
+    <Compile Include="Managers\Flow\FormManager.cs" />
     <Compile Include="Managers\Meet\MeetingManager.cs" />
     <Compile Include="Managers\Meet\Meeting_RoomManager.cs" />
     <Compile Include="Managers\Base\StepManager.cs" />

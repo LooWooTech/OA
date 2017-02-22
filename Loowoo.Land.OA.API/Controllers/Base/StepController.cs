@@ -57,7 +57,7 @@ namespace Loowoo.Land.OA.API.Controllers
             return list;
         }
         /// <summary>
-        /// 作用：通过当前流程顺序号获取下一步流程
+        /// 作用：通过当前流程顺序号获取下一步流程 如果当前是最后一步
         /// 作者：汪建龙
         /// 编写时间：2017年2月21日21:59:19
         /// </summary>
@@ -71,7 +71,8 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取当前审批流程信息");
             }
-
+            var next = Core.StepManager.Get(currentStep.InfoType, currentStep.SerialNumber + 1);
+            return Ok(next);
         }
     }
 }

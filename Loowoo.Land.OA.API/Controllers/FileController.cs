@@ -12,8 +12,18 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
+    /// <summary>
+    /// 文件管理
+    /// </summary>
     public class FileController : LoginControllerBase
     {
+        /// <summary>
+        /// 作用：文件上传 返回文件类
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月22日17:26:57
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IHttpActionResult> Upload(string name)
         {
@@ -33,6 +43,25 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest($"{TaskName}:文件记录生成失败");
             }
             return Ok(file);
+        }
+
+        /// <summary>
+        /// 作用：删除文件
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月22日17:32:55
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IHttpActionResult Delete(int id)
+        {
+            TaskName = "删除文件";
+            if (Core.FileManager.Delete(id))
+            {
+                return Ok();
+            }
+
+            return BadRequest($"{TaskName}:该文件不存在或已经删除");
         }
 
     }

@@ -28,6 +28,12 @@ namespace Loowoo.Land.OA.API.Managers
      
 
         public UserManager UserManager { get; private set; }
+
+        #region 流程
+        public FormManager FormManager { get; private set; }
+
+        #endregion
+
         public DepartmentManager DepartmentManager { get; private set; }
         public GroupManager GroupManager { get; private set; }
 

@@ -125,6 +125,7 @@
     <Compile Include="CommentsWebApiTest.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="TestDocument.cs" />
+    <Compile Include="TestForm.cs" />
     <Compile Include="TestUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserAPITests.cs" />

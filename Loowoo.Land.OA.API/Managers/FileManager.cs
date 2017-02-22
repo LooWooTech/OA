@@ -24,5 +24,27 @@ namespace Loowoo.Land.OA.API.Managers
                 return file.ID;
             }
         }
+
+        /// <summary>
+        /// 作用：删除文件记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月22日17:31:38
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Delete(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Files.Find(id);
+                if (entry == null)
+                {
+                    return false;
+                }
+                db.Files.Remove(entry);
+                db.SaveChanges();
+                return true;
+            }
+        }
     }
 }
