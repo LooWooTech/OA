@@ -143,17 +143,23 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Controllers\Base\CategoryController.cs" />
+    <Compile Include="Controllers\Base\ConfidentialController.cs" />
+    <Compile Include="Controllers\Base\EmergencyController.cs" />
     <Compile Include="Controllers\Base\InfoTypeController.cs" />
     <Compile Include="Controllers\Base\StepController.cs" />
+    <Compile Include="Controllers\Base\SubScriptionController.cs" />
     <Compile Include="Controllers\Car\CarController.cs" />
     <Compile Include="Controllers\Car\CarEventLogController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\Document\DocumentController.cs" />
+    <Compile Include="Controllers\Document\MissiveController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\Flow\FlowController.cs" />
     <Compile Include="Controllers\FlowStepController.cs" />
+    <Compile Include="Controllers\Flow\FlowDataController.cs" />
     <Compile Include="Controllers\Flow\FlowNodeController.cs" />
     <Compile Include="Controllers\Flow\FormController.cs" />
     <Compile Include="Controllers\Meet\MeetingController.cs" />
@@ -168,7 +174,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Managers\Base\CategoryManager.cs" />
+    <Compile Include="Managers\Base\ConfidentialLevelManager.cs" />
+    <Compile Include="Managers\Base\EmergencyManager.cs" />
     <Compile Include="Managers\Base\InfoTypeManager.cs" />
+    <Compile Include="Managers\Base\SubScriptionManager.cs" />
     <Compile Include="Managers\Car\CarManager.cs" />
     <Compile Include="Managers\Car\Car_EventLogManager.cs" />
     <Compile Include="Managers\DepartmentManager.cs" />

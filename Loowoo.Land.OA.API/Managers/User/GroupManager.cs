@@ -45,7 +45,6 @@ namespace Loowoo.Land.OA.API.Managers
                 return true;
             }
         }
-
         /// <summary>
         /// 作用：获取用户组
         /// 作者：汪建龙
@@ -59,7 +58,6 @@ namespace Loowoo.Land.OA.API.Managers
                 return db.Groups.ToList();
             }
         }
-
         /// <summary>
         /// 作用：获取组信息
         /// 作者：汪建龙
@@ -72,6 +70,63 @@ namespace Loowoo.Land.OA.API.Managers
             using (var db = GetDbContext())
             {
                 return db.Groups.Find(id);
+            }
+        }
+
+        /// <summary>
+        /// 作用：验证组是否已存在
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日14:35:01
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool Exist(string name,GroupType type)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Groups.FirstOrDefault(e => e.Name.ToLower() == name.ToLower() && e.Type == type);
+                return model != null;
+            }
+        }
+        /// <summary>
+        /// 作用：删除组
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日14:45:01
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Delete(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Groups.Find(id);
+                if (model == null)
+                {
+                    return false;
+                }
+                db.Groups.Remove(model);
+                db.SaveChanges();
+                return true;
+            }
+        }
+        /// <summary>
+        /// 作用：通过用户ID获取用户所在的组列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日15:19:06
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public List<Group> GetByUserId(int userId)
+        {
+            using (var db = GetDbContext())
+            {
+                var relation = db.User_Groups.Where(e => e.UserID == userId).ToList();
+                foreach(var item in relation)
+                {
+                    item.Group = db.Groups.Find(item.GroupID);
+                }
+                return relation.Select(e => e.Group).ToList();
             }
         }
     }

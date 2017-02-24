@@ -81,5 +81,27 @@ namespace Loowoo.Land.OA.API.Managers
 
             }
         }
+
+        /// <summary>
+        /// 作用：删除部门信息 
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日09:22:15
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Delete(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Departments.Find(id);
+                if (model == null)
+                {
+                    return false;
+                }
+                db.Departments.Remove(model);
+                db.SaveChanges();
+                return true;
+            }
+        }
     }
 }

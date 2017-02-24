@@ -48,11 +48,13 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<User> List()
+        public List<User> List(int departmentId,int groupId,string searchKey)
         {
             var parameter = new UserParameter
             {
-                Page = new Common.PageParameter()
+                DepartmentId = departmentId,
+                GroupId = groupId,
+                SearchKey = searchKey
             };
             var list = Core.UserManager.Search(parameter);
             return list;

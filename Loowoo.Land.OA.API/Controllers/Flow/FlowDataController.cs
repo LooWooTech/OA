@@ -8,22 +8,20 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-    /// <summary>
-    /// 流程模板
-    /// </summary>
-    public class FlowController : LoginControllerBase
+    public class FlowDataController : LoginControllerBase
     {
         /// <summary>
-        /// 作用：获取表单流程模板
+        /// 作用：获取表单流程记录
         /// 作者：汪建龙
-        /// 编写时间：2017年2月22日16:14:47
+        /// 编写时间：2017年2月24日16:10:06
         /// </summary>
         /// <param name="formId">表单ID</param>
+        /// <param name="infoId">公文等信息ID</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetFlow(int formId)
+        public IHttpActionResult Model(int formId,int infoId)
         {
-            var model= Core.FlowManager.GetByFormId(formId);
+            var model = Core.FlowDataManager.Get(formId, infoId);
             if (model == null)
             {
                 return NotFound();

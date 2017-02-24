@@ -62,13 +62,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Table.cs" />
     <Compile Include="Models\Archive.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\ConfidentialLevel.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\Diary.cs" />
     <Compile Include="Models\Directory.cs" />
+    <Compile Include="Models\Emergency.cs" />
     <Compile Include="Models\Feed.cs" />
     <Compile Include="Models\File.cs" />
     <Compile Include="Models\Flow.cs" />
@@ -84,6 +87,7 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Missive.cs" />
     <Compile Include="Models\Step.cs" />
+    <Compile Include="Models\Subscription.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />

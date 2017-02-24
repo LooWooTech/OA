@@ -24,5 +24,34 @@ namespace Loowoo.Land.OA.API.Managers
                 return flowData.ID;
             }
         }
+        /// <summary>
+        /// 作用：验证系统中是否已存在记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日15:48:26
+        /// </summary>
+        /// <param name="infoId"></param>
+        /// <param name="formId"></param>
+        /// <param name="flowId"></param>
+        /// <returns></returns>
+        public bool Exist(int infoId,int formId)
+        {
+            return Get(formId, infoId) != null;
+        }
+        /// <summary>
+        /// 作用：通过InfoID和formId获取表单流程记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日16:08:55
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <param name="infoId"></param>
+        /// <returns></returns>
+        public FlowData Get(int formId,int infoId)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Flow_Datas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
+                return model;
+            }
+        }
     }
 }

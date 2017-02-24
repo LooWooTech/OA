@@ -56,9 +56,9 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:保存生成用车申请失败");
             }
-            SaveFlow(new Flow { Name = log.Description, InfoID = id, InfoType = 3 });
+            //SaveFlow(new Flow { Name = log.Description, InfoID = id, InfoType = 3 });
 
-            Dynamical(new Feed { CreatorID = log.UserID, InfoID = id, InfoType = 1, Summary = log.Description });
+            //Dynamical(new Feed { CreatorID = log.UserID, InfoID = id, InfoType = 1, Summary = log.Description });
             return Ok();
 
         }
@@ -103,11 +103,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 LogWriter.WriteException(ex, TaskName);
                 return BadRequest($"{TaskName}:编辑用车申请发生错误");
             }
-            var flow = Core.FlowManager.Get(log.ID, 3);
-            if (flow == null)
-            {
-                SaveFlow(new Flow { Name = log.Description, InfoID = log.ID, InfoType = 3 });
-            }
+            //var flow = Core.FlowManager.Get(log.ID, 3);
+            //if (flow == null)
+            //{
+            //    SaveFlow(new Flow { Name = log.Description, InfoID = log.ID, InfoType = 3 });
+            //}
             return Ok();
         }
 

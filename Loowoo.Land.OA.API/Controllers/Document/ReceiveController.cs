@@ -51,10 +51,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 LogWriter.WriteException(ex,"收文登记");
                 return BadRequest($"收文登记发生错误,{ex.InnerException.InnerException.Message}");
             }
-            if(SaveFlow(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 }))
-            {
-                return Ok();
-            }
+            //if(SaveFlow(new Flow { Name = recDoc.Title, InfoID = id, InfoType = 0 }))
+            //{
+            //    return Ok();
+            //}
             return BadRequest("收文登记成功，但是FLOW信息录入失败");
         }
 
@@ -97,7 +97,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var parameter = new ReceiveParameter
             {
-                Page = new Common.PageParameter(page, rows)
+                Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.Receive_DocumentManager.Search(parameter);
             return list;
@@ -158,11 +158,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
-            receDoc.Flow = Core.FlowManager.Get(receDoc.ID, 0);
-            if (receDoc.Flow != null)
-            {
-                receDoc.Flow.Steps = Core.FlowStepManager.GetByFlowID(receDoc.Flow.ID);
-            }
+            //receDoc.Flow = Core.FlowManager.Get(receDoc.ID, 0);
+            //if (receDoc.Flow != null)
+            //{
+            //    receDoc.Flow.Steps = Core.FlowStepManager.GetByFlowID(receDoc.Flow.ID);
+            //}
             return Ok(receDoc);
         }
 

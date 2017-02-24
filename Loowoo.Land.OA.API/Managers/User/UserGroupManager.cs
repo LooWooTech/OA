@@ -65,6 +65,20 @@ namespace Loowoo.Land.OA.API.Managers
                 }
             }
         }
+        /// <summary>
+        /// 作用：获取用户所有的组
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日15:04:52
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public List<UserGroup> GetByUserId(int userId)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.User_Groups.Where(e => e.UserID == userId).ToList();
+            }
+        }
 
 
     }

@@ -83,6 +83,11 @@ namespace Loowoo.Land.OA.API.Managers
             using (var db = GetDbContext())
             {
                 var query = db.Users.AsQueryable();
+                if (parameter.DepartmentId.HasValue)
+                {
+                    query = query.Where(e => e.DepartmentId == parameter.DepartmentId.Value);
+                }
+
                 query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
                 return query.ToList();
             }

@@ -25,8 +25,14 @@ namespace Loowoo.Land.OA.Models
         /// 登录名
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 部门ID
+        /// </summary>
+        public int? DepartmentId { get; set; }
 
         public UserRole Role { get; set; }
+        [NotMapped]
+        public List<Group> Groups { get; set; }
         [NotMapped]
         public string Ticket { get; set; }
 

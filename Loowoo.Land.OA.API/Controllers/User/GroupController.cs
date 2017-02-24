@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         /// <summary>
-        /// 作用：创建组
+        /// 作用：保存或者更新编辑组
         /// 作者：汪建龙
         /// 编写时间：2017年2月16日16:54:44
         /// </summary>
@@ -35,55 +35,31 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public IHttpActionResult Save([FromBody] Group group)
         {
-            TaskName = "创建组";
+            TaskName = "保存组";
             if (group == null || string.IsNullOrEmpty(group.Name))
             {
                 return BadRequest($"{TaskName}:无法获取组信息，以及组名称不能为空");
             }
-            try
+            if (Core.GroupManager.Exist(group.Name, group.Type))
+            {
+                return BadRequest($"{TaskName}:系统中已存在相同类型名称的组");
+            }
+            if (group.ID > 0)
+            {
+                if (!Core.GroupManager.Edit(group))
+                {
+                    return BadRequest($"{TaskName}:未找到当前更新的组");
+                }
+            }
+            else
             {
                 var id = Core.GroupManager.Save(group);
-                if (id > 0)
+                if (id <= 0)
                 {
-                    return Ok();
+                    return BadRequest($"{TaskName}:保存失败");
                 }
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, TaskName);
             }
-            return BadRequest($"{TaskName}失败");
-        }
-
-        /// <summary>
-        /// 作用：编辑组
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日17:09:04
-        /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        [HttpPut]
-        public IHttpActionResult Edit([FromBody] Group group)
-        {
-            TaskName = "编辑组";
-            if (group == null || group.ID == 0)
-            {
-                return BadRequest($"{TaskName}:编辑组信息为空、组ID不能为0");
-            }
-
-            try
-            {
-                if (Core.GroupManager.Edit(group))
-                {
-                    return Ok();
-                }
-
-                return BadRequest($"{TaskName}:编辑失败");
-
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, TaskName);
-            }
-            return BadRequest($"{TaskName}:编辑发生错误");
+            return Ok(group);
         }
 
         /// <summary>
@@ -94,7 +70,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Model(int id)
         {
             var group = Core.GroupManager.Get(id);
             if (group == null)
@@ -102,6 +78,23 @@ namespace Loowoo.Land.OA.API.Controllers
                 return NotFound();
             }
             return Ok(group);
+        }
+
+        /// <summary>
+        /// 作用：删除组
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日14:45:58
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IHttpActionResult Delete(int id)
+        {
+            if (Core.GroupManager.Delete(id))
+            {
+                return Ok();
+            }
+            return NotFound();
         }
 
         

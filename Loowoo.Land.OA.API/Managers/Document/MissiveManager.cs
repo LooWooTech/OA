@@ -60,7 +60,8 @@ namespace Loowoo.Land.OA.API.Managers
         {
             using (var db = GetDbContext())
             {
-                return db.Missives.Find(id);
+                var model= db.Missives.Find(id);
+                return model;
             }
         }
 
@@ -96,10 +97,10 @@ namespace Loowoo.Land.OA.API.Managers
                     query = query.Where(e => e.UserID == parameter.UserID.Value);
                 }
                 var list = query.ToList();
-                foreach(var item in list)
-                {
-                    item.Flow=db.Flows.Where
-                }
+                //foreach(var item in list)
+                //{
+                //    item.Flow=db.Flows.Where
+                //}
                 query = query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
                 return query.ToList();
             }

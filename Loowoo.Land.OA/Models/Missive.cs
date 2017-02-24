@@ -35,6 +35,8 @@ namespace Loowoo.Land.OA.Models
         /// 密级
         /// </summary>
         public int ConfidentialLevel { get; set; }
+        [NotMapped]
+        public ConfidentialLevel Level { get; set; }
         /// <summary>
         /// 承办人ID
         /// </summary>
@@ -45,10 +47,14 @@ namespace Loowoo.Land.OA.Models
         /// 种类
         /// </summary>
         public int CategoryID { get; set; }
+        [NotMapped]
+        public Category Category { get; set; }
         /// <summary>
         /// 缓急
         /// </summary>
         public int EmergencyID { get; set; }
+        [NotMapped]
+        public Emergency Emergency { get; set; }
         /// <summary>
         /// 印发时间
         /// </summary>
@@ -69,6 +75,7 @@ namespace Loowoo.Land.OA.Models
         /// 发往单位
         /// </summary>
         public int ToOrganID { get; set; }
+
         [NotMapped]
         public Flow Flow { get; set; }
     }

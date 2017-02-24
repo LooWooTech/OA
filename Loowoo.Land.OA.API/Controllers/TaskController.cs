@@ -54,11 +54,11 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             try
             {
-                var flowId = Core.FlowManager.Save(new Flow { Name = task.Title, InfoID = id, InfoType = 2 });
-                if (flowId > 0)
-                {
-                    return Ok();
-                }
+                //var flowId = Core.FlowManager.Save(new Flow { Name = task.Title, InfoID = id, InfoType = 2 });
+                //if (flowId > 0)
+                //{
+                //    return Ok();
+                //}
             }catch(Exception ex)
             {
                 LogWriter.WriteException(ex, $"{TaskName}-Flow信息表创建");
@@ -153,7 +153,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var parameter = new TaskParameter
             {
-                Page = new Common.PageParameter(page, rows)
+                Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.TaskManager.Search(parameter);
             return list;

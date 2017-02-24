@@ -14,7 +14,23 @@ namespace Loowoo.Land.OA.API.Models
             Database.SetInitializer<OADbContext>(null);
         }
 
+      
+
+        #region  基础部分
+        public DbSet<Category> Categorys { get; set; }
+        public DbSet<ConfidentialLevel> ConfidentialLevels { get; set; }
+        public DbSet<Emergency> Emergencys { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Subscription> SubScriptions { get; set; }
+        #endregion
+
+        #region  用户 组
+
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<UserGroup> User_Groups { get; set; }
+        #endregion
+
 
         #region 流程
 
@@ -24,16 +40,14 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<FlowData> Flow_Datas { get; set; }
 
         #endregion
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<Group> Groups { get; set; }
-        public DbSet<UserGroup> User_Groups { get; set; }
-        public DbSet<Diary> Diarys { get; set; }
 
-        #region  基础部分
         public DbSet<Step> Steps { get; set; }
         public DbSet<StepUser> Step_Uer { get; set; }
         public DbSet<InfoType> InfoTypes { get; set; }
-        #endregion
+
+        public DbSet<Diary> Diarys { get; set; }
+
+  
 
 
         #region  公文部分

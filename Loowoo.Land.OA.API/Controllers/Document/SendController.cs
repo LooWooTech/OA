@@ -33,11 +33,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
-            send.Flow = Core.FlowManager.Get(send.ID, 1);
-            if (send.Flow != null)
-            {
-                send.Flow.Steps = Core.FlowStepManager.GetByFlowID(send.Flow.ID);
-            }
+            //send.Flow = Core.FlowManager.Get(send.ID, 1);
+            //if (send.Flow != null)
+            //{
+            //    send.Flow.Steps = Core.FlowStepManager.GetByFlowID(send.Flow.ID);
+            //}
             return Ok(send);
         }
         /// <summary>
@@ -69,11 +69,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest("发文发生错误");
             }
 
-            var flowId = Core.FlowManager.Save(new Flow { Name = senddoc.Title, InfoID = id, InfoType = 1 });
-            if (flowId > 0)
-            {
-                return Ok();
-            }
+            //var flowId = Core.FlowManager.Save(new Flow { Name = senddoc.Title, InfoID = id, InfoType = 1 });
+            //if (flowId > 0)
+            //{
+            //    return Ok();
+            //}
             return BadRequest("发文信息成功保存，但是FLOW信息添加失败");
                
         }
@@ -115,7 +115,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var parameter = new SendParameter
             {
-                Page = new Common.PageParameter(page, rows)
+                Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.Send_DocumentManager.Search(parameter);
             return list;

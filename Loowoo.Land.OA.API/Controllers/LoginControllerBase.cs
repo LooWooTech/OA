@@ -48,5 +48,41 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return false;
         } 
+
+
+        
+
+        /// <summary>
+        /// 作用：保存信息流程记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日15:53:35
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected bool SaveFlowData(FlowData data)
+        {
+            if (data.FlowId > 1)
+            {
+
+            }
+            try
+            {
+                if (Core.FlowDataManager.Exist(data.InfoId, data.FormId))
+                {
+                    return true;
+                }
+                var id = Core.FlowDataManager.Save(data);
+                if (id > 0)
+                {
+                    return true;
+                }
+
+            }catch(Exception ex)
+            {
+                LogWriter.WriteException(ex, $"{TaskName}-生成流程记录");
+            }
+            return false;
+        }
+
     }
 }

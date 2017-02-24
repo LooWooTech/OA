@@ -14,8 +14,17 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        /// <summary>
+        /// 信息ID
+        /// </summary>
         public int InfoId { get; set; }
+        /// <summary>
+        /// 表单ID
+        /// </summary>
         public int FormId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public int FlowId { get; set; }
         public bool Completed { get; set; }
     }
