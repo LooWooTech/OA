@@ -36,7 +36,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var list = Core.FeedManager.Search(parameter);
             var table = new PagingResult<Feed>
             {
-                List = list.ToArray(),
+                List = list,
                 Page = parameter.Page
             };
             return Ok(table);

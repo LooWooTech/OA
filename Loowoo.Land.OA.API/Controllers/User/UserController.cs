@@ -60,7 +60,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var list = Core.UserManager.Search(parameter);
             var table = new PagingResult<User>
             {
-                List = list.ToArray(),
+                List = list,
                 Page = parameter.Page
             };
             return Ok(table);

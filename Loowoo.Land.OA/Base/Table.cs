@@ -9,7 +9,7 @@ namespace Loowoo.Land.OA.Base
 {
     public class PagingResult<T>
     {
-        public T[] List { get; set; }
+        public IEnumerable<T> List { get; set; }
         public PageParameter Page { get; set; }
     }
 }
