@@ -34,12 +34,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 BeginTime = beginTime
             };
             var list = Core.FeedManager.Search(parameter);
-            var table = new Table<Feed>
+            var table = new PagingResult<Feed>
             {
                 List = list.ToArray(),
-                Page = page,
-                Rows = rows,
-                Total = parameter.Page.RecordCount
+                Page = parameter.Page
             };
             return Ok(table);
         }

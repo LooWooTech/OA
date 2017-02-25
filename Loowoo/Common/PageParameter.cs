@@ -19,26 +19,6 @@ namespace Loowoo.Common
         {
             PageIndex = page < 1 ? 1 : page;
             PageSize = limit < 1 ? 20 : limit;
-            LinkFormat = "?page={0}";
-        }
-
-        public string LinkFormat { get; set; }
-
-        public string GetPageLink(int pageIndex, NameValueCollection queryString)
-        {
-            if (string.IsNullOrEmpty(LinkFormat))
-            {
-                LinkFormat = "&page={0}&rows={1}";
-            }
-            var link = string.Format(LinkFormat, pageIndex, PageSize);
-            foreach (var key in queryString.AllKeys)
-            {
-                if (!"page|rows".Contains(key.ToLower()))
-                {
-                    link += "&" + key + "=" + HttpUtility.UrlEncode(queryString[key]);
-                }
-            }
-            return link;
         }
 
         [JsonProperty("total")]

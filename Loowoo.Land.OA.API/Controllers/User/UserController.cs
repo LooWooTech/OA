@@ -58,12 +58,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey
             };
             var list = Core.UserManager.Search(parameter);
-            var table = new Table<User>
+            var table = new PagingResult<User>
             {
                 List = list.ToArray(),
-                Page = parameter.Page.PageIndex,
-                Rows = parameter.Page.PageSize,
-                Total = parameter.Page.RecordCount
+                Page = parameter.Page
             };
             return Ok(table);
         }

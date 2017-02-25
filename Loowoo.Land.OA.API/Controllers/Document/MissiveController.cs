@@ -115,12 +115,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.MissiveManager.Search(parameter);
-            var table = new Table<Missive>
+            var table = new PagingResult<Missive>
             {
                 List = list.ToArray(),
-                Page = page,
-                Rows = rows,
-                Total = parameter.Page.RecordCount
+                Page = parameter.Page
             };
             return Ok(table);
         }
