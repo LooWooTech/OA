@@ -70,5 +70,21 @@ namespace Loowoo.Land.OA.API.Managers
                 return true;
             }
         }
+
+        /// <summary>
+        /// 作用：通过流程模板的所有节点
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月25日13:59:28
+        /// </summary>
+        /// <param name="flowId"></param>
+        /// <returns></returns>
+        public List<FlowNode> GetByFlowID(int flowId)
+        {
+            using (var db = GetDbContext())
+            {
+                var list = db.Flow_Nodes.Where(e => e.FlowId == flowId).OrderBy(e=>e.Order).ToList();
+                return list;
+            }
+        }
     }
 }

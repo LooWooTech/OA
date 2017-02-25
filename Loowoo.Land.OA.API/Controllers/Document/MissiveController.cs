@@ -1,4 +1,6 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.Base;
+using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +91,38 @@ namespace Loowoo.Land.OA.API.Controllers
             model.Category = Core.CategoryManager.Get(model.CategoryID);
             model.Emergency = Core.EmergencyManager.Get(model.EmergencyID);
             return Ok(model);
+        }
+
+        /// <summary>
+        /// 作用：获取发文拟稿列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月25日12:40:32
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult sendList(int page,int rows)
+        {
+            TaskName = "发文拟稿列表";
+            if (CurrentUser == null)
+            {
+                return BadRequest($"{TaskName}:未获取当前用户信息");
+            }
+            var parameter = new MissiveParameter
+            {
+                UserID = CurrentUser.ID,
+                Page = new Loowoo.Common.PageParameter(page, rows)
+            };
+            var list = Core.MissiveManager.Search(parameter);
+            var table = new Table<Missive>
+            {
+                List = list.ToArray(),
+                Page = page,
+                Rows = rows,
+                Total = parameter.Page.RecordCount
+            };
+            return Ok(table);
         }
     }
 }

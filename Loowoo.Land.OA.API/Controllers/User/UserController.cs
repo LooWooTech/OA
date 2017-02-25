@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.Base;
+using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<User> List(int departmentId,int groupId,string searchKey)
+        public IHttpActionResult List(int departmentId,int groupId,string searchKey)
         {
             var parameter = new UserParameter
             {
@@ -57,7 +58,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey
             };
             var list = Core.UserManager.Search(parameter);
-            return list;
+            var table = new Table<User>
+            {
+                List = list.ToArray(),
+                Page = parameter.Page.PageIndex,
+                Rows = parameter.Page.PageSize,
+                Total = parameter.Page.RecordCount
+            };
+            return Ok(table);
         }
 
         /// <summary>
@@ -68,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="id">用户ID</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult GetModel(int id)
         {
             if (id <= 0)
             {
@@ -78,6 +86,10 @@ namespace Loowoo.Land.OA.API.Controllers
             if (user == null)
             {
                 return NotFound();
+            }
+            if (user.DepartmentId.HasValue)
+            {
+                user.Department = Core.DepartmentManager.Get(user.DepartmentId.Value);
             }
             return Ok(user);
         }

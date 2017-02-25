@@ -18,6 +18,7 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
         public int UserId { get; set; }
         public int DepartmentId { get; set; }
+        public int Order { get; set; }
         
         [NotMapped]
         public string Condition { get; set; }

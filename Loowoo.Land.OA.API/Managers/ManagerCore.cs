@@ -75,6 +75,11 @@ namespace Loowoo.Land.OA.API.Managers
         {
             get { return _userGroupManager == null ? _userGroupManager = new UserGroupManager() : _userGroupManager; }
         }
+        private FeedManager _feedManager { get; set; }
+        public FeedManager FeedManager
+        {
+            get { return _feedManager == null ? _feedManager = new Managers.FeedManager() : _feedManager; }
+        }
         #endregion
 
 
@@ -90,6 +95,11 @@ namespace Loowoo.Land.OA.API.Managers
             get { return _flowDataManager == null ? _flowDataManager = new FlowDataManager() : _flowDataManager; }
         }
 
+        private FlowNodeManager _flowNodeManager { get; set; }
+        public FlowNodeManager FlowNodeManager
+        {
+            get { return _flowNodeManager == null ? _flowNodeManager = new FlowNodeManager() : _flowNodeManager; }
+        }
         #endregion
 
        
@@ -128,9 +138,7 @@ namespace Loowoo.Land.OA.API.Managers
         public Car_EventLogManager Car_EventLogManager { get; private set; }
         #endregion
 
-        #region 动态部分
-        public FeedManager FeedManager { get; private set; }
-        #endregion
+
 
         #region 会议部分
         public Meeting_RoomManager Meeting_RoomManager { get; private set; }

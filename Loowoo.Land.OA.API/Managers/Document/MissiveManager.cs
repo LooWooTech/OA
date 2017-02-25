@@ -87,6 +87,13 @@ namespace Loowoo.Land.OA.API.Managers
             }
         }
 
+        /// <summary>
+        /// 作用：查询公文拟稿
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月25日12:35:08
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         public List<Missive> Search(MissiveParameter parameter)
         {
             using (var db = GetDbContext())
@@ -96,11 +103,6 @@ namespace Loowoo.Land.OA.API.Managers
                 {
                     query = query.Where(e => e.UserID == parameter.UserID.Value);
                 }
-                var list = query.ToList();
-                //foreach(var item in list)
-                //{
-                //    item.Flow=db.Flows.Where
-                //}
                 query = query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
                 return query.ToList();
             }

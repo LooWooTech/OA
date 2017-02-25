@@ -93,6 +93,7 @@
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
+    <Compile Include="Parameters\FeedParameter.cs" />
     <Compile Include="Parameters\MissiveParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />

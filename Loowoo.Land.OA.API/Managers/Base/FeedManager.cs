@@ -1,4 +1,6 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,16 +77,30 @@ namespace Loowoo.Land.OA.API.Managers
         }
 
         /// <summary>
-        /// 作用：查询
+        /// 作用：动态查询列表
         /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:39:27
+        /// 编写时间：2017年2月25日14:59:32
         /// </summary>
+        /// <param name="parameter"></param>
         /// <returns></returns>
-        public List<Feed> Search()
+        public List<Feed> Search(FeedParameter parameter)
         {
             using (var db = GetDbContext())
             {
                 var query = db.Feeds.Where(e => e.Deleted == false).AsQueryable();
+                if (parameter.InfoType.HasValue)
+                {
+                    query = query.Where(e => e.InfoId == parameter.InfoType);
+                }
+                if (parameter.BeginTime.HasValue)
+                {
+                    query = query.Where(e => e.CreateTime >= parameter.BeginTime.Value);
+                }
+                if (parameter.UserId.HasValue)
+                {
+                    query = query.Where(e => e.FromUserId == parameter.UserId.Value);
+                }
+                query = query.OrderByDescending(e => e.CreateTime).SetPage(parameter.Page);
                 return query.ToList();
             }
         }

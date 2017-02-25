@@ -124,6 +124,7 @@
     <Compile Include="APITestBase.cs" />
     <Compile Include="CommentsWebApiTest.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestForm.cs" />
     <Compile Include="TestUser.cs" />
