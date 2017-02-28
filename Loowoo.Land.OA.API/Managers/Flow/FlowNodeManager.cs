@@ -86,5 +86,20 @@ namespace Loowoo.Land.OA.API.Managers
                 return list;
             }
         }
+
+        /// <summary>
+        /// 作用：获取流程节点
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日15:41:31
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public FlowNode Get(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Flow_Nodes.Find(id);
+            }
+        }
     }
 }

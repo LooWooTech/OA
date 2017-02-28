@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    [Table("flow_node_data")]
     public class FlowNodeData
     {
         public FlowNodeData()

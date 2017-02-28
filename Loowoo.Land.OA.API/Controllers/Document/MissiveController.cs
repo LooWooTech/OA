@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Base;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Base;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
@@ -12,8 +13,16 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class MissiveController : LoginControllerBase
     {
+        /// <summary>
+        /// 作用：生成公文信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日14:34:39
+        /// </summary>
+        /// <param name="missive"></param>
+        /// <param name="fileIds"></param>
+        /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Save([FromBody] Missive missive)
+        public IHttpActionResult Save([FromBody] Missive missive,int[] fileIds)
         {
             TaskName = "保存公文";
             if (missive == null
@@ -52,6 +61,21 @@ namespace Loowoo.Land.OA.API.Controllers
                     return BadRequest($"{TaskName}:新建公文失败");
                 }
             }
+
+           
+            var form = Core.FormManager.Get("公文");
+            if (form == null)
+            {
+                return BadRequest($"{TaskName}:未查询到公文表单信息");
+            }
+
+            UpdateFileRelation(fileIds, missive.ID, form.ID);
+
+            if (!SaveFlowData(form.ID, missive.ID))
+            {
+                return BadRequest($"{TaskName}:生成流程记录失败");
+            }
+
             return Ok(missive);
         }
 
@@ -86,10 +110,8 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
-            model.Level = Core.ConfidentialLevelManager.Get(model.ConfidentialLevel);
             model.UnderTaker = Core.UserManager.Get(model.UserID);
             model.Category = Core.CategoryManager.Get(model.CategoryID);
-            model.Emergency = Core.EmergencyManager.Get(model.EmergencyID);
             return Ok(model);
         }
 
@@ -112,9 +134,21 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new MissiveParameter
             {
                 UserID = CurrentUser.ID,
-                Page = new Loowoo.Common.PageParameter(page, rows)
+                Page = new PageParameter(page, rows)
             };
+            //获取当前用户相关的发文
             var list = Core.MissiveManager.Search(parameter);
+            var form = Core.FormManager.Get("发文");
+            if (form != null)
+            {
+                //获取别人提交给当前用户的
+                var uf = Core.UserFormManager.GetList(CurrentUser.ID, form.ID);
+                var receive = Core.MissiveManager.GetList(uf.Select(e => e.InfoID).ToArray());
+                list.AddRange(receive);
+                list = list.DistinctBy(e => e.ID).ToList();
+            }
+            list = list.OrderByDescending(e => e.CreateTime).SetPage(parameter.Page).ToList();
+            list = Core.MissiveManager.ReBody(list);
             var table = new PagingResult<Missive>
             {
                 List = list,
@@ -122,5 +156,6 @@ namespace Loowoo.Land.OA.API.Controllers
             };
             return Ok(table);
         }
+
     }
 }

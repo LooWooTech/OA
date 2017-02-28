@@ -26,62 +26,69 @@ namespace Loowoo.Land.OA.API.Controllers
                 LogWriter.WriteException(ex, $"{TaskName}-生成动态");
             }
         }
-        /// <summary>
-        /// 作用：生成FLOW 审批信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月20日15:41:59
-        /// </summary>
-        /// <param name="flow"></param>
-        protected bool SaveFlow(Flow flow)
-        {
-            try
-            {
-                var id = Core.FlowManager.Save(flow);
-                if (id > 0)
-                {
-                    return true;
-                }
-
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, $"{TaskName}-生成审批请求");
-            }
-            return false;
-        } 
-
 
         
 
+
+
+
+
         /// <summary>
-        /// 作用：保存信息流程记录
+        /// 作用：生成FlowData
         /// 作者：汪建龙
-        /// 编写时间：2017年2月24日15:53:35
+        /// 编写时间：2017年2月27日14:30:13
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="formId"></param>
+        /// <param name="infoId"></param>
         /// <returns></returns>
-        protected bool SaveFlowData(FlowData data)
+        protected bool SaveFlowData(int formId,int infoId)
         {
-            if (data.FlowId > 1)
+            var flowData = Core.FlowDataManager.Get(formId, infoId);
+            if (flowData == null)
             {
-
-            }
-            try
-            {
-                if (Core.FlowDataManager.Exist(data.InfoId, data.FormId))
+                var form = Core.FormManager.Get(formId);
+                if (form == null)
                 {
-                    return true;
+                    ThrowException(string.Format("系统中不存在ID为{0}的表单", formId), "未找到表单");
                 }
-                var id = Core.FlowDataManager.Save(data);
-                if (id > 0)
+                var flow = Core.FlowManager.Get(form.FLowID);
+                if (flow == null)
                 {
-                    return true;
+                    //没有模板就没有
+                    //flow = new Flow { Name = string.Format("{0}自定义模板", CurrentUser != null ? CurrentUser.Name : "") };
+                    //if (Core.FlowManager.Save(flow) <= 0)
+                    //{
+                    //    ThrowException(string.Format("{0}自定义模板失败", CurrentUser != null ? CurrentUser.Name : ""), "生成模板");
+                    //}
                 }
 
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, $"{TaskName}-生成流程记录");
+                flowData = new FlowData { InfoId = infoId, FormId = formId, FlowId = flow == null ? 0 : flow.ID };
+                return Core.FlowDataManager.Save(flowData) > 0;
             }
-            return false;
+            return true;
+        }
+
+        /// <summary>
+        /// 作用：更新文件附件信息列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日09:31:14
+        /// </summary>
+        /// <param name="fileIds"></param>
+        /// <param name="infoId"></param>
+        /// <param name="formId"></param>
+        protected void UpdateFileRelation(int[] fileIds,int infoId,int formId)
+        {
+            Core.FileManager.Relation(fileIds, infoId, formId);
+
+            //if (Core.FileRelationManager.Change(fileIds, infoId, formId))
+            //{
+            //    Core.FileRelationManager.Remove(infoId, formId);
+            //    if (fileIds != null && fileIds.Count() > 0)
+            //    {
+            //        Core.FileRelationManager.AddRange(fileIds.Select(e => new FileRelation { InfoID = infoId, FormID=formId, FileID = e }).ToList());
+            //    }
+            //}
+          
         }
 
     }

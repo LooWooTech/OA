@@ -29,6 +29,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取部门信息、部门信息不能为空");
             }
+            if (Core.DepartmentManager.Exist(department.Name))
+            {
+                return BadRequest($"{TaskName}:系统中已存在部门名称为{department.Name}");
+            }
             if (department.ParentID > 0)
             {
                 var parent = Core.DepartmentManager.Get(department.ParentID);

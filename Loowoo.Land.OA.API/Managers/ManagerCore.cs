@@ -54,6 +54,11 @@ namespace Loowoo.Land.OA.API.Managers
         {
             get { return _subScriptionManager == null ? _subScriptionManager = new SubScriptionManager() : _subScriptionManager; }
         }
+        private FileManager _fileManager { get; set; }
+        public FileManager FileManager
+        {
+            get { return _fileManager == null ? _fileManager = new FileManager() : _fileManager; }
+        }
 
         #endregion
 
@@ -89,6 +94,11 @@ namespace Loowoo.Land.OA.API.Managers
         {
             get { return _formManager == null ? _formManager = new FormManager() : _formManager; }
         }
+        private FlowManager _flowManager { get; set; }
+        public FlowManager FlowManager
+        {
+            get { return _flowManager == null ? _flowManager = new FlowManager() : _flowManager; }
+        }
         private FlowDataManager _flowDataManager { get; set; }
         public FlowDataManager FlowDataManager
         {
@@ -100,32 +110,37 @@ namespace Loowoo.Land.OA.API.Managers
         {
             get { return _flowNodeManager == null ? _flowNodeManager = new FlowNodeManager() : _flowNodeManager; }
         }
+        private FlowNodeDataManager _flowNodeDataManager { get; set; }
+        public FlowNodeDataManager FlowNodeDataManager
+        {
+            get { return _flowNodeDataManager == null ? _flowNodeDataManager = new FlowNodeDataManager() : _flowNodeDataManager; }
+        }
+        private UserFormManager _userFormManager { get; set; }
+        public UserFormManager UserFormManager
+        {
+            get { return _userFormManager == null ? _userFormManager = new UserFormManager() : _userFormManager; }
+        }
+        #endregion
+        #region  公文部分
+        private MissiveManager _missiveManager { get; set; }
+        public MissiveManager MissiveManager
+        {
+            get { return _missiveManager == null ? _missiveManager = new MissiveManager() : _missiveManager; }
+        }
+        
+
+
+
         #endregion
 
-       
-    
 
-    
+
+
         public DiaryManager DiaryManager { get; private set; }
 
         public InfoTypeManager InfoTypeManager { get; private set; }
         public StepManager StepManager { get; set; }
-        #region  公文部分
-        public MissiveManager MissiveManager { get; private set; }
 
-
-        /// <summary>
-        /// 收文
-        /// </summary>
-        public ReceiveDocumentManager Receive_DocumentManager { get; private set; }
-        /// <summary>
-        /// 发文
-        /// </summary>
-        public SendDocumentManager Send_DocumentManager { get; private set; }
-
-        public FlowStepManager FlowStepManager { get; private set; }
-
-        #endregion
 
 
         #region 任务部分
@@ -147,9 +162,18 @@ namespace Loowoo.Land.OA.API.Managers
 
 
         public DocumentManager DocumentManager { get; private set; }
-        public FlowManager FlowManager { get; private set; }
+      
 
-        public FileManager FileManager { get; private set; }
-        
+        /// <summary>
+        /// 收文
+        /// </summary>
+        public ReceiveDocumentManager Receive_DocumentManager { get; private set; }
+        /// <summary>
+        /// 发文
+        /// </summary>
+        public SendDocumentManager Send_DocumentManager { get; private set; }
+
+        public FlowStepManager FlowStepManager { get; private set; }
+
     }
 }

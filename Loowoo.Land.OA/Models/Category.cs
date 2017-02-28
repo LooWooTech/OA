@@ -16,6 +16,10 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public string Name { get; set; }
+        /// <summary>
+        /// 表单类型
+        /// </summary>
+        public int FormID { get; set; }
 
         public int Sort { get; set; }
 

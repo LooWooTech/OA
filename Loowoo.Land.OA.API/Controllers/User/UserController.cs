@@ -36,7 +36,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 return NotFound();
             }
 
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}",user.ID, name, password), FormsAuthentication.FormsCookiePath);
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}&{3}",user.ID, name, user.Role,user.DepartmentId.HasValue?user.DepartmentId.Value.ToString():""), FormsAuthentication.FormsCookiePath);
             user.Ticket = FormsAuthentication.Encrypt(ticket);
             HttpContext.Current.Session.Add(name, user);
             return Ok(user);
@@ -57,7 +57,24 @@ namespace Loowoo.Land.OA.API.Controllers
                 GroupId = groupId,
                 SearchKey = searchKey
             };
-            var list = Core.UserManager.Search(parameter);
+            var query = Core.UserManager.Search(parameter);
+            var list = new List<User>();
+            if (parameter.GroupId.HasValue && parameter.GroupId.Value > 0)
+            {
+                foreach (var item in query)
+                {
+                    var model = Core.User_GroupManager.Get(item.ID, groupId);
+                    if (model != null)
+                    {
+                        list.Add(item);
+                    }
+                }
+            }
+            else
+            {
+                list = query;
+            }
+
             var table = new PagingResult<User>
             {
                 List = list,

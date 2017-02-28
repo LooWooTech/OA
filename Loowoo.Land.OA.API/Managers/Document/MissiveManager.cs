@@ -103,9 +103,42 @@ namespace Loowoo.Land.OA.API.Managers
                 {
                     query = query.Where(e => e.UserID == parameter.UserID.Value);
                 }
-                query = query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+                //query = query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
                 return query.ToList();
             }
+        }
+        /// <summary>
+        /// 作用：获取ID数组的公文列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日11:20:55
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<Missive> GetList(int[] ids)
+        {
+            var list = new List<Missive>();
+            foreach(var id in ids)
+            {
+                var model = Get(id);
+                if (model != null)
+                {
+                    list.Add(model);
+                }
+            }
+            return list;
+        }
+
+        public List<Missive> ReBody(List<Missive> list)
+        {
+            foreach(var item in list)
+            {
+                item.UnderTaker = Core.UserManager.Get(item.UserID);
+                item.Category = Core.CategoryManager.Get(item.CategoryID);
+                item.Born = Core.DepartmentManager.Get(item.BornOrganID);
+                item.To = Core.DepartmentManager.Get(item.ToOrganID);
+                item.FlowNode = Core.FlowNodeManager.Get(item.NodeID);
+            }
+            return list;
         }
     }
 }

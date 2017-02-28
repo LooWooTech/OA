@@ -87,8 +87,10 @@ namespace Loowoo.Land.OA.API.Managers
                 {
                     query = query.Where(e => e.DepartmentId == parameter.DepartmentId.Value);
                 }
-
-                query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+                if (!string.IsNullOrEmpty(parameter.SearchKey))
+                {
+                    query = query.Where(e => e.Username.ToLower().Contains(parameter.SearchKey.ToLower()) || e.Name.ToLower().Contains(parameter.SearchKey.ToLower()));
+                }
                 return query.ToList();
             }
         }

@@ -47,6 +47,27 @@ namespace Loowoo.Land.OA.API.Managers
                 return flow.ID;
             }
         }
+        /// <summary>
+        /// 作用：编辑流程模板
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日17:27:30
+        /// </summary>
+        /// <param name="flow"></param>
+        /// <returns></returns>
+        public bool Edit(Flow flow)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Flows.Find(flow.ID);
+                if (model == null)
+                {
+                    return false;
+                }
+                db.Entry(model).CurrentValues.SetValues(flow);
+                db.SaveChanges();
+                return true;
+            }
+        }
 
         /// <summary>
         /// 作用：通过ID获取流程头信息
@@ -63,18 +84,39 @@ namespace Loowoo.Land.OA.API.Managers
             }
         }
         /// <summary>
-        /// 作用：通过表单ID获取该表单的流程头信息
+        /// 作用：删除流程模板
         /// 作者：汪建龙
-        /// 编写时间：2017年2月22日16:13:39
+        /// 编写时间：2017年2月28日09:13:30
         /// </summary>
-        /// <param name="formId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public Flow GetByFormId(int formId)
+        public bool Delete(int id)
         {
             using (var db = GetDbContext())
             {
-                return db.Flows.FirstOrDefault(e => e.FormId == formId);
+                var model = db.Flows.Find(id);
+                if (model == null)
+                {
+                    return false;
+                }
+                db.Flows.Remove(model);
+                db.SaveChanges();
+                return true;
             }
         }
+        ///// <summary>
+        ///// 作用：通过表单ID获取该表单的流程头信息
+        ///// 作者：汪建龙
+        ///// 编写时间：2017年2月22日16:13:39
+        ///// </summary>
+        ///// <param name="formId"></param>
+        ///// <returns></returns>
+        //public Flow GetByFormId(int formId)
+        //{
+        //    using (var db = GetDbContext())
+        //    {
+        //        return db.Flows.FirstOrDefault(e => e.FormId == formId);
+        //    }
+        //}
     }
 }

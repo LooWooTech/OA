@@ -20,6 +20,11 @@ namespace Loowoo.Common
             PageIndex = page < 1 ? 1 : page;
             PageSize = limit < 1 ? 20 : limit;
         }
+        public PageParameter(int? page,int? limit)
+        {
+            PageIndex = page.HasValue ? page.Value < 1 ? 1 : page.Value : 1;
+            PageSize = limit.HasValue ? limit.Value < 1 ? 20 : limit.Value : 20;
+        }
 
         [JsonProperty("total")]
         public int RecordCount { get; set; }

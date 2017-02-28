@@ -1,4 +1,7 @@
 ﻿using Loowoo.Land.OA.API.Common;
+using Loowoo.Land.OA.Base;
+using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,6 +65,36 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             return BadRequest($"{TaskName}:该文件不存在或已经删除");
+        }
+
+        /// <summary>
+        /// 作用：获取符合条件的文件列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日10:10:17
+        /// </summary>
+        /// <param name="infoId"></param>
+        /// <param name="formId"></param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult List(int? infoId=null,int?formId=null,int?page=null,int?rows=null,FileType? type = null)
+        {
+            var parameter = new FileParameter
+            {
+                InfoId = infoId,
+                FormId = formId,
+                Type = type,
+                Page=new Loowoo.Common.PageParameter(page,rows)
+            };
+            var list = Core.FileManager.Search(parameter);
+            var table = new PagingResult<OA.Models.File>
+            {
+                List = list,
+                Page = parameter.Page
+            };
+            return Ok(table);
         }
 
     }

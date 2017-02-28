@@ -42,8 +42,9 @@ namespace Loowoo.Land.OA.APITest
             Console.WriteLine(response.StatusCode);
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                Console.WriteLine(await response.Content.ReadAsStringAsync());
+               
             }
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
 
         }
         public void Post(string url,string postData)
@@ -54,6 +55,10 @@ namespace Loowoo.Land.OA.APITest
         public void Put(string url,string putData)
         {
             FunBase(url, putData, "put");
+        }
+        public void Delete(string url,string deletedata)
+        {
+            FunBase(url, deletedata, "delete");
         }
 
         public void FunBase(string url,string data,string method = "get")
@@ -90,5 +95,6 @@ namespace Loowoo.Land.OA.APITest
             Console.WriteLine(responseFromServer);
             Console.WriteLine($"完成{method}");
         }
+
     }
 }

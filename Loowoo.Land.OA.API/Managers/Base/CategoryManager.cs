@@ -50,16 +50,16 @@ namespace Loowoo.Land.OA.API.Managers
         }
 
         /// <summary>
-        /// 作用：获取所有种类列表
+        /// 作用：获取某一类型表单的所有种类列表
         /// 作者：汪建龙
         /// 编写时间：2017年2月24日09:48:14
         /// </summary>
         /// <returns></returns>
-        public List<Category> GetList()
+        public List<Category> GetList(int formId)
         {
             using (var db = GetDbContext())
             {
-                return db.Categorys.Where(e=>e.Deleted==false).OrderBy(e => e.ID).ToList();
+                return db.Categorys.Where(e => e.Deleted == false && e.FormID == formId).OrderBy(e => e.ID).ToList();
             }
         }
         /// <summary>

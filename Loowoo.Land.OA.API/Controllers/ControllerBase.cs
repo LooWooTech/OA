@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Loowoo.Security;
 using Loowoo.Land.OA.API.Managers;
 using Loowoo.Land.OA.Models;
 using System;
@@ -26,34 +27,51 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             get
             {
-                if (_User != null)
+                if (_User == null)
                 {
-                    return _User;
-                }
-                try
-                {
-                    var authorization = Request.Headers.Authorization;
-                    if (authorization != null && authorization.Parameter != null)
+                    try
                     {
-                        var strTicket = FormsAuthentication.Decrypt(authorization.Parameter).UserData;
-                        var array = strTicket.Split('&');
-                        if (array.Length == 3)
+                        var authorization = Request.Headers.Authorization;
+                        if (authorization != null && authorization.Parameter != null)
                         {
-                            _User = new OA.Models.User
+                            var strTicket = FormsAuthentication.Decrypt(authorization.Parameter).UserData;
+                            var array = strTicket.Split('&');
+                            if (array.Length == 4)
                             {
-                                ID = int.Parse(array[0]),
-                                Name = array[1]
-                            };
+                                UserRole role;
+                                _User = new OA.Models.User
+                                {
+                                    ID = int.Parse(array[0]),
+                                    Name = array[1]
+                                };
+                                if (Enum.TryParse<UserRole>(array[2], out role))
+                                {
+                                    _User.Role = role;
+                                }
+                                if (!string.IsNullOrEmpty(array[3]))
+                                {
+                                    _User.DepartmentId = int.Parse(array[3]);
+                                }
+                            }
                         }
                     }
+                    catch
+                    {
+
+                    }
                 }
-                catch
-                {
-                   
-                }
-                return null;
+
+                return _User;
             }
         }
         
+        protected void ThrowException(string error,string reason)
+        {
+            throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent(error),
+                ReasonPhrase = reason
+            });
+        }
     }
 }

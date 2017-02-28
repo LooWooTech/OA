@@ -80,6 +80,14 @@ namespace Loowoo.Land.OA.API.Managers
             }
         }
 
+        public UserGroup Get(int userId,int groupId)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.User_Groups.FirstOrDefault(e => e.UserID == userId && e.GroupID == groupId);
+            }
+        }
+
 
     }
 }

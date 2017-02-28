@@ -90,10 +90,12 @@
     <Compile Include="Models\Subscription.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserForm.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
     <Compile Include="Parameters\FeedParameter.cs" />
+    <Compile Include="Parameters\FileParameter.cs" />
     <Compile Include="Parameters\MissiveParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />

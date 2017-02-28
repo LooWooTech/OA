@@ -44,9 +44,7 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
         public string Name { get; set; }
-        public int FormId { get; set; }
     }
 
     /// <summary>

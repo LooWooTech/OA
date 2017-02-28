@@ -22,6 +22,7 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<Emergency> Emergencys { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Subscription> SubScriptions { get; set; }
+        public DbSet<File> Files { get; set; }
         #endregion
 
         #region  用户 组
@@ -38,6 +39,9 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowNode> Flow_Nodes { get; set; }
         public DbSet<FlowData> Flow_Datas { get; set; }
+        public DbSet<FlowNodeData> Flow_Node_Datas { get; set; }
+        public DbSet<UserForm> User_Forms { get; set; }
+
 
         #endregion
 
@@ -83,7 +87,7 @@ namespace Loowoo.Land.OA.API.Models
         #endregion
 
         #region 文件部分
-        public DbSet<File> Files { get; set; }
+       
         #endregion
     }
 }

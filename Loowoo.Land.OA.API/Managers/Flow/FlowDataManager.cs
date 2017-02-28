@@ -53,5 +53,41 @@ namespace Loowoo.Land.OA.API.Managers
                 return model;
             }
         }
+
+        /// <summary>
+        /// 作用：获取
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日10:10:46
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public FlowData Get(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Flow_Datas.Find(id);
+            }
+        }
+
+        /// <summary>
+        /// 作用：获取ID列表的所有FlowData实体类
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日11:09:11
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<FlowData> GetList(int[] ids)
+        {
+            var list = new List<FlowData>();
+            foreach(var id in ids)
+            {
+                var model = Get(id);
+                if (model != null)
+                {
+                    list.Add(model);
+                }
+            }
+            return list;
+        }
     }
 }

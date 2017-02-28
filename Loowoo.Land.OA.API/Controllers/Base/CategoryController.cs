@@ -67,15 +67,15 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(model);
         }
         /// <summary>
-        /// 作用：获取种类列表
+        /// 作用：获取某一表单的种类列表
         /// 作者：汪建龙
         /// 编写时间：2017年2月24日11:24:20
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<Category> List()
+        public List<Category> List(int formId)
         {
-            var list = Core.CategoryManager.GetList();
+            var list = Core.CategoryManager.GetList(formId);
             return list;
         }
         /// <summary>

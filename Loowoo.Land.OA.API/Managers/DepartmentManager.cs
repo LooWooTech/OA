@@ -103,5 +103,20 @@ namespace Loowoo.Land.OA.API.Managers
                 return true;
             }
         }
+
+        /// <summary>
+        /// 作用：验证系统中是否存在
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日11:12:35
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Exist(string name)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Departments.Any(e => e.Name.ToLower() == name.ToLower());
+            }
+        }
     }
 }

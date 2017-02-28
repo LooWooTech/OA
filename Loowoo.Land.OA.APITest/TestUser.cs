@@ -12,8 +12,7 @@ namespace Loowoo.Land.OA.APITest
     [TestClass]
     public class TestUser
     {
-        private WebApiTest _tool { get; set; }
-        
+        protected WebApiTest _tool { get; set; }
         public TestUser()
         {
             _tool = new WebApiTest();
@@ -45,7 +44,7 @@ namespace Loowoo.Land.OA.APITest
         }
 
     
-        public async System.Threading.Tasks.Task AccuracyTest()
+        public  async System.Threading.Tasks.Task AccuracyTest()
         {
    
             await _tool.Test($"/api/user/login?name=wjl&&password=123456");

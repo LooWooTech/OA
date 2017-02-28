@@ -34,9 +34,11 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 密级
         /// </summary>
-        public int ConfidentialLevel { get; set; }
-        [NotMapped]
-        public ConfidentialLevel Level { get; set; }
+        public Confidential Confidential { get; set; }
+        //public int ConfidentialLevel { get; set; }
+        //[NotMapped]
+        //public ConfidentialLevel Level { get; set; }
+
         /// <summary>
         /// 承办人ID
         /// </summary>
@@ -52,9 +54,10 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 缓急
         /// </summary>
-        public int EmergencyID { get; set; }
-        [NotMapped]
-        public Emergency Emergency { get; set; }
+        public EmergencyEnum EmergencyEnum { get; set; }
+        //public int EmergencyID { get; set; }
+        //[NotMapped]
+        //public Emergency Emergency { get; set; }
         /// <summary>
         /// 印发时间
         /// </summary>
@@ -71,12 +74,29 @@ namespace Loowoo.Land.OA.Models
         /// 公文机关部门
         /// </summary>
         public int BornOrganID { get; set; }
+        [NotMapped]
+        public Department Born { get; set; }
         /// <summary>
         /// 发往单位
         /// </summary>
         public int ToOrganID { get; set; }
-
         [NotMapped]
-        public Flow Flow { get; set; }
+        public Department To { get; set; }
+        public int NodeID { get; set; }
+        [NotMapped]
+        public FlowNode FlowNode { get; set; }
+    }
+
+    /// <summary>
+    /// 保密级别
+    /// </summary>
+    public enum Confidential
+    {
+
+    }
+
+    public enum EmergencyEnum
+    {
+
     }
 }

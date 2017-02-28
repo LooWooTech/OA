@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int FormId { get; set; }
         /// <summary>
-        /// 
+        /// 流程模板ID
         /// </summary>
         public int FlowId { get; set; }
         public bool Completed { get; set; }

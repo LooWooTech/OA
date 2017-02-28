@@ -84,6 +84,21 @@ namespace Loowoo.Land.OA.API.Managers
             }
         }
         /// <summary>
+        /// 作用：获取表单
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月27日10:55:36
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Form Get(string name)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Forms.FirstOrDefault(e => e.Name.ToLower() == name.ToLower());
+                return model;
+            }
+        }
+        /// <summary>
         /// 作用：获取表单列表
         /// 作者：汪建龙
         /// 编写时间：2017年2月22日15:27:52
