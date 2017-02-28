@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.API.Controllers
     {
         public User Login(string name,string password)
         {
-
+            throw new NotImplementedException();
         }
 
         public void LogOut()
