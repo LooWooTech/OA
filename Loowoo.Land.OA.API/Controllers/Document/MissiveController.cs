@@ -22,7 +22,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="fileIds"></param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Save([FromBody] Missive missive,int[] fileIds)
+        public IHttpActionResult Save([FromBody] Missive missive, int[] fileIds)
         {
             TaskName = "保存公文";
             if (missive == null
@@ -62,7 +62,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 }
             }
 
-           
+
             var form = Core.FormManager.Get("公文");
             if (form == null)
             {
@@ -124,7 +124,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult sendList(int page,int rows)
+        public IHttpActionResult SendList(int page = 1, int rows = 20)
         {
             TaskName = "发文拟稿列表";
             if (CurrentUser == null)

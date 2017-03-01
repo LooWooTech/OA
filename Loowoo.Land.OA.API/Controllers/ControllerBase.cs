@@ -22,46 +22,39 @@ namespace Loowoo.Land.OA.API.Controllers
         protected LogWriter LogWriter = LogWriter.Instance;
         protected string TaskName { get; set; }
 
-        private User _User { get; set; }
+        private User _currentUser { get; set; }
         protected User CurrentUser
         {
             get
             {
-                if (_User == null)
+                if (_currentUser == null)
                 {
-                    try
+                    var authorization = Request.Headers.Authorization;
+                    if (authorization != null && authorization.Parameter != null)
                     {
-                        var authorization = Request.Headers.Authorization;
-                        if (authorization != null && authorization.Parameter != null)
+                        var strTicket = FormsAuthentication.Decrypt(authorization.Parameter).UserData;
+                        var array = strTicket.Split('&');
+                        if (array.Length == 4)
                         {
-                            var strTicket = FormsAuthentication.Decrypt(authorization.Parameter).UserData;
-                            var array = strTicket.Split('&');
-                            if (array.Length == 4)
+                            _currentUser = new User
                             {
-                                UserRole role;
-                                _User = new OA.Models.User
-                                {
-                                    ID = int.Parse(array[0]),
-                                    Name = array[1]
-                                };
-                                if (Enum.TryParse<UserRole>(array[2], out role))
-                                {
-                                    _User.Role = role;
-                                }
-                                if (!string.IsNullOrEmpty(array[3]))
-                                {
-                                    _User.DepartmentId = int.Parse(array[3]);
-                                }
+                                ID = int.Parse(array[0]),
+                                Name = array[1]
+                            };
+                            UserRole role = UserRole.Guest;
+                            if (Enum.TryParse(array[2], out role))
+                            {
+                                _currentUser.Role = role;
+                            }
+                            if (!string.IsNullOrEmpty(array[3]))
+                            {
+                                _currentUser.DepartmentId = int.Parse(array[3]);
                             }
                         }
                     }
-                    catch
-                    {
-
-                    }
                 }
 
-                return _User;
+                return _currentUser;
             }
         }
         

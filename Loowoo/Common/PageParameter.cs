@@ -29,10 +29,10 @@ namespace Loowoo.Common
         [JsonProperty("total")]
         public int RecordCount { get; set; }
 
-        [JsonProperty("page")]
+        [JsonProperty("current")]
         public int PageIndex { get; set; }
 
-        [JsonProperty("rows")]
+        [JsonProperty("pageSize")]
         public int PageSize { get; set; }
 
         [JsonProperty("pageCount")]
