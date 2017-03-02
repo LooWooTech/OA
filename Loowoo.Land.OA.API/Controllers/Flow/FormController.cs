@@ -68,7 +68,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public Form Get(int id)
+        public Form Model(int id)
         {
             var form = Core.FormManager.Get(id);
             return form;

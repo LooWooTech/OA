@@ -76,8 +76,9 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<CarEventLog> Car_Eventlogs { get; set; }
         #endregion
 
-        #region  动态部分
+        #region  动态消息部分
         public DbSet<Feed> Feeds { get; set; }
+        public DbSet<Message> Messages { get; set; }
         #endregion
 
 
@@ -86,8 +87,5 @@ namespace Loowoo.Land.OA.API.Models
         public DbSet<MeetingRoom> Meeting_Rooms { get; set; }
         #endregion
 
-        #region 文件部分
-       
-        #endregion
     }
 }

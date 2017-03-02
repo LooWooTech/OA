@@ -73,17 +73,18 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 公文机关部门
         /// </summary>
-        public int BornOrganID { get; set; }
-        [NotMapped]
+        [ForeignKey("Born")]
+        public int BornOrganID { get; set; } 
         public Department Born { get; set; }
         /// <summary>
         /// 发往单位
         /// </summary>
+        [ForeignKey("To")]
         public int ToOrganID { get; set; }
-        [NotMapped]
         public Department To { get; set; }
+        [ForeignKey("FlowNode")]
         public int NodeID { get; set; }
-        [NotMapped]
+        
         public FlowNode FlowNode { get; set; }
     }
 
