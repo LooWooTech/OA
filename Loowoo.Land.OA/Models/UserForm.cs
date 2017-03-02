@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    /// <summary>
+    /// 用户待办、办结、退回记录
+    /// </summary>
     [Table("user_form")]
     public class UserForm
     {

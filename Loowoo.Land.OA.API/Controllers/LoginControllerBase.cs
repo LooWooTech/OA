@@ -90,6 +90,36 @@ namespace Loowoo.Land.OA.API.Controllers
             //}
           
         }
+        /// <summary>
+        /// 作用：发布动态信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日15:03:55
+        /// </summary>
+        /// <param name="feed"></param>
+        protected int SaveFeed(Feed feed)
+        {
+            return Core.FeedManager.Save(feed);
+        }
+        /// <summary>
+        /// 作用：发布短消息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日15:10:48
+        /// </summary>
+        /// <param name="message"></param>
+        protected void SaveMessage(Message message)
+        {
+            Core.MessageManager.Save(message);
+        }
+        /// <summary>
+        /// 作用：
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日15:33:41
+        /// </summary>
+        /// <param name="userForm"></param>
+        protected void SaveUserForm(UserForm userForm)
+        {
+            Core.UserFormManager.Save(userForm);
+        }
 
     }
 }

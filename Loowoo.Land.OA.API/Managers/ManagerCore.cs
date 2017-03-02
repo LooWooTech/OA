@@ -63,7 +63,7 @@ namespace Loowoo.Land.OA.API.Managers
         #endregion
 
 
-        #region  用户 组
+        #region  用户 组 部门部分
 
         private UserManager _userManager { get; set; }
         public UserManager UserManager
@@ -85,10 +85,15 @@ namespace Loowoo.Land.OA.API.Managers
         {
             get { return _feedManager == null ? _feedManager = new Managers.FeedManager() : _feedManager; }
         }
+        private MessageManager _messageManager { get; set; }
+        public MessageManager MessageManager
+        {
+            get { return _messageManager == null ? _messageManager = new MessageManager() : _messageManager; }
+        }
         #endregion
 
 
-        #region 流程
+        #region 流程部分
         private FormManager _formManager { get; set; }
         public FormManager FormManager
         {
@@ -121,6 +126,7 @@ namespace Loowoo.Land.OA.API.Managers
             get { return _userFormManager == null ? _userFormManager = new UserFormManager() : _userFormManager; }
         }
         #endregion
+
         #region  公文部分
         private MissiveManager _missiveManager { get; set; }
         public MissiveManager MissiveManager
@@ -161,19 +167,6 @@ namespace Loowoo.Land.OA.API.Managers
         #endregion
 
 
-        public DocumentManager DocumentManager { get; private set; }
-      
-
-        /// <summary>
-        /// 收文
-        /// </summary>
-        public ReceiveDocumentManager Receive_DocumentManager { get; private set; }
-        /// <summary>
-        /// 发文
-        /// </summary>
-        public SendDocumentManager Send_DocumentManager { get; private set; }
-
-        public FlowStepManager FlowStepManager { get; private set; }
 
     }
 }
