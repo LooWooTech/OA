@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Loowoo.Land.OA.API.Managers
 {
-    public class UserManager:ManagerBase
+    public class UserManager : ManagerBase
     {
         /// <summary>
         /// 作用：用户登陆  输入参数密码为明文，无需加密
@@ -18,7 +18,7 @@ namespace Loowoo.Land.OA.API.Managers
         /// <param name="name"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public User Login(string name,string password)
+        public User Login(string name, string password)
         {
             password = password.MD5();
             using (var db = GetDbContext())
@@ -91,7 +91,7 @@ namespace Loowoo.Land.OA.API.Managers
                 {
                     query = query.Where(e => e.Username.ToLower().Contains(parameter.SearchKey.ToLower()) || e.Name.ToLower().Contains(parameter.SearchKey.ToLower()));
                 }
-                return query.ToList();
+                return query.OrderByDescending(e => e.ID).SetPage(parameter.Page).ToList();
             }
         }
         /// <summary>
@@ -100,14 +100,18 @@ namespace Loowoo.Land.OA.API.Managers
         /// 编写时间：2017年2月11日14:37:46
         /// </summary>
         /// <param name="user"></param>
-        public void  Edit(User user)
+        public void Save(User user)
         {
             using (var db = GetDbContext())
             {
                 var entry = db.Users.Find(user.ID);
                 if (entry == null)
                 {
-                    return ;
+                    return;
+                }
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    user.Password = user.Password.MD5();
                 }
                 db.Entry(entry).CurrentValues.SetValues(user);
                 db.SaveChanges();

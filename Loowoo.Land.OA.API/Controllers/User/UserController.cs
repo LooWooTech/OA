@@ -49,13 +49,14 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult List(int departmentId = 0, int groupId = 0, string searchKey = null)
+        public IHttpActionResult List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
         {
             var parameter = new UserParameter
             {
                 DepartmentId = departmentId,
                 GroupId = groupId,
-                SearchKey = searchKey
+                SearchKey = searchKey,
+                Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var query = Core.UserManager.Search(parameter);
             var list = new List<User>();
@@ -63,7 +64,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 foreach (var item in query)
                 {
-                    var model = Core.User_GroupManager.Get(item.ID, groupId);
+                    var model = Core.User_GroupManager.Get(item.ID, parameter.GroupId.Value);
                     if (model != null)
                     {
                         list.Add(item);
@@ -164,7 +165,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        public IHttpActionResult Edit([FromBody] User user)
+        public IHttpActionResult Save([FromBody] User user)
         {
             if (user == null
                 || string.IsNullOrEmpty(user.Name)
@@ -174,7 +175,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             try
             {
-                Core.UserManager.Edit(user);
+                Core.UserManager.Save(user);
             }
             catch (Exception ex)
             {
