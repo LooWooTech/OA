@@ -95,12 +95,17 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 作用：删除部门
         /// 作者：汪建龙
         /// 编写时间：2017年2月24日09:29:53
+        /// 备注：删除某个部门信息的时候，需要验证部门是否
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
+            if (Core.DepartmentManager.Used(id))
+            {
+                return BadRequest("删除部门：当前部门信息已在用户、审批流程节点使用");
+            }
             if (Core.DepartmentManager.Delete(id))
             {
                 return Ok();

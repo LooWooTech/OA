@@ -63,14 +63,14 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
 
-            var form = Core.FormManager.Get("公文");
+            var form = Core.FormManager.Get(SystemForm.Missive.GetDescription());
             if (form == null)
             {
                 return BadRequest($"{TaskName}:未查询到公文表单信息");
             }
-
+            //更新公文附件信息
             UpdateFileRelation(fileIds, missive.ID, form.ID);
-
+            //生成流程记录信息
             if (!SaveFlowData(form.ID, missive.ID))
             {
                 return BadRequest($"{TaskName}:生成流程记录失败");
@@ -108,10 +108,8 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.MissiveManager.Get(id);
             if (model == null)
             {
-                return NotFound();
+                return BadRequest($"获取公文：未获取到ID为{id}的公文实体");
             }
-            model.UnderTaker = Core.UserManager.Get(model.UserID);
-            model.Category = Core.CategoryManager.Get(model.CategoryID);
             return Ok(model);
         }
 
@@ -138,7 +136,7 @@ namespace Loowoo.Land.OA.API.Controllers
             };
             //获取当前用户相关的发文
             var list = Core.MissiveManager.Search(parameter);
-            var form = Core.FormManager.Get("发文");
+            var form = Core.FormManager.Get(SystemForm.Missive.GetDescription());
             if (form != null)
             {
                 //获取别人提交给当前用户的
@@ -148,7 +146,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 list = list.DistinctBy(e => e.ID).ToList();
             }
             list = list.OrderByDescending(e => e.CreateTime).SetPage(parameter.Page).ToList();
-            list = Core.MissiveManager.ReBody(list);
+
             var table = new PagingResult<Missive>
             {
                 List = list,

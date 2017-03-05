@@ -43,13 +43,13 @@ namespace Loowoo.Land.OA.Models
         /// 承办人ID
         /// </summary>
         public int UserID { get; set; }
-        [NotMapped]
+        [ForeignKey("UserID")]
         public User UnderTaker { get; set; }
         /// <summary>
         /// 种类
         /// </summary>
         public int CategoryID { get; set; }
-        [NotMapped]
+        [ForeignKey("CategoryID")]
         public Category Category { get; set; }
         /// <summary>
         /// 缓急
@@ -73,18 +73,17 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 公文机关部门
         /// </summary>
-        [ForeignKey("Born")]
         public int BornOrganID { get; set; } 
+        [ForeignKey("BornOrganID")]
         public Department Born { get; set; }
         /// <summary>
         /// 发往单位
         /// </summary>
-        [ForeignKey("To")]
         public int ToOrganID { get; set; }
+        [ForeignKey("ToOrganID")]
         public Department To { get; set; }
-        [ForeignKey("FlowNode")]
         public int NodeID { get; set; }
-        
+        [ForeignKey("NodeID")]
         public FlowNode FlowNode { get; set; }
     }
 

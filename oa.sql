@@ -116,25 +116,6 @@ INSERT INTO `flow` (`ID`, `Name`) VALUES
 	(3, '模板3');
 /*!40000 ALTER TABLE `flow` ENABLE KEYS */;
 
--- 导出  表 oa.flowstep 结构
-CREATE TABLE IF NOT EXISTS `flowstep` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) NOT NULL,
-  `FlowID` int(11) NOT NULL,
-  `Result` bit(2) DEFAULT NULL,
-  `Content` varchar(1023) DEFAULT NULL,
-  `Step` int(11) NOT NULL DEFAULT '0',
-  `CreateTime` datetime NOT NULL,
-  `UpdateTime` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FlowID` (`FlowID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- 正在导出表  oa.flowstep 的数据：~0 rows (大约)
-DELETE FROM `flowstep`;
-/*!40000 ALTER TABLE `flowstep` DISABLE KEYS */;
-/*!40000 ALTER TABLE `flowstep` ENABLE KEYS */;
-
 -- 导出  表 oa.flow_data 结构
 CREATE TABLE IF NOT EXISTS `flow_data` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -159,12 +140,18 @@ CREATE TABLE IF NOT EXISTS `flow_node` (
   `FlowId` int(11) NOT NULL DEFAULT '0',
   `Name` varchar(1023) NOT NULL,
   `UserId` int(11) NOT NULL DEFAULT '0',
+  `GroupID` int(11) NOT NULL DEFAULT '0',
   `DepartmentId` int(11) NOT NULL DEFAULT '0',
-  `Order` int(11) NOT NULL DEFAULT '0',
+  `BackNodeID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `FlowId` (`FlowId`),
   KEY `UserId` (`UserId`),
-  KEY `DepartmentId` (`DepartmentId`)
+  KEY `DepartmentId` (`DepartmentId`),
+  KEY `BackNodeID` (`BackNodeID`),
+  KEY `GroupID` (`GroupID`),
+  CONSTRAINT `FK_flow_node_flow` FOREIGN KEY (`FlowId`) REFERENCES `flow` (`ID`),
+  CONSTRAINT `FK_flow_node_organization` FOREIGN KEY (`DepartmentId`) REFERENCES `organization` (`ID`),
+  CONSTRAINT `FK_flow_node_user` FOREIGN KEY (`UserId`) REFERENCES `user` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 正在导出表  oa.flow_node 的数据：~0 rows (大约)
@@ -183,11 +170,15 @@ CREATE TABLE IF NOT EXISTS `flow_node_data` (
   `UpdateTime` datetime DEFAULT NULL,
   `Result` bit(2) DEFAULT NULL,
   `Content` text,
+  `FlowNodeId` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `FlowDataId` (`FlowDataId`),
   KEY `ParentId` (`ParentId`),
   KEY `UserId` (`UserId`),
-  KEY `DepartmentId` (`DepartmentId`)
+  KEY `DepartmentId` (`DepartmentId`),
+  KEY `FlowNodeId` (`FlowNodeId`),
+  CONSTRAINT `FK_flow_node_data_flow_node` FOREIGN KEY (`FlowNodeId`) REFERENCES `flow_node` (`ID`),
+  CONSTRAINT `FK_flow_node_data_flow_data` FOREIGN KEY (`FlowDataId`) REFERENCES `flow_data` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 正在导出表  oa.flow_node_data 的数据：~0 rows (大约)
@@ -201,7 +192,8 @@ CREATE TABLE IF NOT EXISTS `form` (
   `Name` varchar(255) NOT NULL,
   `FlowID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  KEY `FlowID` (`FlowID`)
+  KEY `FlowID` (`FlowID`),
+  CONSTRAINT `FK_form_flow` FOREIGN KEY (`FlowID`) REFERENCES `flow` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 -- 正在导出表  oa.form 的数据：~24 rows (大约)
@@ -269,10 +261,14 @@ CREATE TABLE IF NOT EXISTS `missive` (
   `ToOrganID` int(11) NOT NULL DEFAULT '0',
   `NodeID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  KEY `UserID` (`UserID`),
   KEY `CategoryID` (`CategoryID`),
   KEY `BornOrganID` (`BornOrganID`),
-  KEY `ToOrganID` (`ToOrganID`)
+  KEY `ToOrganID` (`ToOrganID`),
+  KEY `UserID` (`UserID`),
+  CONSTRAINT `FK_missive_category` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`ID`),
+  CONSTRAINT `FK_missive_organization` FOREIGN KEY (`BornOrganID`) REFERENCES `organization` (`ID`),
+  CONSTRAINT `FK_missive_organization_2` FOREIGN KEY (`ToOrganID`) REFERENCES `organization` (`ID`),
+  CONSTRAINT `FK_missive_user` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 正在导出表  oa.missive 的数据：~0 rows (大约)
@@ -288,88 +284,16 @@ CREATE TABLE IF NOT EXISTS `organization` (
   `Sort` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `ParentID` (`ParentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- 正在导出表  oa.organization 的数据：~27 rows (大约)
+-- 正在导出表  oa.organization 的数据：~3 rows (大约)
 DELETE FROM `organization`;
 /*!40000 ALTER TABLE `organization` DISABLE KEYS */;
 INSERT INTO `organization` (`ID`, `ParentID`, `Name`, `Sort`) VALUES
 	(1, 0, '办公室', 0),
 	(2, 0, '规划耕保科', 0),
-	(3, 0, '利用科', 0),
-	(5, 0, '办公室', 0),
-	(6, 0, '规划耕保科', 0),
-	(7, 0, '利用科', 0),
-	(8, 0, '瞎逼逼', 0),
-	(9, 0, '办公室', 0),
-	(10, 0, '规划耕保科', 0),
-	(11, 0, '利用科', 0),
-	(12, 0, '瞎逼逼', 0),
-	(13, 0, '办公室', 0),
-	(14, 0, '规划耕保科', 0),
-	(15, 0, '利用科', 0),
-	(16, 0, '瞎逼逼', 0),
-	(17, 0, '办公室', 0),
-	(18, 0, '规划耕保科', 0),
-	(19, 0, '利用科', 0),
-	(20, 0, '瞎逼逼', 0),
-	(21, 0, '办公室', 0),
-	(22, 0, '规划耕保科', 0),
-	(23, 0, '利用科', 0),
-	(24, 0, '瞎逼逼', 0),
-	(25, 0, '办公室', 0),
-	(26, 0, '规划耕保科', 0),
-	(27, 0, '利用科', 0),
-	(28, 0, '瞎逼逼', 0);
+	(3, 0, '利用科', 0);
 /*!40000 ALTER TABLE `organization` ENABLE KEYS */;
-
--- 导出  表 oa.receive_document 结构
-CREATE TABLE IF NOT EXISTS `receive_document` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Number` varchar(255) NOT NULL,
-  `Title` varchar(1023) NOT NULL,
-  `CreateTime` datetime NOT NULL,
-  `Deleted` bit(2) NOT NULL DEFAULT b'0',
-  `ConfidentialLevel` int(10) NOT NULL DEFAULT '0',
-  `UID` int(11) NOT NULL,
-  `Filing` int(11) DEFAULT NULL,
-  `Category` varchar(255) NOT NULL,
-  `Emergency` int(10) NOT NULL DEFAULT '0',
-  `ReceiveWord` varchar(255) DEFAULT NULL,
-  `Keywords` varchar(255) DEFAULT NULL,
-  `SWOrgan` varchar(255) DEFAULT NULL,
-  `FromOrgan` varchar(255) DEFAULT NULL,
-  `PrintTime` datetime DEFAULT NULL,
-  `EffectTime` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `UID` (`UID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- 正在导出表  oa.receive_document 的数据：~1 rows (大约)
-DELETE FROM `receive_document`;
-/*!40000 ALTER TABLE `receive_document` DISABLE KEYS */;
-INSERT INTO `receive_document` (`ID`, `Number`, `Title`, `CreateTime`, `Deleted`, `ConfidentialLevel`, `UID`, `Filing`, `Category`, `Emergency`, `ReceiveWord`, `Keywords`, `SWOrgan`, `FromOrgan`, `PrintTime`, `EffectTime`) VALUES
-	(1, '20170216111111111111', '测试公文', '2017-02-16 14:19:23', b'00', 0, 1, NULL, '测试种类1', 1, '20170301', '', NULL, NULL, NULL, NULL);
-/*!40000 ALTER TABLE `receive_document` ENABLE KEYS */;
-
--- 导出  表 oa.send_document 结构
-CREATE TABLE IF NOT EXISTS `send_document` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Number` varchar(255) NOT NULL,
-  `Title` varchar(1023) NOT NULL,
-  `CreateTime` datetime NOT NULL,
-  `Deleted` bit(2) NOT NULL DEFAULT b'0',
-  `ConfidentialLevel` bit(2) NOT NULL DEFAULT b'0',
-  `UID` datetime NOT NULL,
-  `Filing` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `UID` (`UID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- 正在导出表  oa.send_document 的数据：~0 rows (大约)
-DELETE FROM `send_document`;
-/*!40000 ALTER TABLE `send_document` DISABLE KEYS */;
-/*!40000 ALTER TABLE `send_document` ENABLE KEYS */;
 
 -- 导出  表 oa.subscription 结构
 CREATE TABLE IF NOT EXISTS `subscription` (
@@ -419,19 +343,38 @@ CREATE TABLE IF NOT EXISTS `user` (
   `Role` bit(3) NOT NULL DEFAULT b'0',
   `DepartmentId` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `DepartmentId` (`DepartmentId`)
+  KEY `DepartmentId` (`DepartmentId`),
+  CONSTRAINT `FK_user_organization` FOREIGN KEY (`DepartmentId`) REFERENCES `organization` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- 正在导出表  oa.user 的数据：~5 rows (大约)
 DELETE FROM `user`;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`ID`, `Username`, `Password`, `Name`, `Role`, `DepartmentId`) VALUES
-	(1, '管理员', '21232f297a57a5a743894a0e4a801fc3', 'Admin', b'011', NULL),
+	(1, '管理员', '21232f297a57a5a743894a0e4a801fc3', 'Admin', b'011', 1),
 	(2, '汪建龙', 'e10adc3949ba59abbe56e057f20f883e', 'wjl', b'000', NULL),
 	(3, '唐尧', 'e10adc3949ba59abbe56e057f20f883e', 'ty', b'000', NULL),
 	(4, '赵斯思', 'e10adc3949ba59abbe56e057f20f883e', 'zss', b'000', NULL),
 	(5, '郑良军', 'e10adc3949ba59abbe56e057f20f883e', 'zlj', b'000', NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+
+-- 导出  表 oa.user_form 结构
+CREATE TABLE IF NOT EXISTS `user_form` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `UserID` int(11) NOT NULL DEFAULT '0',
+  `FormID` int(11) NOT NULL DEFAULT '0',
+  `InfoID` int(11) NOT NULL DEFAULT '0',
+  `State` bit(5) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`ID`),
+  KEY `UserID` (`UserID`),
+  KEY `FormID` (`FormID`),
+  KEY `InfoID` (`InfoID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 正在导出表  oa.user_form 的数据：~0 rows (大约)
+DELETE FROM `user_form`;
+/*!40000 ALTER TABLE `user_form` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_form` ENABLE KEYS */;
 
 -- 导出  表 oa.user_group 结构
 CREATE TABLE IF NOT EXISTS `user_group` (
@@ -441,11 +384,13 @@ CREATE TABLE IF NOT EXISTS `user_group` (
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
   KEY `GroupID` (`GroupID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- 正在导出表  oa.user_group 的数据：~0 rows (大约)
+-- 正在导出表  oa.user_group 的数据：~1 rows (大约)
 DELETE FROM `user_group`;
 /*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+INSERT INTO `user_group` (`ID`, `UserID`, `GroupID`) VALUES
+	(1, 1, 1);
 /*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

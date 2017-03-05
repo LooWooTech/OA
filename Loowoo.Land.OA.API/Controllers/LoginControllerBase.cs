@@ -32,7 +32,6 @@ namespace Loowoo.Land.OA.API.Controllers
 
 
 
-
         /// <summary>
         /// 作用：生成FlowData
         /// 作者：汪建龙
@@ -119,6 +118,59 @@ namespace Loowoo.Land.OA.API.Controllers
         protected void SaveUserForm(UserForm userForm)
         {
             Core.UserFormManager.Save(userForm);
+        }
+        /// <summary>
+        /// 作用：更新流程记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月3日11:09:51
+        /// </summary>
+        /// <param name="userForm"></param>
+        protected void UpdateUserForm(UserForm userForm)
+        {
+            Core.UserFormManager.Edit(userForm);
+        }
+        /// <summary>
+        /// 作用：根据FlowNodeData 以及FlowNode获取下一个节点记录
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月3日13:32:48
+        /// </summary>
+        /// <param name="nodedata"></param>
+        /// <param name="flowNode"></param>
+        /// <returns></returns>
+        protected FlowNodeData GetNextNode(FlowNodeData nodedata,FlowNode flowNode)
+        {
+            if (!nodedata.Result.HasValue)
+            {
+                if (nodedata.Result.Value == false)
+                {
+                    var pre = Core.FlowNodeManager.Get(flowNode.BackNodeID);
+                    if (pre != null)
+                    {
+                        return new FlowNodeData
+                        {
+                            FlowDataId = nodedata.FlowDataId,
+                            UserId = pre.UserId,
+                            DepartmentId = pre.DepartmentId,
+                            FlowNodeId = pre.ID
+                        };
+                    }
+                }
+                else
+                {
+                    var next = Core.FlowNodeManager.GetNext(flowNode.ID);
+                    if (next != null)
+                    {
+                        return new FlowNodeData
+                        {
+                            FlowDataId = nodedata.FlowDataId,
+                            UserId = next.UserId,
+                            DepartmentId = next.DepartmentId,
+                            FlowNodeId = next.ID
+                        };
+                    }
+                }
+            }
+            return null;
         }
 
     }

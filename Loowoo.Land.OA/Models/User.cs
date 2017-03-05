@@ -29,9 +29,10 @@ namespace Loowoo.Land.OA.Models
         /// 部门ID
         /// </summary>
         public int? DepartmentId { get; set; }
-        [NotMapped]
+        [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
         public UserRole Role { get; set; }
+
         [NotMapped]
         public List<Group> Groups { get; set; }
         [NotMapped]

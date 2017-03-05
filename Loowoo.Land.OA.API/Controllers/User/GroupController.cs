@@ -84,12 +84,17 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 作用：删除组
         /// 作者：汪建龙
         /// 编写时间：2017年2月24日14:45:58
+        /// 备注：删除的Group ID不能在UserGroup中使用过
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
+            if (Core.GroupManager.Used(id))
+            {
+                return BadRequest("删除组：当前删除组已使用");
+            }
             if (Core.GroupManager.Delete(id))
             {
                 return Ok();

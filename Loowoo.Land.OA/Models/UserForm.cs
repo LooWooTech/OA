@@ -21,6 +21,7 @@ namespace Loowoo.Land.OA.Models
         public int UserID { get; set; }
         public int FormID { get; set; }
         public int InfoID { get; set; }
+        public int FlowNodeDataID { get; set; }
         public State State { get; set; }
     }
 
@@ -33,6 +34,8 @@ namespace Loowoo.Land.OA.Models
         [Description("退回")]
         Roll,
         [Description("完结")]
-        Finish
+        Finish,
+        //[Description("草稿")]
+        //Draft
     }
 }

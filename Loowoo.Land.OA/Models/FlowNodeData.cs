@@ -26,6 +26,8 @@ namespace Loowoo.Land.OA.Models
         public DateTime? UpdateTime { get; set; }
         public bool? Result { get; set; }
         public string Content { get; set; }
-        public bool Deleted { get; set; }
+        public int FlowNodeId { get; set; }
+        [ForeignKey("FlowNodeId")]
+        public FlowNode FlowNode { get; set; }
     }
 }

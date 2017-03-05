@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.Base;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(flow);
         }
         /// <summary>
-        /// 作用：获取某一个模板
+        /// 作用：获取某一个流程模板并包括所有流程节点信息
         /// 作者：汪建龙
         /// 编写时间：2017年2月28日09:09:22
         /// </summary>
@@ -102,8 +103,9 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.FlowManager.Get(id);
             if (model == null)
             {
-                return NotFound();
+                return BadRequest($"{TaskName}:未获取到ID为{id}的流程模板，请核对ID");
             }
+            model.Nodes = Core.FlowNodeManager.GetByFlowID(id);
             return Ok(model);
         }
         /// <summary>
@@ -144,7 +146,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取流程记录信息");
             }
-            var flowNodeData = Core.FlowNodeDataManager.Get(flowdata.ID, CurrentUser.ID);
+            var flowNodeData = Core.FlowNodeDataManager.Get(flowdata.ID, CurrentUser.ID,0);
             if (flowNodeData == null)
             {
                 return NotFound();
@@ -152,7 +154,128 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(flowNodeData);
         }
 
+        /// <summary>
+        /// 作用：保存流程节点
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月3日17:10:11
+        /// </summary>
+        /// <param name="flowNode"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IHttpActionResult SaveNode([FromBody] FlowNode flowNode)
+        {
+            TaskName = "保存节点";
+            #region  验证数据有效逻辑
+            if (flowNode == null || string.IsNullOrEmpty(flowNode.Name))
+            {
+                return BadRequest($"{TaskName}:未获取流程节点信息、流程节点名称不能为空，请核对");
+            }
+            var flow = Core.FlowManager.Get(flowNode.FlowId);
+            if (flow == null)
+            {
+                return BadRequest($"{TaskName}:未获取流程节点相关联的ID：{flowNode.FlowId} 流程模板，请核对");
+            }
+            var group = Core.GroupManager.Get(flowNode.GroupId);
+            if (group == null)
+            {
+                return BadRequest($"{TaskName}:未获取ID为{flowNode.GroupId}的组，请核对");
+            }
+            var organ = Core.DepartmentManager.Get(flowNode.DepartmentId);
+            if (organ == null)
+            {
+                return BadRequest($"{TaskName}:未获取ID为{flowNode.DepartmentId}的部门，请核对");
+            }
+            if (flowNode.BackNodeID > 0)
+            {
+                var pre = Core.FlowNodeManager.Get(flowNode.BackNodeID);
+                if (pre == null)
+                {
+                    return BadRequest($"{TaskName}:未获取ID为{flowNode.BackNodeID}的上一级流程节点");
+                }
+            }
+            #endregion
+            if (flowNode.ID > 0)
+            {
+                if (!Core.FlowNodeManager.Edit(flowNode))
+                {
+                    return BadRequest($"{TaskName}:更新流程节点失败，未找到更新ID为{flowNode.ID}的流程节点信息，请核对");
+                }
+            }
+            else
+            {
+                var id = Core.FlowNodeManager.Save(flowNode);
+                if (id <= 0)
+                {
+                    return BadRequest($"{TaskName}:保存失败");
+                }
+            }
 
+            return Ok(flowNode);
+        }
+
+        /// <summary>
+        /// 作用：删除流程节点
+        /// 作者：汪建龙
+        /// 编写时间：
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IHttpActionResult DeleteNode(int id)
+        {
+            TaskName = "删除流程节点";
+            if (Core.FlowNodeManager.Used(id))
+            {
+                return BadRequest($"{TaskName}:当前流程节点ID为{id}关联下一级节点或者系统中已存在相关流程节点记录，请核对");
+            }
+            if (!Core.FlowNodeManager.Delete(id))
+            {
+                return BadRequest($"{TaskName}:未找到需要删除的ID为{id}的流程节点信息,请核对");
+            }
+            return Ok();
+        }
+        /// <summary>
+        /// 作用：获取所有流程模板列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月3日17:21:38
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public List<Flow> List()
+        {
+            var list = Core.FlowManager.GetList();
+            return list;
+        }
+        /// <summary>
+        /// 作用：获取满足下一节点条件的人员列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月5日12:00:41
+        /// </summary>
+        /// <param name="currentNodeId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult NextNodeUserList(int currentNodeId)
+        {
+            TaskName = "获取下一个节点人员列表";
+            var currentNode = Core.FlowNodeManager.Get(currentNodeId);
+            if (currentNode == null)
+            {
+                return BadRequest($"{TaskName}:未获取Id为{currentNodeId}的流程节点信息，请核对");
+            }
+            var nextnode = Core.FlowNodeManager.GetNext(currentNodeId);
+            if (nextnode == null)//流程为最后一步
+            {
+                return Ok();
+            }
+            var parameter = new Parameters.UserParameter { GroupId = nextnode.GroupId, DepartmentId = nextnode.DepartmentId };
+            var list = Core.UserManager.Search(parameter);
+            var table = new PagingResult<User>
+            {
+                List = list,
+                Page = parameter.Page
+            };
+            return Ok(table);
+        }
 
         ///// <summary>
         ///// 作用：获取第一个节点，如果流程

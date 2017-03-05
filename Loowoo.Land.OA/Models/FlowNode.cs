@@ -17,8 +17,12 @@ namespace Loowoo.Land.OA.Models
         public int FlowId { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
+        public int GroupId { get; set; }
         public int DepartmentId { get; set; }
-        public int Order { get; set; }
+        /// <summary>
+        /// 上一个节点
+        /// </summary>
+        public int BackNodeID { get; set; }
         
         [NotMapped]
         public string Condition { get; set; }

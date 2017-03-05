@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var user = Core.UserManager.Login(name, password);
             if (user == null)
             {
-                return NotFound();
+                return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
             }
 
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}&{3}",user.ID, name, user.Role,user.DepartmentId.HasValue?user.DepartmentId.Value.ToString():""), FormsAuthentication.FormsCookiePath);
@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult List(int departmentId,int groupId,string searchKey)
+        public IHttpActionResult List(int? departmentId=null,int? groupId=null,string searchKey=null)
         {
             var parameter = new UserParameter
             {
@@ -57,23 +57,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 GroupId = groupId,
                 SearchKey = searchKey
             };
-            var query = Core.UserManager.Search(parameter);
-            var list = new List<User>();
-            if (parameter.GroupId.HasValue && parameter.GroupId.Value > 0)
-            {
-                foreach (var item in query)
-                {
-                    var model = Core.User_GroupManager.Get(item.ID, groupId);
-                    if (model != null)
-                    {
-                        list.Add(item);
-                    }
-                }
-            }
-            else
-            {
-                list = query;
-            }
+            var list = Core.UserManager.Search(parameter);
 
             var table = new PagingResult<User>
             {

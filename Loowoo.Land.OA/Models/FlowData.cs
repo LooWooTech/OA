@@ -27,5 +27,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int FlowId { get; set; }
         public bool Completed { get; set; }
+        [NotMapped]
+        public List<FlowNodeData> Nodes { get; set; }
     }
 }

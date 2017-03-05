@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Loowoo.Land.OA.Managers;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,14 @@ namespace Loowoo.Land.OA.API
         {
             this.PostAuthenticateRequest += (sender, e) => HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
             base.Init();
+        }
+        protected virtual void Application_BeginRequest()
+        {
+            OneContext.Begin();
+        }
+        protected virtual void Application_EndRequest()
+        {
+            OneContext.End();
         }
     }
 }
