@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="password">密码</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Login(string name,string password)
+        public IHttpActionResult Login(string name, string password)
         {
             TaskName = "用户登录";
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
@@ -36,7 +36,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
             }
 
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}&{3}",user.ID, name, user.Role,user.DepartmentId.HasValue?user.DepartmentId.Value.ToString():""), FormsAuthentication.FormsCookiePath);
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}&{3}", user.ID, name, user.Role, user.DepartmentId.HasValue ? user.DepartmentId.Value.ToString() : ""), FormsAuthentication.FormsCookiePath);
             user.Ticket = FormsAuthentication.Encrypt(ticket);
             HttpContext.Current.Session.Add(name, user);
             return Ok(user);
@@ -49,16 +49,17 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult List(int? departmentId=null,int? groupId=null,string searchKey=null)
+        public IHttpActionResult List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
+
         {
             var parameter = new UserParameter
             {
                 DepartmentId = departmentId,
                 GroupId = groupId,
-                SearchKey = searchKey
+                SearchKey = searchKey,
+                Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.UserManager.Search(parameter);
-
             var table = new PagingResult<User>
             {
                 List = list,
@@ -103,16 +104,16 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public IHttpActionResult Register([FromBody]User user)
         {
-            if(user==null
-                ||string.IsNullOrEmpty(user.Name)
-                ||string.IsNullOrEmpty(user.Username)
+            if (user == null
+                || string.IsNullOrEmpty(user.Name)
+                || string.IsNullOrEmpty(user.Username)
                 || string.IsNullOrEmpty(user.Password))
             {
                 return BadRequest("注册用户信息不正确");
             }
             if (Core.UserManager.Exist(user.Name))
             {
-                return BadRequest(string.Format("当前系统中已存在登录名：{0}，请更改登陆名", user.Name)); 
+                return BadRequest(string.Format("当前系统中已存在登录名：{0}，请更改登陆名", user.Name));
             }
             Core.UserManager.Register(user);
             return Ok();
@@ -148,20 +149,21 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPut]
-        public IHttpActionResult Edit([FromBody] User user)
+        public IHttpActionResult Save([FromBody] User user)
         {
-            if (user == null 
-                || string.IsNullOrEmpty(user.Name) 
+            if (user == null
+                || string.IsNullOrEmpty(user.Name)
                 || string.IsNullOrEmpty(user.Username))
             {
                 return BadRequest("编辑用户参数错误");
             }
             try
             {
-                Core.UserManager.Edit(user);
-            }catch(Exception ex)
+                Core.UserManager.Save(user);
+            }
+            catch (Exception ex)
             {
-                LogWriter.WriteException(ex,"编辑用户");
+                LogWriter.WriteException(ex, "编辑用户");
                 return BadRequest("编辑用户发生错误");
             }
             return Ok();
@@ -172,9 +174,10 @@ namespace Loowoo.Land.OA.API.Controllers
             try
             {
                 Core.UserManager.Delete(id);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                LogWriter.WriteException(ex,"用户删除");
+                LogWriter.WriteException(ex, "用户删除");
             }
         }
 
@@ -183,6 +186,6 @@ namespace Loowoo.Land.OA.API.Controllers
 
         //}
 
-        
+
     }
 }

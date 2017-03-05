@@ -20,7 +20,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<Group> GetList()
+        public List<Group> List()
         {
             return Core.GroupManager.GetList();
         }
