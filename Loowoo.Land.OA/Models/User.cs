@@ -20,6 +20,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public string Username { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public string Password { get; set; }
         /// <summary>
         /// 登录名
@@ -28,13 +29,14 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 部门ID
         /// </summary>
-        public int? DepartmentId { get; set; }
-        [ForeignKey("DepartmentId")]
-        public Department Department { get; set; }
+        public int DepartmentId { get; set; }
+
+        public virtual Department Department { get; set; }
+
         public UserRole Role { get; set; }
 
-        [NotMapped]
-        public List<Group> Groups { get; set; }
+        public virtual List<UserGroup> UserGroups { get; set; }
+
         [NotMapped]
         public string Ticket { get; set; }
 

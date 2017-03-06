@@ -22,7 +22,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                db.Flow_Nodes.Add(node);
+                db.FlowNodes.Add(node);
                 db.SaveChanges();
                 return node.ID;
             }
@@ -37,7 +37,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Edit(FlowNode node)
         {
-            var entry = db.Flow_Nodes.Find(node.ID);
+            var entry = db.FlowNodes.Find(node.ID);
             if (entry == null)
             {
                 return false;
@@ -56,12 +56,12 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            var entry = db.Flow_Nodes.Find(id);
+            var entry = db.FlowNodes.Find(id);
             if (entry == null)
             {
                 return false;
             }
-            db.Flow_Nodes.Remove(entry);
+            db.FlowNodes.Remove(entry);
             db.SaveChanges();
             return true;
         
@@ -74,10 +74,9 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="flowId"></param>
         /// <returns></returns>
-        public List<FlowNode> GetByFlowID(int flowId)
+        public IEnumerable<FlowNode> GetList(int flowId)
         {
-            var list = db.Flow_Nodes.Where(e => e.FlowId == flowId).OrderBy(e => e.BackNodeID).ToList();
-            return list;
+            return db.FlowNodes.Where(e => e.FlowId == flowId);
         }
 
         /// <summary>
@@ -89,7 +88,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNode Get(int id)
         {
-            return db.Flow_Nodes.Find(id);
+            return db.FlowNodes.Find(id);
         }
         /// <summary>
         /// 作用：获取下一个流程节点  id为当前FlowNodeID
@@ -100,7 +99,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNode GetNext(int id)
         {
-            return db.Flow_Nodes.FirstOrDefault(e => e.BackNodeID == id);
+            return db.FlowNodes.FirstOrDefault(e => e.BackNodeId == id);
         }
         /// <summary>
         /// 作用：验证ID 流程节点是否使用
@@ -111,7 +110,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            return db.Flow_Nodes.Any(e => e.BackNodeID == id) || db.Flow_Node_Datas.Any(e => e.FlowNodeId == id);
+            return db.FlowNodes.Any(e => e.BackNodeId == id) || db.Flow_Node_Datas.Any(e => e.FlowNodeId == id);
         }
     }
 }

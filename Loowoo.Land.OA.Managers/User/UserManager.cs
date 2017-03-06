@@ -81,7 +81,7 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public List<User> Search(UserParameter parameter)
+        public IEnumerable<User> Search(UserParameter parameter)
         {
             var query = db.Users.AsQueryable();
             if (parameter.DepartmentId.HasValue)
@@ -90,23 +90,14 @@ namespace Loowoo.Land.OA.Managers
             }
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
-                query = query.Where(e => e.Username.ToLower().Contains(parameter.SearchKey.ToLower())
-                || e.Name.ToLower().Contains(parameter.SearchKey.ToLower()));
+                parameter.SearchKey = parameter.SearchKey.ToLower();
+                query = query.Where(e => e.Username.Contains(parameter.SearchKey) || e.Name.Contains(parameter.SearchKey));
             }
-            var list = query.ToList();
             if (parameter.GroupId.HasValue)
             {
-                var newList = new List<User>();
-                foreach(var item in list)
-                {
-                    if (Core.User_GroupManager.Exist(item.ID, parameter.GroupId.Value))
-                    {
-                        newList.Add(item);
-                    }
-                }
-                list = newList;
+                query = query.Where(e => e.UserGroups.Any(g => g.GroupID == parameter.GroupId.Value));
             }
-            return list.OrderByDescending(e=>e.ID).SetPage(parameter.Page).ToList();
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
         /// <summary>
         /// 作用：编辑用户信息  通过ID查找用户 未找到用户不进行修改编辑 
@@ -127,6 +118,8 @@ namespace Loowoo.Land.OA.Managers
                 {
                     user.Password = user.Password.MD5();
                 }
+                user.Name = user.Name.ToLower();
+                user.Username = user.Username.ToLower();
                 db.Entry(entry).CurrentValues.SetValues(user);
                 db.SaveChanges();
             }

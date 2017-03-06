@@ -36,7 +36,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
             }
 
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, string.Format("{0}&{1}&{2}&{3}", user.ID, name, user.Role, user.DepartmentId.HasValue ? user.DepartmentId.Value.ToString() : ""), FormsAuthentication.FormsCookiePath);
+            var userData = string.Format("{0}&{1}&{2}&{3}", user.ID, name, user.Role, user.DepartmentId);
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, userData, FormsAuthentication.FormsCookiePath);
             user.Ticket = FormsAuthentication.Encrypt(ticket);
             HttpContext.Current.Session.Add(name, user);
             return Ok(user);
@@ -87,10 +88,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return NotFound();
             }
-            if (user.DepartmentId.HasValue)
-            {
-                user.Department = Core.DepartmentManager.Get(user.DepartmentId.Value);
-            }
+            user.Department = Core.DepartmentManager.Get(user.DepartmentId);
             return Ok(user);
         }
 

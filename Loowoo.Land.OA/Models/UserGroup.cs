@@ -18,7 +18,9 @@ namespace Loowoo.Land.OA.Models
         public int UserID { get; set; }
 
         public int GroupID { get; set; }
-        [NotMapped]
-        public Group Group { get; set; }
+
+        public virtual User User { get; set; }
+
+        public virtual Group Group { get; set; }
     }
 }

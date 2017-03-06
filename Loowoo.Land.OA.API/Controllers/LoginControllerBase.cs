@@ -143,7 +143,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 if (nodedata.Result.Value == false)
                 {
-                    var pre = Core.FlowNodeManager.Get(flowNode.BackNodeID);
+                    var pre = Core.FlowNodeManager.Get(flowNode.BackNodeId);
                     if (pre != null)
                     {
                         return new FlowNodeData

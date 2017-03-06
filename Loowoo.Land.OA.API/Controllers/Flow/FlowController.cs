@@ -43,7 +43,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="formId"></param>
         /// <returns></returns>
         [HttpGet]
-        public List<FlowNodeData> NodeList(int infoId,int formId)
+        public List<FlowNodeData> NodeList(int infoId, int formId)
         {
             var flowData = Core.FlowDataManager.Get(formId, infoId);
             if (flowData == null)
@@ -105,7 +105,6 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取到ID为{id}的流程模板，请核对ID");
             }
-            model.Nodes = Core.FlowNodeManager.GetByFlowID(id);
             return Ok(model);
         }
         /// <summary>
@@ -134,7 +133,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="formId"></param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult CurrentUserNode(int infoId,int formId)
+        public IHttpActionResult CurrentUserNode(int infoId, int formId)
         {
             TaskName = "获取审批记录";
             if (CurrentUser == null)
@@ -146,7 +145,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取流程记录信息");
             }
-            var flowNodeData = Core.FlowNodeDataManager.Get(flowdata.ID, CurrentUser.ID,0);
+            var flowNodeData = Core.FlowNodeDataManager.Get(flowdata.ID, CurrentUser.ID, 0);
             if (flowNodeData == null)
             {
                 return NotFound();
@@ -185,12 +184,12 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取ID为{flowNode.DepartmentId}的部门，请核对");
             }
-            if (flowNode.BackNodeID > 0)
+            if (flowNode.BackNodeId > 0)
             {
-                var pre = Core.FlowNodeManager.Get(flowNode.BackNodeID);
+                var pre = Core.FlowNodeManager.Get(flowNode.BackNodeId);
                 if (pre == null)
                 {
-                    return BadRequest($"{TaskName}:未获取ID为{flowNode.BackNodeID}的上一级流程节点");
+                    return BadRequest($"{TaskName}:未获取ID为{flowNode.BackNodeId}的上一级流程节点");
                 }
             }
             #endregion
@@ -241,10 +240,9 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<Flow> List()
+        public IEnumerable<Flow> List()
         {
-            var list = Core.FlowManager.GetList();
-            return list;
+            return Core.FlowManager.GetList();
         }
         /// <summary>
         /// 作用：获取满足下一节点条件的人员列表
@@ -352,6 +350,6 @@ namespace Loowoo.Land.OA.API.Controllers
         //}
 
 
-        
+
     }
 }

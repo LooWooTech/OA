@@ -12,8 +12,9 @@ namespace Loowoo.Land.OA.API
     {
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
-            var errorString = string.Format("{0}——{1}：{2}——{3}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), actionExecutedContext.Exception.GetType().ToString(), actionExecutedContext.Exception.Message, actionExecutedContext.Exception.StackTrace);
-            LogWriter.Instance.WriteLog2(errorString);
+            var ex = actionExecutedContext.Exception.GetInnerException();
+            var errorString = string.Format("{0}——{1}：{2}——{3}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), ex.GetType().ToString(), ex.Message, ex.StackTrace);
+            LogWriter.Instance.WriteLog(errorString);
             HttpResponseMessage response = null;
             if (actionExecutedContext.Exception is NotImplementedException)
             {

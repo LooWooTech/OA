@@ -67,7 +67,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未找到需要更新的流程节点记录信息");
             }
-            if (flowNode.BackNodeID > 0)
+            if (flowNode.BackNodeId > 0)
             {
                 UpdateUserForm(new UserForm
                 {

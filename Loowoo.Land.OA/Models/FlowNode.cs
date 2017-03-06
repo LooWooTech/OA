@@ -14,16 +14,28 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
         public int FlowId { get; set; }
+
         public string Name { get; set; }
+
         public int UserId { get; set; }
+
+        public virtual User User { get; set; }
+
         public int GroupId { get; set; }
+
+        public virtual Group Group { get; set; }
+
         public int DepartmentId { get; set; }
+
+        public virtual Department Department { get; set; }
+
         /// <summary>
-        /// 上一个节点
+        /// 退回的节点
         /// </summary>
-        public int BackNodeID { get; set; }
-        
+        public int BackNodeId { get; set; }
+
         [NotMapped]
         public string Condition { get; set; }
     }

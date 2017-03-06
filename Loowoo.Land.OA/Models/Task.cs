@@ -54,7 +54,5 @@ namespace Loowoo.Land.OA.Models
         public DateTime? UpdateTime { get; set; }
 
         public bool Deleted { get; set; }
-
-        public FlowStep FlowStep { get; set; }
     }
 }

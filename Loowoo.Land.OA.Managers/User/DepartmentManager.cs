@@ -34,10 +34,8 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public Department Get(int id)
         {
-            using (var db = GetDbContext())
-            {
-                return db.Departments.Find(id);
-            }
+            if (id == 0) return null;
+            return db.Departments.FirstOrDefault(e => e.ID == id);
         }
 
         /// <summary>
@@ -129,7 +127,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                return db.Users.Any(e => e.DepartmentId == id) || db.Flow_Node_Datas.Any(e => e.DepartmentId == id) || db.Flow_Nodes.Any(e => e.DepartmentId == id);
+                return db.Users.Any(e => e.DepartmentId == id) || db.Flow_Node_Datas.Any(e => e.DepartmentId == id) || db.FlowNodes.Any(e => e.DepartmentId == id);
             }
         }
     }

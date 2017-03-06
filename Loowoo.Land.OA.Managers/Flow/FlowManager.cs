@@ -9,7 +9,7 @@ namespace Loowoo.Land.OA.Managers
     /// <summary>
     /// 流程头信息管理
     /// </summary>
-    public class FlowManager:ManagerBase
+    public class FlowManager : ManagerBase
     {
         ///// <summary>
         ///// 作用：通过信息ID和信息类型获取Flow
@@ -79,7 +79,7 @@ namespace Loowoo.Land.OA.Managers
         public Flow Get(int id)
         {
             return db.Flows.Find(id);
-           
+
         }
         /// <summary>
         /// 作用：删除流程模板
@@ -105,9 +105,9 @@ namespace Loowoo.Land.OA.Managers
         /// 编写时间：2017年3月3日17:21:00
         /// </summary>
         /// <returns></returns>
-        public List<Flow> GetList()
+        public IEnumerable<Flow> GetList()
         {
-            return db.Flows.ToList();
+            return db.Flows.OrderBy(e => e.ID);
         }
         ///// <summary>
         ///// 作用：通过表单ID获取该表单的流程头信息

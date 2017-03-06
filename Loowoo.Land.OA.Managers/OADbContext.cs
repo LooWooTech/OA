@@ -17,13 +17,13 @@ namespace Loowoo.Land.OA.Managers
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasRequired(e => e.Department).WithMany().HasForeignKey(e => e.DepartmentId);
+
             modelBuilder.Entity<Missive>().HasRequired(e => e.UnderTaker).WithMany().HasForeignKey(e => e.UserID);
             modelBuilder.Entity<Missive>().HasRequired(e => e.Category).WithMany().HasForeignKey(e => e.CategoryID);
             modelBuilder.Entity<Missive>().HasRequired(e => e.Born).WithMany().HasForeignKey(e => e.BornOrganID);
             modelBuilder.Entity<Missive>().HasRequired(e => e.To).WithMany().HasForeignKey(e => e.ToOrganID);
             modelBuilder.Entity<Missive>().HasRequired(e => e.FlowNode).WithMany().HasForeignKey(e => e.NodeID);
-            modelBuilder.Entity<FlowNodeData>().HasRequired(e => e.FlowNode).WithMany().HasForeignKey(e => e.FlowNodeId);
+
 
         }
 
@@ -50,7 +50,7 @@ namespace Loowoo.Land.OA.Managers
 
         public DbSet<Form> Forms { get; set; }
         public DbSet<Flow> Flows { get; set; }
-        public DbSet<FlowNode> Flow_Nodes { get; set; }
+        public DbSet<FlowNode> FlowNodes { get; set; }
         public DbSet<FlowData> Flow_Datas { get; set; }
         public DbSet<FlowNodeData> Flow_Node_Datas { get; set; }
         public DbSet<UserForm> User_Forms { get; set; }
@@ -72,8 +72,6 @@ namespace Loowoo.Land.OA.Managers
 
         public DbSet<ReceiveDocument> Receive_Documents { get; set; }
         public DbSet<SendDocument> Send_Documents { get; set; }
-
-        public DbSet<FlowStep> Flow_Steps { get; set; }
 
         #endregion
 
