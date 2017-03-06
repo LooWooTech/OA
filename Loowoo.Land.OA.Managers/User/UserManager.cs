@@ -95,7 +95,7 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.GroupId.HasValue)
             {
-                query = query.Where(e => e.UserGroups.Any(g => g.GroupID == parameter.GroupId.Value));
+                query = query.Where(e => e.UserGroups.Any(g => g.UserID == e.ID && g.GroupID == parameter.GroupId.Value));
             }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
