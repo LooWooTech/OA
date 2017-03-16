@@ -54,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,7 +63,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Table.cs" />
+    <Compile Include="Models\PagingResult_T.cs" />
+    <Compile Include="Managers\Base\CategoryManager.cs" />
+    <Compile Include="Managers\Base\FeedManager.cs" />
+    <Compile Include="Managers\Base\MessageManager.cs" />
+    <Compile Include="Managers\FileManager.cs" />
+    <Compile Include="Managers\FormInfoManager.cs" />
+    <Compile Include="Managers\ManagerBase.cs" />
+    <Compile Include="Managers\ManagerCore.cs" />
+    <Compile Include="Managers\UserFormInfoManager.cs" />
+    <Compile Include="Models\FlowStatus.cs" />
+    <Compile Include="Models\OADbContext.cs" />
+    <Compile Include="Models\HttpDbContextContainer.cs" />
+    <Compile Include="Managers\User\DepartmentManager.cs" />
+    <Compile Include="Managers\User\GroupManager.cs" />
+    <Compile Include="Managers\User\UserGroupManager.cs" />
+    <Compile Include="Managers\User\UserManager.cs" />
     <Compile Include="Models\Archive.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Car.cs" />
@@ -82,6 +98,8 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\FormInfo.cs" />
+    <Compile Include="Models\FormInfoData.cs" />
     <Compile Include="Models\InfoType.cs" />
     <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\Message.cs" />
@@ -90,8 +108,9 @@
     <Compile Include="Models\Subscription.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserForm.cs" />
+    <Compile Include="Models\UserFormInfo.cs" />
     <Compile Include="Models\UserGroup.cs" />
+    <Compile Include="Models\UserRight.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
     <Compile Include="Parameters\FeedParameter.cs" />
@@ -106,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Managers\App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +134,7 @@
       <Name>Loowoo</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

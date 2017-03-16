@@ -21,20 +21,27 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// 表单ID
-        /// </summary>
-        public int FormId { get; set; }
-        /// <summary>
         /// 公文等ID
         /// </summary>
         public int InfoId { get; set; }
-        /// <summary>
-        /// 订阅类型
-        /// </summary>
-        public int Type { get; set; }
+
+        public int FormId { get; set; }
+
         public int FromUserId { get; set; }
+
         public int ToUserId { get; set; }
+
         public bool Deleted { get; set; }
+
         public DateTime CreateTime { get; set; }
+
+        public FeedAction Action { get; set; }
+    }
+
+    public enum FeedAction
+    {
+        Add,
+        Edit,
     }
 }
+

@@ -21,23 +21,17 @@ namespace Loowoo.Land.OA.Models
 
         public int UserId { get; set; }
 
-        public virtual User User { get; set; }
-
         public int GroupId { get; set; }
-
-        public virtual Group Group { get; set; }
 
         public int DepartmentId { get; set; }
 
+        public int Step { get; set; }
+
+        public virtual User User { get; set; }
+
+        public virtual Group Group { get; set; }
+
         public virtual Department Department { get; set; }
-
-        /// <summary>
-        /// 退回的节点
-        /// </summary>
-        public int BackNodeId { get; set; }
-
-        [NotMapped]
-        public string Condition { get; set; }
     }
 
 }

@@ -21,6 +21,8 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public GroupType Type { get; set; }
+
+        public virtual List<UserRight> Rights { get; set; }
     }
 
     public enum GroupType

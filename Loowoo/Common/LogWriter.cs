@@ -31,24 +31,6 @@ namespace Loowoo.Common
             File.AppendAllText(filePath, content);
         }
 
-        public void WriteLog2(string content,string filePrefix = null)
-        {
-            if (string.IsNullOrEmpty(content))
-            {
-                return;
-            }
-            var filePath = GetFilePath(filePrefix);
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath);
-            }
-            var fs = new FileStream(filePath, FileMode.Append);
-            var sw = new StreamWriter(fs);
-            sw.WriteLine(content);
-            sw.Close();
-            fs.Close();
-        }
-
         public void WriteException(Exception ex,string operateName)
         {
             WriteLog(string.Format("进行操作：{0} 发生错误，错误信息：Ex.Message:{1};Ex.Stacktrace:{2},Message:{3}",operateName, ex.Message, ex.StackTrace,ex.InnerException.InnerException.Message));

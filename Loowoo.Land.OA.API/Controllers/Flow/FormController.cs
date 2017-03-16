@@ -11,7 +11,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 表单管理
     /// </summary>
-    public class FormController : LoginControllerBase
+    public class FormController : ControllerBase
     {
         /// <summary>
         /// 作用：获取所有表单

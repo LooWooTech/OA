@@ -1,5 +1,4 @@
-﻿using Loowoo.Security;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -40,6 +39,11 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public string Ticket { get; set; }
 
+        public bool HasRight(string rightName)
+        {
+            return UserGroups.Any(e => e.Group.Rights.Any(r => r.Name.Contains(rightName)));
+        }
+
         public void Validate()
         {
             if (string.IsNullOrEmpty(Username))
@@ -58,5 +62,12 @@ namespace Loowoo.Land.OA.Models
                 }
             }
         }
+    }
+
+    public enum UserRole
+    {
+        User,
+        Manager,
+        Administrator
     }
 }

@@ -11,34 +11,16 @@ namespace Loowoo.Land.OA.Models
     /// <summary>
     /// 公文
     /// </summary>
-    [Table("missive")]
-    public class Missive
+    public class GONG_WEN
     {
-        public Missive()
-        {
-            CreateTime = DateTime.Now;
-        }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
         /// <summary>
         /// 公文文号
         /// </summary>
-        public string Number { get; set; }
-        /// <summary>
-        /// 标题
-        /// </summary>
-        public string Title { get; set; }
-        public DateTime CreateTime { get; set; }
-        public bool Deleted { get; set; }
+        public string GW_WH { get; set; }
         /// <summary>
         /// 密级
         /// </summary>
-        public Confidential Confidential { get; set; }
-        //public int ConfidentialLevel { get; set; }
-        //[NotMapped]
-        //public ConfidentialLevel Level { get; set; }
-
+        public GWMJ GW_MJ { get; set; }
         /// <summary>
         /// 承办人ID
         /// </summary>
@@ -48,54 +30,42 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 种类
         /// </summary>
-        public int CategoryID { get; set; }
-        [ForeignKey("CategoryID")]
-        public Category Category { get; set; }
+        public string GW_ZL { get; set; }
         /// <summary>
         /// 缓急
         /// </summary>
-        public EmergencyEnum EmergencyEnum { get; set; }
-        //public int EmergencyID { get; set; }
-        //[NotMapped]
-        //public Emergency Emergency { get; set; }
+        public GWHJ GW_HJ { get; set; }
         /// <summary>
         /// 印发时间
         /// </summary>
-        public DateTime? PrintTime { get; set; }
+        public DateTime? YF_SJ { get; set; }
         /// <summary>
         /// 生效时间
         /// </summary>
-        public DateTime? EffectTime { get; set; }
+        public DateTime? SX_SJ { get; set; }
         /// <summary>
         /// 主题词
         /// </summary>
-        public string KeyWords { get; set; }
+        public string GW_ZTC { get; set; }
         /// <summary>
         /// 公文机关部门
         /// </summary>
-        public int BornOrganID { get; set; } 
-        [ForeignKey("BornOrganID")]
-        public Department Born { get; set; }
+        public int JG_BM { get; set; }
         /// <summary>
         /// 发往单位
         /// </summary>
-        public int ToOrganID { get; set; }
-        [ForeignKey("ToOrganID")]
-        public Department To { get; set; }
-        public int NodeID { get; set; }
-        [ForeignKey("NodeID")]
-        public FlowNode FlowNode { get; set; }
+        public string FW_DW { get; set; }
     }
 
     /// <summary>
     /// 保密级别
     /// </summary>
-    public enum Confidential
+    public enum GWMJ
     {
 
     }
 
-    public enum EmergencyEnum
+    public enum GWHJ
     {
 
     }

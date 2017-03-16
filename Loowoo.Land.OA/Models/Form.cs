@@ -15,13 +15,20 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
         public string Name { get; set; }
+
         public int FLowID { get; set; }
     }
 
     public enum SystemForm
     {
         [Description("公文")]
-        Missive
+        Missive = 1,
+        [Description("请假")]
+        Leave = 2,
+        [Description("任务")]
+        Task = 3,
+
     }
 }

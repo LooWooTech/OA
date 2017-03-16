@@ -26,8 +26,9 @@ namespace Loowoo.Land.OA.Models
         /// 流程模板ID
         /// </summary>
         public int FlowId { get; set; }
+
         public bool Completed { get; set; }
-        [NotMapped]
-        public List<FlowNodeData> Nodes { get; set; }
+
+        public virtual List<FlowNodeData> Nodes { get; set; }
     }
 }

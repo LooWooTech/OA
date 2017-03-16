@@ -18,7 +18,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 文件管理
     /// </summary>
-    public class FileController : LoginControllerBase
+    public class FileController : ControllerBase
     {
         /// <summary>
         /// 作用：文件上传 返回文件类

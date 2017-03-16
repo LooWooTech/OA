@@ -28,6 +28,7 @@ namespace Loowoo.Land.OA.Models
         public string Content { get; set; }
         public int FlowNodeId { get; set; }
         [ForeignKey("FlowNodeId")]
-        public FlowNode FlowNode { get; set; }
+        public virtual FlowNode FlowNode { get; set; }
+        public int Step { get; internal set; }
     }
 }

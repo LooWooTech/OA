@@ -11,7 +11,7 @@ namespace Loowoo.Land.OA.API.Controllers
     /// <summary>
     /// 部门管理API
     /// </summary>
-    public class DepartmentController : LoginControllerBase
+    public class DepartmentController : ControllerBase
     {
         /// <summary>
         /// 作用：新建部门或者更新部门信息 ID>0为更新

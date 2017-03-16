@@ -1,4 +1,4 @@
-﻿using Loowoo.Land.OA.Managers;
+﻿using Loowoo.Land.OA.Models;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -31,11 +31,11 @@ namespace Loowoo.Land.OA.API
         }
         protected virtual void Application_BeginRequest()
         {
-            OneContext.Begin();
+            HttpDbContextContainer.OnBeginRequest(Context, new OADbContext());
         }
         protected virtual void Application_EndRequest()
         {
-            OneContext.End();
+            HttpDbContextContainer.OnEndRequest(Context);
         }
     }
 }
