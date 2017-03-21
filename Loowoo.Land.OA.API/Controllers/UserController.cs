@@ -1,4 +1,4 @@
-﻿using Loowoo.Land.OA.Base;
+﻿using Loowoo.Land.OA.API.Security;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
@@ -36,11 +36,8 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
             }
+            user.Token = AuthorizeHelper.GetToken(user);
 
-            var userData = string.Format("{0}&{1}&{2}&{3}", user.ID, name, user.Role, user.DepartmentId);
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(0, name, DateTime.Now, DateTime.Now.AddHours(1), true, userData, FormsAuthentication.FormsCookiePath);
-            user.Ticket = FormsAuthentication.Encrypt(ticket);
-            HttpContext.Current.Session.Add(name, user);
             return Ok(user);
         }
 
@@ -52,7 +49,6 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <returns></returns>
         [HttpGet]
         public IHttpActionResult List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
-
         {
             var parameter = new UserParameter
             {

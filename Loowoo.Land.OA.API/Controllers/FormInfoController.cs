@@ -3,13 +3,15 @@ using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
     public class FormInfoController : ControllerBase
     {
+        [HttpGet]
         public object List(int formId, string searchKey, FlowStatus? status, int page = 1, int rows = 20)
         {
             var parameter = new UserFormInfoParameter
@@ -21,7 +23,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new PageParameter(page, rows),
             };
 
-
             var list = Core.UserFormInfoManager.GetList(parameter);
 
             return new PagingResult<object>
@@ -32,41 +33,58 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Save(FormInfo model)
+        public IHttpActionResult Save(FormInfo data)
         {
-            var isAdd = model.ID == 0;
-            Core.FormInfoManager.Save(model);
+            if (data.FormId == 0)
+            {
+                return BadRequest("formId不能为0");
+            }
+            var context = (HttpContextWrapper)Request.Properties["MS_HttpContext"];
+            data.Data = new FormInfoData(context.Request.Form);
+
+            var isAdd = data.ID == 0;
+            var form = Core.FormManager.GetModel(data.FormId);
+            data.Form = form;
+            data.UpdateFileds();
+            data.PostUserId = CurrentUser.ID;
+            Core.FormInfoManager.Save(data);
 
             //只有在保存的时候，添加用户表
             if (isAdd)
             {
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
-                    InfoId = model.ID,
-                    UserId = model.PostUserId,
+                    InfoId = data.ID,
+                    UserId = data.PostUserId,
                 });
             }
             //更新动态
             Core.FeedManager.Save(new Feed
             {
                 Action = isAdd ? FeedAction.Add : FeedAction.Edit,
-                FormId = model.FormId,
-                InfoId = model.ID,
-                FromUserId = model.PostUserId,
+                FormId = data.FormId,
+                InfoId = data.ID,
+                FromUserId = data.PostUserId,
             });
+            return Ok(data);
         }
 
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            Core.FormInfoManager.Delete(id, e =>
+            var model = Core.FormInfoManager.GetModel(id);
+            if (model != null)
             {
-                var canEdit =
-                if (e.PostUserId == id || CurrentUser.Role == UserRole.Administrator)
+                if (Core.FormInfoManager.HasDeleteRight(model, CurrentUser))
                 {
-                    
+                    Core.FormInfoManager.Delete(id);
                 }
-            });
+                else
+                {
+                    return BadRequest("无法删除");
+                }
+            }
+            return BadRequest("参数错误");
         }
     }
 }

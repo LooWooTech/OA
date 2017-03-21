@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticateModule.cs" />
+    <Compile Include="Security\AuthorizeHelper.cs" />
     <Compile Include="Security\UserIdentity.cs" />
     <Compile Include="Security\UserPrincipal.cs" />
     <Compile Include="Security\UserRole.cs" />
@@ -172,8 +173,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\Base\" />
-    <Folder Include="Controllers\Document\" />
     <Folder Include="Controllers\Flow\" />
   </ItemGroup>
   <ItemGroup>

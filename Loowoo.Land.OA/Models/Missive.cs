@@ -11,22 +11,25 @@ namespace Loowoo.Land.OA.Models
     /// <summary>
     /// 公文
     /// </summary>
-    public class GONG_WEN
+    public class Missive
     {
+        [FormInfoField(Name = "Title")]
+        public string WJ_BT { get; set; }
+
         /// <summary>
         /// 公文文号
         /// </summary>
+        [FormInfoField(Name = "Keywords")]
         public string GW_WH { get; set; }
         /// <summary>
         /// 密级
         /// </summary>
         public GWMJ GW_MJ { get; set; }
         /// <summary>
-        /// 承办人ID
+        /// 责任人
         /// </summary>
-        public int UserID { get; set; }
-        [ForeignKey("UserID")]
-        public User UnderTaker { get; set; }
+        public int ZZR_ID { get; set; }
+        public string ZRR { get; set; }
         /// <summary>
         /// 种类
         /// </summary>
@@ -38,23 +41,35 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 印发时间
         /// </summary>
-        public DateTime? YF_SJ { get; set; }
+        public DateTime? FW_RQ { get; set; }
         /// <summary>
         /// 生效时间
         /// </summary>
-        public DateTime? SX_SJ { get; set; }
+        public DateTime? SX_RQ { get; set; }
         /// <summary>
         /// 主题词
         /// </summary>
         public string GW_ZTC { get; set; }
         /// <summary>
-        /// 公文机关部门
+        /// 主送机关
         /// </summary>
-        public int JG_BM { get; set; }
+        public string ZS_JG { get; set; }
         /// <summary>
-        /// 发往单位
+        /// 抄送机关
         /// </summary>
-        public string FW_DW { get; set; }
+        public string CS_JG { get; set; }
+        /// <summary>
+        /// 是否上互联网发布
+        /// </summary>
+        public bool SF_FB_WWW { get; set; }
+        /// <summary>
+        /// 期限
+        /// </summary>
+        public DateTime? QX_RQ { get; set; }
+
+        public File Word { get; set; }
+
+        public File[] Excels { get; set; }
     }
 
     /// <summary>

@@ -34,6 +34,7 @@ namespace Loowoo.Land.OA.Managers
         public UserGroupManager UserGroupManager { get; private set; }
         public DepartmentManager DepartmentManager { get; private set; }
 
+        public FormManager FormManager { get; private set; }
         public FormInfoManager FormInfoManager { get; private set; }
         public UserFormInfoManager UserFormInfoManager { get; private set; }
 

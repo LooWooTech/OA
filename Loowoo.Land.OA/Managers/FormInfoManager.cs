@@ -38,11 +38,12 @@ namespace Loowoo.Land.OA.Managers
             {
                 entity = DB.FormInfos.FirstOrDefault(e => e.ID == model.ID);
                 entity.Title = model.Title;
+                entity.Keywords = model.Keywords;
                 entity.CategoryId = model.CategoryId;
                 entity.FlowDataId = model.FlowDataId;
-                if (model.InfoData != null)
+                if (model.Data != null)
                 {
-                    entity.InfoData = model.InfoData;
+                    entity.Data = model.Data;
                 }
             }
             else

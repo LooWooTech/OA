@@ -17,9 +17,8 @@ namespace Loowoo.Land.OA.API.Security
         {
             context.AuthenticateRequest += new EventHandler((obj, ea) =>
             {
-                var token = context.Context.Request.Headers[AppSettings.Get("TokenKey") ?? "Authorize"];
-                var userIdentity = UserIdentity.Convert(token);
-                context.Context.User = new UserPrincipal(userIdentity);
+                var identity = AuthorizeHelper.GetIdentity(context.Context);
+                context.Context.User = new UserPrincipal(identity);
             });
         }
 

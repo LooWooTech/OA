@@ -63,6 +63,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\FormManager.cs" />
+    <Compile Include="Models\FormInfoFieldAttribute.cs" />
     <Compile Include="Models\PagingResult_T.cs" />
     <Compile Include="Managers\Base\CategoryManager.cs" />
     <Compile Include="Managers\Base\FeedManager.cs" />
@@ -96,7 +98,6 @@
     <Compile Include="Models\FlowNodeData.cs" />
     <Compile Include="Models\Form.cs" />
     <Compile Include="Models\Group.cs" />
-    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\FormInfo.cs" />
     <Compile Include="Models\FormInfoData.cs" />

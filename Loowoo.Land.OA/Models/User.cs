@@ -37,7 +37,7 @@ namespace Loowoo.Land.OA.Models
         public virtual List<UserGroup> UserGroups { get; set; }
 
         [NotMapped]
-        public string Ticket { get; set; }
+        public string Token { get; set; }
 
         public bool HasRight(string rightName)
         {

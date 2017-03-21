@@ -18,10 +18,12 @@ namespace Loowoo.Land.OA.Models
 
         public string Name { get; set; }
 
-        public int FLowID { get; set; }
+        public string DataType { get; set; }
+
+        public int FLowId { get; set; }
     }
 
-    public enum SystemForm
+    public enum FormType
     {
         [Description("公文")]
         Missive = 1,

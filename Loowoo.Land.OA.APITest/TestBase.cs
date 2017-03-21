@@ -44,9 +44,9 @@ namespace Loowoo.Land.OA.APITest
             #endregion
 
             #region 表单
-            _tool.Post("/api/form/save", new Form { Name = "公文", FLowID = 1 }.ToJson());
-            _tool.Post("/api/form/save", new Form { Name = "车辆", FLowID = 1 }.ToJson());
-            _tool.Post("/api/form/save", new Form { Name = "会议", FLowID = 1 }.ToJson());
+            _tool.Post("/api/form/save", new Form { Name = "公文", FLowId = 1 }.ToJson());
+            _tool.Post("/api/form/save", new Form { Name = "车辆", FLowId = 1 }.ToJson());
+            _tool.Post("/api/form/save", new Form { Name = "会议", FLowId = 1 }.ToJson());
             #endregion
 
             #region 种类
