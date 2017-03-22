@@ -100,7 +100,6 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\FormInfo.cs" />
-    <Compile Include="Models\FormInfoData.cs" />
     <Compile Include="Models\InfoType.cs" />
     <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\Message.cs" />

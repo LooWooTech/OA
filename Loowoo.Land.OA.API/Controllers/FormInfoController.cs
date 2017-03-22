@@ -32,41 +32,49 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-        [HttpPost]
-        public IHttpActionResult Save(FormInfo data)
+        [HttpGet]
+        public object Model(int id)
         {
-            if (data.FormId == 0)
+            var model = Core.FormInfoManager.GetModel(id);
+            //TODO判断当前用户是否有权限打开？
+            return model;
+        }
+
+        [HttpPost]
+        public IHttpActionResult Save(FormInfo model)
+        {
+            if (model.FormId == 0)
             {
                 return BadRequest("formId不能为0");
             }
-            var context = (HttpContextWrapper)Request.Properties["MS_HttpContext"];
-            data.Data = new FormInfoData(context.Request.Form);
 
-            var isAdd = data.ID == 0;
-            var form = Core.FormManager.GetModel(data.FormId);
-            data.Form = form;
-            data.UpdateFileds();
-            data.PostUserId = CurrentUser.ID;
-            Core.FormInfoManager.Save(data);
+            var isAdd = model.ID == 0;
+            var form = Core.FormManager.GetModel(model.FormId);
+            model.Form = form;
+            var context = (HttpContextWrapper)Request.Properties["MS_HttpContext"];
+            model.SetData(context.Request.Form, form.DataType);
+
+            model.PostUserId = CurrentUser.ID;
+            Core.FormInfoManager.Save(model);
 
             //只有在保存的时候，添加用户表
             if (isAdd)
             {
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
-                    InfoId = data.ID,
-                    UserId = data.PostUserId,
+                    InfoId = model.ID,
+                    UserId = model.PostUserId,
                 });
             }
             //更新动态
             Core.FeedManager.Save(new Feed
             {
                 Action = isAdd ? FeedAction.Add : FeedAction.Edit,
-                FormId = data.FormId,
-                InfoId = data.ID,
-                FromUserId = data.PostUserId,
+                FormId = model.FormId,
+                InfoId = model.ID,
+                FromUserId = model.PostUserId,
             });
-            return Ok(data);
+            return Ok(model);
         }
 
         [HttpDelete]

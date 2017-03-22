@@ -1,7 +1,9 @@
 ﻿using Loowoo.Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -42,24 +44,65 @@ namespace Loowoo.Land.OA.Models
 
         public int FlowDataId { get; set; }
 
-        public virtual FormInfoData Data { get; set; }
+        [JsonIgnore]
+        [Column("Data")]
+        public string Json { get; set; }
 
-        public void UpdateFileds()
+        [NotMapped]
+        public object Data
         {
-            if (Data == null || Form == null) return;
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Json)) return null;
+                //if (Form != null)
+                //{
+                //    var dataType = GetDataType(Form.DataType);
+                //    if (dataType != null)
+                //    {
+                //        return JsonConvert.DeserializeObject(Json, dataType);
+                //    }
+                //}
+                return JsonConvert.DeserializeObject(Json);
+            }
+            set
+            {
+                Json = JsonConvert.SerializeObject(value);
+            }
+        }
 
-            var data = Data.ToObject(Form.DataType);
-            var dataType = Type.GetType(this.GetType().Namespace + "." + Form.DataType,false,true);
+        private Type GetDataType(string dataType)
+        {
+            return Type.GetType(GetType().Namespace + "." + dataType, false, true);
+        }
+
+        public void SetData(NameValueCollection values, string dataTypeName)
+        {
+            var dataType = GetDataType(dataTypeName);
             if (dataType == null) return;
 
+            var obj = Activator.CreateInstance(dataType);
             foreach (var p in dataType.GetProperties())
             {
+                foreach (var key in values.AllKeys)
+                {
+                    if (key.ToLower() == p.Name.ToLower())
+                    {
+                        var val = values[key];
+                        try
+                        {
+                            var pValue = Convert.ChangeType(val, p.PropertyType);
+                            p.SetValue(obj, pValue);
+                        }
+                        catch { }
+                    }
+                }
+
                 foreach (var attr in p.GetCustomAttributes())
                 {
                     if (attr is FormInfoFieldAttribute)
                     {
                         var name = (attr as FormInfoFieldAttribute).Name;
-                        var value = p.GetValue(data);
+                        var value = p.GetValue(obj);
                         switch (name.ToLower())
                         {
                             case "title":
@@ -75,6 +118,8 @@ namespace Loowoo.Land.OA.Models
                     }
                 }
             }
+
+            Data = obj;
         }
     }
 
