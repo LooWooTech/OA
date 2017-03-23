@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,6 +17,20 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class FileController : ControllerBase
     {
+        private string _uploadDir = "upload_files/";
+
+        [HttpGet]
+        public HttpResponseMessage Index(int id)
+        {
+            var file = Core.FileManager.GetModel(id);
+            var filePath = Path.Combine(_uploadDir, file.SavePath);
+            var result = new HttpResponseMessage(HttpStatusCode.OK);
+            var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            result.Content = new StreamContent(stream);
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            return result;
+        }
+
         [HttpPost]
         public IHttpActionResult Upload(string name = null, int id = 0, int infoId = 0)
         {
@@ -30,15 +45,14 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未找到文件{name}相关信息");
             }
-            var saveDir = "upload_files/";
-            if (!System.IO.Directory.Exists(saveDir))
+            if (!System.IO.Directory.Exists(_uploadDir))
             {
-                System.IO.Directory.CreateDirectory(saveDir);
+                System.IO.Directory.CreateDirectory(_uploadDir);
             }
             var fileExt = Path.GetExtension(inputFile.FileName);
             var fileName = (inputFile.FileName + inputFile.ContentLength).MD5() + fileExt;
-            var savePath = saveDir + fileName;
-            inputFile.SaveAs(Path.Combine(Environment.CurrentDirectory, saveDir + fileName));
+            var savePath = _uploadDir + fileName;
+            inputFile.SaveAs(Path.Combine(Environment.CurrentDirectory, _uploadDir + fileName));
             var file = new Models.File
             {
                 FileName = inputFile.FileName,
@@ -52,10 +66,16 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(file);
         }
 
+        public void UpdateRelation(int[] fileIds, int infoId)
+        {
+            Core.FileManager.Relation(fileIds, infoId);
+        }
+
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
             Core.FileManager.Delete(id);
+            return Ok();
         }
 
         [HttpGet]

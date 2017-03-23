@@ -22,12 +22,16 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
+        public File GetModel(int id)
+        {
+            return DB.Files.FirstOrDefault(e => e.ID == id);
+        }
+
         public void Delete(int id)
         {
             var entity = DB.Files.FirstOrDefault(e => e.ID == id);
             if (entity != null)
             {
-                System.IO.File.Delete(entity.SavePath);
                 DB.Files.Remove(entity);
                 DB.SaveChanges();
             }
