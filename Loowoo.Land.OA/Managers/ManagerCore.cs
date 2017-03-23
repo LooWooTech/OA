@@ -40,12 +40,17 @@ namespace Loowoo.Land.OA.Managers
 
         public FeedManager FeedManager { get; private set; }
         public MessageManager MessageManager { get; private set; }
+
+        public FlowManager FlowManager { get; private set; }
+        public FlowNodeManager FlowNodeManager { get; private set; }
+        public FlowDataManager FlowDataManager { get; private set; }
+        public FlowNodeDataManager FlowNodeDataManager { get; private set; }
+
         //public SubScriptionManager SubScriptionManager { get; private set; }
         //public FormManager FormManager { get; private set; }
-        //public FlowManager FlowManager { get; private set; }
-        //public FlowDataManager FlowDataManager { get; private set; }
-        //public FlowNodeManager FlowNodeManager { get; private set; }
-        //public FlowNodeDataManager FlowNodeDataManager { get; private set; }
+
+
+
         //public UserFormManager UserFormManager { get; private set; }
 
 

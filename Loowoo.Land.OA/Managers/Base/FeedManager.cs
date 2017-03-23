@@ -77,7 +77,7 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public List<Feed> Search(FeedParameter parameter)
+        public IQueryable<Feed> Search(FeedParameter parameter)
         {
             var query = DB.Feeds.Where(e => e.Deleted == false).AsQueryable();
             if (parameter.InfoType.HasValue)
@@ -93,7 +93,7 @@ namespace Loowoo.Land.OA.Managers
                 query = query.Where(e => e.FromUserId == parameter.UserId.Value);
             }
             query = query.OrderByDescending(e => e.CreateTime).SetPage(parameter.Page);
-            return query.ToList();
+            return query;
           
         }
     }

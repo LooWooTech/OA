@@ -17,11 +17,11 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<FlowNodeData> GetList(int flowDataId)
         {
-            using (var db = GetDbContext())
+            if (flowDataId <= 0)
             {
-                var models = db.Flow_Node_Datas.Where(e => e.FlowDataId == flowDataId).ToList();
-                return models;
+                return null;
             }
+            return DB.FlowNodeDatas.Where(e => e.FlowDataId == flowDataId).ToList();
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<FlowNodeData> GetByUserID(int userId)
         {
-            var models = db.Flow_Node_Datas.Where(e => e.UserId == userId).ToList();
+            var models = DB.FlowNodeDatas.Where(e => e.UserId == userId).ToList();
             return models;
            
         }
@@ -47,7 +47,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNodeData Get(int flowDataId,int userId,int flowNodeId)
         {
-            return db.Flow_Node_Datas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId && e.FlowNodeId == flowNodeId);
+            return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId && e.FlowNodeId == flowNodeId);
         }
         /// <summary>
         /// 作用：获取某一用户某流程记录的节点记录
@@ -59,7 +59,34 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNodeData Get(int flowDataId,int userId)
         {
-            return db.Flow_Node_Datas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId);
+            return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId);
+        }
+        /// <summary>
+        /// 作用：只是通过flowDataID和FlowNodeID 获取
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月22日17:10:44
+        /// </summary>
+        /// <returns></returns>
+        public FlowNodeData GetFlowNodeData(int flowdataID,int flownodeId)
+        {
+            return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowdataID && e.FlowNodeId == flownodeId);
+        }
+        /// <summary>
+        /// 作用：获取上一个流程节点记录（取最近时间的审核通过的）
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月23日10:13:47
+        /// </summary>
+        /// <param name="flowDataId"></param>
+        /// <param name="currentFlowNodeId">当前流程节点ID</param>
+        /// <returns></returns>
+        public FlowNodeData GetPreFlowNodeData(int flowDataId,int currentFlowNodeId)
+        {
+            var preflowNode = Core.FlowNodeManager.GetPre(currentFlowNodeId);
+            if (preflowNode == null)
+            {
+                return null;
+            }
+            return DB.FlowNodeDatas.Where(e => e.FlowDataId == flowDataId && e.FlowNodeId == preflowNode.ID && e.Result == true).OrderByDescending(e => e.UpdateTime).FirstOrDefault();
         }
         /// <summary>
         /// 作用：保存流程节点记录
@@ -70,8 +97,8 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public int Save(FlowNodeData nodeData)
         {
-            db.Flow_Node_Datas.Add(nodeData);
-            db.SaveChanges();
+            DB.FlowNodeDatas.Add(nodeData);
+            DB.SaveChanges();
             return nodeData.ID;
            
         }
@@ -84,17 +111,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Edit(FlowNodeData nodeData)
         {
-            using (var db = GetDbContext())
+            var model = DB.FlowNodeDatas.Find(nodeData.ID);
+            if (model == null)
             {
-                var model = db.Flow_Node_Datas.Find(nodeData.ID);
-                if (model == null)
-                {
-                    return false;
-                }
-                db.Entry(model).CurrentValues.SetValues(nodeData);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Entry(model).CurrentValues.SetValues(nodeData);
+            DB.SaveChanges();
+            return true;
         }
 
         /// <summary>
@@ -108,7 +132,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                return db.Flow_Node_Datas.Find(id);
+                return db.FlowNodeDatas.Find(id);
             }
         }
 

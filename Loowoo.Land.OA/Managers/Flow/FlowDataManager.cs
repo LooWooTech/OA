@@ -19,7 +19,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                db.Flow_Datas.Add(flowData);
+                db.FlowDatas.Add(flowData);
                 db.SaveChanges();
                 return flowData.ID;
             }
@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                var model = db.Flow_Datas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
+                var model = db.FlowDatas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
                 return model;
             }
         }
@@ -63,10 +63,11 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowData Get(int id)
         {
-            using (var db = GetDbContext())
+            if (id <= 0)
             {
-                return db.Flow_Datas.Find(id);
+                return null;
             }
+            return DB.FlowDatas.Find(id);
         }
 
         /// <summary>

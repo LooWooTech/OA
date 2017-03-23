@@ -8,47 +8,47 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-    public class FlowDataController : LoginControllerBase
+    public class FlowDataController : ControllerBase
     {
         /// <summary>
         /// 作用：提交流程
         /// 作者：汪建龙
         /// 编写时间：2017年2月28日14:57:13
         /// 具体操作如下：
-        /// 1、验证nodedata是否为null;
-        /// 2、验证nodedata的userId、flowdataId、flownodeId是否为有效；
+        /// 1、验证flownodedata是否为null;
+        /// 2、验证flownodedata的userId、flowdataId、flownodeId是否为有效；
         /// 3、验证result  是否hasValue;
         /// 4、根据当前审核结果获取下一个流程节点，通过:生成下一个流程节点记录；不通过：生成上一个流程节点记录，如果为流程节点第一个或者流程最后，返回null
-        /// 5、保存nodedate,更新UserForm待办事情表 
+        /// 5、保存flownodedate,更新UserForm待办事情表 
         /// 6、当下一个流程节点不为null时，保存并生成下一个流程审核的工作表
         /// 7、发布动态以及短消息
         /// </summary>
-        /// <param name="nodedata"></param>
+        /// <param name="flownodedata"></param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Submit([FromBody] FlowNodeData nodedata)
+        public IHttpActionResult Submit([FromBody] FlowNodeData flownodedata)
         {
             TaskName = "保存流程节点记录";
             #region 验证数据正确性
-            if (nodedata == null)
+            if (flownodedata == null)
             {
                 return BadRequest($"{TaskName}:未获取流程节点记录信息");
             }
-            var user = Core.UserManager.Get(nodedata.UserId);
+            var user = Core.UserManager.Get(flownodedata.UserId);
             if (user == null)
             {
-                return BadRequest($"{TaskName}:未找到UserID{nodedata.UserId}的用户信息");
+                return BadRequest($"{TaskName}:未找到UserID{flownodedata.UserId}的用户信息");
             }
-            var flowdata = Core.FlowDataManager.Get(nodedata.FlowDataId);
+            var flowdata = Core.FlowDataManager.Get(flownodedata.FlowDataId);
             if (flowdata == null)
             {
                 return BadRequest($"{TaskName}:未找到流程记录信息");
             }
-            if (!nodedata.Result.HasValue)
+            if (!flownodedata.Result.HasValue)
             {
                 return BadRequest($"{TaskName}：未获取审核结果，请核对审核结果");
             }
-            var flowNode = Core.FlowNodeManager.Get(nodedata.FlowNodeId);
+            var flowNode = Core.FlowNodeManager.Get(flownodedata.FlowNodeId);
             if (flowNode == null)
             {
                 return BadRequest($"{TaskName}:未获取FlowNode流程节点信息");
@@ -56,14 +56,45 @@ namespace Loowoo.Land.OA.API.Controllers
 
             #endregion
 
-            #region  下个流程节点信息
-            FlowNodeData nextFlowNodeData = GetNextNode(nodedata, flowNode);
+            #region 处理逻辑
+            flownodedata.UpdateTime = DateTime.Now;
+
+            FlowNodeData nextFlowNodeData;
+            if (flownodedata.Result.Value == false)//如果提交不同意
+            {
+                flownodedata.UserId = 0;
+                /*
+                    获取上一个审核通过的最新时间的流程节点记录，指定flowdataID、指定flownodID,同时需要Result.hasvalue ==true    
+                */
+                var preflownodedata = Core.FlowNodeDataManager.GetPreFlowNodeData(flownodedata.FlowDataId, flownodedata.FlowNodeId);
+                if (preflownodedata == null)
+                {
+                    return BadRequest($"{TaskName}:获取上一个审核流程节点记录失败");
+                }
+                nextFlowNodeData = new FlowNodeData
+                {
+                    FlowDataId = preflownodedata.FlowDataId,
+                    ParentId = preflownodedata.ParentId,
+                    UserId = preflownodedata.UserId,
+                    DepartmentId = preflownodedata.DepartmentId,
+                    FlowNodeId = preflownodedata.FlowNodeId
+                };
+            }
+            else//审核通过
+            {
+                var nextflowNode = Core.FlowNodeManager.GetNext(flownodedata.FlowNodeId);
+                if (nextflowNode == null)
+                {
+
+                }
+            }
             #endregion
 
-            #region 保存nodedata
-            nodedata.UpdateTime = DateTime.Now;
 
-            if (!Core.FlowNodeDataManager.Edit(nodedata))
+            #region 保存nodedata
+
+
+            if (!Core.FlowNodeDataManager.Edit(flownodedata))
             {
                 return BadRequest($"{TaskName}:未找到需要更新的流程节点记录信息");
             }

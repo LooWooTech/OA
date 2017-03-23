@@ -17,12 +17,9 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public int Save(Department department)
         {
-            using (var db = GetDbContext())
-            {
-                db.Departments.Add(department);
-                db.SaveChanges();
-                return department.ID;
-            }
+            DB.Departments.Add(department);
+            DB.SaveChanges();
+            return department.ID;
         }
 
         /// <summary>
@@ -47,17 +44,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Edit(Department department)
         {
-            using (var db = GetDbContext())
+            var entry = DB.Departments.Find(department.ID);
+            if (entry == null)
             {
-                var entry = db.Departments.Find(department.ID);
-                if (entry == null)
-                {
-                    return false;
-                }
-                db.Entry(entry).CurrentValues.SetValues(department);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Entry(entry).CurrentValues.SetValues(department);
+            DB.SaveChanges();
+            return true;
         }
 
         /// <summary>
@@ -68,16 +62,12 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<Department> GetList()
         {
-            using (var db = GetDbContext())
+            var list = DB.Departments.Where(e => e.ParentID == 0).ToList();
+            foreach (var item in list)
             {
-                var list = db.Departments.Where(e=>e.ParentID==0).ToList();
-                foreach(var item in list)
-                {
-                    item.Children = db.Departments.Where(e => e.ParentID == item.ID).ToList();
-                }
-                return list;
-
+                item.Children = DB.Departments.Where(e => e.ParentID == item.ID).ToList();
             }
+            return list;
         }
 
         /// <summary>
@@ -89,17 +79,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            using (var db = GetDbContext())
+            var model = DB.Departments.Find(id);
+            if (model == null)
             {
-                var model = db.Departments.Find(id);
-                if (model == null)
-                {
-                    return false;
-                }
-                db.Departments.Remove(model);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Departments.Remove(model);
+            DB.SaveChanges();
+            return true;
         }
 
         /// <summary>
@@ -111,10 +98,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Exist(string name)
         {
-            using (var db = GetDbContext())
-            {
-                return db.Departments.Any(e => e.Name.ToLower() == name.ToLower());
-            }
+            return  DB.Departments.Any(e => e.Name.ToLower() == name.ToLower());
         }
         /// <summary>
         /// 作用：验证部门ID是否使用
@@ -125,10 +109,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            using (var db = GetDbContext())
-            {
-                return db.Users.Any(e => e.DepartmentId == id) || db.Flow_Node_Datas.Any(e => e.DepartmentId == id) || db.FlowNodes.Any(e => e.DepartmentId == id);
-            }
+            return DB.Users.Any(e => e.DepartmentId == id) || DB.FlowNodeDatas.Any(e => e.DepartmentId == id) || DB.FlowNodes.Any(e => e.DepartmentId == id);
         }
     }
 }

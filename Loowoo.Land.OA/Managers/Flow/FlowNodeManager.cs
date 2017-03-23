@@ -20,12 +20,9 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public int Save(FlowNode node)
         {
-            using (var db = GetDbContext())
-            {
-                db.FlowNodes.Add(node);
-                db.SaveChanges();
-                return node.ID;
-            }
+            DB.FlowNodes.Add(node);
+            DB.SaveChanges();
+            return node.ID;
         }
 
         /// <summary>
@@ -37,13 +34,13 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Edit(FlowNode node)
         {
-            var entry = db.FlowNodes.Find(node.ID);
+            var entry = DB.FlowNodes.Find(node.ID);
             if (entry == null)
             {
                 return false;
             }
-            db.Entry(entry).CurrentValues.SetValues(node);
-            db.SaveChanges();
+            DB.Entry(entry).CurrentValues.SetValues(node);
+            DB.SaveChanges();
             return true;
           
         }
@@ -56,13 +53,13 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            var entry = db.FlowNodes.Find(id);
+            var entry = DB.FlowNodes.Find(id);
             if (entry == null)
             {
                 return false;
             }
-            db.FlowNodes.Remove(entry);
-            db.SaveChanges();
+            DB.FlowNodes.Remove(entry);
+            DB.SaveChanges();
             return true;
         
         }
@@ -76,7 +73,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public IEnumerable<FlowNode> GetList(int flowId)
         {
-            return db.FlowNodes.Where(e => e.FlowId == flowId);
+            return DB.FlowNodes.Where(e => e.FlowId == flowId);
         }
 
         /// <summary>
@@ -88,19 +85,26 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNode Get(int id)
         {
-            return db.FlowNodes.Find(id);
+            if (id <= 0)
+            {
+                return null;
+            }
+            return DB.FlowNodes.Find(id);
         }
+
         /// <summary>
-        /// 作用：获取下一个流程节点  id为当前FlowNodeID
+        /// 作用：通过FlowID和Step获取流程节点
         /// 作者：汪建龙
-        /// 编写时间：2017年3月3日13:30:34
+        /// 编写时间：2017年3月22日16:05:37
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="flowId"></param>
+        /// <param name="setp"></param>
         /// <returns></returns>
-        public FlowNode GetNext(int id)
+        public FlowNode Get(int flowId,int step)
         {
-            return db.FlowNodes.FirstOrDefault(e => e.BackNodeId == id);
+            return DB.FlowNodes.FirstOrDefault(e => e.FlowId == flowId && e.Step ==step );
         }
+
         /// <summary>
         /// 作用：验证ID 流程节点是否使用
         /// 作者：汪建龙
@@ -110,7 +114,40 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            return db.FlowNodes.Any(e => e.BackNodeId == id) || db.Flow_Node_Datas.Any(e => e.FlowNodeId == id);
+            return DB.FlowNodeDatas.Any(e => e.FlowNodeId == id);
+        }
+
+        /// <summary>
+        /// 作用：获取上一个流程节点
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月23日09:35:51
+        /// </summary>
+        /// <param name="currentflowNodeID"></param>
+        /// <returns></returns>
+        public FlowNode GetPre(int currentflowNodeID)
+        {
+            var currentflownode = Get(currentflowNodeID);
+            if (currentflownode == null)
+            {
+                return null;
+            }
+            return Get(currentflownode.FlowId, currentflownode.Step - 1);
+        }
+        /// <summary>
+        /// 作用：通过当前节点获取下一个节点
+        /// 作者：汪建龙
+        /// 编写时间：2017年3月23日09:38:41
+        /// </summary>
+        /// <param name="currentFlowNodeId"></param>
+        /// <returns></returns>
+        public FlowNode GetNext(int currentFlowNodeId)
+        {
+            var currentFlowNode = Get(currentFlowNodeId);
+            if (currentFlowNode == null)
+            {
+                return null;
+            }
+            return Get(currentFlowNode.FlowId, currentFlowNode.Step + 1);
         }
     }
 }

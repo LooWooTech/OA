@@ -20,12 +20,9 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public int Save(File file)
         {
-            using (var db = GetDbContext())
-            {
-                db.Files.Add(file);
-                db.SaveChanges();
-                return file.ID;
-            }
+            DB.Files.Add(file);
+            DB.SaveChanges();
+            return file.ID;
         }
 
         /// <summary>
@@ -37,17 +34,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            using (var db = GetDbContext())
+            var entry = DB.Files.Find(id);
+            if (entry == null)
             {
-                var entry = db.Files.Find(id);
-                if (entry == null)
-                {
-                    return false;
-                }
-                db.Files.Remove(entry);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Files.Remove(entry);
+            DB.SaveChanges();
+            return true;
         }
         /// <summary>
         /// 作用：关联文件与表单的关系
@@ -82,26 +76,23 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public List<File> Search(FileParameter parameter)
+        public IQueryable<File> Search(FileParameter parameter)
         {
-            using (var db = GetDbContext())
+            var query = DB.Files.AsQueryable();
+            if (parameter.InfoId.HasValue)
             {
-                var query = db.Files.AsQueryable();
-                if (parameter.InfoId.HasValue)
-                {
-                    query = query.Where(e => e.InfoID == parameter.InfoId.Value);
-                }
-                if (parameter.FormId.HasValue)
-                {
-                    query = query.Where(e => e.FormID == parameter.FormId.Value);
-                }
-                if (parameter.Type.HasValue)
-                {
-                    query = query.Where(e => e.Type == parameter.Type.Value);
-                }
-                query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
-                return query.ToList();
+                query = query.Where(e => e.InfoID == parameter.InfoId.Value);
             }
+            if (parameter.FormId.HasValue)
+            {
+                query = query.Where(e => e.FormID == parameter.FormId.Value);
+            }
+            if (parameter.Type.HasValue)
+            {
+                query = query.Where(e => e.Type == parameter.Type.Value);
+            }
+            query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
+            return query;
         }
     }
 }

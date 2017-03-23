@@ -1,5 +1,4 @@
-﻿using Loowoo.Land.OA.Base;
-using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-    public class FeedController : LoginControllerBase
+    public class FeedController : ControllerBase
     {
         /// <summary>
         /// 作用：获取动态列表

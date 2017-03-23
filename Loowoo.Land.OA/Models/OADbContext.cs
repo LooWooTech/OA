@@ -23,8 +23,8 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowNode> FlowNodes { get; set; }
-        public DbSet<FlowData> Flow_Datas { get; set; }
-        public DbSet<FlowNodeData> Flow_Node_Datas { get; set; }
+        public DbSet<FlowData> FlowDatas { get; set; }
+        public DbSet<FlowNodeData> FlowNodeDatas { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }

@@ -33,16 +33,11 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public User Get(int id)
         {
-            using (var db = GetDbContext())
+            if (id <= 0)
             {
-                var model = db.Users.Find(id);
-                //if (model != null)
-                //{
-                //    db.Entry(model).Reference(e => e.Department).Load();
-                //}
-
-                return model;
+                return null;
             }
+            return DB.Users.Find(id);
         }
         /// <summary>
         /// 作用：通过登陆名系统中是否存在用户

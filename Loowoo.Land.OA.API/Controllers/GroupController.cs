@@ -75,7 +75,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var group = Core.GroupManager.Get(id);
             if (group == null)
             {
-                return NotFound();
+                return BadRequest(string.Format("未查询到ID为{0}的组信息", id));
             }
             return Ok(group);
         }
@@ -99,7 +99,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return Ok();
             }
-            return NotFound();
+            return BadRequest(string.Format("删除失败，未查找到ID为{0}的组", id));
         }
 
         

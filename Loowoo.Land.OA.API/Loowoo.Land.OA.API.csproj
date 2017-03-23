@@ -143,10 +143,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Controllers\Base\FeedController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\FileController.cs" />
+    <Compile Include="Controllers\Flow\FlowController.cs" />
+    <Compile Include="Controllers\Flow\FormController.cs" />
     <Compile Include="Controllers\FormInfoController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -173,7 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\Flow\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">
