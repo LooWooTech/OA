@@ -3,71 +3,44 @@ using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Text;
 using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class FileManager:ManagerBase
+    public class FileManager : ManagerBase
     {
-        /// <summary>
-        /// 作用：保存文件记录
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月20日21:14:22
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public int Save(File file)
+        public void Save(File file)
         {
-            DB.Files.Add(file);
+            if (file.ID > 0)
+            {
+                file.UpdateTime = DateTime.Now;
+            }
+            DB.Files.AddOrUpdate(file);
             DB.SaveChanges();
-            return file.ID;
         }
 
-        /// <summary>
-        /// 作用：删除文件记录
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月22日17:31:38
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Delete(int id)
+        public void Delete(int id)
         {
-            var entry = DB.Files.Find(id);
-            if (entry == null)
+            var entity = DB.Files.FirstOrDefault(e => e.ID == id);
+            if (entity != null)
             {
-                return false;
+                System.IO.File.Delete(entity.SavePath);
+                DB.Files.Remove(entity);
+                DB.SaveChanges();
             }
-            DB.Files.Remove(entry);
-            DB.SaveChanges();
-            return true;
         }
-        /// <summary>
-        /// 作用：关联文件与表单的关系
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月28日09:56:20
-        /// </summary>
-        /// <param name="fileIds"></param>
-        /// <param name="infoId"></param>
-        /// <param name="formId"></param>
-        public void Relation(int[] fileIds,int infoId,int formId)
+
+        public void Relation(int[] fileIds, int infoId)
         {
-            var sb = new StringBuilder();
-            using (var db = GetDbContext())
+            var entities = DB.Files.Where(e => fileIds.Contains(e.ID));
+            foreach (var entity in entities)
             {
-                foreach(var item in fileIds)
-                {
-                    var model = db.Files.Find(item);
-                    if (model != null)
-                    {
-                        model.InfoID = infoId;
-                        model.FormID = formId;
-                        model.UpdateTime = DateTime.Now;
-                        db.SaveChanges();
-                    }
-                }
+                entity.InfoId = infoId;
             }
+            DB.SaveChanges();
         }
         /// <summary>
         /// 作用：查询文件
@@ -76,20 +49,12 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public IQueryable<File> Search(FileParameter parameter)
+        public IEnumerable<File> Search(FileParameter parameter)
         {
             var query = DB.Files.AsQueryable();
             if (parameter.InfoId.HasValue)
             {
-                query = query.Where(e => e.InfoID == parameter.InfoId.Value);
-            }
-            if (parameter.FormId.HasValue)
-            {
-                query = query.Where(e => e.FormID == parameter.FormId.Value);
-            }
-            if (parameter.Type.HasValue)
-            {
-                query = query.Where(e => e.Type == parameter.Type.Value);
+                query = query.Where(e => e.InfoId == parameter.InfoId.Value);
             }
             query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
             return query;

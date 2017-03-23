@@ -1,7 +1,9 @@
 ﻿using Loowoo.Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -42,40 +44,66 @@ namespace Loowoo.Land.OA.Models
 
         public int FlowDataId { get; set; }
 
-        public virtual FormInfoData Data { get; set; }
+        [JsonIgnore]
+        [Column("Data")]
+        public string Json { get; set; }
 
-        public void UpdateFileds()
+        [NotMapped]
+        public object Data
         {
-            if (Data == null || Form == null) return;
-
-            var data = Data.ToObject(Form.DataType);
-            var dataType = Type.GetType(this.GetType().Namespace + "." + Form.DataType,false,true);
-            if (dataType == null) return;
-
-            foreach (var p in dataType.GetProperties())
+            get
             {
-                foreach (var attr in p.GetCustomAttributes())
-                {
-                    if (attr is FormInfoFieldAttribute)
-                    {
-                        var name = (attr as FormInfoFieldAttribute).Name;
-                        var value = p.GetValue(data);
-                        switch (name.ToLower())
-                        {
-                            case "title":
-                                Title = value.ToString();
-                                break;
-                            case "keywords":
-                                Keywords += value.ToString() + ",";
-                                break;
-                            case "categoryid":
-                                CategoryId = int.Parse(value.ToString());
-                                break;
-                        }
-                    }
-                }
+                if (string.IsNullOrWhiteSpace(Json)) return null;
+                //if (Form != null)
+                //{
+                //    var dataType = GetDataType(Form.DataType);
+                //    if (dataType != null)
+                //    {
+                //        return JsonConvert.DeserializeObject(Json, dataType);
+                //    }
+                //}
+                return JsonConvert.DeserializeObject(Json);
+            }
+            set
+            {
+                Json = JsonConvert.SerializeObject(value);
             }
         }
+
+        //private Type GetDataType(string dataType)
+        //{
+        //    return Type.GetType(GetType().Namespace + "." + dataType, false, true);
+        //}
+
+        //public void UpdateFields(string dataTypeName)
+        //{
+        //    var dataType = GetDataType(dataTypeName);
+        //    if (dataType == null) return;
+
+        //    foreach (var p in dataType.GetProperties())
+        //    {
+        //        foreach (var attr in p.GetCustomAttributes())
+        //        {
+        //            if (attr is FormInfoFieldAttribute)
+        //            {
+        //                var name = (attr as FormInfoFieldAttribute).Name;
+        //                var value = p.GetValue(Data);
+        //                switch (name.ToLower())
+        //                {
+        //                    case "title":
+        //                        Title = value.ToString();
+        //                        break;
+        //                    case "keywords":
+        //                        Keywords += value.ToString() + ",";
+        //                        break;
+        //                    case "categoryid":
+        //                        CategoryId = int.Parse(value.ToString());
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     public class FormInfoParameter

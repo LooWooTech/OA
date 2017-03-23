@@ -68,10 +68,19 @@ CREATE TABLE IF NOT EXISTS `feed` (
   KEY `ToUserId` (`ToUserId`),
   KEY `FromUserId` (`FromUserId`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.feed: ~0 rows (approximately)
+-- Dumping data for table oa.feed: ~6 rows (approximately)
 /*!40000 ALTER TABLE `feed` DISABLE KEYS */;
+INSERT INTO `feed` (`ID`, `FormId`, `InfoId`, `Type`, `FromUserId`, `ToUserId`, `Action`, `Deleted`, `CreateTime`) VALUES
+	(1, 1, 2, 0, 5, 0, 0, b'000', '2017-03-22 19:41:58'),
+	(2, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 19:54:59'),
+	(3, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:06:09'),
+	(4, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:06:19'),
+	(5, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:06:31'),
+	(6, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:07:21'),
+	(7, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:34:42'),
+	(8, 1, 2, 0, 5, 0, 1, b'000', '2017-03-22 20:37:04');
 /*!40000 ALTER TABLE `feed` ENABLE KEYS */;
 
 -- Dumping structure for table oa.file
@@ -207,33 +216,21 @@ CREATE TABLE IF NOT EXISTS `form_info` (
   `Deleted` bit(1) NOT NULL,
   `PostUserId` int(11) NOT NULL,
   `FlowDataId` int(11) NOT NULL,
+  `Data` json DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `FormId` (`FormId`),
   KEY `CategoryId` (`CategoryId`),
   KEY `CreateTime` (`CreateTime`),
   KEY `PostUserId` (`PostUserId`),
   KEY `Title` (`Title`,`Keywords`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.form_info: ~1 rows (approximately)
+-- Dumping data for table oa.form_info: ~2 rows (approximately)
 /*!40000 ALTER TABLE `form_info` DISABLE KEYS */;
-INSERT INTO `form_info` (`ID`, `FormId`, `Title`, `Keywords`, `CategoryId`, `CreateTime`, `UpdateTime`, `Deleted`, `PostUserId`, `FlowDataId`) VALUES
-	(1, 1, 'asdf', 'asdfasdf,', 0, '2017-03-21 19:45:24', '2017-03-21 19:45:27', b'0', 0, 0);
+INSERT INTO `form_info` (`ID`, `FormId`, `Title`, `Keywords`, `CategoryId`, `CreateTime`, `UpdateTime`, `Deleted`, `PostUserId`, `FlowDataId`, `Data`) VALUES
+	(1, 1, 'asdf', 'asdfasdf,', 0, '2017-03-21 19:45:24', '2017-03-21 19:45:27', b'0', 0, 0, NULL),
+	(2, 1, '111', '111,', 0, '2017-03-22 19:41:55', '2017-03-22 20:37:04', b'0', 5, 0, '{"ZRR": "aaasd", "Word": null, "CS_JG": "222222", "FW_RQ": "2017-03-22T19:38:59+08:00", "GW_HJ": 0, "GW_MJ": 3, "GW_WH": "111", "GW_ZL": null, "QX_RQ": "2017-03-16T00:00:00", "SX_RQ": null, "WJ_BT": "111", "ZS_JG": "1112", "Excels": null, "GW_ZTC": "1111", "ZZR_ID": 0, "SF_FB_WWW": true}');
 /*!40000 ALTER TABLE `form_info` ENABLE KEYS */;
-
--- Dumping structure for table oa.form_info_data
-DROP TABLE IF EXISTS `form_info_data`;
-CREATE TABLE IF NOT EXISTS `form_info_data` (
-  `InfoID` int(11) NOT NULL,
-  `Json` text NOT NULL,
-  PRIMARY KEY (`InfoID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table oa.form_info_data: ~1 rows (approximately)
-/*!40000 ALTER TABLE `form_info_data` DISABLE KEYS */;
-INSERT INTO `form_info_data` (`InfoID`, `Json`) VALUES
-	(1, '{"FormId":"1","GW_WH":"asdfasdf","FW_RQ":"2017-03-21T19:21:39+08:00","WJ_BT":"asdf","GW_ZTC":"asdf","ZWGK":"2","ZS_JG":"asdf","CS_JG":"asdf","SF_FB_WWW":"true","GW_MJ":"1","ZRR":"asdfasdf","QX_RQ":"2017-03-21"}');
-/*!40000 ALTER TABLE `form_info_data` ENABLE KEYS */;
 
 -- Dumping structure for table oa.group
 DROP TABLE IF EXISTS `group`;
@@ -325,12 +322,13 @@ CREATE TABLE IF NOT EXISTS `user_form_info` (
   KEY `UserID` (`UserID`),
   KEY `FormID` (`FormID`),
   KEY `InfoID` (`InfoID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.user_form_info: ~1 rows (approximately)
+-- Dumping data for table oa.user_form_info: ~2 rows (approximately)
 /*!40000 ALTER TABLE `user_form_info` DISABLE KEYS */;
 INSERT INTO `user_form_info` (`ID`, `UserID`, `FormID`, `InfoID`, `Status`, `FlowNodeDataID`) VALUES
-	(1, 5, 1, 1, 0, 0);
+	(1, 5, 1, 1, 0, 0),
+	(3, 5, 0, 2, 0, 0);
 /*!40000 ALTER TABLE `user_form_info` ENABLE KEYS */;
 
 -- Dumping structure for table oa.user_group
