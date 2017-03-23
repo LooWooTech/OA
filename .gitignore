@@ -241,3 +241,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /Loowoo.Land.OA.API/logs
+/Loowoo.Land.OA.API/upload_files

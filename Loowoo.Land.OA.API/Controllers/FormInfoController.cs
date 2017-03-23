@@ -49,10 +49,6 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             var isAdd = model.ID == 0;
-            var form = Core.FormManager.GetModel(model.FormId);
-            model.Form = form;
-            var context = (HttpContextWrapper)Request.Properties["MS_HttpContext"];
-            model.SetData(context.Request.Form, form.DataType);
 
             model.PostUserId = CurrentUser.ID;
             Core.FormInfoManager.Save(model);

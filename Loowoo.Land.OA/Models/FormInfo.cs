@@ -70,57 +70,40 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
-        private Type GetDataType(string dataType)
-        {
-            return Type.GetType(GetType().Namespace + "." + dataType, false, true);
-        }
+        //private Type GetDataType(string dataType)
+        //{
+        //    return Type.GetType(GetType().Namespace + "." + dataType, false, true);
+        //}
 
-        public void SetData(NameValueCollection values, string dataTypeName)
-        {
-            var dataType = GetDataType(dataTypeName);
-            if (dataType == null) return;
+        //public void UpdateFields(string dataTypeName)
+        //{
+        //    var dataType = GetDataType(dataTypeName);
+        //    if (dataType == null) return;
 
-            var obj = Activator.CreateInstance(dataType);
-            foreach (var p in dataType.GetProperties())
-            {
-                foreach (var key in values.AllKeys)
-                {
-                    if (key.ToLower() == p.Name.ToLower())
-                    {
-                        var val = values[key];
-                        try
-                        {
-                            var pValue = Convert.ChangeType(val, p.PropertyType);
-                            p.SetValue(obj, pValue);
-                        }
-                        catch { }
-                    }
-                }
-
-                foreach (var attr in p.GetCustomAttributes())
-                {
-                    if (attr is FormInfoFieldAttribute)
-                    {
-                        var name = (attr as FormInfoFieldAttribute).Name;
-                        var value = p.GetValue(obj);
-                        switch (name.ToLower())
-                        {
-                            case "title":
-                                Title = value.ToString();
-                                break;
-                            case "keywords":
-                                Keywords += value.ToString() + ",";
-                                break;
-                            case "categoryid":
-                                CategoryId = int.Parse(value.ToString());
-                                break;
-                        }
-                    }
-                }
-            }
-
-            Data = obj;
-        }
+        //    foreach (var p in dataType.GetProperties())
+        //    {
+        //        foreach (var attr in p.GetCustomAttributes())
+        //        {
+        //            if (attr is FormInfoFieldAttribute)
+        //            {
+        //                var name = (attr as FormInfoFieldAttribute).Name;
+        //                var value = p.GetValue(Data);
+        //                switch (name.ToLower())
+        //                {
+        //                    case "title":
+        //                        Title = value.ToString();
+        //                        break;
+        //                    case "keywords":
+        //                        Keywords += value.ToString() + ",";
+        //                        break;
+        //                    case "categoryid":
+        //                        CategoryId = int.Parse(value.ToString());
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     public class FormInfoParameter

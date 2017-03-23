@@ -16,14 +16,11 @@ namespace Loowoo.Land.OA.Models
         public File()
         {
             CreateTime = DateTime.Now;
-            UpdateTime = DateTime.Now;
         }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
-        public int ParentID { get; set; }
 
         public string FileName { get; set; }
 
@@ -49,31 +46,11 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime CreateTime { get; set; }
 
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
 
-        public FileType Type { get; set; }
+        public int? InfoId { get; set; }
 
-
-        public int? InfoID { get; set; }
-        public int? FormID { get; set; }
     }
-
-    //[Table("file_relation")]
-    //public class FileRelation
-    //{
-    //    [Key]
-    //    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    //    public int ID { get; set; }
-    //    /// <summary>
-    //    /// 文件ID
-    //    /// </summary>
-    //    public int FileID { get; set; }
-    //    /// <summary>
-    //    /// 信息ID
-    //    /// </summary>
-    //    public int InfoID { get; set; }
-    //    public int FormID { get; set; }
-    //}
 
     public enum FileType
     {

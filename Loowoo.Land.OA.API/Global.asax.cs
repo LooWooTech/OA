@@ -22,6 +22,7 @@ namespace Loowoo.Land.OA.API
             formatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
             formatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
+            Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
         }
 
         public override void Init()

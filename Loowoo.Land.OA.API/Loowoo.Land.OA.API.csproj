@@ -142,7 +142,6 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
-    <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
