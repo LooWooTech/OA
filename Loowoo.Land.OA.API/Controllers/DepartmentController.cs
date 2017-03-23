@@ -86,7 +86,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.DepartmentManager.Get(id);
             if (model == null)
             {
-                return NotFound();
+                return BadRequest(string.Format("未查找到ID为{0}的部门信息", id));
             }
             return Ok(model);
         }
@@ -110,7 +110,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return Ok();
             }
-            return NotFound();
+            return BadRequest(string.Format("删除失败，未查找到ID为{0}的部门信息", id));
         }
     }
 }

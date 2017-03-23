@@ -17,12 +17,9 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public int Save(Group group)
         {
-            using (var db = GetDbContext())
-            {
-                db.Groups.Add(group);
-                db.SaveChanges();
-                return group.ID;
-            }
+            DB.Groups.Add(group);
+            DB.SaveChanges();
+            return group.ID;
         }
         /// <summary>
         /// 作用：组编辑
@@ -33,17 +30,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Edit(Group group)
         {
-            using (var db = GetDbContext())
+            var entry = DB.Groups.Find(group.ID);
+            if (entry == null)
             {
-                var entry = db.Groups.Find(group.ID);
-                if (entry == null)
-                {
-                    return false;
-                }
-                db.Entry(entry).CurrentValues.SetValues(group);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Entry(entry).CurrentValues.SetValues(group);
+            DB.SaveChanges();
+            return true;
         }
         /// <summary>
         /// 作用：获取用户组
@@ -53,10 +47,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<Group> GetList()
         {
-            using (var db = GetDbContext())
-            {
-                return db.Groups.ToList();
-            }
+            return DB.Groups.ToList();
         }
         /// <summary>
         /// 作用：获取组信息
@@ -67,10 +58,11 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public Group Get(int id)
         {
-            using (var db = GetDbContext())
+            if (id <= 0)
             {
-                return db.Groups.Find(id);
+                return null;
             }
+            return DB.Groups.Find(id);
         }
 
         /// <summary>
@@ -83,11 +75,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Exist(string name,GroupType type)
         {
-            using (var db = GetDbContext())
-            {
-                var model = db.Groups.FirstOrDefault(e => e.Name.ToLower() == name.ToLower() && e.Type == type);
-                return model != null;
-            }
+            return DB.Groups.Any(e => e.Name.ToLower() == name.ToLower() && e.Type == type);
         }
         /// <summary>
         /// 作用：删除组
@@ -98,17 +86,14 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            using (var db = GetDbContext())
+            var model = DB.Groups.Find(id);
+            if (model == null)
             {
-                var model = db.Groups.Find(id);
-                if (model == null)
-                {
-                    return false;
-                }
-                db.Groups.Remove(model);
-                db.SaveChanges();
-                return true;
+                return false;
             }
+            DB.Groups.Remove(model);
+            DB.SaveChanges();
+            return true;
         }
         /// <summary>
         /// 作用：通过用户ID获取用户所在的组列表
@@ -139,10 +124,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            using (var db = GetDbContext())
-            {
-                return db.User_Groups.Any(e => e.GroupID == id);
-            }
+            return DB.User_Groups.Any(e => e.GroupID == id);
         }
     }
 }

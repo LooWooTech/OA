@@ -63,6 +63,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\Flow\FlowDataManager.cs" />
+    <Compile Include="Managers\Flow\FlowManager.cs" />
+    <Compile Include="Managers\Flow\FlowNodeDataManager.cs" />
+    <Compile Include="Managers\Flow\FlowNodeManager.cs" />
     <Compile Include="Managers\FormManager.cs" />
     <Compile Include="Models\FormInfoFieldAttribute.cs" />
     <Compile Include="Models\PagingResult_T.cs" />

@@ -78,9 +78,10 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public Flow Get(int id)
         {
-            return db.Flows.Find(id);
+            return DB.Flows.Find(id);
 
         }
+
         /// <summary>
         /// 作用：删除流程模板
         /// 作者：汪建龙
@@ -90,13 +91,13 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Delete(int id)
         {
-            var model = db.Flows.Find(id);
+            var model = DB.Flows.Find(id);
             if (model == null)
             {
                 return false;
             }
-            db.Flows.Remove(model);
-            db.SaveChanges();
+            DB.Flows.Remove(model);
+            DB.SaveChanges();
             return true;
         }
         /// <summary>
@@ -107,7 +108,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public IEnumerable<Flow> GetList()
         {
-            return db.Flows.OrderBy(e => e.ID);
+            return DB.Flows.OrderBy(e => e.ID);
         }
         ///// <summary>
         ///// 作用：通过表单ID获取该表单的流程头信息

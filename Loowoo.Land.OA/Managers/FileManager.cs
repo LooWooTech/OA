@@ -46,7 +46,13 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SaveChanges();
         }
-
+        /// <summary>
+        /// 作用：查询文件
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月28日10:08:36
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         public IEnumerable<File> Search(FileParameter parameter)
         {
             var query = DB.Files.AsQueryable();
@@ -54,7 +60,8 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.InfoId == parameter.InfoId.Value);
             }
-            return query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
+            query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
+            return query;
         }
     }
 }

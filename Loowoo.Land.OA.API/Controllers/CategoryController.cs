@@ -14,6 +14,30 @@ namespace Loowoo.Land.OA.API.Controllers
     public class CategoryController : ControllerBase
     {
         /// <summary>
+        /// 作用：获取某一表单的种类列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日11:24:20
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public List<Category> List(int formId)
+        {
+            return Core.CategoryManager.GetList(formId);
+        }
+        /// <summary>
+        /// 作用：获取某一个种类信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年2月24日11:22:52
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public Category Model(int id)
+        {
+            return Core.CategoryManager.Get(id);
+        }
+
+        /// <summary>
         /// 作用：保存更新
         /// 作者：汪建龙
         /// 编写时间：
@@ -49,29 +73,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return Ok(category);
         }
-        /// <summary>
-        /// 作用：获取某一个种类信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月24日11:22:52
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public Category Model(int id)
-        {
-            return Core.CategoryManager.Get(id);
-        }
-        /// <summary>
-        /// 作用：获取某一表单的种类列表
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月24日11:24:20
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public List<Category> List(int formId)
-        {
-            return Core.CategoryManager.GetList(formId);
-        }
+   
         /// <summary>
         /// 作用：删除种类信息
         /// 作者：汪建龙
