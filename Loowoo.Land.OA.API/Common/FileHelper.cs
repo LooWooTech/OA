@@ -106,7 +106,7 @@ namespace Loowoo.Land.OA.API.Common
                                 FileName = fileName,
                                 SavePath = saveFilePath,
                                 Size = info.Length,
-                                Type = AnalyzeType(Path.GetExtension(fileName).ToLower())
+                                //Type = AnalyzeType(Path.GetExtension(fileName).ToLower())
                             };
                         }
                         catch
@@ -151,7 +151,7 @@ namespace Loowoo.Land.OA.API.Common
                             FileName = fileName,
                             SavePath = saveFilePath,
                             Size = info.Length,
-                            Type = AnalyzeType(Path.GetExtension(fileName).ToLower())
+                            //Type = AnalyzeType(Path.GetExtension(fileName).ToLower())
                         });
                     }
                     catch
