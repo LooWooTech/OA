@@ -88,16 +88,38 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取流程节点相关联的ID：{flowNode.FlowId} 流程模板，请核对");
             }
-            var group = Core.GroupManager.Get(flowNode.GroupId);
-            if (group == null)
+            /*
+             UserId,GroupId,DepartmentId三项均可为空,但是至少有一项必填，如果不为空，需要验证是否正确
+             */
+            if ((flowNode.UserId + flowNode.GroupId + flowNode.DepartmentId) <= 0)
             {
-                return BadRequest($"{TaskName}:未获取ID为{flowNode.GroupId}的组，请核对");
+                return BadRequest($"{TaskName}:用户、组、部门三项至少有一项必填");
             }
-            var organ = Core.DepartmentManager.Get(flowNode.DepartmentId);
-            if (organ == null)
+            if (flowNode.UserId > 0)
             {
-                return BadRequest($"{TaskName}:未获取ID为{flowNode.DepartmentId}的部门，请核对");
+                var user = Core.UserManager.Get(flowNode.UserId);
+                if (user == null)
+                {
+                    return BadRequest($"{TaskName}:未查询到ID为{flowNode.UserId}的用户信息");
+                }
             }
+            if (flowNode.GroupId > 0)
+            {
+                var group = Core.GroupManager.Get(flowNode.GroupId);
+                if (group == null)
+                {
+                    return BadRequest($"{TaskName}:未获取ID为{flowNode.GroupId}的组，请核对");
+                }
+            }
+            if (flowNode.DepartmentId > 0)
+            {
+                var organ = Core.DepartmentManager.Get(flowNode.DepartmentId);
+                if (organ == null)
+                {
+                    return BadRequest($"{TaskName}:未获取ID为{flowNode.DepartmentId}的部门，请核对");
+                }
+            }
+
             if (flowNode.Step > 0)
             {
                 var pre = Core.FlowNodeManager.Get(flowNode.FlowId, flowNode.Step - 1);
