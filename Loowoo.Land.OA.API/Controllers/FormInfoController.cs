@@ -12,15 +12,16 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoController : ControllerBase
     {
         [HttpGet]
-        public object List(int formId, string searchKey, FlowStatus? status, int page = 1, int rows = 20)
+        public object List(int formId, int postUserId = 0, string searchKey = null, FlowStatus? status = null, int page = 1, int rows = 20)
         {
             var parameter = new UserFormInfoParameter
             {
                 FormId = formId,
                 Status = status,
-                CurrentUserId = CurrentUser.ID,
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows),
+                UserId = CurrentUser.ID,
+                PostUserId = postUserId
             };
 
             var list = Core.UserFormInfoManager.GetList(parameter);
@@ -50,7 +51,9 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var isAdd = model.ID == 0;
 
+            //编辑时不更新postUserId
             model.PostUserId = CurrentUser.ID;
+
             Core.FormInfoManager.Save(model);
 
             //只有在保存的时候，添加用户表

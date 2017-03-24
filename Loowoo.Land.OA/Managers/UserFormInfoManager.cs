@@ -13,9 +13,13 @@ namespace Loowoo.Land.OA.Managers
         public IQueryable<UserFormInfo> GetList(UserFormInfoParameter parameter)
         {
             var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
-            if (parameter.CurrentUserId > 0)
+            if (parameter.UserId > 0)
             {
-                query = query.Where(e => e.UserId == parameter.CurrentUserId);
+                query = query.Where(e => e.UserId == parameter.UserId);
+            }
+            if (parameter.PostUserId > 0)
+            {
+                query = query.Where(e => e.Info.PostUserId == parameter.PostUserId);
             }
             if (parameter.FormId > 0)
             {

@@ -38,6 +38,6 @@ namespace Loowoo.Land.OA.Models
     {
         public FlowStatus? Status { get; set; }
 
-        public int CurrentUserId { get; set; }
+        public int UserId { get; set; }
     }
 }
