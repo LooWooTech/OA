@@ -49,6 +49,24 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId && e.FlowNodeId == flowNodeId);
         }
+
+        public FlowNodeData GetFlowNodeData(int flowDataID,int flowNodeId,int step)
+        {
+            return DB.FlowNodeDatas.Where(e => e.FlowDataId == flowDataID && e.FlowNodeId == flowNodeId && e.Step == step).OrderByDescending(e => e.CreateTime).FirstOrDefault();
+        }
+        public bool Delete(int id)
+        {
+            var model = DB.FlowNodeDatas.Find(id);
+            if (model == null)
+            {
+                return false;
+            }
+            DB.FlowNodeDatas.Remove(model);
+            DB.SaveChanges();
+            return true;
+        }
+
+
         /// <summary>
         /// 作用：获取某一用户某流程记录的节点记录
         /// 作者：汪建龙
@@ -130,12 +148,29 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowNodeData Get(int id)
         {
-            using (var db = GetDbContext())
-            {
-                return db.FlowNodeDatas.Find(id);
-            }
+            return DB.FlowNodeDatas.Find(id);
         }
 
+
+        public bool CanCancel(int id)
+        {
+            var flownodedata = Get(id);
+            if (flownodedata == null||flownodedata.FlowNode==null)
+            {
+                return false;
+            }
+            var next = Core.FlowNodeManager.GetNext(flownodedata.FlowNodeId);
+            if (next == null)
+            {
+                return false;
+            }
+            var nextflownodedate = GetFlowNodeData(flownodedata.FlowDataId, next.ID, flownodedata.Step + 1);
+            if (next != null && nextflownodedate.Result.HasValue)
+            {
+                return false;
+            }
+            return true;
+        }
       
     }
 }
