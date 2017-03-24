@@ -47,11 +47,8 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public FlowData Get(int formId,int infoId)
         {
-            using (var db = GetDbContext())
-            {
-                var model = db.FlowDatas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
-                return model;
-            }
+            var model = DB.FlowDatas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
+            return model;
         }
 
         /// <summary>
