@@ -122,8 +122,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        [HttpPut]
-        public IHttpActionResult Save([FromBody] User user)
+        [HttpPost]
+        public IHttpActionResult Save([FromBody] User user, [FromUri] string groupIds)
         {
             if (user == null
                 || string.IsNullOrEmpty(user.Name)
@@ -131,28 +131,19 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("编辑用户参数错误");
             }
-            try
+            Core.UserManager.Save(user);
+
+            if (!string.IsNullOrEmpty(groupIds))
             {
-                Core.UserManager.Save(user);
-            }
-            catch (Exception ex)
-            {
-                LogWriter.WriteException(ex, "编辑用户");
-                return BadRequest("编辑用户发生错误");
+                var ids = groupIds.Split(',').Select(str => int.Parse(str)).ToArray();
+                Core.UserGroupManager.UpdateUserGroups(user.ID, ids);
             }
             return Ok();
         }
         [HttpDelete]
         public void Delete(int id)
         {
-            try
-            {
-                Core.UserManager.Delete(id);
-            }
-            catch (Exception ex)
-            {
-                LogWriter.WriteException(ex, "用户删除");
-            }
+            Core.UserManager.Delete(id);
         }
 
     }

@@ -6,25 +6,23 @@ using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class UserGroupManager:ManagerBase
+    public class UserGroupManager : ManagerBase
     {
-        /// <summary>
-        /// 作用：
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日18:56:17
-        /// </summary>
-        /// <param name="user_group"></param>
-        /// <returns></returns>
-        public int Save(UserGroup user_group)
-        {
-            using (var db = GetDbContext())
-            {
-                db.User_Groups.Add(user_group);
-                db.SaveChanges();
-                return user_group.ID;
-            }
-        }
 
+        public void UpdateUserGroups(int userId, int[] groupIds)
+        {
+            var list = DB.UserGroups.Where(e => e.UserID == userId);
+            DB.UserGroups.RemoveRange(list);
+            foreach (var id in groupIds)
+            {
+                DB.UserGroups.Add(new UserGroup
+                {
+                    UserID = userId,
+                    GroupID = id
+                });
+            }
+            DB.SaveChanges();
+        }
         /// <summary>
         /// 作用：编辑
         /// 作者：汪建龙
@@ -36,7 +34,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                var entry = db.User_Groups.Find(user_group.ID);
+                var entry = db.UserGroups.Find(user_group.ID);
                 if (entry == null)
                 {
                     return false;
@@ -57,10 +55,10 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                var entry = db.User_Groups.Find(id);
+                var entry = db.UserGroups.Find(id);
                 if (entry != null)
                 {
-                    db.User_Groups.Remove(entry);
+                    db.UserGroups.Remove(entry);
                     db.SaveChanges();
                 }
             }
@@ -76,15 +74,15 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                return db.User_Groups.Where(e => e.UserID == userId).ToList();
+                return db.UserGroups.Where(e => e.UserID == userId).ToList();
             }
         }
 
-        public UserGroup Get(int userId,int groupId)
+        public UserGroup Get(int userId, int groupId)
         {
             using (var db = GetDbContext())
             {
-                return db.User_Groups.FirstOrDefault(e => e.UserID == userId && e.GroupID == groupId);
+                return db.UserGroups.FirstOrDefault(e => e.UserID == userId && e.GroupID == groupId);
             }
         }
 
@@ -98,7 +96,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Exist(int userId, int groupId)
         {
-            return DB.User_Groups.Any(e => e.UserID == userId && e.GroupID == groupId);
+            return DB.UserGroups.Any(e => e.UserID == userId && e.GroupID == groupId);
         }
 
     }

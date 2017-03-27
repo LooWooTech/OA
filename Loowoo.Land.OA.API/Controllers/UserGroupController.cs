@@ -18,29 +18,29 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 作者：汪建龙
         /// 编写时间：2017年2月17日09:19:48
         /// </summary>
-        /// <param name="user_group"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Save([FromBody]UserGroup user_group)
+        public IHttpActionResult Save([FromBody]UserGroup model)
         {
             TaskName = "保存管理用户组";
-            if (user_group == null || user_group.UserID == 0 || user_group.GroupID == 0)
+            if (model == null || model.UserID == 0 || model.GroupID == 0)
             {
                 return BadRequest($"{TaskName}:没有获取用户组信息，用户ID不能为0、组ID不能为0");
             }
-            var user = Core.UserManager.Get(user_group.UserID);
+            var user = Core.UserManager.Get(model.UserID);
             if (user == null)
             {
                 return NotFound();
             }
-            var group = Core.UserManager.Get(user_group.GroupID);
+            var group = Core.UserManager.Get(model.GroupID);
             if (group == null)
             {
                 return NotFound();
             }
             try
             {
-                var id = Core.UserGroupManager.Save(user_group);
+                var id = Core.UserGroupManager.Save(model);
                 if (id <= 0)
                 {
                     return BadRequest($"{TaskName}:保存失败");

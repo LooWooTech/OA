@@ -125,7 +125,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 var pre = Core.FlowNodeManager.Get(flowNode.FlowId, flowNode.Step - 1);
                 if (pre == null)
                 {
-                    return BadRequest($"{TaskName}:验证上一级流程节点，未获取为FlowID：{flowNode.FlowId};Step:{flowNode.Step-1}的流程节点");
+                    return BadRequest($"{TaskName}:验证上一级流程节点，未获取为FlowID：{flowNode.FlowId};Step:{flowNode.Step - 1}的流程节点");
                 }
             }
             #endregion
@@ -235,31 +235,31 @@ namespace Loowoo.Land.OA.API.Controllers
         ///// </summary>
         ///// <param name="flow"></param>
         ///// <returns></returns>
-        //[HttpPost]
-        //public IHttpActionResult Save([FromBody] Flow flow)
-        //{
-        //    TaskName = "保存流程模板";
-        //    if (flow == null || string.IsNullOrEmpty(flow.Name))
-        //    {
-        //        return BadRequest($"{TaskName}:未获取流程模板信息，流程模板名称不能为空");
-        //    }
-        //    if (flow.ID > 0)
-        //    {
-        //        if (!Core.FlowManager.Edit(flow))
-        //        {
-        //            return BadRequest($"{TaskName}:未找到需要编辑的流程模板信息");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var id = Core.FlowManager.Save(flow);
-        //        if (id <= 0)
-        //        {
-        //            return BadRequest($"{TaskName}:保存流程模板失败");
-        //        }
-        //    }
-        //    return Ok(flow);
-        //}
+        [HttpPost]
+        public IHttpActionResult Save([FromBody] Flow flow)
+        {
+            TaskName = "保存流程模板";
+            if (flow == null || string.IsNullOrEmpty(flow.Name))
+            {
+                return BadRequest($"{TaskName}:未获取流程模板信息，流程模板名称不能为空");
+            }
+            if (flow.ID > 0)
+            {
+                if (!Core.FlowManager.Edit(flow))
+                {
+                    return BadRequest($"{TaskName}:未找到需要编辑的流程模板信息");
+                }
+            }
+            else
+            {
+                var id = Core.FlowManager.Save(flow);
+                if (id <= 0)
+                {
+                    return BadRequest($"{TaskName}:保存流程模板失败");
+                }
+            }
+            return Ok(flow);
+        }
 
         ///// <summary>
         ///// 作用：删除流程模板
@@ -310,7 +310,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
 
 
-  
+
 
 
         ///// <summary>

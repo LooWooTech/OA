@@ -109,33 +109,27 @@ namespace Loowoo.Land.OA.Managers
                 {
                     return;
                 }
-                if (string.IsNullOrEmpty(user.Password))
+                if (!string.IsNullOrEmpty(user.Password))
                 {
                     user.Password = user.Password.MD5();
                 }
                 user.Name = user.Name.ToLower();
                 user.Username = user.Username.ToLower();
-                db.Entry(entry).CurrentValues.SetValues(user);
+                
                 db.SaveChanges();
             }
         }
-        /// <summary>
-        /// 作用：删除用户
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Delete(int id)
+
+        public void Delete(int id)
         {
-            using (var db = GetDbContext())
+            var user = DB.Users.Find(id);
+            if (user != null)
             {
-                var entry = db.Users.Find(id);
-                if (entry == null)
-                {
-                    return false;
-                }
-                db.Users.Remove(entry);
-                db.SaveChanges();
-                return true;
+                var userGroups = DB.UserGroups.Where(e => e.UserID == user.ID);
+                DB.UserGroups.RemoveRange(userGroups);
+                DB.Users.Remove(user);
+
+                DB.SaveChanges();
             }
         }
     }

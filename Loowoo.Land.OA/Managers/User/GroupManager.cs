@@ -106,7 +106,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                var relation = db.User_Groups.Where(e => e.UserID == userId).ToList();
+                var relation = db.UserGroups.Where(e => e.UserID == userId).ToList();
                 foreach(var item in relation)
                 {
                     item.Group = db.Groups.Find(item.GroupID);
@@ -124,7 +124,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            return DB.User_Groups.Any(e => e.GroupID == id);
+            return DB.UserGroups.Any(e => e.GroupID == id);
         }
     }
 }
