@@ -37,6 +37,14 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Status == parameter.Status.Value);
             }
+            if (parameter.BeginTime.HasValue)
+            {
+                query = query.Where(e => e.Info.CreateTime >= parameter.BeginTime.Value);
+            }
+            if (parameter.EndTime.HasValue)
+            {
+                query = query.Where(e => e.Info.CreateTime <= parameter.EndTime.Value);
+            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
