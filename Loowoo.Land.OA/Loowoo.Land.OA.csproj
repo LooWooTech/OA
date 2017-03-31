@@ -119,6 +119,7 @@
     <Compile Include="Models\UserFormInfo.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserRight.cs" />
+    <Compile Include="Parameters\AttendanceParameter.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
     <Compile Include="Parameters\FeedParameter.cs" />

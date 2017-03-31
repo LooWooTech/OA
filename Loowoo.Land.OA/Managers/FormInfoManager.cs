@@ -19,6 +19,22 @@ namespace Loowoo.Land.OA.Managers
         public IEnumerable<FormInfo> GetList(FormInfoParameter parameter)
         {
             var query = DB.FormInfos.Where(e => !e.Deleted);
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.FormId == parameter.FormId);
+            }
+            if (parameter.PostUserId > 0)
+            {
+                query = query.Where(e => e.PostUserId == parameter.PostUserId);
+            }
+            if (parameter.BeginTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime >= parameter.BeginTime.Value);
+            }
+            if (parameter.EndTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime <= parameter.EndTime.Value);
+            }
             if (parameter.CategoryId > 0)
             {
                 query = query.Where(e => e.CategoryId == parameter.CategoryId);

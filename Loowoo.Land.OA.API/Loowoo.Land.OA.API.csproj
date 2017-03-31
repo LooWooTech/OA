@@ -145,7 +145,6 @@
     <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\AttendanceController.cs" />
-    <Compile Include="Controllers\Base\FeedController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />

@@ -15,6 +15,21 @@
 CREATE DATABASE IF NOT EXISTS `oa` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `oa`;
 
+-- 导出  表 oa.attendance 结构
+CREATE TABLE IF NOT EXISTS `attendance` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Date` datetime NOT NULL,
+  `UserID` int(11) NOT NULL DEFAULT '0',
+  `State` bit(4) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`ID`),
+  KEY `UserID` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 正在导出表  oa.attendance 的数据：~0 rows (大约)
+DELETE FROM `attendance`;
+/*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
+
 -- 导出  表 oa.category 结构
 CREATE TABLE IF NOT EXISTS `category` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -219,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `form` (
   `Name` varchar(255) NOT NULL,
   `FlowID` int(11) NOT NULL DEFAULT '0',
   `DataType` varchar(50) DEFAULT NULL,
+  `FormType` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `FlowID` (`FlowID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
@@ -226,8 +242,8 @@ CREATE TABLE IF NOT EXISTS `form` (
 -- 正在导出表  oa.form 的数据：~1 rows (大约)
 DELETE FROM `form`;
 /*!40000 ALTER TABLE `form` DISABLE KEYS */;
-INSERT INTO `form` (`ID`, `Name`, `FlowID`, `DataType`) VALUES
-	(1, '公文', 0, 'Missive');
+INSERT INTO `form` (`ID`, `Name`, `FlowID`, `DataType`, `FormType`) VALUES
+	(1, '公文', 0, 'Missive', 0);
 /*!40000 ALTER TABLE `form` ENABLE KEYS */;
 
 -- 导出  表 oa.form_info 结构

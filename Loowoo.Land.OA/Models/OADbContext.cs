@@ -35,6 +35,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Message> Messages { get; set; }
         public DbSet<Subscription> SubScriptions { get; set; }
         public DbSet<Holiday> Holidays { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
