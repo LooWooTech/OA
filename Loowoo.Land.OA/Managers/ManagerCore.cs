@@ -45,6 +45,7 @@ namespace Loowoo.Land.OA.Managers
         public FlowNodeManager FlowNodeManager { get; private set; }
         public FlowDataManager FlowDataManager { get; private set; }
         public FlowNodeDataManager FlowNodeDataManager { get; private set; }
+        public HolidayManager HolidayManager { get; private set; }
 
         //public SubScriptionManager SubScriptionManager { get; private set; }
         //public FormManager FormManager { get; private set; }

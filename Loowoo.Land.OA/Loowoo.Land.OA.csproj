@@ -63,12 +63,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\AttendanceManager.cs" />
     <Compile Include="Managers\Flow\FlowDataManager.cs" />
     <Compile Include="Managers\Flow\FlowManager.cs" />
     <Compile Include="Managers\Flow\FlowNodeDataManager.cs" />
     <Compile Include="Managers\Flow\FlowNodeManager.cs" />
     <Compile Include="Managers\FormManager.cs" />
+    <Compile Include="Managers\HolidayManager.cs" />
+    <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\FormInfoFieldAttribute.cs" />
+    <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\PagingResult_T.cs" />
     <Compile Include="Managers\Base\CategoryManager.cs" />
     <Compile Include="Managers\Base\FeedManager.cs" />
