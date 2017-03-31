@@ -28,7 +28,7 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<UserGroup> User_Groups { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Department> Departments { get; set; }
 
         public DbSet<Feed> Feeds { get; set; }

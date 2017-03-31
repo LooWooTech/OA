@@ -116,6 +116,10 @@ namespace Loowoo.Land.OA.Models
 
         public int PostUserId { get; set; }
 
+        public DateTime? BeginTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
+
         public PageParameter Page { get; set; }
     }
 }

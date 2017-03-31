@@ -27,6 +27,17 @@ namespace Loowoo.Land.OA.Models
 
         public int Step { get; set; }
 
+        /// <summary>
+        /// 上一节点
+        /// </summary>
+        [NotMapped]
+        public FlowNode Prev { get; set; }
+        /// <summary>
+        /// 下一节点
+        /// </summary>
+        [NotMapped]
+        public FlowNode Next { get; set; }
+
         public virtual User User { get; set; }
 
         public virtual Group Group { get; set; }
