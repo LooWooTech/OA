@@ -48,7 +48,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
+        public object List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
         {
             var parameter = new UserParameter
             {
@@ -58,12 +58,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.UserManager.Search(parameter);
-            var table = new PagingResult<User>
+            return new PagingResult<User>
             {
                 List = list,
                 Page = parameter.Page
             };
-            return Ok(table);
         }
 
         /// <summary>
