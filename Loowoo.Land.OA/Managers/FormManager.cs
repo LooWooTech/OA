@@ -22,5 +22,9 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.Forms.OrderBy(e => e.ID).ToList();
         }
+        public Form GetModel(FormType type)
+        {
+            return DB.Forms.FirstOrDefault(e => e.FormType == type);
+        }
     }
 }
