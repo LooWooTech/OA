@@ -18,20 +18,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.UserID == parameter.UserId.Value);
             }
-            if (parameter.Year.HasValue)
-            {
-                query = query.Where(e => e.Date.Year == parameter.Year.Value);
-            }
-
-            if (parameter.Month.HasValue)
-            {
-                query = query.Where(e => e.Date.Month == parameter.Month.Value);
-            }
-
-            if (parameter.Day.HasValue)
-            {
-                query = query.Where(e => e.Date.Day == parameter.Day.Value);
-            }
+        
             if (parameter.BeginDate.HasValue)
             {
                 query = query.Where(e => e.Date >= parameter.BeginDate.Value);

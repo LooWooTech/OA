@@ -88,6 +88,15 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取流程节点相关联的ID：{flowNode.FlowId} 流程模板，请核对");
             }
+           
+            if (flowNode.PrevId > 0)
+            {
+                var pre = Core.FlowNodeManager.Get(flowNode.PrevId);
+                if (pre == null)
+                {
+                    return BadRequest($"{TaskName}:未找到上一节点信息,请核对");
+                }
+            }
             /*
              UserId,GroupId,DepartmentId三项均可为空,但是至少有一项必填，如果不为空，需要验证是否正确
              */
@@ -117,15 +126,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 if (organ == null)
                 {
                     return BadRequest($"{TaskName}:未获取ID为{flowNode.DepartmentId}的部门，请核对");
-                }
-            }
-
-            if (flowNode.Step > 0)
-            {
-                var pre = Core.FlowNodeManager.Get(flowNode.FlowId, flowNode.Step - 1);
-                if (pre == null)
-                {
-                    return BadRequest($"{TaskName}:验证上一级流程节点，未获取为FlowID：{flowNode.FlowId};Step:{flowNode.Step - 1}的流程节点");
                 }
             }
             #endregion
@@ -163,12 +163,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取Id为{currentNodeId}的流程节点信息，请核对");
             }
-            var nextnode = Core.FlowNodeManager.Get(currentNode.FlowId, currentNode.Step + 1);
-            if (nextnode == null)//流程为最后一步
+            if (currentNode.Next == null)//流程为最后一步
             {
                 return Ok();
             }
-            var parameter = new Parameters.UserParameter { GroupId = nextnode.GroupId, DepartmentId = nextnode.DepartmentId };
+            var parameter = new Parameters.UserParameter { GroupId = currentNode.Next.GroupId, DepartmentId = currentNode.Next.DepartmentId };
             var list = Core.UserManager.Search(parameter);
             var table = new PagingResult<User>
             {

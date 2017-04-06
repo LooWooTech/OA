@@ -89,21 +89,15 @@ namespace Loowoo.Land.OA.Managers
             {
                 return null;
             }
-            return DB.FlowNodes.Find(id);
+            var model = DB.FlowNodes.Find(id);
+            if (model != null)
+            {
+                model.Next = DB.FlowNodes.FirstOrDefault(e => e.PrevId == model.ID);
+            }
+            return model;
         }
 
-        /// <summary>
-        /// 作用：通过FlowID和Step获取流程节点
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月22日16:05:37
-        /// </summary>
-        /// <param name="flowId"></param>
-        /// <param name="setp"></param>
-        /// <returns></returns>
-        public FlowNode Get(int flowId,int step)
-        {
-            return DB.FlowNodes.FirstOrDefault(e => e.FlowId == flowId && e.Step ==step );
-        }
+
 
         /// <summary>
         /// 作用：验证ID 流程节点是否使用
@@ -131,7 +125,8 @@ namespace Loowoo.Land.OA.Managers
             {
                 return null;
             }
-            return Get(currentflownode.FlowId, currentflownode.Step - 1);
+    
+            return currentflownode.Prev;
         }
         /// <summary>
         /// 作用：通过当前节点获取下一个节点
@@ -147,7 +142,8 @@ namespace Loowoo.Land.OA.Managers
             {
                 return null;
             }
-            return Get(currentFlowNode.FlowId, currentFlowNode.Step + 1);
+           
+            return currentFlowNode.Next;
         }
     }
 }
