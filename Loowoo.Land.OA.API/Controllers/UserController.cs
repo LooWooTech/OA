@@ -36,7 +36,14 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
             }
-            user.Token = AuthorizeHelper.GetToken(user);
+            user.Token = AuthorizeHelper.GetToken(new UserIdentity
+            {
+                ID = user.ID,
+                Name = user.Name,
+                DepartmentId = user.DepartmentId,
+                Role = user.Role,
+                Username = user.Name
+            });
 
             return Ok(user);
         }
@@ -58,9 +65,22 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new Loowoo.Common.PageParameter(page, rows)
             };
             var list = Core.UserManager.Search(parameter);
-            return new PagingResult<User>
+            return new PagingResult
             {
-                List = list,
+                List = list.Select(e => new
+                {
+                    e.ID,
+                    e.Name,
+                    e.Username,
+                    e.Role,
+                    e.DepartmentId,
+                    DepartmentName = e.Department.Name,
+                    Groups = e.UserGroups.Select(g => new
+                    {
+                        g.Group.Name,
+                        g.Group.ID,
+                    })
+                }),
                 Page = parameter.Page
             };
         }
@@ -80,11 +100,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest("用户ID参数不正确");
             }
             var user = Core.UserManager.Get(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            user.Department = Core.DepartmentManager.Get(user.DepartmentId);
             return Ok(user);
         }
 

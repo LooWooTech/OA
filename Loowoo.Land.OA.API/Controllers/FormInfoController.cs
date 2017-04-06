@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var list = Core.UserFormInfoManager.GetList(parameter);
 
-            return new PagingResult<object>
+            return new PagingResult
             {
                 List = list,
                 Page = parameter.Page

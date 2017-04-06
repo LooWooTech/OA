@@ -66,6 +66,7 @@ namespace Loowoo.Land.OA.Models
 
     public enum UserRole
     {
+        Guest,
         User,
         Manager,
         Administrator

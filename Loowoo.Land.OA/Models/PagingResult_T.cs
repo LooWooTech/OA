@@ -12,4 +12,8 @@ namespace Loowoo.Land.OA.Models
         public IEnumerable<T> List { get; set; }
         public PageParameter Page { get; set; }
     }
+
+    public class PagingResult : PagingResult<dynamic>
+    {
+    }
 }

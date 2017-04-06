@@ -165,7 +165,6 @@
     <Compile Include="Security\AuthorizeHelper.cs" />
     <Compile Include="Security\UserIdentity.cs" />
     <Compile Include="Security\UserPrincipal.cs" />
-    <Compile Include="Security\UserRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -179,6 +178,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\Base\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">

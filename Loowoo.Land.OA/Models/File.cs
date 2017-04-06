@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    
     [Table("file")]
     public class File
     {

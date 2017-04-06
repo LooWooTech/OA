@@ -53,7 +53,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var fileName = (inputFile.FileName + inputFile.ContentLength).MD5() + fileExt;
             var savePath = _uploadDir + fileName;
             inputFile.SaveAs(Path.Combine(Environment.CurrentDirectory, _uploadDir + fileName));
-            var file = new Models.File
+            var file = new Loowoo.Land.OA.Models.File
             {
                 FileName = inputFile.FileName,
                 Size = inputFile.ContentLength,

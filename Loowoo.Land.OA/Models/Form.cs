@@ -17,9 +17,8 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public string Name { get; set; }
-        public FormType FormType { get; set; }
 
-        public string DataType { get; set; }
+        public FormType FormType { get; set; }
 
         public int FLowId { get; set; }
     }

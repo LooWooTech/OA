@@ -13,7 +13,7 @@ namespace Loowoo.Land.OA.API.Security
         public static UserIdentity GetIdentity(HttpContext context)
         {
             var tokenKey = AppSettings.Get("TokenKey") ?? "Token";
-            var token = context.Request[tokenKey] ?? context.Request.Headers[tokenKey] ;
+            var token = context.Request[tokenKey] ?? context.Request.Headers[tokenKey];
             if (!string.IsNullOrWhiteSpace(token))
             {
                 var ticket = FormsAuthentication.Decrypt(token);
@@ -25,9 +25,9 @@ namespace Loowoo.Land.OA.API.Security
             return UserIdentity.Anonymouse;
         }
 
-        public static string GetToken(User user)
+        public static string GetToken(UserIdentity identity)
         {
-            var tokenValue = user.ToJson();
+            var tokenValue = identity.ToJson();
             var ticket = new FormsAuthenticationTicket(tokenValue, true, int.MaxValue);
             return FormsAuthentication.Encrypt(ticket);
         }

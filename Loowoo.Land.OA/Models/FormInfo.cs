@@ -34,6 +34,8 @@ namespace Loowoo.Land.OA.Models
 
         public int CategoryId { get; set; }
 
+        public virtual Category Category { get; set; }
+
         public DateTime CreateTime { get; set; }
 
         public DateTime? UpdateTime { get; set; }
