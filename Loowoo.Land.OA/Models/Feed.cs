@@ -29,7 +29,11 @@ namespace Loowoo.Land.OA.Models
 
         public int FromUserId { get; set; }
 
+        public virtual User FromUser { get; set; }
+
         public int ToUserId { get; set; }
+
+        public virtual User ToUser { get; set; }
 
         public bool Deleted { get; set; }
 

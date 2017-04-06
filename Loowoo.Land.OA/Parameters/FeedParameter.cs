@@ -9,10 +9,12 @@ namespace Loowoo.Land.OA.Parameters
     /// <summary>
     /// 动态查询参数类
     /// </summary>
-    public class FeedParameter:ParameterBase
+    public class FeedParameter : ParameterBase
     {
-        public int? InfoType { get; set; }
+        public int? FormId { get; set; }
+
         public DateTime? BeginTime { get; set; }
+
         public int? UserId { get; set; }
     }
 }

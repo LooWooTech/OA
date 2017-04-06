@@ -80,9 +80,9 @@ namespace Loowoo.Land.OA.Managers
         public IQueryable<Feed> Search(FeedParameter parameter)
         {
             var query = DB.Feeds.Where(e => e.Deleted == false).AsQueryable();
-            if (parameter.InfoType.HasValue)
+            if (parameter.FormId.HasValue)
             {
-                query = query.Where(e => e.InfoId == parameter.InfoType);
+                query = query.Where(e => e.InfoId == parameter.FormId);
             }
             if (parameter.BeginTime.HasValue)
             {
