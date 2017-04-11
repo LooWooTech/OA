@@ -226,5 +226,41 @@ namespace Loowoo.Land.OA.API.Controllers
 
             return Ok(flownodedata);
         }
+
+        public IHttpActionResult GetUserList(int infoId, int nodeId, bool result = true)
+        {
+            FlowNode nextNode = null;
+            var info = Core.FormInfoManager.GetModel(infoId);
+            if (info == null)
+            {
+                return BadRequest("获取表单数据错误");
+            }
+
+            if (info.Form.FLowId > 0)
+            {
+                var flow = Core.FlowManager.Get(info.Form.FLowId);
+                nextNode = flow.GetNextStep(nodeId);
+            }
+
+            IEnumerable<User> users = null;
+            if (result && nextNode != null)
+            {
+                users = Core.UserManager.Search(new Parameters.UserParameter
+                {
+                    UserId = nextNode.UserId,
+                    DepartmentId = nextNode.DepartmentId,
+                    GroupId = nextNode.GroupId,
+                });
+            }
+            else if (!result)
+            {
+                var userIds = info.FlowData.Nodes.Where(e => e.UserId != CurrentUser.ID).Select(e => e.UserId).ToArray();
+                users = Core.UserManager.Search(new Parameters.UserParameter
+                {
+                    UserIds = userIds
+                });
+            }
+            return Ok(users);
+        }
     }
 }

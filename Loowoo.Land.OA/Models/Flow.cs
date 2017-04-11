@@ -18,5 +18,10 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public virtual List<FlowNode> Nodes { get; set; }
+
+        public FlowNode GetNextStep(int nodeId)
+        {
+            return Nodes.FirstOrDefault(e => e.PrevId == nodeId);
+        }
     }
 }

@@ -48,14 +48,8 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(user);
         }
 
-        /// <summary>
-        /// 作用：获取所有用户列表
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月20日18:29:09
-        /// </summary>
-        /// <returns></returns>
         [HttpGet]
-        public object List(int? departmentId = null, int? groupId = null, string searchKey = null, int page = 1, int rows = 20)
+        public object List(int departmentId = 0, int groupId = 0, string searchKey = null, int page = 1, int rows = 20)
         {
             var parameter = new UserParameter
             {

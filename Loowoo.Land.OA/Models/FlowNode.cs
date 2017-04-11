@@ -24,28 +24,14 @@ namespace Loowoo.Land.OA.Models
         public int GroupId { get; set; }
 
         public int DepartmentId { get; set; }
-        /// <summary>
-        /// 上一节点ID
-        /// </summary>
-        public int PrevId { get; set; }
-        public virtual FlowNode Prev { get; set; }
 
-        ///// <summary>
-        ///// 上一节点
-        ///// </summary>
-        //[NotMapped]
-        //public FlowNode Prev { get; set; }
-        /// <summary>
-        /// 下一节点
-        /// </summary>
+        public int PrevId { get; set; }
+
+        [NotMapped]
+        public FlowNode Prev { get; set; }
+
         [NotMapped]
         public FlowNode Next { get; set; }
-
-        public virtual User User { get; set; }
-
-        public virtual Group Group { get; set; }
-
-        public virtual Department Department { get; set; }
     }
 
 }

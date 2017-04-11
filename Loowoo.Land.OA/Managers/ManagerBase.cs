@@ -11,6 +11,14 @@ namespace Loowoo.Land.OA.Managers
     {
         protected ManagerCore Core { get { return ManagerCore.Instance; } }
 
+        protected Caching.ICacheService Cache
+        {
+            get
+            {
+                return new Caching.LocalCacheService();
+            }
+        }
+
         protected OADbContext DB
         {
             get

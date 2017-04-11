@@ -63,7 +63,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var canEdit = true;
             var canSubmit = true;
             var canCancel = true;
-
+            FlowNodeData currentUserflownodeData = null;
             if (model == null)
             {
                 canSubmit = false;
@@ -80,13 +80,18 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 canSubmit = model.FlowData.CanSubmit(CurrentUser.ID);
                 canCancel = model.FlowData.CanCancel(CurrentUser.ID);
+                //获取当前用户的审批意见
+                currentUserflownodeData = model.FlowData.Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.UserId == CurrentUser.ID);
             }
+
+
             return new
             {
                 model,
                 canEdit,
                 canSubmit,
-                canCancel
+                canCancel,
+                flownodeData = currentUserflownodeData
             };
         }
 

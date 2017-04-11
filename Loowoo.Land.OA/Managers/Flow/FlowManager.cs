@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Caching;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,17 +70,9 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
-        /// <summary>
-        /// 作用：通过ID获取流程头信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月17日14:02:55
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public Flow Get(int id)
         {
             return DB.Flows.Find(id);
-
         }
 
         /// <summary>
