@@ -151,7 +151,7 @@
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\Flow\FlowController.cs" />
     <Compile Include="Controllers\Flow\FlowDataController.cs" />
-    <Compile Include="Controllers\Flow\FormController.cs" />
+    <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\FormInfoController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HolidayController.cs" />
@@ -160,6 +160,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserFormInfoVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticateModule.cs" />
     <Compile Include="Security\AuthorizeHelper.cs" />
@@ -178,7 +179,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\Base\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">

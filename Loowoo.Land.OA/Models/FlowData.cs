@@ -30,5 +30,37 @@ namespace Loowoo.Land.OA.Models
         public bool Completed { get; set; }
 
         public virtual List<FlowNodeData> Nodes { get; set; }
+
+        /// <summary>
+        /// 判断用户是否可以提交
+        /// </summary>
+        public bool CanSubmit(int userId)
+        {
+            if (Completed) return false;
+            if (Nodes == null || Nodes.Count == 0)
+            {
+                return true; 
+            }
+            var lastNode = Nodes.Last();
+            return lastNode.UserId == userId && !lastNode.Result.HasValue;
+        }
+
+        /// <summary>
+        /// 判断用户是否可以撤销流程
+        /// </summary>
+        public bool CanCancel(int userId)
+        {
+            if (Completed) return false;
+            if (Nodes == null || Nodes.Count == 0)
+            {
+                return false;
+            }
+            //获取用户最后一次提交的记录
+            var lastNode = Nodes.Where(e => e.UserId == userId).OrderByDescending(e => e.CreateTime).FirstOrDefault();
+            if (lastNode == null || !lastNode.Result.HasValue) return false;
+
+            //如果已经有更新的提交，则不能撤销
+            return !Nodes.Any(e => e.CreateTime > lastNode.CreateTime && e.Result.HasValue);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,28 @@ namespace Loowoo.Land.OA.API.Controllers
                 PostUserId = postUserId
             };
 
-            var list = Core.UserFormInfoManager.GetList(parameter);
+            var form = Core.FormManager.GetModel(formId);
+            var flow = Core.FlowManager.Get(form.FLowId);
+
+            var list = Core.UserFormInfoManager.GetList(parameter).Select(e => new UserFormInfoVM
+            {
+                ID = e.ID,
+                CategoryId = e.Info.CategoryId,
+                CreateTime = e.Info.CreateTime,
+                FlowDataId = e.FlowNodeDataId,
+                FlowStep = e.Info.FlowStep,
+                Json = e.Info.Json,
+                FormId = e.FormId,
+                InfoId = e.Info.ID,
+                PostUserId = e.Info.PostUserId,
+                Status = e.Status,
+                Title = e.Info.Title,
+                UpdateTime = e.Info.UpdateTime,
+                UserId = e.UserId,
+            }).ToList();
+            foreach (var item in list)
+            {
+            }
 
             return new PagingResult
             {
@@ -37,8 +59,35 @@ namespace Loowoo.Land.OA.API.Controllers
         public object Model(int id)
         {
             var model = Core.FormInfoManager.GetModel(id);
-            //TODO判断当前用户是否有权限打开？
-            return model;
+
+            var canEdit = true;
+            var canSubmit = true;
+            var canCancel = true;
+
+            if (model == null)
+            {
+                canSubmit = false;
+                canCancel = false;
+            }
+            else if (model.FlowData == null)
+            {
+                canCancel = false;
+                canSubmit = true;
+                //todo 编辑权限
+                canEdit = model.PostUserId == CurrentUser.ID;
+            }
+            else
+            {
+                canSubmit = model.FlowData.CanSubmit(CurrentUser.ID);
+                canCancel = model.FlowData.CanCancel(CurrentUser.ID);
+            }
+            return new
+            {
+                model,
+                canEdit,
+                canSubmit,
+                canCancel
+            };
         }
 
         [HttpPost]

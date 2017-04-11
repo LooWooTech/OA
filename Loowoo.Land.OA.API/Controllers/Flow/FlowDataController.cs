@@ -10,57 +10,35 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class FlowDataController : ControllerBase
     {
-        /// <summary>
-        /// 作用：获取表单流程记录
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月24日16:10:06
-        /// </summary>
-        /// <param name="formId">表单ID</param>
-        /// <param name="infoId">公文等信息ID</param>
-        /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Model(int formId, int infoId)
+        public FlowData Model(int id)
         {
-            var model = Core.FlowDataManager.Get(formId, infoId);
-            if (model == null)
-            {
-                return BadRequest("获取表单流程记录：未查询到流程记录");
-            }
-            return Ok(model);
+            return Core.FlowDataManager.Get(id);
         }
-        /// <summary>
-        /// 作用：判断当前用户能否撤销当前已提交的节点
-        /// 具体操作：
-        /// 1、获取ID对应的FlowNodeData；
-        /// 2、
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+
         [HttpGet]
-        public IHttpActionResult CanCancel(int id)
+        public bool CanCancel(int id)
         {
-            TaskName = "判断能否撤销";
-            var flownodeData = Core.FlowNodeDataManager.Get(id);
-            if (flownodeData == null)
+            var data = Core.FlowDataManager.Get(id);
+            if (data == null)
             {
-                return BadRequest($"{TaskName}:未获取ID为：{id}的流程节点记录信息");
+                return false;
             }
-            if (flownodeData.FlowNode == null)
+
+            var nodeData = data.Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.UserId == CurrentUser.ID);
+            if (nodeData == null)
             {
-                return BadRequest($"{TaskName}:未获取流程节点信息，无法判断能否撤销");
+                return false;
             }
-            var next = Core.FlowNodeManager.GetNext(flownodeData.FlowNode.ID);
-            if (next == null)
+
+            var nextNodeData = data.Nodes.Where(e => e.CreateTime > nodeData.CreateTime).OrderBy(e => e.CreateTime).FirstOrDefault();
+            if (nextNodeData != null && nextNodeData.Result.HasValue)
             {
-                return BadRequest($"{TaskName}:未获取下一个流程节点信息");
+                return false;
             }
-            var nextflowNodeData = Core.FlowNodeDataManager.GetFlowNodeData(flownodeData.FlowDataId, next.ID, flownodeData.Step + 1);
-            if (nextflowNodeData != null && nextflowNodeData.Result.HasValue==false)
-            {
-                return Ok(true);
-            }
-            return Ok(false);
+            return true;
         }
+
         [HttpGet]
         public IHttpActionResult Cancel(int id)
         {
@@ -68,7 +46,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var flownodedata = Core.FlowNodeDataManager.Get(id);
             if (flownodedata == null)
             {
-                return BadRequest($"{TaskName}:未获取当前撤销的流程节点信息"); 
+                return BadRequest($"{TaskName}:未获取当前撤销的流程节点信息");
             }
             if (flownodedata.FlowNode == null)
             {
@@ -242,7 +220,7 @@ namespace Loowoo.Land.OA.API.Controllers
                         FeedId = feedId
                     });
                 }
- 
+
             }
             #endregion
 

@@ -13,17 +13,16 @@ namespace Loowoo.Land.OA.API.Controllers
     /// </summary>
     public class FormController : ControllerBase
     {
-        /// <summary>
-        /// 作用：获取所有表单
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月22日15:29:32
-        /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public List<Form> List()
         {
-            var list = Core.FormManager.GetList();
-            return list;
+            return Core.FormManager.GetList();
+        }
+
+        [HttpGet]
+        public Form Model(int id)
+        {
+            return Core.FormManager.GetModel(id);
         }
 
         ///// <summary>
@@ -67,12 +66,7 @@ namespace Loowoo.Land.OA.API.Controllers
         ///// </summary>
         ///// <param name="id"></param>
         ///// <returns></returns>
-        //[HttpGet]
-        //public Form Model(int id)
-        //{
-        //    var form = Core.FormManager.Get(id);
-        //    return form;
-        //}
+
 
         ///// <summary>
         ///// 作用：删除表单

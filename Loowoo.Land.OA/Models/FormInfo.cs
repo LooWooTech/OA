@@ -46,6 +46,31 @@ namespace Loowoo.Land.OA.Models
 
         public int FlowDataId { get; set; }
 
+        public virtual FlowData FlowData { get; set; }
+
+        private string _flowStep { get; set; }
+        /// <summary>
+        /// 当前办理的步骤，可以是人名或节点名称，每次创建新的节点，需要更新，如果完成
+        /// </summary>
+        public string FlowStep
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_flowStep))
+                {
+                    if (FlowDataId == 0)
+                    {
+                        return "未提交";
+                    }
+                }
+                return _flowStep;
+            }
+            set
+            {
+                _flowStep = value;
+            }
+        }
+
         [JsonIgnore]
         [Column("Data")]
         public string Json { get; set; }
