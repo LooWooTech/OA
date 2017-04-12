@@ -39,10 +39,10 @@ namespace Loowoo.Land.OA.API.Controllers
             user.Token = AuthorizeHelper.GetToken(new UserIdentity
             {
                 ID = user.ID,
-                Name = user.Name,
+                Username = user.Username,
                 DepartmentId = user.DepartmentId,
                 Role = user.Role,
-                Username = user.Name
+                RealName = user.Username
             });
 
             return Ok(user);
@@ -64,8 +64,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = list.Select(e => new
                 {
                     e.ID,
-                    e.Name,
                     e.Username,
+                    e.RealName,
                     e.Role,
                     e.DepartmentId,
                     DepartmentName = e.Department.Name,
@@ -108,15 +108,15 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Register([FromBody]User user)
         {
             if (user == null
-                || string.IsNullOrEmpty(user.Name)
                 || string.IsNullOrEmpty(user.Username)
+                || string.IsNullOrEmpty(user.RealName)
                 || string.IsNullOrEmpty(user.Password))
             {
                 return BadRequest("注册用户信息不正确");
             }
-            if (Core.UserManager.Exist(user.Name))
+            if (Core.UserManager.Exist(user.Username))
             {
-                return BadRequest(string.Format("当前系统中已存在登录名：{0}，请更改登陆名", user.Name));
+                return BadRequest(string.Format("当前系统中已存在登录名：{0}，请更改登陆名", user.Username));
             }
             Core.UserManager.Register(user);
             return Ok();
@@ -134,8 +134,8 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Save([FromBody] User user, [FromUri] string groupIds)
         {
             if (user == null
-                || string.IsNullOrEmpty(user.Name)
-                || string.IsNullOrEmpty(user.Username))
+                || string.IsNullOrEmpty(user.Username)
+                || string.IsNullOrEmpty(user.RealName))
             {
                 return BadRequest("编辑用户参数错误");
             }

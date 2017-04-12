@@ -71,163 +71,74 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return BadRequest($"{TaskName}:当前流程节点记录信息不能撤销");
         }
-        /// <summary>
-        /// 作用：获取当前用户指定表单的审批记录
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月5日12:19:07
-        /// </summary>
-        /// <param name="infoId"></param>
-        /// <param name="formId"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IHttpActionResult CurrentUserNode(int infoId, int formId)
-        {
-            TaskName = "获取用户表单审批记录";
-            if (CurrentUser == null)
-            {
-                return BadRequest($"{TaskName}:未获取当前用户信息");
-            }
-            var flowData = Core.FlowDataManager.Get(formId, infoId);
-            if (flowData == null)
-            {
-                return BadRequest($"{TaskName}:未获取FormID为{formId}并且InfoId为{infoId}的流程记录");
-            }
 
-            var flownodedata = Core.FlowNodeDataManager.Get(flowData.ID, CurrentUser != null ? CurrentUser.ID : 0);
-            return Ok(flownodedata);
-        }
-        /// <summary>
-        /// 作用：提交流程
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月28日14:57:13
-        /// 具体操作如下：
-        /// 1、验证flownodedata是否为null;
-        /// 2、验证flownodedata的userId、flowdataId、flownodeId是否为有效；
-        /// 3、验证result  是否hasValue;
-        /// 4、根据当前审核结果获取下一个流程节点，通过:生成下一个流程节点记录；不通过：生成上一个流程节点记录，如果为流程节点第一个或者流程最后，返回null
-        /// 5、保存flownodedate,更新UserForm待办事情表 
-        /// 6、当下一个流程节点不为null时，保存并生成下一个流程审核的工作表
-        /// 7、发布动态以及短消息
-        /// </summary>
-        /// <param name="flownodedata"></param>
-        /// <returns></returns>
+
+
         [HttpPost]
-        public IHttpActionResult Submit([FromBody] FlowNodeData flownodedata)
+        public IHttpActionResult Submit(int infoId, int userId, [FromBody]FlowNodeData data)
         {
-            TaskName = "保存流程节点记录";
-            #region 验证数据正确性
-            if (flownodedata == null)
+            var info = Core.FormInfoManager.GetModel(infoId);
+            if (info.FlowDataId == 0)
             {
-                return BadRequest($"{TaskName}:未获取流程节点记录信息");
-            }
-            var user = Core.UserManager.Get(flownodedata.UserId);
-            if (user == null)
-            {
-                return BadRequest($"{TaskName}:未找到UserID{flownodedata.UserId}的用户信息");
-            }
-            var flowdata = Core.FlowDataManager.Get(flownodedata.FlowDataId);
-            if (flowdata == null)
-            {
-                return BadRequest($"{TaskName}:未找到流程记录信息");
-            }
-            if (!flownodedata.Result.HasValue)
-            {
-                return BadRequest($"{TaskName}：未获取审核结果，请核对审核结果");
-            }
-            var flowNode = Core.FlowNodeManager.Get(flownodedata.FlowNodeId);
-            if (flowNode == null)
-            {
-                return BadRequest($"{TaskName}:未获取FlowNode流程节点信息");
-            }
+                //创建flowdata
+                info.FlowData = Core.FlowDataManager.Create(info);
+                info.FlowDataId = info.FlowData.ID;
 
-            #endregion
-
-            #region 处理逻辑 生成新的FlowNodeData节点记录
-            flownodedata.UpdateTime = DateTime.Now;
-            FlowNodeData nextFlowNodeData = null;
-            if (flownodedata.Result.Value == false)//如果提交不同意
-            {
-                flownodedata.UserId = 0;
-                /*
-                    获取上一个审核通过的最新时间的流程节点记录，指定flowdataID、指定flownodID,同时需要Result.hasvalue ==true    
-                */
-                var preflownodedata = Core.FlowNodeDataManager.GetPreFlowNodeData(flownodedata.FlowDataId, flownodedata.FlowNodeId);
-                if (preflownodedata == null)
-                {
-                    return BadRequest($"{TaskName}:获取上一个审核流程节点记录失败");
-                }
-                nextFlowNodeData = new FlowNodeData
-                {
-                    FlowDataId = preflownodedata.FlowDataId,
-                    ParentId = preflownodedata.ParentId,
-                    UserId = preflownodedata.UserId,
-                    DepartmentId = preflownodedata.DepartmentId,
-                    FlowNodeId = preflownodedata.FlowNodeId
-                };
+                //如果第一次提交，则先创建flowdata
+                var currentUser = Core.UserManager.Get(CurrentUser.ID);
+                data = Core.FlowNodeDataManager.CreateNewNodeData(info, currentUser, 0, data.Content, true);
             }
-            else//审核通过
+            else
             {
-                var nextflowNode = Core.FlowNodeManager.GetNext(flownodedata.FlowNodeId);
-                if (nextflowNode != null)
-                {
-                    nextFlowNodeData = new FlowNodeData
-                    {
-                        FlowDataId = flownodedata.FlowDataId,
-                        ParentId = flownodedata.ParentId,
-                        UserId = nextflowNode.UserId,
-                        DepartmentId = nextflowNode.DepartmentId,
-                        FlowNodeId = nextflowNode.ID
-                    };
-                }
+                data = Core.FlowNodeDataManager.Save(data);
             }
-            #endregion
+            //更新userforminfo的状态
+            Core.UserFormInfoManager.Save(info.ID, info.FormId, CurrentUser.ID, FlowStatus.Done);
+            //if (info.FlowData.CanComplete(data))
+            //{
 
-
-            #region 保存flownodedata,并且生成新的flownodedata
-            if (!Core.FlowNodeDataManager.Edit(flownodedata))
+            //}
+            //判断是否流程结束
+            if (!info.FlowData.Completed)
             {
-                return BadRequest($"{TaskName}:未找到更新的流程节点记录信息");
+                var nextUser = Core.UserManager.Get(userId);
+                var nextNodedata = Core.FlowNodeDataManager.CreateNewNodeData(info, nextUser, data.FlowNodeId);
+
+                Core.UserFormInfoManager.Save(info.ID, info.FormId, userId, FlowStatus.Doing);
             }
-            if (nextFlowNodeData != null)
+            else
             {
-                var nextID = Core.FlowNodeDataManager.Save(nextFlowNodeData);
-                if (nextID <= 0)
-                {
-                    return BadRequest($"{TaskName}:保存下一步流程节点记录信息失败");
-                }
-            }
-            #endregion
-
-            #region  动态  短消息
-            if (nextFlowNodeData != null)
-            {
-                //保存动态
-                var feedId = Core.FeedManager.Save(new Feed
-                {
-                    FormId = flowdata.FormId,
-                    InfoId = flowdata.InfoId,
-                    FromUserId = flownodedata.UserId,
-                    ToUserId = flownodedata.UserId
-                });
-                if (feedId > 0)
-                {
-                    //发布消息
-                    Core.MessageManager.Save(new Message
-                    {
-                        Content = flownodedata.Result.Value ? "通过审核" : "退回",
-                        FormUserId = flownodedata.UserId,
-                        ToUserId = nextFlowNodeData.UserId,
-                        FeedId = feedId
-                    });
-                }
 
             }
-            #endregion
+            //发布短消息通知（此流程所有参与的人都会得到通知）
 
-            return Ok(flownodedata);
+
+
+            return Ok();
         }
 
-        public IHttpActionResult GetUserList(int infoId, int nodeId, bool result = true)
+        [HttpPost]
+        public IHttpActionResult Back(int infoId, int dataId, int backId)
+        {
+            var info = Core.FormInfoManager.GetModel(infoId);
+
+            //当前结点为不同意，退回
+            var currentNodeData = info.FlowData.Nodes.FirstOrDefault(e => e.ID == dataId);
+            currentNodeData.Result = false;
+            Core.FlowNodeDataManager.Save(currentNodeData);
+            //更新userforminfo的状态
+            Core.UserFormInfoManager.Save(info.ID, info.FormId, CurrentUser.ID, FlowStatus.Done);
+
+            //根据指定的退回节点，创建新的退回节点
+            var backNodeData = info.FlowData.Nodes.FirstOrDefault(e => e.ID == backId);
+            var newBackData = Core.FlowNodeDataManager.CreateBackNodeData(info, backNodeData);
+            Core.UserFormInfoManager.Save(info.ID, info.FormId, backNodeData.UserId, FlowStatus.Back);
+            //发送消息通知
+            return Ok();
+        }
+
+        [HttpGet]
+        public IHttpActionResult UserList(int infoId, int nodeId)
         {
             FlowNode nextNode = null;
             var info = Core.FormInfoManager.GetModel(infoId);
@@ -240,10 +151,15 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 var flow = Core.FlowManager.Get(info.Form.FLowId);
                 nextNode = flow.GetNextStep(nodeId);
+                //如果当前还没提交过
+                if (nodeId == 0)
+                {
+                    nextNode = flow.GetNextStep(nextNode.ID);
+                }
             }
 
             IEnumerable<User> users = null;
-            if (result && nextNode != null)
+            if (nextNode != null)
             {
                 users = Core.UserManager.Search(new Parameters.UserParameter
                 {
@@ -252,15 +168,31 @@ namespace Loowoo.Land.OA.API.Controllers
                     GroupId = nextNode.GroupId,
                 });
             }
-            else if (!result)
-            {
-                var userIds = info.FlowData.Nodes.Where(e => e.UserId != CurrentUser.ID).Select(e => e.UserId).ToArray();
-                users = Core.UserManager.Search(new Parameters.UserParameter
-                {
-                    UserIds = userIds
-                });
-            }
             return Ok(users);
+        }
+
+        [HttpGet]
+        public IHttpActionResult BackList(int infoId, int backId)
+        {
+            var info = Core.FormInfoManager.GetModel(infoId);
+            if (info == null)
+            {
+                return BadRequest("获取表单数据错误");
+            }
+            var list = info.FlowData.Nodes.Where(e => e.UserId != CurrentUser.ID);
+            return Ok(list);
+        }
+
+        [HttpGet]
+        public bool CanComplete(int flowdataId, int nodedataId)
+        {
+            var flowdata = Core.FlowDataManager.Get(flowdataId);
+            if (flowdata == null || flowdata.FlowId == 0) return false;
+
+            var flow = Core.FlowManager.Get(flowdata.FlowId);
+            var nodedata = flowdata.Nodes.FirstOrDefault(e => e.ID == nodedataId);
+            var last = flow.GetLastNode();
+            return nodedata.FlowNodeId == last.ID;
         }
     }
 }

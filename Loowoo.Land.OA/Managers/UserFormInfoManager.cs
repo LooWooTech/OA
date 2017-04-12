@@ -48,9 +48,9 @@ namespace Loowoo.Land.OA.Managers
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        public UserFormInfo GetModel(int infoId, int userId)
+        public UserFormInfo GetModel(int infoId, int formId, int userId)
         {
-            return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId);
+            return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId && e.FormId == formId);
         }
 
         public void Save(UserFormInfo model)
@@ -58,13 +58,25 @@ namespace Loowoo.Land.OA.Managers
             if (model.ID > 0)
             {
                 var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == model.ID);
-                DB.Entry(entity).CurrentValues.SetValues(model);
+                entity.Status = model.Status;
             }
             else
             {
                 DB.UserFormInfos.Add(model);
             }
             DB.SaveChanges();
+        }
+
+        public void Save(int infoId, int formId, int userId, FlowStatus status)
+        {
+            var model = GetModel(infoId, formId, userId) ?? new UserFormInfo
+            {
+                FormId = formId,
+                InfoId = infoId,
+                Status = status,
+                UserId = userId,
+            };
+            Core.UserFormInfoManager.Save(model);
         }
     }
 }

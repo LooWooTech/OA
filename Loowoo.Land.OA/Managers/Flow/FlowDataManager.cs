@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class FlowDataManager:ManagerBase
+    public class FlowDataManager : ManagerBase
     {
         /// <summary>
         /// 作用：保存流程记录 调用钱需要验证FormId FlowId InfoId是否有效
@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.Managers
         /// <param name="formId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
-        public bool Exist(int infoId,int formId)
+        public bool Exist(int infoId, int formId)
         {
             return Get(formId, infoId) != null;
         }
@@ -45,7 +45,7 @@ namespace Loowoo.Land.OA.Managers
         /// <param name="formId"></param>
         /// <param name="infoId"></param>
         /// <returns></returns>
-        public FlowData Get(int formId,int infoId)
+        public FlowData Get(int formId, int infoId)
         {
             var model = DB.FlowDatas.FirstOrDefault(e => e.InfoId == infoId && e.FormId == formId);
             return model;
@@ -77,7 +77,7 @@ namespace Loowoo.Land.OA.Managers
         public List<FlowData> GetList(int[] ids)
         {
             var list = new List<FlowData>();
-            foreach(var id in ids)
+            foreach (var id in ids)
             {
                 var model = Get(id);
                 if (model != null)
@@ -86,6 +86,23 @@ namespace Loowoo.Land.OA.Managers
                 }
             }
             return list;
+        }
+
+        public FlowData Create(FormInfo info)
+        {
+            var entity = DB.FlowDatas.FirstOrDefault(e => e.InfoId == info.ID && e.FormId == info.FormId && e.FlowId == info.Form.FLowId);
+            if (entity == null)
+            {
+                entity = new FlowData
+                {
+                    FlowId = info.Form.FLowId,
+                    InfoId = info.ID,
+                    FormId = info.FormId,
+                };
+                DB.FlowDatas.Add(entity);
+                DB.SaveChanges();
+            }
+            return entity;
         }
     }
 }

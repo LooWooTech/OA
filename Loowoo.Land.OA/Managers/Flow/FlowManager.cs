@@ -2,6 +2,7 @@
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -12,34 +13,7 @@ namespace Loowoo.Land.OA.Managers
     /// </summary>
     public class FlowManager : ManagerBase
     {
-        ///// <summary>
-        ///// 作用：通过信息ID和信息类型获取Flow
-        ///// 作者：汪建龙
-        ///// 编写时间：2017年2月14日13:52:43
-        ///// </summary>
-        ///// <param name="infoId"></param>
-        ///// <param name="infoType"></param>
-        ///// <returns></returns>
-        //public Flow Get(int infoId,int infoType)
-        //{
-        //    using (var db = GetDbContext())
-        //    {
-        //        return db.Flows.FirstOrDefault(e => e.InfoID == infoId&&e.InfoType==infoType);
-        //    }
-        //}
-
-
-
-
-
-        /// <summary>
-        /// 作用：添加流程头信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月14日15:15:44
-        /// </summary>
-        /// <param name="flow"></param>
-        /// <returns></returns>
-        public int Save(Flow flow)
+        public int Add(Flow flow)
         {
             using (var db = GetDbContext())
             {
@@ -48,14 +22,8 @@ namespace Loowoo.Land.OA.Managers
                 return flow.ID;
             }
         }
-        /// <summary>
-        /// 作用：编辑流程模板
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月27日17:27:30
-        /// </summary>
-        /// <param name="flow"></param>
-        /// <returns></returns>
-        public bool Edit(Flow flow)
+
+        public bool Update(Flow flow)
         {
             using (var db = GetDbContext())
             {
@@ -70,9 +38,30 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
+        public void Save(Flow model)
+        {
+            DB.Flows.AddOrUpdate(model);
+            DB.SaveChanges();
+        }
+
+        private string _hashId = "flows";
         public Flow Get(int id)
         {
             return DB.Flows.Find(id);
+            //return Cache.HGetOrSet(_hashId, id.ToString(), () =>
+            //{
+            //    var model = DB.Flows.FirstOrDefault(e => e.ID == id);
+            //    model.Nodes = DB.FlowNodes.Where(e => e.FlowId == model.ID).ToList();
+            //    foreach (var item in model.Nodes)
+            //    {
+            //        item.Prev = model.Nodes.FirstOrDefault(e => e.ID == item.PrevId);
+            //        if(item.Prev!=null)
+            //        {
+            //            item.Prev.Next = item;
+            //        }
+            //    }
+            //    return model;
+            //});
         }
 
         /// <summary>

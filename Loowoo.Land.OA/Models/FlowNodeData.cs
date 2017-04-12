@@ -18,18 +18,26 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string Name { get; set; }
+
+        //public int ParentId { get; set; }
+        public int FlowNodeId { get; set; }
+        public string FlowNodeName { get; set; }
+        [ForeignKey("FlowNodeId")]
+        public virtual FlowNode FlowNode { get; set; }
+
         public int FlowDataId { get; set; }
-        public int ParentId { get; set; }
+
+
         public DateTime CreateTime { get; set; }
         public int UserId { get; set; }
-        public int DepartmentId { get; set; }
+
+        public string Signature { get; set; }
+        public string Department { get; set; }
+
         public DateTime? UpdateTime { get; set; }
         public bool? Result { get; set; }
         public string Content { get; set; }
-        public int FlowNodeId { get; set; }
-        [ForeignKey("FlowNodeId")]
-        public virtual FlowNode FlowNode { get; set; }
+
         public int Step { get; internal set; }
     }
 }

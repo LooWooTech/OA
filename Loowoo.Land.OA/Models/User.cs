@@ -17,14 +17,14 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 用户名
         /// </summary>
-        public string Username { get; set; }
+        public string RealName { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public string Password { get; set; }
         /// <summary>
         /// 登录名
         /// </summary>
-        public string Name { get; set; }
+        public string Username { get; set; }
         /// <summary>
         /// 部门ID
         /// </summary>
@@ -46,7 +46,7 @@ namespace Loowoo.Land.OA.Models
 
         public void Validate()
         {
-            if (string.IsNullOrEmpty(Username))
+            if (string.IsNullOrEmpty(RealName))
             {
                 throw new ArgumentException("用户名不能为空");
             }
@@ -56,7 +56,7 @@ namespace Loowoo.Land.OA.Models
                 {
                     throw new ArgumentException("密码不能为空");
                 }
-                if (string.IsNullOrEmpty(Name))
+                if (string.IsNullOrEmpty(Username))
                 {
                     throw new ArgumentException("姓名不能为空");
                 }

@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 ID = e.ID,
                 CategoryId = e.Info.CategoryId,
                 CreateTime = e.Info.CreateTime,
-                FlowDataId = e.FlowNodeDataId,
+                FlowDataId = e.Info.FlowDataId,
                 FlowStep = e.Info.FlowStep,
                 Json = e.Info.Json,
                 FormId = e.FormId,
@@ -44,9 +44,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 UpdateTime = e.Info.UpdateTime,
                 UserId = e.UserId,
             }).ToList();
-            foreach (var item in list)
-            {
-            }
 
             return new PagingResult
             {
@@ -60,7 +57,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var model = Core.FormInfoManager.GetModel(id);
 
-            var canEdit = true;
+            var canEdit = model.PostUserId == CurrentUser.ID;
             var canSubmit = true;
             var canCancel = true;
             FlowNodeData currentUserflownodeData = null;
@@ -78,7 +75,9 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
+                //如果当前是在退回状态，则可以编辑，否则不能编辑
                 canSubmit = model.FlowData.CanSubmit(CurrentUser.ID);
+                canEdit = canSubmit;
                 canCancel = model.FlowData.CanCancel(CurrentUser.ID);
                 //获取当前用户的审批意见
                 currentUserflownodeData = model.FlowData.Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.UserId == CurrentUser.ID);
@@ -117,6 +116,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     InfoId = model.ID,
                     UserId = model.PostUserId,
+                    Status = FlowStatus.Draft,
+                    FormId = model.FormId,
                 });
             }
             //更新动态

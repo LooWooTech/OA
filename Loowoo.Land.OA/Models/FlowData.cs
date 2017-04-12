@@ -27,6 +27,8 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int FlowId { get; set; }
 
+        public virtual Flow Flow { get; set; }
+
         public bool Completed { get; set; }
 
         public virtual List<FlowNodeData> Nodes { get; set; }
@@ -39,7 +41,7 @@ namespace Loowoo.Land.OA.Models
             if (Completed) return false;
             if (Nodes == null || Nodes.Count == 0)
             {
-                return true; 
+                return true;
             }
             var lastNode = Nodes.Last();
             return lastNode.UserId == userId && !lastNode.Result.HasValue;
@@ -62,5 +64,18 @@ namespace Loowoo.Land.OA.Models
             //如果已经有更新的提交，则不能撤销
             return !Nodes.Any(e => e.CreateTime > lastNode.CreateTime && e.Result.HasValue);
         }
+
+        public bool CanComplete(FlowNodeData data)
+        {
+            var lastNode = Flow.GetLastNode();
+            return data.Result == true && lastNode.ID == data.ID;
+        }
+
+        //public bool CanEdit(int userId)
+        //{
+        //    //最新的节点是不是第一个节点
+        //    var lastNode = Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault();
+        //    return !lastNode.Result.HasValue && userId == lastNode.UserId;
+        //}
     }
 }

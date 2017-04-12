@@ -109,7 +109,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public bool Used(int id)
         {
-            return DB.Users.Any(e => e.DepartmentId == id) || DB.FlowNodeDatas.Any(e => e.DepartmentId == id) || DB.FlowNodes.Any(e => e.DepartmentId == id);
+            return DB.Users.Any(e => e.DepartmentId == id) || DB.FlowNodes.Any(e => e.DepartmentId == id);
         }
     }
 }

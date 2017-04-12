@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Managers
         {
             name = name.ToLower();
             password = password.MD5();
-            return DB.Users.FirstOrDefault(e => e.Name == name && e.Password == password);
+            return DB.Users.FirstOrDefault(e => e.Username == name && e.Password == password);
         }
 
         public User Get(int id)
@@ -30,7 +30,7 @@ namespace Loowoo.Land.OA.Managers
         {
             using (var db = GetDbContext())
             {
-                var user = db.Users.FirstOrDefault(e => e.Name.ToLower() == name.ToLower());
+                var user = db.Users.FirstOrDefault(e => e.Username.ToLower() == name.ToLower());
                 return user != null;
             }
         }
@@ -63,7 +63,7 @@ namespace Loowoo.Land.OA.Managers
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 parameter.SearchKey = parameter.SearchKey.ToLower();
-                query = query.Where(e => e.Username.Contains(parameter.SearchKey) || e.Name.Contains(parameter.SearchKey));
+                query = query.Where(e => e.RealName.Contains(parameter.SearchKey) || e.Username.Contains(parameter.SearchKey));
             }
             if (parameter.GroupId > 0)
             {
@@ -71,30 +71,36 @@ namespace Loowoo.Land.OA.Managers
             }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
-        /// <summary>
-        /// 作用：编辑用户信息  通过ID查找用户 未找到用户不进行修改编辑 
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月11日14:37:46
-        /// </summary>
-        /// <param name="user"></param>
+
         public void Save(User user)
         {
-            using (var db = GetDbContext())
+            user.Username = user.Username.ToLower();
+            user.RealName = user.RealName.ToLower();
+            if (!string.IsNullOrEmpty(user.Password))
             {
-                var entry = db.Users.Find(user.ID);
-                if (entry == null)
+                user.Password = user.Password.MD5();
+            }
+            if (user.ID == 0)
+            {
+                if (DB.Users.Any(e => e.Username == user.Username))
                 {
-                    return;
+                    throw new Exception("用户名已被使用");
                 }
+                DB.Users.Add(user);
+                DB.SaveChanges();
+            }
+            else
+            {
+                var entity = DB.Users.Find(user.ID);
                 if (!string.IsNullOrEmpty(user.Password))
                 {
-                    user.Password = user.Password.MD5();
+                    entity.Password = user.Password;
                 }
-                user.Name = user.Name.ToLower();
-                user.Username = user.Username.ToLower();
-
-                db.SaveChanges();
+                entity.RealName = user.RealName;
+                entity.DepartmentId = user.DepartmentId;
+                entity.Role = user.Role;
             }
+            DB.SaveChanges();
         }
 
         public void Delete(int id)

@@ -1,12 +1,13 @@
 ﻿using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class FlowNodeDataManager:ManagerBase
+    public class FlowNodeDataManager : ManagerBase
     {
         /// <summary>
         /// 作用：通过FLowDataID获取相关流程节点记录
@@ -35,7 +36,7 @@ namespace Loowoo.Land.OA.Managers
         {
             var models = DB.FlowNodeDatas.Where(e => e.UserId == userId).ToList();
             return models;
-           
+
         }
         /// <summary>
         /// 作用：用户某个流程记录的节点记录
@@ -45,12 +46,12 @@ namespace Loowoo.Land.OA.Managers
         /// <param name="flowDataId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public FlowNodeData Get(int flowDataId,int userId,int flowNodeId)
+        public FlowNodeData Get(int flowDataId, int userId, int flowNodeId)
         {
             return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId && e.FlowNodeId == flowNodeId);
         }
 
-        public FlowNodeData GetFlowNodeData(int flowDataID,int flowNodeId,int step)
+        public FlowNodeData GetFlowNodeData(int flowDataID, int flowNodeId, int step)
         {
             return DB.FlowNodeDatas.Where(e => e.FlowDataId == flowDataID && e.FlowNodeId == flowNodeId && e.Step == step).OrderByDescending(e => e.CreateTime).FirstOrDefault();
         }
@@ -75,7 +76,7 @@ namespace Loowoo.Land.OA.Managers
         /// <param name="flowDataId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public FlowNodeData Get(int flowDataId,int userId)
+        public FlowNodeData Get(int flowDataId, int userId)
         {
             return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowDataId && e.UserId == userId);
         }
@@ -85,7 +86,7 @@ namespace Loowoo.Land.OA.Managers
         /// 编写时间：2017年3月22日17:10:44
         /// </summary>
         /// <returns></returns>
-        public FlowNodeData GetFlowNodeData(int flowdataID,int flownodeId)
+        public FlowNodeData GetFlowNodeData(int flowdataID, int flownodeId)
         {
             return DB.FlowNodeDatas.FirstOrDefault(e => e.FlowDataId == flowdataID && e.FlowNodeId == flownodeId);
         }
@@ -97,7 +98,7 @@ namespace Loowoo.Land.OA.Managers
         /// <param name="flowDataId"></param>
         /// <param name="currentFlowNodeId">当前流程节点ID</param>
         /// <returns></returns>
-        public FlowNodeData GetPreFlowNodeData(int flowDataId,int currentFlowNodeId)
+        public FlowNodeData GetPreFlowNodeData(int flowDataId, int currentFlowNodeId)
         {
             var preflowNode = Core.FlowNodeManager.GetPre(currentFlowNodeId);
             if (preflowNode == null)
@@ -106,20 +107,67 @@ namespace Loowoo.Land.OA.Managers
             }
             return DB.FlowNodeDatas.Where(e => e.FlowDataId == flowDataId && e.FlowNodeId == preflowNode.ID && e.Result == true).OrderByDescending(e => e.UpdateTime).FirstOrDefault();
         }
-        /// <summary>
-        /// 作用：保存流程节点记录
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月28日14:53:06
-        /// </summary>
-        /// <param name="nodeData"></param>
-        /// <returns></returns>
-        public int Save(FlowNodeData nodeData)
+
+        public FlowNodeData Save(FlowNodeData model)
         {
-            DB.FlowNodeDatas.Add(nodeData);
+            if (model.ID > 0)
+            {
+                var entity = DB.FlowNodeDatas.FirstOrDefault(e => e.ID == model.ID);
+                entity.Result = model.Result;
+                entity.UpdateTime = model.Result.HasValue ? DateTime.Now : default(DateTime?);
+                entity.Content = model.Content;
+
+                model = entity;
+            }
+            else
+            {
+                DB.FlowNodeDatas.Add(model);
+            }
             DB.SaveChanges();
-            return nodeData.ID;
-           
+            return model;
         }
+
+        public FlowNodeData CreateNewNodeData(FormInfo info, User user, int currentNodeId, string content = null, bool? result = null)
+        {
+            var flow = Core.FlowManager.Get(info.Form.FLowId);
+            var flowNode = flow?.GetNextStep(currentNodeId);
+
+            var model = new FlowNodeData
+            {
+                Content = content,
+                Result = result,
+                CreateTime = DateTime.Now,
+                FlowNodeId = flowNode == null ? 0 : flowNode.ID,
+                FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
+                Signature = user.RealName,
+                Department = user.Department.Name,
+                UserId = user.ID,
+                FlowDataId = info.FlowDataId,
+                UpdateTime = result.HasValue ? DateTime.Now : default(DateTime?)
+            };
+
+            Core.FlowNodeDataManager.Save(model);
+            info.FlowStep = model.FlowNodeName ?? model.Signature;
+            return model;
+        }
+
+        public FlowNodeData CreateBackNodeData(FormInfo info, FlowNodeData backNodeData)
+        {
+            var user = Core.UserManager.Get(backNodeData.UserId);
+            var model = new FlowNodeData
+            {
+                CreateTime = DateTime.Now,
+                FlowDataId = backNodeData.FlowDataId,
+                Signature = user.RealName,
+                Department = user.Department.Name,
+                UserId = user.ID,
+                FlowNodeId = backNodeData.FlowNodeId,
+                FlowNodeName = backNodeData.FlowNodeName,
+            };
+            Core.FlowNodeDataManager.Save(model);
+            return model;
+        }
+
         /// <summary>
         /// 作用：编辑流程节点记录
         /// 作者：汪建龙
@@ -155,7 +203,7 @@ namespace Loowoo.Land.OA.Managers
         public bool CanCancel(int id)
         {
             var flownodedata = Get(id);
-            if (flownodedata == null||flownodedata.FlowNode==null)
+            if (flownodedata == null || flownodedata.FlowNode == null)
             {
                 return false;
             }
@@ -171,6 +219,6 @@ namespace Loowoo.Land.OA.Managers
             }
             return true;
         }
-      
+
     }
 }

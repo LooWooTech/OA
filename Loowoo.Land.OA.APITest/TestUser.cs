@@ -29,16 +29,16 @@ namespace Loowoo.Land.OA.APITest
         {
             var admin = new User
             {
-                Username = "管理员",
+                RealName = "管理员",
                 Password = "admin",
-                Name = "Admin",
+                Username = "Admin",
                 Role=Security.UserRole.Administrator
             };
             _tool.Post("/api/user/register", admin.ToJson());
-            _tool.Post("/api/user/register", new User { Username = "汪建龙", Password = "123456", Name = "wjl" }.ToJson());
-            _tool.Post("/api/user/register", new User { Username = "唐尧", Password = "123456", Name = "ty" }.ToJson());
-            _tool.Post("/api/user/register", new User { Username = "赵斯思", Password = "123456", Name = "zss" }.ToJson());
-            _tool.Post("/api/user/register", new User { Username = "郑良军", Password = "123456", Name = "zlj" }.ToJson());
+            _tool.Post("/api/user/register", new User { RealName = "汪建龙", Password = "123456", Username = "wjl" }.ToJson());
+            _tool.Post("/api/user/register", new User { RealName = "唐尧", Password = "123456", Username = "ty" }.ToJson());
+            _tool.Post("/api/user/register", new User { RealName = "赵斯思", Password = "123456", Username = "zss" }.ToJson());
+            _tool.Post("/api/user/register", new User { RealName = "郑良军", Password = "123456", Username = "zlj" }.ToJson());
 
             
         }

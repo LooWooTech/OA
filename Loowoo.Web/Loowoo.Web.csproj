@@ -74,9 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControllerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserRoleFilterAttribute.cs" />
     <Compile Include="ValidateCodeHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
   </ItemGroup>

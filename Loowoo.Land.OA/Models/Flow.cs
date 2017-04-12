@@ -19,6 +19,23 @@ namespace Loowoo.Land.OA.Models
 
         public virtual List<FlowNode> Nodes { get; set; }
 
+        public FlowNode GetFirstNode()
+        {
+            return GetNextStep(0);
+        }
+
+        public FlowNode GetLastNode()
+        {
+            foreach(var node in Nodes)
+            {
+                if (!Nodes.Any(e => e.PrevId != node.ID))
+                {
+                    return node;
+                }
+            }
+            throw new Exception("配成节点配置有错误");
+        }
+
         public FlowNode GetNextStep(int nodeId)
         {
             return Nodes.FirstOrDefault(e => e.PrevId == nodeId);

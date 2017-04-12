@@ -14,24 +14,14 @@ namespace Loowoo.Land.OA.API.Security
     [NotMapped]
     public class UserIdentity : User, System.Security.Principal.IIdentity
     {
-        public static UserIdentity Anonymouse
-        {
-            get
-            {
-                return new UserIdentity();
-            }
-        }
+        public static UserIdentity Anonymouse => new UserIdentity();
 
         [JsonIgnore]
-        public string AuthenticationType
-        {
-            get { return "token"; }
-        }
+        public string AuthenticationType => "token";
 
         [JsonIgnore]
-        public bool IsAuthenticated
-        {
-            get { return ID > 0; }
-        }
+        public bool IsAuthenticated => ID > 0;
+
+        public string Name => RealName;
     }
 }
