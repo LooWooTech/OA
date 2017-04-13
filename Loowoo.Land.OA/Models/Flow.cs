@@ -28,7 +28,7 @@ namespace Loowoo.Land.OA.Models
         {
             foreach(var node in Nodes)
             {
-                if (!Nodes.Any(e => e.PrevId != node.ID))
+                if (!Nodes.Any(e => e.PrevId == node.ID))
                 {
                     return node;
                 }

@@ -149,8 +149,8 @@
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\FileController.cs" />
-    <Compile Include="Controllers\Flow\FlowController.cs" />
-    <Compile Include="Controllers\Flow\FlowDataController.cs" />
+    <Compile Include="Controllers\FlowController.cs" />
+    <Compile Include="Controllers\FlowDataController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\FormInfoController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
@@ -179,6 +179,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\Base\" />
+    <Folder Include="Controllers\Flow\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">

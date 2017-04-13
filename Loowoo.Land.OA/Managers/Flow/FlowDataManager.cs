@@ -51,6 +51,34 @@ namespace Loowoo.Land.OA.Managers
             return model;
         }
 
+        public void Cancel(FormInfo info, int userId)
+        {
+            if (info.FlowData.Completed) return;
+
+            var lastNodedata = info.FlowData.GetLastNodeData();
+            DB.FlowNodeDatas.Remove(lastNodedata);
+            var cancelFlowData = info.FlowData.GetLastNodeData(userId);
+            cancelFlowData.Result = null;
+            cancelFlowData.UpdateTime = null;
+            info.FlowStep = cancelFlowData.FlowNodeName;
+            DB.SaveChanges();
+
+            Core.UserFormInfoManager.Delete(new UserFormInfo
+            {
+                InfoId = info.ID,
+                FormId = info.FormId,
+                UserId = lastNodedata.UserId
+            });
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = info.ID,
+                FormId = info.FormId,
+                Status = FlowStatus.Doing,
+                UserId = cancelFlowData.UserId,
+            });
+
+        }
+
         /// <summary>
         /// 作用：获取
         /// 作者：汪建龙
@@ -103,6 +131,22 @@ namespace Loowoo.Land.OA.Managers
                 DB.SaveChanges();
             }
             return entity;
+        }
+
+        public void Complete(FormInfo info)
+        {
+            //更新所有参与的人，状态改为已完成
+            var list = DB.UserFormInfos.Where(e => e.InfoId == info.ID && e.FormId == info.FormId);
+            foreach(var item in list)
+            {
+                item.Status = FlowStatus.Completed;
+            }
+
+            info.FlowData.Completed = true;
+            info.FlowStep = "完结";
+            info.UpdateTime = DateTime.Now;
+
+            DB.SaveChanges();
         }
     }
 }

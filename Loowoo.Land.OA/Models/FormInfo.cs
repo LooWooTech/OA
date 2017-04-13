@@ -48,14 +48,18 @@ namespace Loowoo.Land.OA.Models
 
         public virtual FlowData FlowData { get; set; }
 
-        private string _flowStep { get; set; }
         /// <summary>
         /// 当前办理的步骤，可以是人名或节点名称，每次创建新的节点，需要更新，如果完成
         /// </summary>
+        private string _flowStep;
         public string FlowStep
         {
             get
             {
+                if (FlowDataId == 0)
+                {
+                    return "未提交";
+                }
                 if (string.IsNullOrEmpty(_flowStep))
                 {
                     if (FlowDataId == 0)
@@ -96,41 +100,6 @@ namespace Loowoo.Land.OA.Models
                 Json = JsonConvert.SerializeObject(value);
             }
         }
-
-        //private Type GetDataType(string dataType)
-        //{
-        //    return Type.GetType(GetType().Namespace + "." + dataType, false, true);
-        //}
-
-        //public void UpdateFields(string dataTypeName)
-        //{
-        //    var dataType = GetDataType(dataTypeName);
-        //    if (dataType == null) return;
-
-        //    foreach (var p in dataType.GetProperties())
-        //    {
-        //        foreach (var attr in p.GetCustomAttributes())
-        //        {
-        //            if (attr is FormInfoFieldAttribute)
-        //            {
-        //                var name = (attr as FormInfoFieldAttribute).Name;
-        //                var value = p.GetValue(Data);
-        //                switch (name.ToLower())
-        //                {
-        //                    case "title":
-        //                        Title = value.ToString();
-        //                        break;
-        //                    case "keywords":
-        //                        Keywords += value.ToString() + ",";
-        //                        break;
-        //                    case "categoryid":
-        //                        CategoryId = int.Parse(value.ToString());
-        //                        break;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
     }
 
     public class FormInfoParameter

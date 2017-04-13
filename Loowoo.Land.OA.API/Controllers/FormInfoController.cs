@@ -34,7 +34,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 CategoryId = e.Info.CategoryId,
                 CreateTime = e.Info.CreateTime,
                 FlowDataId = e.Info.FlowDataId,
-                FlowStep = e.Info.FlowStep,
                 Json = e.Info.Json,
                 FormId = e.FormId,
                 InfoId = e.Info.ID,
@@ -60,7 +59,6 @@ namespace Loowoo.Land.OA.API.Controllers
             var canEdit = model.PostUserId == CurrentUser.ID;
             var canSubmit = true;
             var canCancel = true;
-            FlowNodeData currentUserflownodeData = null;
             if (model == null)
             {
                 canSubmit = false;
@@ -79,10 +77,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canSubmit = model.FlowData.CanSubmit(CurrentUser.ID);
                 canEdit = canSubmit;
                 canCancel = model.FlowData.CanCancel(CurrentUser.ID);
-                //获取当前用户的审批意见
-                currentUserflownodeData = model.FlowData.Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.UserId == CurrentUser.ID);
             }
-
 
             return new
             {
@@ -90,7 +85,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canEdit,
                 canSubmit,
                 canCancel,
-                flownodeData = currentUserflownodeData
+                flowNodeData = model.FlowData?.Nodes?.OrderByDescending(e => e.ID).FirstOrDefault(),
             };
         }
 

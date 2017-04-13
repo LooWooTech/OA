@@ -37,7 +37,5 @@ namespace Loowoo.Land.OA.Models
         public DateTime? UpdateTime { get; set; }
         public bool? Result { get; set; }
         public string Content { get; set; }
-
-        public int Step { get; internal set; }
     }
 }

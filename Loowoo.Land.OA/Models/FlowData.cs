@@ -48,7 +48,7 @@ namespace Loowoo.Land.OA.Models
         }
 
         /// <summary>
-        /// 判断用户是否可以撤销流程
+        /// 判断用户是否可以撤销流程TODO 不支持带分支的流程
         /// </summary>
         public bool CanCancel(int userId)
         {
@@ -58,17 +58,32 @@ namespace Loowoo.Land.OA.Models
                 return false;
             }
             //获取用户最后一次提交的记录
-            var lastNode = Nodes.Where(e => e.UserId == userId).OrderByDescending(e => e.CreateTime).FirstOrDefault();
-            if (lastNode == null || !lastNode.Result.HasValue) return false;
+            var lastNodeData = GetLastNodeData(userId);
+            if (lastNodeData == null || !lastNodeData.Result.HasValue) return false;
 
             //如果已经有更新的提交，则不能撤销
-            return !Nodes.Any(e => e.CreateTime > lastNode.CreateTime && e.Result.HasValue);
+            return !Nodes.Any(e => e.ID > lastNodeData.ID && e.Result.HasValue);
+        }
+
+        public FlowNodeData GetLastNodeData(int userId = 0)
+        {
+            var query = Nodes.AsQueryable();
+            if (userId > 0)
+            {
+                query = query.Where(e => e.UserId == userId);
+            }
+            return query.OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
         public bool CanComplete(FlowNodeData data)
         {
             var lastNode = Flow.GetLastNode();
-            return data.Result == true && lastNode.ID == data.ID;
+            return data.Result == true && lastNode.ID == data.FlowNodeId;
+        }
+
+        public FlowNodeData GetFirstNodeData()
+        {
+            return Nodes.OrderBy(e => e.ID).FirstOrDefault();
         }
 
         //public bool CanEdit(int userId)
