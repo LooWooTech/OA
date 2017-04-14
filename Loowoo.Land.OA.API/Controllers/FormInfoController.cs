@@ -78,6 +78,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canEdit = canSubmit;
                 canCancel = model.FlowData.CanCancel(CurrentUser.ID);
             }
+            var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, model.FormId, CurrentUser.ID);
 
             return new
             {
@@ -85,7 +86,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canEdit,
                 canSubmit,
                 canCancel,
-                flowNodeData = model.FlowData?.Nodes?.OrderByDescending(e => e.ID).FirstOrDefault(),
+                status = userformInfo.Status,
             };
         }
 
