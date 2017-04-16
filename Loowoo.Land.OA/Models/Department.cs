@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    /// <summary>
+    /// 部门
+    /// </summary>
     [Table("organization")]
     public class Department
     {
@@ -19,5 +22,7 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public int Sort { get; set; }
+        [NotMapped]
+        public List<Department> Children { get; set; }
     }
 }

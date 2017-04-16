@@ -30,5 +30,10 @@ namespace Loowoo.Common
             var filePath = GetFilePath(filePrefix);
             File.AppendAllText(filePath, content);
         }
+
+        public void WriteException(Exception ex,string operateName)
+        {
+            WriteLog(string.Format("进行操作：{0} 发生错误，错误信息：Ex.Message:{1};Ex.Stacktrace:{2},Message:{3}",operateName, ex.Message, ex.StackTrace,ex.InnerException.InnerException.Message));
+        }
     }
 }

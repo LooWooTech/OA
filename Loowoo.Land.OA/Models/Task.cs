@@ -19,9 +19,13 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
+        /// <summary>
+        /// 标题
+        /// </summary>
         public string Title { get; set; }
-
+        /// <summary>
+        /// 内容
+        /// </summary>
         public string Content { get; set; }
 
         /// <summary>
@@ -50,7 +54,5 @@ namespace Loowoo.Land.OA.Models
         public DateTime? UpdateTime { get; set; }
 
         public bool Deleted { get; set; }
-
-        public FlowStep FlowStep { get; set; }
     }
 }

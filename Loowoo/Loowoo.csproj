@@ -42,6 +42,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web" />
@@ -58,6 +59,7 @@
     <Compile Include="Caching\LocalCacheService.cs" />
     <Compile Include="Caching\RedisCacheService.cs" />
     <Compile Include="Common\AppSettings.cs" />
+    <Compile Include="Common\Document.cs" />
     <Compile Include="Common\EncryptExtensions.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\ExceptionExtension.cs" />
@@ -71,17 +73,8 @@
     <Compile Include="Common\ValidateCode.cs" />
     <Compile Include="Common\PageView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\AuthenticateModule.cs" />
-    <Compile Include="Security\AuthorizeHelper.cs" />
-    <Compile Include="Security\UserIdentity.cs" />
-    <Compile Include="Security\UserPrincipal.cs" />
-    <Compile Include="Security\UserRole.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Views\" />
-    <Folder Include="Web\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

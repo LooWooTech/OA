@@ -1,0 +1,5 @@
+进行操作：收文登记 发生错误，错误信息：Ex.Message:An error occurred while updating the entries. See the inner exception for details.;Ex.Stacktrace:   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 Loowoo.Land.OA.API.Managers.ReceiveDocumentManager.Save(ReceiveDocument recDoc) 位置 F:\github\OA\Loowoo.Land.OA.API\Managers\ReceiveDocumentManager.cs:行号 25
+   在 Loowoo.Land.OA.API.Controllers.ReceiveController.Save(ReceiveDocument recDoc) 位置 F:\github\OA\Loowoo.Land.OA.API\Controllers\ReceiveController.cs:行号 34

@@ -1,80 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    public class FlowTemplate
-    {
-        public int ID { get; set; }
-
-        public string Name { get; set; }
-
-        public int InfoType { get; set; }
-
-        public bool Disabled { get; set; }
-
-        public List<FlowStepTemplate> Steps { get; set; }
-    }
-
-    public class FlowStepTemplate
-    {
-        public int ID { get; set; }
-
-        public string Name { get; set; }
-
-        public int FlowID { get; set; }
-
-        public int DepartmentID { get; set; }
-
-        public int UserID { get; set; }
-
-        /// <summary>
-        /// 属于当前流程第几步
-        /// </summary>
-        public int Step { get; set; }
-    }
-
+    [Table("Flow")]
     public class Flow
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public string Name { get; set; }
 
-        public int InfoID { get; set; }
+        public virtual List<FlowNode> Nodes { get; set; }
 
-        public int InfoType { get; set; }
-
-        public List<FlowStep> Steps { get; set; }
-    }
-
-    public class FlowStep
-    {
-        public FlowStep()
+        public FlowNode GetFirstNode()
         {
-            CreateTime = DateTime.Now;
+            return GetNextStep(0);
         }
 
-        public int ID { get; set; }
+        public FlowNode GetLastNode()
+        {
+            foreach(var node in Nodes)
+            {
+                if (!Nodes.Any(e => e.PrevId == node.ID))
+                {
+                    return node;
+                }
+            }
+            throw new Exception("配成节点配置有错误");
+        }
 
-        public string Name { get; set; }
-
-        public int FlowID { get; set; }
-
-        public User User { get; set; }
-
-        public bool? Result { get; set; }
-
-        public string Content { get; set; }
-
-        public int Step { get; set; }
-
-        public DateTime CreateTime { get; set; }
-
-        public DateTime? UpdateTime { get; set; }
+        public FlowNode GetNextStep(int nodeId)
+        {
+            return Nodes.FirstOrDefault(e => e.PrevId == nodeId);
+        }
     }
-
-
 }

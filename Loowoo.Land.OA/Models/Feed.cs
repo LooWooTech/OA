@@ -14,21 +14,38 @@ namespace Loowoo.Land.OA.Models
     [Table("Feed")]
     public class Feed
     {
+        public Feed()
+        {
+            CreateTime = DateTime.Now;
+        }
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        /// <summary>
+        /// 公文等ID
+        /// </summary>
+        public int InfoId { get; set; }
 
-        public int CreatorID { get; set; }
+        public int FormId { get; set; }
 
-        public int InfoID { get; set; }
+        public int FromUserId { get; set; }
 
-        public int InfoType { get; set; }
+        public virtual User FromUser { get; set; }
+
+        public int ToUserId { get; set; }
+
+        public virtual User ToUser { get; set; }
+
+        public bool Deleted { get; set; }
 
         public DateTime CreateTime { get; set; }
 
-        public string Summary { get; set; }
+        public FeedAction Action { get; set; }
+    }
 
-        public int CommentCount { get; set; }
-
-        public int StarCount { get; set; }
+    public enum FeedAction
+    {
+        Add,
+        Edit,
     }
 }
+

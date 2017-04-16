@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    [Table("file")]
     public class File
     {
         public File()
         {
             CreateTime = DateTime.Now;
-            UpdateTime = DateTime.Now;
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
-        public int ParentID { get; set; }
 
         public string FileName { get; set; }
 
@@ -27,6 +29,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public long Size { get; set; }
 
+        [NotMapped]
         public string DisplaySize
         {
             get
@@ -42,9 +45,10 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime CreateTime { get; set; }
 
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
 
-        public FileType Type { get; set; }
+        public int? InfoId { get; set; }
+
     }
 
     public enum FileType

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Loowoo.Land.OA.Models;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +14,30 @@ namespace Loowoo.Land.OA.API
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.Filters.Add(new WebApiExceptionFilterAttribute());
+#if DEBUG
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new CorsHandler());
+#endif
+            var formatter = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            formatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            formatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            formatter.SerializerSettings.MetadataPropertyHandling = Newtonsoft.Json.MetadataPropertyHandling.ReadAhead;
+
+            Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        public override void Init()
+        {
+            this.PostAuthenticateRequest += (sender, e) => HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
+            base.Init();
+        }
+        protected virtual void Application_BeginRequest()
+        {
+            HttpDbContextContainer.OnBeginRequest(Context, new OADbContext());
+        }
+        protected virtual void Application_EndRequest()
+        {
+            HttpDbContextContainer.OnEndRequest(Context);
         }
     }
 }
