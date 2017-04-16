@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Words">
+      <HintPath>..\libs\Aspose.Words.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -179,7 +182,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\Base\" />
-    <Folder Include="Controllers\Flow\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">
