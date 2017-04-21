@@ -11,35 +11,6 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FlowDataController : ControllerBase
     {
         [HttpGet]
-        public FlowData Model(int id)
-        {
-            return Core.FlowDataManager.Get(id);
-        }
-
-        [HttpGet]
-        public bool CanCancel(int id)
-        {
-            var data = Core.FlowDataManager.Get(id);
-            if (data == null)
-            {
-                return false;
-            }
-
-            var nodeData = data.Nodes.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.UserId == CurrentUser.ID);
-            if (nodeData == null)
-            {
-                return false;
-            }
-
-            var nextNodeData = data.Nodes.Where(e => e.CreateTime > nodeData.CreateTime).OrderBy(e => e.CreateTime).FirstOrDefault();
-            if (nextNodeData != null && nextNodeData.Result.HasValue)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        [HttpGet]
         public IHttpActionResult Cancel(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
@@ -56,21 +27,17 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public IHttpActionResult Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
         {
+            if (data == null || data.ID == 0)
+            {
+                throw new Exception("参数错误");
+            }
             var info = Core.FormInfoManager.GetModel(infoId);
-            if (info.FlowDataId == 0)
+            if (info == null)
             {
-                //创建flowdata
-                info.FlowData = Core.FlowDataManager.Create(info);
-                info.FlowDataId = info.FlowData.ID;
+                throw new Exception("参数错误");
+            }
+            Core.FlowNodeDataManager.Save(data);
 
-                //如果第一次提交，则先创建flowdata
-                var currentUser = Core.UserManager.Get(CurrentUser.ID);
-                data = Core.FlowNodeDataManager.CreateNextNodeData(info, currentUser, 0, data.Content, true);
-            }
-            else
-            {
-                data = Core.FlowNodeDataManager.Save(data);
-            }
             //更新userforminfo的状态
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
@@ -78,14 +45,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = info.ID,
                 Status = FlowStatus.Done,
                 UserId = data.UserId,
-                FlowNodeDataId = data.ID,
             });
+
             if (data.Result == true)
             {
                 //判断是否流程结束
                 if (!info.FlowData.CanComplete(data))
                 {
-                    var nextUser = Core.UserManager.Get(toUserId);
+                    var nextUser = Core.UserManager.GetModel(toUserId);
                     var nextNodedata = Core.FlowNodeDataManager.CreateNextNodeData(info, nextUser, data.FlowNodeId);
 
                     Core.UserFormInfoManager.Save(new UserFormInfo
@@ -94,7 +61,6 @@ namespace Loowoo.Land.OA.API.Controllers
                         InfoId = info.ID,
                         Status = FlowStatus.Doing,
                         UserId = nextNodedata.UserId,
-                        FlowNodeDataId = nextNodedata.ID,
                     });
                 }
                 else
@@ -112,7 +78,6 @@ namespace Loowoo.Land.OA.API.Controllers
                     FormId = info.FormId,
                     UserId = newBackData.UserId,
                     Status = FlowStatus.Back,
-                    FlowNodeDataId = newBackData.ID
                 });
             }
             //TODO发布短消息通知（此流程所有参与的人都会得到通知）
@@ -146,7 +111,7 @@ namespace Loowoo.Land.OA.API.Controllers
             IEnumerable<User> users = null;
             if (nextNode != null)
             {
-                users = Core.UserManager.Search(new Parameters.UserParameter
+                users = Core.UserManager.GetList(new Parameters.UserParameter
                 {
                     UserId = nextNode.UserId,
                     DepartmentId = nextNode.DepartmentId,

@@ -43,8 +43,9 @@ namespace Loowoo.Land.OA.Models
             {
                 return true;
             }
-            var lastNode = Nodes.Last();
-            return lastNode.UserId == userId && !lastNode.Result.HasValue;
+            var lastNode = GetLastNodeData(userId);
+
+            return lastNode != null && lastNode.CanSubmit();
         }
 
         /// <summary>
@@ -61,8 +62,9 @@ namespace Loowoo.Land.OA.Models
             var lastNodeData = GetLastNodeData(userId);
             if (lastNodeData == null || !lastNodeData.Result.HasValue) return false;
 
-            //如果已经有更新的提交，则不能撤销
-            return !Nodes.Any(e => e.ID > lastNodeData.ID && e.Result.HasValue);
+            var nextNodeData = Nodes.FirstOrDefault(e => e.ID > lastNodeData.ID);
+
+            return nextNodeData != null && nextNodeData.CanCancel();
         }
 
         public FlowNodeData GetLastNodeData(int userId = 0)
@@ -78,12 +80,20 @@ namespace Loowoo.Land.OA.Models
         public bool CanComplete(FlowNodeData data)
         {
             var lastNode = Flow.GetLastNode();
-            return data.Result == true && lastNode.ID == data.FlowNodeId;
+            return lastNode.ID == data.FlowNodeId;
         }
 
         public FlowNodeData GetFirstNodeData()
         {
             return Nodes.OrderBy(e => e.ID).FirstOrDefault();
+        }
+
+        public bool CanBack()
+        {
+            if (Nodes.Count == 0) return false;
+            if (Nodes.Count == 1 && Nodes[0].Result.HasValue) return false;
+
+            return GetLastNodeData().FlowDataId == Flow.GetFirstNode().ID;
         }
 
         //public bool CanEdit(int userId)

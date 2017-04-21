@@ -71,6 +71,11 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
+        public bool CanView(int formId, int infoId, int userId)
+        {
+            return DB.UserFormInfos.Any(e => e.FormId == formId && e.InfoId == infoId && e.UserId == userId);
+        }
+
         public bool HasDeleteRight(FormInfo info, User user)
         {
             var action = "Form.Delete." + info.FormId + ".";

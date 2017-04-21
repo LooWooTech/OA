@@ -156,8 +156,10 @@
     <Compile Include="Controllers\FlowDataController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\FormInfoController.cs" />
+    <Compile Include="Controllers\FreeFlowDataController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HolidayController.cs" />
+    <Compile Include="Controllers\JobTitleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="CorsHandler.cs" />
     <Compile Include="Global.asax.cs">
@@ -182,6 +184,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\Base\" />
+    <Folder Include="Views\FreeFlow\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo.Land.OA\Loowoo.Land.OA.csproj">

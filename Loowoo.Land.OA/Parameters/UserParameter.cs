@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Parameters
 {
-    public class UserParameter:ParameterBase
+    public class UserParameter : ParameterBase
     {
         public int UserId { get; set; }
 
@@ -17,5 +17,8 @@ namespace Loowoo.Land.OA.Parameters
         public int GroupId { get; set; }
 
         public string SearchKey { get; set; }
+
+        public int[] DepartmentIds { get; set; }
+        public int[] TitleIds { get; set; }
     }
 }

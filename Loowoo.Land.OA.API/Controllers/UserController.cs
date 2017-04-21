@@ -58,7 +58,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey,
                 Page = new Loowoo.Common.PageParameter(page, rows)
             };
-            var list = Core.UserManager.Search(parameter);
+            var list = Core.UserManager.GetList(parameter);
             return new PagingResult
             {
                 List = list.Select(e => new
@@ -69,6 +69,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Role,
                     e.DepartmentId,
                     DepartmentName = e.Department.Name,
+                    e.JobTitleId,
                     Groups = e.UserGroups.Select(g => new
                     {
                         g.Group.Name,
@@ -93,7 +94,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("用户ID参数不正确");
             }
-            var user = Core.UserManager.Get(id);
+            var user = Core.UserManager.GetModel(id);
             return Ok(user);
         }
 

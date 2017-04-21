@@ -25,6 +25,13 @@ namespace Loowoo.Land.OA.Models
 
         public int DepartmentId { get; set; }
 
+        public int JobTitleId { get; set; }
+
+        public int FreeFlowId { get; set; }
+
+        [ForeignKey("FreeFlowId")]
+        public virtual FreeFlow FreeFlow { get; set; }
+
         public int PrevId { get; set; }
 
         [NotMapped]

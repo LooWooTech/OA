@@ -30,6 +30,8 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int DepartmentId { get; set; }
 
+        public int JobTitleId { get; set; }
+
         public virtual Department Department { get; set; }
 
         public UserRole Role { get; set; }

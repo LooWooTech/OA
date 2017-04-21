@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.Managers
             return DB.Users.FirstOrDefault(e => e.Username == name && e.Password == password);
         }
 
-        public User Get(int id)
+        public User GetModel(int id)
         {
             if (id <= 0)
             {
@@ -45,7 +45,7 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
-        public IEnumerable<User> Search(UserParameter parameter)
+        public IEnumerable<User> GetList(UserParameter parameter)
         {
             var query = DB.Users.AsQueryable();
             if (parameter.UserId > 0)
@@ -59,6 +59,14 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.DepartmentId > 0)
             {
                 query = query.Where(e => e.DepartmentId == parameter.DepartmentId);
+            }
+            if (parameter.DepartmentIds != null && parameter.DepartmentIds.Length > 0)
+            {
+                query = query.Where(e => parameter.DepartmentIds.Contains(e.DepartmentId));
+            }
+            if (parameter.TitleIds != null && parameter.TitleIds.Length > 0)
+            {
+                query = query.Where(e => parameter.TitleIds.Contains(e.JobTitleId));
             }
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {

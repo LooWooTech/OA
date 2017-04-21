@@ -9,7 +9,7 @@ namespace Loowoo.Land.OA.Managers
 {
     public class FlowNodeDataManager : ManagerBase
     {
-        public FlowNodeData Save(FlowNodeData model)
+        public void Save(FlowNodeData model)
         {
             if (model.ID > 0)
             {
@@ -25,18 +25,15 @@ namespace Loowoo.Land.OA.Managers
                 DB.FlowNodeDatas.Add(model);
             }
             DB.SaveChanges();
-            return model;
         }
 
-        public FlowNodeData CreateNextNodeData(FormInfo info, User user, int currentNodeId, string content = null, bool? result = null)
+        public FlowNodeData CreateNextNodeData(FormInfo info, User user, int currentNodeId)
         {
             var flow = Core.FlowManager.Get(info.Form.FLowId);
             var flowNode = flow?.GetNextStep(currentNodeId);
 
             var model = new FlowNodeData
             {
-                Content = content,
-                Result = result,
                 CreateTime = DateTime.Now,
                 FlowNodeId = flowNode == null ? 0 : flowNode.ID,
                 FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
@@ -44,7 +41,6 @@ namespace Loowoo.Land.OA.Managers
                 Department = user.Department.Name,
                 UserId = user.ID,
                 FlowDataId = info.FlowDataId,
-                UpdateTime = result.HasValue ? DateTime.Now : default(DateTime?)
             };
 
             Core.FlowNodeDataManager.Save(model);
@@ -52,9 +48,14 @@ namespace Loowoo.Land.OA.Managers
             return model;
         }
 
+        public FlowNodeData GetModel(int id)
+        {
+            return DB.FlowNodeDatas.FirstOrDefault(e => e.ID == id);
+        }
+
         public FlowNodeData CreateBackNodeData(FormInfo info, FlowNodeData backNodeData)
         {
-            var user = Core.UserManager.Get(backNodeData.UserId);
+            var user = Core.UserManager.GetModel(backNodeData.UserId);
             var model = new FlowNodeData
             {
                 CreateTime = DateTime.Now,

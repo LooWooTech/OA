@@ -26,10 +26,14 @@ namespace Loowoo.Land.OA.Models
         public DbSet<FlowData> FlowDatas { get; set; }
         public DbSet<FlowNodeData> FlowNodeDatas { get; set; }
 
+        public DbSet<FreeFlow> FreeFlows { get; set; }
+        public DbSet<FreeFlowNodeData> FreeFlowNodeDatas { get; set; }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<JobTitle> JobTitles { get; set; }
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }

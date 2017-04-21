@@ -65,7 +65,6 @@ namespace Loowoo.Land.OA.Managers
             var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId && e.FormId == model.FormId);
             if (entity != null)
             {
-                entity.FlowNodeDataId = model.FlowNodeDataId;
                 entity.Status = model.Status;
             }
             else

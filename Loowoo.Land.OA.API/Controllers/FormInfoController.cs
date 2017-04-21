@@ -55,38 +55,58 @@ namespace Loowoo.Land.OA.API.Controllers
         public object Model(int id)
         {
             var model = Core.FormInfoManager.GetModel(id);
-
-            var canEdit = model.PostUserId == CurrentUser.ID;
-            var canSubmit = true;
-            var canCancel = true;
             if (model == null)
             {
-                canSubmit = false;
-                canCancel = false;
+                return BadRequest("参数错误");
             }
-            else if (model.FlowData == null)
+
+            var canView = Core.FormInfoManager.CanView(model.FormId, model.ID, CurrentUser.ID);
+            if (!canView)
             {
-                canCancel = false;
-                canSubmit = true;
-                //todo 编辑权限
-                canEdit = model.PostUserId == CurrentUser.ID;
+                return BadRequest("您没有权限查看该文档");
             }
-            else
+
+            var canSubmitFlow = true;
+            var canEdit = true;
+            var canCancel = false;
+            var canSubmitFreeFlow = false;
+            var canComplete = false;
+            var canBack = false;
+
+            FlowNodeData flowNodeData = null;
+            FreeFlowNodeData freeFlowNodeData = null;
+            if (model.FlowDataId > 0)
             {
-                //如果当前是在退回状态，则可以编辑，否则不能编辑
-                canSubmit = model.FlowData.CanSubmit(CurrentUser.ID);
-                canEdit = canSubmit;
-                canCancel = model.FlowData.CanCancel(CurrentUser.ID);
+                canSubmitFlow = model.FlowDataId > 0 && model.FlowData.CanSubmit(CurrentUser.ID);
+                canEdit = canSubmitFlow;
+                canCancel = model.FlowDataId > 0 && model.FlowData.CanCancel(CurrentUser.ID);
+
+                flowNodeData = model.FlowData.GetLastNodeData();
+                canComplete = model.FlowData.CanComplete(flowNodeData);
+                canEdit = flowNodeData.UserId == CurrentUser.ID && !flowNodeData.Result.HasValue;
+                //当前步骤如果是流程的第一步，则不能退
+                canBack = model.FlowData.CanBack();
+
+                //如果该步骤开启了自由流程
+                freeFlowNodeData = flowNodeData.GetLastFreeNodeData(CurrentUser.ID);
+                canSubmitFreeFlow = flowNodeData.CanSubmitFreeFlow(CurrentUser.ID);
             }
+
             var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, model.FormId, CurrentUser.ID);
 
             return new
             {
                 model,
+                canView,
                 canEdit,
-                canSubmit,
+                canSubmit = canSubmitFlow || canSubmitFreeFlow,
+                canSubmitFlow,
+                canSubmitFreeFlow,
                 canCancel,
+                canComplete,
                 status = userformInfo.Status,
+                flowNodeData,
+                freeFlowNodeData
             };
         }
 
@@ -99,23 +119,20 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             var isAdd = model.ID == 0;
-
-            //编辑时不更新postUserId
-            model.PostUserId = CurrentUser.ID;
+            if (isAdd)
+            {
+                model.PostUserId = CurrentUser.ID;
+            }
 
             Core.FormInfoManager.Save(model);
 
-            //只有在保存的时候，添加用户表
-            if (isAdd)
+            //初始化流程数据
+            if (model.FlowDataId == 0)
             {
-                Core.UserFormInfoManager.Save(new UserFormInfo
-                {
-                    InfoId = model.ID,
-                    UserId = model.PostUserId,
-                    Status = FlowStatus.Draft,
-                    FormId = model.FormId,
-                });
+                var form = Core.FormManager.GetModel(model.FormId);
+                Core.FlowDataManager.Create(form.FLowId, model);
             }
+
             //更新动态
             Core.FeedManager.Save(new Feed
             {
@@ -124,6 +141,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = model.ID,
                 FromUserId = model.PostUserId,
             });
+
             return Ok(model);
         }
 

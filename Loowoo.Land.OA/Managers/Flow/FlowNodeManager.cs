@@ -9,141 +9,57 @@ namespace Loowoo.Land.OA.Managers
     /// <summary>
     /// 流程步骤管理
     /// </summary>
-    public class FlowNodeManager:ManagerBase
+    public class FlowNodeManager : ManagerBase
     {
-        /// <summary>
-        /// 作用：保存流程步骤
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月22日16:24:08
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public int Save(FlowNode node)
+        public int Save(FlowNode model)
         {
-            DB.FlowNodes.Add(node);
-            DB.SaveChanges();
-            return node.ID;
-        }
-
-        /// <summary>
-        /// 作用：编辑流程步骤
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月22日16:25:59
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public bool Edit(FlowNode node)
-        {
-            var entry = DB.FlowNodes.Find(node.ID);
-            if (entry == null)
+            if (model.FreeFlow != null && model.FreeFlow.LimitMode > 0)
             {
-                return false;
+                Core.FreeFlowManager.Save(model.FreeFlow);
+                model.FreeFlowId = model.FreeFlow.ID;
             }
-            DB.Entry(entry).CurrentValues.SetValues(node);
-            DB.SaveChanges();
-            return true;
-          
-        }
-        /// <summary>
-        /// 作用：删除步骤
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月22日16:29:25
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Delete(int id)
-        {
-            var entry = DB.FlowNodes.Find(id);
-            if (entry == null)
+            if (model.ID > 0)
             {
-                return false;
+                var entity = DB.FlowNodes.FirstOrDefault(e => e.ID == model.ID);
+                DB.Entry(entity).CurrentValues.SetValues(model);
             }
-            DB.FlowNodes.Remove(entry);
+            else
+            {
+                DB.FlowNodes.Add(model);
+            }
             DB.SaveChanges();
-            return true;
-        
+            return model.ID;
         }
 
-        /// <summary>
-        /// 作用：通过流程模板的所有节点
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月25日13:59:28
-        /// </summary>
-        /// <param name="flowId"></param>
-        /// <returns></returns>
-        public IEnumerable<FlowNode> GetList(int flowId)
+        public void Delete(int id)
         {
-            return DB.FlowNodes.Where(e => e.FlowId == flowId);
+            var model = DB.FlowNodes.Find(id);
+            if (model != null)
+            {
+                //检查有没有在此节点的流程，如果有，则不能删除
+                if (DB.FlowNodeDatas.Any(e => e.FlowNodeId == model.ID && e.Result == null))
+                {
+                    throw new Exception("该节点还有流程在审批，暂时无法删除");
+                }
+
+                var next = DB.FlowNodes.FirstOrDefault(e => e.PrevId == model.ID);
+                if (next != null)
+                {
+                    next.PrevId = model.PrevId;
+                }
+                DB.FlowNodes.Remove(model);
+                DB.SaveChanges();
+            }
         }
 
-        /// <summary>
-        /// 作用：获取流程节点
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月27日15:41:31
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public FlowNode Get(int id)
         {
             if (id <= 0)
             {
                 return null;
             }
-            var model = DB.FlowNodes.Find(id);
-            if (model != null)
-            {
-                model.Next = DB.FlowNodes.FirstOrDefault(e => e.PrevId == model.ID);
-            }
-            return model;
+            return DB.FlowNodes.Find(id);
         }
 
-
-
-        /// <summary>
-        /// 作用：验证ID 流程节点是否使用
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月3日17:15:10
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Used(int id)
-        {
-            return DB.FlowNodeDatas.Any(e => e.FlowNodeId == id);
-        }
-
-        /// <summary>
-        /// 作用：获取上一个流程节点
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月23日09:35:51
-        /// </summary>
-        /// <param name="currentflowNodeID"></param>
-        /// <returns></returns>
-        public FlowNode GetPre(int currentflowNodeID)
-        {
-            var currentflownode = Get(currentflowNodeID);
-            if (currentflownode == null)
-            {
-                return null;
-            }
-    
-            return currentflownode.Prev;
-        }
-        /// <summary>
-        /// 作用：通过当前节点获取下一个节点
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月23日09:38:41
-        /// </summary>
-        /// <param name="currentFlowNodeId"></param>
-        /// <returns></returns>
-        public FlowNode GetNext(int currentFlowNodeId)
-        {
-            var currentFlowNode = Get(currentFlowNodeId);
-            if (currentFlowNode == null)
-            {
-                return null;
-            }
-           
-            return currentFlowNode.Next;
-        }
     }
 }
