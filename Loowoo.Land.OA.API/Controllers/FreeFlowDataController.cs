@@ -12,9 +12,9 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData data, int infoId, string toUserIds)
+        public void Submit([FromBody]FreeFlowNodeData model, int infoId, string toUserIds)
         {
-            if (data == null || infoId == 0)
+            if (model == null || infoId == 0)
             {
                 throw new Exception("参数不正确");
             }
@@ -22,9 +22,12 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new ArgumentException("请选择发送人");
             }
-
-            data.UserId = CurrentUser.ID;
-            var model = Core.FreeFlowDataManager.Update(data);
+            var flowNodeData = Core.FlowNodeDataManager.GetModel(model.FlowNodeDataId);
+            if (flowNodeData.Nodes.Count > 0)
+            {
+                model.UserId = CurrentUser.ID;
+                model = Core.FreeFlowDataManager.Update(model);
+            }
 
             FreeFlowNodeData parent = null;
             if (model.ParentId > 0)
@@ -38,6 +41,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 //如果是发送给上级，则不创建新的节点
                 if (parent != null && userId == parent.UserId)
+                {
+                    continue;
+                }
+                if (parent == null && userId == flowNodeData.UserId)
                 {
                     continue;
                 }

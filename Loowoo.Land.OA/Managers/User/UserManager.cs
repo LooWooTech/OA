@@ -10,11 +10,11 @@ namespace Loowoo.Land.OA.Managers
 {
     public class UserManager : ManagerBase
     {
-        public User Login(string name, string password)
+        public User Login(string username, string password)
         {
-            name = name.ToLower();
+            username = username.ToLower();
             password = password.MD5();
-            return DB.Users.FirstOrDefault(e => e.Username == name && e.Password == password);
+            return DB.Users.FirstOrDefault(e => e.Username == username && e.Password == password);
         }
 
         public User GetModel(int id)

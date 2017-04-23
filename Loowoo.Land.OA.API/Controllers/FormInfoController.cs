@@ -104,6 +104,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canSubmitFreeFlow,
                 canCancel,
                 canComplete,
+                canBack,
                 status = userformInfo.Status,
                 flowNodeData,
                 freeFlowNodeData

@@ -28,15 +28,6 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
-        protected LogWriter LogWriter = LogWriter.Instance;
         protected string TaskName { get; set; }
-        protected void ThrowException(string error, string reason)
-        {
-            throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound)
-            {
-                Content = new StringContent(error),
-                ReasonPhrase = reason
-            });
-        }
     }
 }

@@ -24,9 +24,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public IHttpActionResult Login(string name, string password)
+        public object Login(string name, string password)
         {
-            TaskName = "用户登录";
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
             {
                 return BadRequest("登录名以及密码不能为空");
@@ -34,8 +33,9 @@ namespace Loowoo.Land.OA.API.Controllers
             var user = Core.UserManager.Login(name, password);
             if (user == null)
             {
-                return BadRequest($"{TaskName}:登录失败，请核对用户名以及密码");
+                return BadRequest("请核对用户名以及密码");
             }
+
             user.Token = AuthorizeHelper.GetToken(new UserIdentity
             {
                 ID = user.ID,
@@ -45,7 +45,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 RealName = user.Username
             });
 
-            return Ok(user);
+            return user;
         }
 
         [HttpGet]

@@ -92,8 +92,9 @@ namespace Loowoo.Land.OA.Models
         {
             if (Nodes.Count == 0) return false;
             if (Nodes.Count == 1 && Nodes[0].Result.HasValue) return false;
-
-            return GetLastNodeData().FlowDataId == Flow.GetFirstNode().ID;
+            var lastNodeData = GetLastNodeData();
+            var lastNode = Flow.GetFirstNode();
+            return lastNodeData.FlowNodeId != lastNode.ID;
         }
 
         //public bool CanEdit(int userId)

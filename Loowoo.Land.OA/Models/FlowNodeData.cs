@@ -71,7 +71,7 @@ namespace Loowoo.Land.OA.Models
         public bool CanSubmitFreeFlow(int userId)
         {
             if (FlowNode.FreeFlowId == 0) return false;
-            if (Nodes.Count == 0) return true;
+            if (Nodes.Count == 0 && userId == UserId) return true;
             var lastNode = GetLastFreeNodeData(userId);
             return lastNode != null && !lastNode.Submited;
         }
