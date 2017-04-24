@@ -74,11 +74,6 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             var parameters = new UserParameter { SearchKey = key };
             var freeFlow = flowNodeData.FlowNode.FreeFlow;
-            //如果没有关键字，则默认包含发给当前结点的人
-            if (string.IsNullOrEmpty(key))
-            {
-
-            }
             if (!freeFlow.CrossDepartment)
             {
                 switch (freeFlow.LimitMode)
@@ -104,7 +99,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 var subTitle = Core.JobTitleManager.GetSub(CurrentUser.JobTitleId);
                 parameters.TitleIds = new[] { parentTitle == null ? 0 : parentTitle.ID, CurrentUser.JobTitleId, subTitle == null ? 0 : subTitle.ID };
             }
-            return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID);
+
+            return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID)
+                .Select(e => new
+                {
+                    e.ID,
+                    e.RealName,
+                    DepartmentName = e.Department.Name,
+                    e.DepartmentId
+                });
         }
     }
 }

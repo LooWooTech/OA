@@ -1,5 +1,4 @@
 ﻿using Loowoo.Common;
-using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
@@ -28,20 +27,20 @@ namespace Loowoo.Land.OA.API.Controllers
             var form = Core.FormManager.GetModel(formId);
             var flow = Core.FlowManager.Get(form.FLowId);
 
-            var list = Core.UserFormInfoManager.GetList(parameter).Select(e => new UserFormInfoVM
+            var list = Core.UserFormInfoManager.GetList(parameter).Select(e => new
             {
                 ID = e.ID,
-                CategoryId = e.Info.CategoryId,
-                CreateTime = e.Info.CreateTime,
-                FlowDataId = e.Info.FlowDataId,
-                Json = e.Info.Json,
-                FormId = e.FormId,
                 InfoId = e.Info.ID,
-                PostUserId = e.Info.PostUserId,
-                Status = e.Status,
-                Title = e.Info.Title,
-                UpdateTime = e.Info.UpdateTime,
-                UserId = e.UserId,
+                e.FormId,
+                e.Info.CategoryId,
+                e.Info.CreateTime,
+                e.Info.FlowDataId,
+                e.Info.Json,
+                e.Info.PostUserId,
+                e.Status,
+                e.Info.Title,
+                e.Info.UpdateTime,
+                e.UserId,
             }).ToList();
 
             return new PagingResult
