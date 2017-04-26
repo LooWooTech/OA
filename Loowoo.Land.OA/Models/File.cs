@@ -47,8 +47,9 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime? UpdateTime { get; set; }
 
-        public int? InfoId { get; set; }
+        public int InfoId { get; set; }
 
+        public bool Inline { get; set; }
     }
 
     public enum FileType

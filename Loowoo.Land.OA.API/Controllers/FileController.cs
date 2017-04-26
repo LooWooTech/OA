@@ -71,6 +71,12 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(file);
         }
 
+        [HttpPost]
+        public void Update(OA.Models.File model)
+        {
+            Core.FileManager.Save(model);
+        }
+
         public void UpdateRelation(int[] fileIds, int infoId)
         {
             Core.FileManager.Relation(fileIds, infoId);
@@ -84,22 +90,22 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult List(int? infoId = null, int? formId = null, int? page = null, int? rows = null, FileType? type = null)
+        public object List(int? infoId = null, int? formId = null, int? page = null, int? rows = null, FileType? type = null, bool? inline = null)
         {
             var parameter = new FileParameter
             {
                 InfoId = infoId,
                 FormId = formId,
                 Type = type,
-                Page = new Loowoo.Common.PageParameter(page, rows)
+                Inline = inline,
+                Page = new PageParameter(page, rows)
             };
-            var list = Core.FileManager.Search(parameter);
-            var table = new PagingResult<OA.Models.File>
+            var list = Core.FileManager.GetList(parameter);
+            return new PagingResult
             {
                 List = list,
                 Page = parameter.Page
             };
-            return Ok(table);
         }
 
         [HttpGet]

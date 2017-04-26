@@ -53,12 +53,25 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public IEnumerable<File> Search(FileParameter parameter)
+        public IEnumerable<File> GetList(FileParameter parameter)
         {
             var query = DB.Files.AsQueryable();
             if (parameter.InfoId.HasValue)
             {
                 query = query.Where(e => e.InfoId == parameter.InfoId.Value);
+            }
+            if(parameter.Inline.HasValue)
+            {
+                query = query.Where(e => e.Inline == parameter.Inline.Value);
+            }
+            if(parameter.Type.HasValue)
+            {
+                string[] fileExt = null;
+                switch(parameter.Type.Value)
+                {
+
+                }
+                query = query.Where(e => e.FileName.EndsWith(parameter.Type.Value.ToString()));
             }
             query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
             return query;

@@ -29,13 +29,31 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             if (data == null || data.ID == 0)
             {
-                throw new Exception("参数错误");
+                return BadRequest("参数错误");
             }
             var info = Core.FormInfoManager.GetModel(infoId);
             if (info == null)
             {
-                throw new Exception("参数错误");
+                return BadRequest("参数错误");
             }
+            if (data.ID == 0)
+            {
+                if (info.FlowDataId > 0)
+                {
+                    return BadRequest("参数不正确");
+                }
+                else
+                {
+                    Core.FlowDataManager.Create(info.Form.FLowId, info);
+                    data = info.FlowData.GetFirstNodeData();
+                }
+            }
+            var model = info.FlowData.Nodes.FirstOrDefault(e => e.ID == data.ID);
+            if (data.UserId != model.UserId)
+            {
+                return BadRequest("权限不足");
+            }
+
             Core.FlowNodeDataManager.Save(data);
 
             //更新userforminfo的状态

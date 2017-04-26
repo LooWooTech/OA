@@ -14,23 +14,15 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class UserController : ControllerBase
     {
-        /// <summary>
-        /// 作用：用户登陆 登录名和密码参数不正确 返回BadRequest, 用户不存在 返回NotFound,存在返回用户信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月11日12:36:47
-        /// </summary>
-        /// <param name="name">登陆名</param>
-        /// <param name="password">密码</param>
-        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public object Login(string name, string password)
+        public object Login(string username, string password)
         {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 return BadRequest("登录名以及密码不能为空");
             }
-            var user = Core.UserManager.Login(name, password);
+            var user = Core.UserManager.Login(username, password);
             if (user == null)
             {
                 return BadRequest("请核对用户名以及密码");
@@ -42,7 +34,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Username = user.Username,
                 DepartmentId = user.DepartmentId,
                 Role = user.Role,
-                RealName = user.Username
+                RealName = user.RealName
             });
 
             return user;
