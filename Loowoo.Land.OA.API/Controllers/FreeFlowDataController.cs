@@ -78,14 +78,14 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 switch (freeFlow.LimitMode)
                 {
-                    case FreeFlowLimitDepartmentMode.Assign:
+                    case DepartmentLimitMode.Assign:
                         parameters.DepartmentIds = freeFlow.DepartmentIds;
                         break;
-                    case FreeFlowLimitDepartmentMode.Sender:
+                    case DepartmentLimitMode.Sender:
                         var user = Core.UserManager.GetModel(flowNodeData.UserId);
                         parameters.DepartmentId = user.DepartmentId;
                         break;
-                    case FreeFlowLimitDepartmentMode.Poster:
+                    case DepartmentLimitMode.Poster:
                         var flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
                         var firstData = flowData.Nodes.OrderBy(e => e.ID).FirstOrDefault();
                         var sender = Core.UserManager.GetModel(firstData.UserId);

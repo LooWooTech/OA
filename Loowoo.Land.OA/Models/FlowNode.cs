@@ -21,9 +21,27 @@ namespace Loowoo.Land.OA.Models
 
         public int UserId { get; set; }
 
-        public int GroupId { get; set; }
+        public DepartmentLimitMode LimitMode { get; set; } = DepartmentLimitMode.Assign;
 
-        public int DepartmentId { get; set; }
+        [Column("DepartmentIds")]
+        public string DepartmentIdsValue { get; set; }
+
+        [NotMapped]
+        public int[] DepartmentIds
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(DepartmentIdsValue)) return null;
+                return DepartmentIdsValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToArray();
+            }
+            set
+            {
+                if (value == null || value.Length == 0)
+                    DepartmentIdsValue = null;
+                else
+                    DepartmentIdsValue = string.Join(",", value);
+            }
+        }
 
         public int JobTitleId { get; set; }
 

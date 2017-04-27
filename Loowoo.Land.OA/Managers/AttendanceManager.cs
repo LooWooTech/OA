@@ -11,12 +11,12 @@ namespace Loowoo.Land.OA.Managers
 {
     public class AttendanceManager:ManagerBase
     {
-        public IEnumerable<Attendance> Search(AttendanceParameter parameter)
+        public List<Attendance> GetList(AttendanceParameter parameter)
         {
             var query = DB.Attendances.AsQueryable();
             if (parameter.UserId.HasValue)
             {
-                query = query.Where(e => e.UserID == parameter.UserId.Value);
+                query = query.Where(e => e.UserId == parameter.UserId.Value);
             }
         
             if (parameter.BeginDate.HasValue)
@@ -27,8 +27,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Date <= parameter.EndDate.Value);
             }
-            query = query.OrderBy(e => e.Date).SetPage(parameter.Page);
-            return query;
+            return query.ToList();
         }
     }
 }

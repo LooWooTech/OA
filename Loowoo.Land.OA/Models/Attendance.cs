@@ -9,33 +9,35 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
+    /// <summary>
+    /// 每日考勤结果表
+    /// </summary>
     [Table("attendance")]
     public class Attendance
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
+        public int UserId { get; set; }
+
         public DateTime Date { get; set; }
-        public int UserID { get; set; }
-        public virtual User User { get; set; }
-        public AttendanceState State { get; set; }
 
+        public AttendanceResult AMResult { get; set; }
+
+        public AttendanceResult PMResult { get; set; }
     }
 
-    public enum AttendanceState
+    public enum AttendanceResult
     {
+        [Description("正常")]
         Normal,
+        [Description("缺勤")]
         Absent,
+        [Description("迟到")]
         Late,
-        Early
-    }
-
-    public class AttendanceStatistic
-    {
-        public int Normal { get; set; }
-        public int Late { get; set; }
-        public int Early { get; set; }
-        public int Absent { get; set; }
-        public int OfficialLeave { get; set; }
-        public int PersonLeave { get; set; }
+        [Description("早退")]
+        Early,
+        [Description("请假")]
+        Leave
     }
 }

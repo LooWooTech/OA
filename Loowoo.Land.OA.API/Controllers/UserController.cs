@@ -60,7 +60,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.RealName,
                     e.Role,
                     e.DepartmentId,
-                    DepartmentName = e.Department.Name,
+                    Department = e.Department == null ? null : e.Department.Name,
+                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
                     e.JobTitleId,
                     Groups = e.UserGroups.Select(g => new
                     {
@@ -72,13 +73,6 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-        /// <summary>
-        /// 作用：通过用户ID获取用户信息  参数ID不正确  返回BadRequest 用户不存在，返回NotFound()
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月11日12:38:38
-        /// </summary>
-        /// <param name="id">用户ID</param>
-        /// <returns></returns>
         [HttpGet]
         public IHttpActionResult GetModel(int id)
         {
@@ -90,13 +84,6 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok(user);
         }
 
-        /// <summary>
-        /// 作用：添加新用户
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月11日12:56:45
-        /// </summary>
-        /// <param name="user">用户对象</param>
-        /// <returns></returns>
         [HttpPost]
         public IHttpActionResult Register([FromBody]User user)
         {
@@ -116,13 +103,6 @@ namespace Loowoo.Land.OA.API.Controllers
 
         }
 
-        /// <summary>
-        /// 作用：用户编辑
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月14日15:05:44
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         [HttpPost]
         public IHttpActionResult Save([FromBody] User user, [FromUri] string groupIds)
         {
@@ -132,6 +112,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("编辑用户参数错误");
             }
+            if (user.ID == 0)
+            {
+                user.Password = "123456";
+            }
+
             Core.UserManager.Save(user);
 
             if (!string.IsNullOrEmpty(groupIds))

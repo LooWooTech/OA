@@ -74,6 +74,7 @@
     <Compile Include="Managers\HolidayManager.cs" />
     <Compile Include="Managers\JobTitleManager.cs" />
     <Compile Include="Models\Attendance.cs" />
+    <Compile Include="Models\CheckInOut.cs" />
     <Compile Include="Models\FreeFlow.cs" />
     <Compile Include="Models\FreeFlowNodeData.cs" />
     <Compile Include="Models\Holiday.cs" />

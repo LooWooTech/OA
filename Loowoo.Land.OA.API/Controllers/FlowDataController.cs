@@ -132,8 +132,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 users = Core.UserManager.GetList(new Parameters.UserParameter
                 {
                     UserId = nextNode.UserId,
-                    DepartmentId = nextNode.DepartmentId,
-                    GroupId = nextNode.GroupId,
+                    DepartmentIds = nextNode.DepartmentIds,
+                    TitleId = nextNode.JobTitleId
                 });
             }
             return Ok(users);

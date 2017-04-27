@@ -14,11 +14,16 @@ namespace Loowoo.Land.OA.Parameters
 
         public int DepartmentId { get; set; }
 
+        public int[] DepartmentIds { get; set; }
+
         public int GroupId { get; set; }
 
-        public string SearchKey { get; set; }
+        public int[] GroupIds { get; set; }
 
-        public int[] DepartmentIds { get; set; }
+        public int TitleId { get; set; }
+
         public int[] TitleIds { get; set; }
+
+        public string SearchKey { get; set; }
     }
 }

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Parameters
 {
-    public class AttendanceParameter:ParameterBase
+    public class AttendanceParameter
     {
         public int? UserId { get; set; }
-        public DateTime? BeginDate { get; set; }
-        public DateTime? EndDate { get; set; }
 
+        public DateTime? BeginDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
     }
 }

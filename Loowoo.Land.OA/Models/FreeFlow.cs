@@ -15,7 +15,7 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public FreeFlowLimitDepartmentMode LimitMode { get; set; }
+        public DepartmentLimitMode LimitMode { get; set; }
 
         [Column("DepartmentIds")]
         public string DepartmentIdsValue { get; set; }
@@ -46,13 +46,13 @@ namespace Loowoo.Land.OA.Models
         }
     }
 
-    public enum FreeFlowLimitDepartmentMode
+    public enum DepartmentLimitMode
     {
         [Description("指定部门")]
-        Assign = 1,
+        Assign = 0,
+        [Description("拟稿人部门")]
+        Poster = 1,
         [Description("自己部门")]
         Sender = 2,
-        [Description("拟稿人部门")]
-        Poster = 3
     }
 }

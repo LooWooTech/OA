@@ -100,16 +100,10 @@ namespace Loowoo.Land.OA.Managers
         {
             return  DB.Departments.Any(e => e.Name.ToLower() == name.ToLower());
         }
-        /// <summary>
-        /// 作用：验证部门ID是否使用
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月3日09:35:55
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+
         public bool Used(int id)
         {
-            return DB.Users.Any(e => e.DepartmentId == id) || DB.FlowNodes.Any(e => e.DepartmentId == id);
+            return DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(id.ToString()));
         }
     }
 }

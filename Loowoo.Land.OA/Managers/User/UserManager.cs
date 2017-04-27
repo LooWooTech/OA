@@ -64,6 +64,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => parameter.DepartmentIds.Contains(e.DepartmentId));
             }
+            if (parameter.TitleId > 0)
+            {
+                query = query.Where(e => e.JobTitleId == parameter.TitleId);
+            }
             if (parameter.TitleIds != null && parameter.TitleIds.Length > 0)
             {
                 query = query.Where(e => parameter.TitleIds.Contains(e.JobTitleId));
@@ -77,36 +81,44 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.UserGroups.Any(g => g.UserID == e.ID && g.GroupID == parameter.GroupId));
             }
+            if (parameter.GroupIds != null && parameter.GroupIds.Length > 0)
+            {
+                query = query.Where(e => e.UserGroups.Any(g => parameter.GroupIds.Contains(g.ID)));
+            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        public void Save(User user)
+        public void Save(User model)
         {
-            user.Username = user.Username.ToLower();
-            user.RealName = user.RealName.ToLower();
-            if (!string.IsNullOrEmpty(user.Password))
+            model.Username = model.Username.ToLower();
+            model.RealName = model.RealName.ToLower();
+            if (!string.IsNullOrEmpty(model.Password))
             {
-                user.Password = user.Password.MD5();
+                model.Password = model.Password.MD5();
             }
-            if (user.ID == 0)
+            if (model.ID == 0)
             {
-                if (DB.Users.Any(e => e.Username == user.Username))
+                if (DB.Users.Any(e => e.Username == model.Username))
                 {
                     throw new Exception("用户名已被使用");
                 }
-                DB.Users.Add(user);
+                DB.Users.Add(model);
                 DB.SaveChanges();
             }
             else
             {
-                var entity = DB.Users.Find(user.ID);
-                if (!string.IsNullOrEmpty(user.Password))
+                var entity = DB.Users.FirstOrDefault(e => e.ID == model.ID);
+                if (DB.Users.Any(e => e.Username == model.Username && e.ID != model.ID))
                 {
-                    entity.Password = user.Password;
+                    throw new Exception("用户名已被使用");
                 }
-                entity.RealName = user.RealName;
-                entity.DepartmentId = user.DepartmentId;
-                entity.Role = user.Role;
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    entity.Password = model.Password;
+                }
+                entity.RealName = model.RealName;
+                entity.DepartmentId = model.DepartmentId;
+                entity.Role = model.Role;
             }
             DB.SaveChanges();
         }

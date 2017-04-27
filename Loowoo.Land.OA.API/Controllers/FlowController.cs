@@ -60,33 +60,17 @@ namespace Loowoo.Land.OA.API.Controllers
                     return BadRequest($"{TaskName}:未找到上一节点信息,请核对");
                 }
             }
-
-            if ((model.UserId + model.GroupId + model.DepartmentId + model.JobTitleId) <= 0)
+            if (model.UserId == 0 && string.IsNullOrEmpty(model.DepartmentIdsValue) && model.JobTitleId == 0)
             {
-                return BadRequest($"{TaskName}:用户、组、部门三项至少有一项必填");
+                return BadRequest("没有设置流程受限人");
             }
+
             if (model.UserId > 0)
             {
                 var user = Core.UserManager.GetModel(model.UserId);
                 if (user == null)
                 {
                     return BadRequest($"{TaskName}:未查询到ID为{model.UserId}的用户信息");
-                }
-            }
-            if (model.GroupId > 0)
-            {
-                var group = Core.GroupManager.Get(model.GroupId);
-                if (group == null)
-                {
-                    return BadRequest($"{TaskName}:未获取ID为{model.GroupId}的组，请核对");
-                }
-            }
-            if (model.DepartmentId > 0)
-            {
-                var organ = Core.DepartmentManager.Get(model.DepartmentId);
-                if (organ == null)
-                {
-                    return BadRequest($"{TaskName}:未获取ID为{model.DepartmentId}的部门，请核对");
                 }
             }
             #endregion
