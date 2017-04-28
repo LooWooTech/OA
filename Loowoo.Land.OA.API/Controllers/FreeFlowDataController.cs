@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.API.Models;
+using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
@@ -101,12 +102,16 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID)
-                .Select(e => new
+                .Select(e => new UserViewModel
                 {
-                    e.ID,
-                    e.RealName,
-                    DepartmentName = e.Department.Name,
-                    e.DepartmentId
+                    ID = e.ID,
+                    RealName = e.RealName,
+                    Department = e.Department == null ? null : e.Department.Name,
+                    DepartmentId = e.DepartmentId,
+                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
+                    JobTitleId = e.JobTitleId,
+                    Username = e.Username,
+                    Role = e.Role
                 });
         }
     }

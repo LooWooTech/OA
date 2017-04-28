@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Land.OA.API.Models;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -106,7 +107,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult UserList(int infoId, int nodeId)
+        public object UserList(int infoId, int nodeId)
         {
             FlowNode nextNode = null;
             var info = Core.FormInfoManager.GetModel(infoId);
@@ -136,7 +137,17 @@ namespace Loowoo.Land.OA.API.Controllers
                     TitleId = nextNode.JobTitleId
                 });
             }
-            return Ok(users);
+            return users.Select(e => new UserViewModel
+            {
+                ID = e.ID,
+                Username = e.Username,
+                RealName = e.RealName,
+                Department = e.Department == null ? null : e.Department.Name,
+                DepartmentId = e.DepartmentId,
+                JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
+                JobTitleId = e.JobTitleId,
+                Role = e.Role
+            }).Where(e => e.ID != CurrentUser.ID);
         }
 
         [HttpGet]

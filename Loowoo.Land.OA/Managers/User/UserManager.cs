@@ -116,6 +116,7 @@ namespace Loowoo.Land.OA.Managers
                 {
                     entity.Password = model.Password;
                 }
+                entity.JobTitleId = model.JobTitleId;
                 entity.RealName = model.RealName;
                 entity.DepartmentId = model.DepartmentId;
                 entity.Role = model.Role;

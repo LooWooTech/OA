@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.API.Security;
+﻿using Loowoo.Land.OA.API.Models;
+using Loowoo.Land.OA.API.Security;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
@@ -53,16 +54,16 @@ namespace Loowoo.Land.OA.API.Controllers
             var list = Core.UserManager.GetList(parameter);
             return new PagingResult
             {
-                List = list.Select(e => new
+                List = list.Select(e => new UserViewModel
                 {
-                    e.ID,
-                    e.Username,
-                    e.RealName,
-                    e.Role,
-                    e.DepartmentId,
+                    ID = e.ID,
+                    Username = e.Username,
+                    RealName = e.RealName,
+                    Role = e.Role,
+                    DepartmentId = e.DepartmentId,
                     Department = e.Department == null ? null : e.Department.Name,
                     JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                    e.JobTitleId,
+                    JobTitleId = e.JobTitleId,
                     Groups = e.UserGroups.Select(g => new
                     {
                         g.Group.Name,
