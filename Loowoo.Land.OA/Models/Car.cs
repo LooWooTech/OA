@@ -16,47 +16,35 @@ namespace Loowoo.Land.OA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         public string Number { get; set; }
 
         public CarType Type { get; set; }
 
-        public CarState State { get; set; }
+        public CarStatus Status { get; set; }
 
-    }
+        /// <summary>
+        /// 最后一次状态更新时间
+        /// </summary>
+        public DateTime? UpdateTime { get; set; }
 
-    /// <summary>
-    /// 用车申请
-    /// </summary>
-    [Table("car_eventlog")]
-    public class CarEventLog
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-
-        public int CarID { get; set; }
-
-        public int UserID { get; set; }
-
-        public string Description { get; set; }
-
-        public DateTime BeginTime { get; set; }
-
-        public DateTime? EndTime { get; set; }
         public bool Deleted { get; set; }
     }
 
     public enum CarType
     {
+        [Description("轿车")]
+        Sedan = 1,
         [Description("越野车")]
         Suv,
-        [Description("轿车")]
-        Sedan
+        [Description("其他")]
+        Other
     }
 
-    public enum CarState
+    public enum CarStatus
     {
         [Description("闲置")]
         Unused,

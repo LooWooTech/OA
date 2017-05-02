@@ -25,6 +25,10 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public int FormId { get; set; }
+        /// <summary>
+        /// 相关联的其他表的主键（比如汽车ID，请假ID）
+        /// </summary>
+        public int ExtendId { get; set; }
 
         public virtual Form Form { get; set; }
 

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\AttendanceManager.cs" />
+    <Compile Include="Managers\CarManager.cs" />
     <Compile Include="Managers\Flow\FlowDataManager.cs" />
     <Compile Include="Managers\Flow\FlowManager.cs" />
     <Compile Include="Managers\Flow\FlowNodeDataManager.cs" />
@@ -148,7 +149,9 @@
       <Name>Loowoo</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Managers\Car\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

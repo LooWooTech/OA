@@ -12,16 +12,12 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.Forms.FirstOrDefault(e => e.ID == formId);
         }
-        /// <summary>
-        /// 作用：获取表单列表
-        /// 作者：汪建龙
-        /// 编写时间：2017年3月22日11:38:44
-        /// </summary>
-        /// <returns></returns>
-        public List<Form> GetList()
+
+        public IEnumerable<Form> GetList()
         {
-            return DB.Forms.OrderBy(e => e.ID).ToList();
+            return DB.Forms.AsQueryable();
         }
+
         public Form GetModel(FormType type)
         {
             return DB.Forms.FirstOrDefault(e => e.FormType == type);

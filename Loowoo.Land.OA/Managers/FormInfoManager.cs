@@ -16,6 +16,25 @@ namespace Loowoo.Land.OA.Managers
             return DB.FormInfos.FirstOrDefault(e => e.ID == id);
         }
 
+        public bool HasApplied(int userId, DateTime? lastTime, int extendId = 0)
+        {
+            var query = DB.FormInfos.Where(e => e.PostUserId == userId);
+            if (extendId > 0)
+            {
+                query = query.Where(e => e.ExtendId == extendId);
+            }
+            if (lastTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime > lastTime.Value);
+            }
+            var info = query.OrderByDescending(e => e.CreateTime).FirstOrDefault();
+            if (info != null)
+            {
+                return info.FlowData == null || !info.FlowData.Completed;
+            }
+            return false;
+        }
+
         public IEnumerable<FormInfo> GetList(FormInfoParameter parameter)
         {
             var query = DB.FormInfos.Where(e => !e.Deleted);

@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormController : ControllerBase
     {
         [HttpGet]
-        public List<Form> List()
+        public object List()
         {
             return Core.FormManager.GetList();
         }

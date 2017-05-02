@@ -16,9 +16,24 @@ namespace Loowoo.Land.OA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
-        public FormType FormType { get; set; }
+        [Required]
+        public string EName { get; set; }
+
+        [NotMapped]
+        public FormType FormType
+        {
+            get
+            {
+                if (Enum.TryParse(EName, true, out FormType type))
+                {
+                    return type;
+                }
+                return 0;
+            }
+        }
 
         public int FLowId { get; set; }
     }
@@ -27,10 +42,12 @@ namespace Loowoo.Land.OA.Models
     {
         [Description("公文")]
         Missive = 1,
+        [Description("车辆")]
+        Car = 2,
         [Description("请假")]
-        Leave = 2,
+        Leave = 3,
         [Description("任务")]
-        Task = 3,
+        Task = 4,
 
     }
 }

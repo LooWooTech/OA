@@ -107,36 +107,48 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object UserList(int infoId, int nodeId)
+        public object UserList(int flowId, int nodeId, int flowDataId = 0)
         {
-            FlowNode nextNode = null;
-            var info = Core.FormInfoManager.GetModel(infoId);
-            if (info == null)
+            if (flowId == 0)
             {
-                return BadRequest("获取表单数据错误");
+                return BadRequest("没有指定流程");
             }
 
-            if (info.Form.FLowId > 0)
+            var flow = Core.FlowManager.Get(flowId);
+            //如果没有指定node，那默认为第一个node的下一步
+            if (nodeId == 0)
             {
-                var flow = Core.FlowManager.Get(info.Form.FLowId);
-                nextNode = flow.GetNextStep(nodeId);
-                //如果当前还没提交过
-                if (nodeId == 0)
+                var node = flow.GetFirstNode();
+                nodeId = node.ID;
+            }
+            var nextNode = flow.GetNextStep(nodeId);
+
+            var parameter = new Parameters.UserParameter();
+            if (nextNode != null)
+            {
+                parameter.TitleId = nextNode.JobTitleId;
+                parameter.UserId = nextNode.UserId;
+                if (nextNode.LimitMode == DepartmentLimitMode.Assign)
                 {
-                    nextNode = flow.GetNextStep(nextNode.ID);
+                    parameter.DepartmentIds = nextNode.DepartmentIds;
+                }
+                else if (nextNode.LimitMode == DepartmentLimitMode.Sender)
+                {
+                    if (nodeId == 0)
+                    {
+                        parameter.DepartmentId = CurrentUser.DepartmentId;
+                    }
+                    else if (flowDataId > 0)
+                    {
+                        var flowData = Core.FlowDataManager.Get(flowDataId);
+                        var senderNodeData = flowData.GetFirstNodeData();
+                        var user = Core.UserManager.GetModel(senderNodeData.UserId);
+                        parameter.DepartmentId = user.DepartmentId;
+                    }
                 }
             }
 
-            IEnumerable<User> users = null;
-            if (nextNode != null)
-            {
-                users = Core.UserManager.GetList(new Parameters.UserParameter
-                {
-                    UserId = nextNode.UserId,
-                    DepartmentIds = nextNode.DepartmentIds,
-                    TitleId = nextNode.JobTitleId
-                });
-            }
+            var users = Core.UserManager.GetList(parameter);
             return users.Select(e => new UserViewModel
             {
                 ID = e.ID,
@@ -158,7 +170,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("获取表单数据错误");
             }
-            var list = info.FlowData.Nodes.Where(e => e.UserId != CurrentUser.ID);
+            var list = info.FlowData.Nodes;
             return Ok(list);
         }
 

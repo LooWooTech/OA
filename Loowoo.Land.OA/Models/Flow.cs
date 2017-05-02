@@ -16,6 +16,10 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public string Name { get; set; }
+        /// <summary>
+        /// 不同意是否可以退回发起人，如果不可以，则直接结束流程
+        /// </summary>
+        public bool CanBack { get; set; }
 
         public virtual List<FlowNode> Nodes { get; set; }
 

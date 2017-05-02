@@ -46,6 +46,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:未获取流程节点信息、流程节点名称不能为空，请核对");
             }
+
             var flow = Core.FlowManager.Get(model.FlowId);
             if (flow == null)
             {
@@ -59,10 +60,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     return BadRequest($"{TaskName}:未找到上一节点信息,请核对");
                 }
-            }
-            if (model.UserId == 0 && string.IsNullOrEmpty(model.DepartmentIdsValue) && model.JobTitleId == 0)
-            {
-                return BadRequest("没有设置流程受限人");
             }
 
             if (model.UserId > 0)
