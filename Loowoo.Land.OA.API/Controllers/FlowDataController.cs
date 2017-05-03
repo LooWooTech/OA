@@ -23,87 +23,31 @@ namespace Loowoo.Land.OA.API.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// 获取审批数据
+        /// </summary>
+        [HttpGet]
+        public object Model(int id)
+        {
+            var flowData = Core.FlowDataManager.Get(id);
+            if (flowData == null)
+            {
+                return BadRequest("参数不正确，没有获取到流程数据");
+            }
+            var flowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+            return new
+            {
+                flowData,
+                flowNodeData,
+                canBack = flowData.CanBack(),
+                canComplete = flowData.CanComplete(flowNodeData)
+            };
+        }
 
         [HttpPost]
-        public IHttpActionResult Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
+        public void Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
         {
-            if (data == null || data.ID == 0)
-            {
-                return BadRequest("参数错误");
-            }
-            var info = Core.FormInfoManager.GetModel(infoId);
-            if (info == null)
-            {
-                return BadRequest("参数错误");
-            }
-            if (data.ID == 0)
-            {
-                if (info.FlowDataId > 0)
-                {
-                    return BadRequest("参数不正确");
-                }
-                else
-                {
-                    Core.FlowDataManager.Create(info.Form.FLowId, info);
-                    data = info.FlowData.GetFirstNodeData();
-                }
-            }
-            var model = info.FlowData.Nodes.FirstOrDefault(e => e.ID == data.ID);
-            if (data.UserId != model.UserId)
-            {
-                return BadRequest("权限不足");
-            }
-
-            Core.FlowNodeDataManager.Save(data);
-
-            //更新userforminfo的状态
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                FormId = info.FormId,
-                InfoId = info.ID,
-                Status = FlowStatus.Done,
-                UserId = data.UserId,
-            });
-
-            if (data.Result == true)
-            {
-                //判断是否流程结束
-                if (!info.FlowData.CanComplete(data))
-                {
-                    var nextUser = Core.UserManager.GetModel(toUserId);
-                    var nextNodedata = Core.FlowNodeDataManager.CreateNextNodeData(info, nextUser, data.FlowNodeId);
-
-                    Core.UserFormInfoManager.Save(new UserFormInfo
-                    {
-                        FormId = info.FormId,
-                        InfoId = info.ID,
-                        Status = FlowStatus.Doing,
-                        UserId = nextNodedata.UserId,
-                    });
-                }
-                else
-                {
-                    Core.FlowDataManager.Complete(info);
-                }
-            }
-            else
-            {
-                var firstNodeData = info.FlowData.GetFirstNodeData();
-                var newBackData = Core.FlowNodeDataManager.CreateBackNodeData(info, firstNodeData);
-                Core.UserFormInfoManager.Save(new UserFormInfo
-                {
-                    InfoId = info.ID,
-                    FormId = info.FormId,
-                    UserId = newBackData.UserId,
-                    Status = FlowStatus.Back,
-                });
-            }
-            //TODO发布短消息通知（此流程所有参与的人都会得到通知）
-
-
-
-            return Ok();
+            Core.FlowDataManager.Submit(infoId, CurrentUser.ID, toUserId, data.Result.Value, data.Content);
         }
 
         [HttpGet]
@@ -115,6 +59,10 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             var flow = Core.FlowManager.Get(flowId);
+            if (flow == null)
+            {
+                return BadRequest("没有找到该流程");
+            }
             //如果没有指定node，那默认为第一个node的下一步
             if (nodeId == 0)
             {

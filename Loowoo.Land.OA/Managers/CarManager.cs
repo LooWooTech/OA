@@ -14,26 +14,9 @@ namespace Loowoo.Land.OA.Managers
             return DB.Cars.Where(e => !e.Deleted);
         }
 
-        public bool HasApply(int carId, int userId)
-        {
-            var car = Get(carId);
-
-            var query = DB.FormInfos.Where(e => e.ExtendId == carId && e.PostUserId == userId);
-            if (car.UpdateTime.HasValue)
-            {
-                var info = query.OrderByDescending(e => e.CreateTime).FirstOrDefault(e => e.CreateTime > car.UpdateTime);
-                if (info != null)
-                {
-                    return info.FlowData == null || !info.FlowData.Completed;
-                }
-                return false;
-            }
-            return query.Count() > 0;
-        }
-
         public void Save(Car model)
         {
-            model.Number = model.Number.ToLower();
+            model.Number = model.Number.ToUpper();
             if (DB.Cars.Any(e => e.Number == model.Number && (e.ID == 0 || e.ID != model.ID)))
             {
                 throw new Exception("该车牌号已被使用");

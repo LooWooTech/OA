@@ -22,6 +22,10 @@ namespace Loowoo.Land.OA.Models
         [Required]
         public string Number { get; set; }
 
+        public int PhotoId { get; set; }
+
+        public virtual File Photo { get; set; }
+
         public CarType Type { get; set; }
 
         public CarStatus Status { get; set; }

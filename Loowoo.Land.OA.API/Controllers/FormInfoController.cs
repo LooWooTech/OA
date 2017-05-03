@@ -13,7 +13,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoController : ControllerBase
     {
         [HttpGet]
-        public object List(int formId, int postUserId = 0, string searchKey = null, FlowStatus? status = null, int page = 1, int rows = 20)
+        public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
         {
             var parameter = new UserFormInfoParameter
             {
@@ -22,7 +22,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows),
                 UserId = CurrentUser.ID,
-                PostUserId = postUserId
+                PostUserId = postUserId,
+                Completed = completed
             };
 
             var form = Core.FormManager.GetModel(formId);

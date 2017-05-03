@@ -61,6 +61,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     FormId = info.FormId,
                     UserId = userId,
                     Status = FlowStatus.Doing,
+                    FlowNodeDataId = model.FlowNodeDataId
                 });
             }
         }

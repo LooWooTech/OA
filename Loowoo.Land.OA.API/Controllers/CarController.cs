@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,22 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object List()
         {
-            return Core.CarManager.GetList();
+            var list = Core.CarManager.GetList();
+
+            var userInfos = Core.UserFormInfoManager.GetList(new UserFormInfoParameter
+            {
+                PostUserId = CurrentUser.ID,
+                BeginTime = list.Select(e => e.UpdateTime).DefaultIfEmpty().Max()
+            });
+            return list.ToList().Select(e => new
+            {
+                e.Name,
+                e.Number,
+                e.PhotoId,
+                e.Status,
+                e.ID,
+                Applied = Core.FormInfoManager.HasApplied(CurrentUser.ID, e.UpdateTime, e.ID)
+            });
         }
 
         [HttpPost]
@@ -28,9 +44,8 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.CarManager.Save(model);
         }
 
-
         [HttpPost]
-        public void Apply(int carId, [FromBody]FormInfo data)
+        public void Apply(int carId, int toUserId, [FromBody]FormInfo data)
         {
             var car = Core.CarManager.Get(carId);
             if (car == null)
@@ -47,11 +62,13 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("你已经申请过了，不要重复申请");
             }
 
+            data.ExtendId = car.ID;
             data.PostUserId = CurrentUser.ID;
             Core.FormInfoManager.Save(data);
-            var form = Core.FormManager.GetModel(FormType.Car);
-            Core.FlowDataManager.Create(form.FLowId, data);
 
+            var apply = data.Json.ToObject<CarApply>();
+
+            Core.FlowDataManager.Submit(data.ID, CurrentUser.ID, toUserId, true, apply.Reason);
         }
 
         [HttpDelete]

@@ -45,6 +45,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Info.CreateTime <= parameter.EndTime.Value);
             }
+            if (parameter.Completed.HasValue)
+            {
+                query = query.Where(e => e.Info.FlowData.Completed == parameter.Completed.Value);
+            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
@@ -59,6 +63,24 @@ namespace Loowoo.Land.OA.Managers
             DB.UserFormInfos.Remove(entity);
             DB.SaveChanges();
         }
+
+        //public void UpdateStatues(int infoId, int userId, FlowStatus status)
+        //{
+        //    var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId);
+        //    entity.Status = status;
+        //    DB.SaveChanges();
+        //}
+
+        //public void Add(UserFormInfo model)
+        //{
+        //    var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId);
+        //    if (entity != null)
+        //    {
+        //        throw new Exception("记录已存在");
+        //    }
+        //    DB.UserFormInfos.Add(model);
+        //    DB.SaveChanges();
+        //}
 
         public void Save(UserFormInfo model)
         {

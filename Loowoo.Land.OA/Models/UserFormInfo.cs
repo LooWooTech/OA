@@ -28,6 +28,8 @@ namespace Loowoo.Land.OA.Models
         public virtual FormInfo Info { get; set; }
 
         public FlowStatus Status { get; set; }
+
+        public int FlowNodeDataId { get; set; }
     }
 
     public class UserFormInfoParameter : FormInfoParameter
@@ -35,5 +37,7 @@ namespace Loowoo.Land.OA.Models
         public FlowStatus? Status { get; set; }
 
         public int UserId { get; set; }
+
+        public bool? Completed { get; set; }
     }
 }
