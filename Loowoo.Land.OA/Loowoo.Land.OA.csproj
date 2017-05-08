@@ -93,7 +93,6 @@
     <Compile Include="Models\HttpDbContextContainer.cs" />
     <Compile Include="Managers\User\DepartmentManager.cs" />
     <Compile Include="Managers\User\GroupManager.cs" />
-    <Compile Include="Managers\User\UserGroupManager.cs" />
     <Compile Include="Managers\User\UserManager.cs" />
     <Compile Include="Models\Archive.cs" />
     <Compile Include="Models\Article.cs" />
@@ -122,6 +121,8 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\JobTitle.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserAction.cs" />
+    <Compile Include="Models\UserDepartment.cs" />
     <Compile Include="Models\UserFormInfo.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserRight.cs" />

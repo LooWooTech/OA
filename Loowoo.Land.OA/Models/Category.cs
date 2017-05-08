@@ -19,13 +19,13 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 表单类型
         /// </summary>
-        public int FormID { get; set; }
+        public int FormId { get; set; }
 
         public int Sort { get; set; }
 
         public bool Deleted { get; set; }
 
-        public int ParentID { get; set; }
+        public int ParentId { get; set; }
 
         public int Type { get; set; }
     }

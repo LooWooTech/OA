@@ -14,7 +14,6 @@ namespace Loowoo.Land.OA.Managers
         {
             var user = Core.UserManager.GetModel(model.UserId);
             model.Signature = user.RealName;
-            model.DepartmentName = user.Department.Name;
 
             DB.FreeFlowNodeDatas.Add(model);
             DB.SaveChanges();

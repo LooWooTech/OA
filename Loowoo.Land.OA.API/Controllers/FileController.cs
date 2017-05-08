@@ -108,8 +108,10 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
+
+
         [HttpGet]
-        public IHttpActionResult ConvertToPdf(int id)
+        public IHttpActionResult ConvertToPdf(int id, bool redTitle = false)
         {
             var file = Core.FileManager.GetModel(id);
             var ext = Path.GetExtension(file.SavePath);
@@ -123,6 +125,11 @@ namespace Loowoo.Land.OA.API.Controllers
                     Size = file.Size
                 };
                 var docPath = Path.Combine(_uploadDir, file.SavePath);
+                if (redTitle)
+                {
+                    //如果写入红头文件标题，则改写word文档
+                    //Core.FileManager.AddRedTitle()
+                }
                 var doc = new Aspose.Words.Document(docPath);
                 var pdfPath = docPath + ".pdf";
                 var pdf = doc.Save(pdfPath, new Aspose.Words.Saving.PdfSaveOptions

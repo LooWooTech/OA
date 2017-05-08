@@ -22,7 +22,7 @@ namespace Loowoo.Land.OA.Models
 
         public string Description { get; set; }
 
-        public int DepartmentID { get; set; }
+        public int DepartmentId { get; set; }
 
         public Department Department { get; set; }
     }

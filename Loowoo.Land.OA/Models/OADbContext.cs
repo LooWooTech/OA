@@ -33,6 +33,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
 
         public DbSet<Car> Cars { get; set; }

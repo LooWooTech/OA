@@ -51,7 +51,7 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<Category> GetList(int formId)
         {
-            return DB.Categorys.Where(e => e.Deleted == false && e.FormID == formId).OrderBy(e => e.ID).ToList();
+            return DB.Categorys.Where(e => e.Deleted == false && e.FormId == formId).OrderBy(e => e.ID).ToList();
 
         }
         /// <summary>

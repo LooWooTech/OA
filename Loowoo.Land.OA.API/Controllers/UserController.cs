@@ -33,7 +33,6 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 ID = user.ID,
                 Username = user.Username,
-                DepartmentId = user.DepartmentId,
                 Role = user.Role,
                 RealName = user.RealName
             });
@@ -60,9 +59,12 @@ namespace Loowoo.Land.OA.API.Controllers
                     Username = e.Username,
                     RealName = e.RealName,
                     Role = e.Role,
-                    DepartmentId = e.DepartmentId,
-                    Department = e.Department == null ? null : e.Department.Name,
                     JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
+                    Departments = e.UserDepartments.Select(d => new
+                    {
+                        d.Department.Name,
+                        ID = d.DepartmentId
+                    }),
                     JobTitleId = e.JobTitleId,
                     Groups = e.UserGroups.Select(g => new
                     {
@@ -86,26 +88,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Register([FromBody]User user)
-        {
-            if (user == null
-                || string.IsNullOrEmpty(user.Username)
-                || string.IsNullOrEmpty(user.RealName)
-                || string.IsNullOrEmpty(user.Password))
-            {
-                return BadRequest("注册用户信息不正确");
-            }
-            if (Core.UserManager.Exist(user.Username))
-            {
-                return BadRequest(string.Format("当前系统中已存在登录名：{0}，请更改登陆名", user.Username));
-            }
-            Core.UserManager.Register(user);
-            return Ok();
-
-        }
-
-        [HttpPost]
-        public IHttpActionResult Save([FromBody] User user, [FromUri] string groupIds)
+        public IHttpActionResult Save([FromBody] User user, [FromUri]string departmentIds, [FromUri] string groupIds)
         {
             if (user == null
                 || string.IsNullOrEmpty(user.Username)
@@ -119,11 +102,16 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             Core.UserManager.Save(user);
+            if (!string.IsNullOrEmpty(departmentIds))
+            {
+                var ids = groupIds.Split(',').Select(str => int.Parse(str)).ToArray();
+                Core.DepartmentManager.UpdateUserDepartments(user.ID, ids);
+            }
 
             if (!string.IsNullOrEmpty(groupIds))
             {
                 var ids = groupIds.Split(',').Select(str => int.Parse(str)).ToArray();
-                Core.UserGroupManager.UpdateUserGroups(user.ID, ids);
+                Core.GroupManager.UpdateUserGroups(user.ID, ids);
             }
             return Ok();
         }

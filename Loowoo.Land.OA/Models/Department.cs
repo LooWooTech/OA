@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public int ParentID { get; set; }
+        public int ParentId { get; set; }
 
         public string Name { get; set; }
 

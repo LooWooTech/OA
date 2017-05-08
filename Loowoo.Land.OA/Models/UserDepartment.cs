@@ -8,19 +8,18 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    [Table("user_group")]
-    public class UserGroup
+    [Table("user_department")]
+    public class UserDepartment
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public int UserId { get; set; }
 
-        public int GroupId { get; set; }
+        public int DepartmentId { get; set; }
 
         public virtual User User { get; set; }
 
-        public virtual Group Group { get; set; }
+        public virtual Department Department { get; set; }
     }
 }

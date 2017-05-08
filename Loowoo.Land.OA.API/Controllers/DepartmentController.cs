@@ -33,9 +33,9 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest($"{TaskName}:系统中已存在部门名称为{department.Name}");
             }
-            if (department.ParentID > 0)
+            if (department.ParentId > 0)
             {
-                var parent = Core.DepartmentManager.Get(department.ParentID);
+                var parent = Core.DepartmentManager.Get(department.ParentId);
                 if (parent == null)
                 {
                     return BadRequest($"{TaskName}:未找到上级部门信息");

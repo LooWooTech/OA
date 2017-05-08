@@ -62,10 +62,10 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<Department> GetList()
         {
-            var list = DB.Departments.Where(e => e.ParentID == 0).ToList();
+            var list = DB.Departments.Where(e => e.ParentId == 0).ToList();
             foreach (var item in list)
             {
-                item.Children = DB.Departments.Where(e => e.ParentID == item.ID).ToList();
+                item.Children = DB.Departments.Where(e => e.ParentId == item.ID).ToList();
             }
             return list;
         }
@@ -104,6 +104,21 @@ namespace Loowoo.Land.OA.Managers
         public bool Used(int id)
         {
             return DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(id.ToString()));
+        }
+
+        public void UpdateUserDepartments(int userId, int[] departmentIds)
+        {
+            var list = DB.UserDepartments.Where(e => e.UserId == userId);
+            DB.UserDepartments.RemoveRange(list);
+            foreach (var id in departmentIds)
+            {
+                DB.UserGroups.Add(new UserGroup
+                {
+                    UserId = userId,
+                    GroupId = id
+                });
+            }
+            DB.SaveChanges();
         }
     }
 }

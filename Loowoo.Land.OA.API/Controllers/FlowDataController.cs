@@ -84,14 +84,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     if (nodeId == 0)
                     {
-                        parameter.DepartmentId = CurrentUser.DepartmentId;
+                        parameter.DepartmentIds = CurrentUser.DepartmentIds;
                     }
                     else if (flowDataId > 0)
                     {
                         var flowData = Core.FlowDataManager.Get(flowDataId);
                         var senderNodeData = flowData.GetFirstNodeData();
                         var user = Core.UserManager.GetModel(senderNodeData.UserId);
-                        parameter.DepartmentId = user.DepartmentId;
+                        parameter.DepartmentIds = user.DepartmentIds;
                     }
                 }
             }
@@ -102,8 +102,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 ID = e.ID,
                 Username = e.Username,
                 RealName = e.RealName,
-                Department = e.Department == null ? null : e.Department.Name,
-                DepartmentId = e.DepartmentId,
                 JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
                 JobTitleId = e.JobTitleId,
                 Role = e.Role

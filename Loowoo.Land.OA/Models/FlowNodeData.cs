@@ -37,8 +37,6 @@ namespace Loowoo.Land.OA.Models
 
         public string Signature { get; set; }
 
-        public string Department { get; set; }
-
         public DateTime? UpdateTime { get; set; }
 
         public bool? Result { get; set; }

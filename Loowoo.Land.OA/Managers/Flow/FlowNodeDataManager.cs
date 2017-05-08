@@ -38,7 +38,6 @@ namespace Loowoo.Land.OA.Managers
                 FlowNodeId = flowNode == null ? 0 : flowNode.ID,
                 FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
                 Signature = user.RealName,
-                Department = user.Department.Name,
                 UserId = user.ID,
                 FlowDataId = info.FlowDataId,
             };
@@ -61,7 +60,6 @@ namespace Loowoo.Land.OA.Managers
                 CreateTime = DateTime.Now,
                 FlowDataId = info.FlowDataId,
                 Signature = user.RealName,
-                Department = user.Department.Name,
                 UserId = user.ID,
                 FlowNodeId = backNodeData.FlowNodeId,
                 FlowNodeName = backNodeData.FlowNodeName,

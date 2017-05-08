@@ -12,14 +12,12 @@ namespace Loowoo.Land.OA.API.Models
         public string Username { get; set; }
         public string RealName { get; set; }
 
-        public string Department { get; set; }
-        public int DepartmentId { get; set; }
-
         public string JobTitle { get; set; }
         public int JobTitleId { get; set; }
 
         public UserRole Role { get; set; }
 
+        public IEnumerable<dynamic> Departments { get; set; }
         public IEnumerable<dynamic> Groups { get; set; }
     }
 }

@@ -14,7 +14,13 @@ namespace Loowoo.Land.OA.Managers
         {
             username = username.ToLower();
             password = password.MD5();
-            return DB.Users.FirstOrDefault(e => e.Username == username && e.Password == password);
+            var model = DB.Users.FirstOrDefault(e => e.Username == username && e.Password == password);
+            if (model != null)
+            {
+                model.DepartmentIds = model.UserDepartments.Select(e => e.DepartmentId).ToArray();
+                model.GroupIds = model.UserGroups.Select(e => e.GroupId).ToArray();
+            }
+            return model;
         }
 
         public User GetModel(int id)
@@ -23,26 +29,18 @@ namespace Loowoo.Land.OA.Managers
             {
                 return null;
             }
-            return DB.Users.Find(id);
+            var model = DB.Users.Find(id);
+            if (model != null)
+            {
+                model.DepartmentIds = model.UserDepartments.Select(e => e.DepartmentId).ToArray();
+                model.GroupIds = model.UserGroups.Select(e => e.GroupId).ToArray();
+            }
+            return model;
         }
 
         public bool Exist(string name)
         {
-            using (var db = GetDbContext())
-            {
-                var user = db.Users.FirstOrDefault(e => e.Username.ToLower() == name.ToLower());
-                return user != null;
-            }
-        }
-
-        public void Register(User user)
-        {
-            user.Password = user.Password.MD5();
-            using (var db = GetDbContext())
-            {
-                db.Users.Add(user);
-                db.SaveChanges();
-            }
+            return DB.Users.Any(e => e.Username == name.ToLower());
         }
 
         public IEnumerable<User> GetList(UserParameter parameter)
@@ -58,11 +56,11 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.DepartmentId > 0)
             {
-                query = query.Where(e => e.DepartmentId == parameter.DepartmentId);
+                query = query.Where(e => e.UserDepartments.Any(d => d.UserId == e.ID && d.DepartmentId == parameter.DepartmentId));
             }
             if (parameter.DepartmentIds != null && parameter.DepartmentIds.Length > 0)
             {
-                query = query.Where(e => parameter.DepartmentIds.Contains(e.DepartmentId));
+                query = query.Where(e => e.UserDepartments.Any(d => d.UserId == e.ID && parameter.DepartmentIds.Contains(d.DepartmentId)));
             }
             if (parameter.TitleId > 0)
             {
@@ -79,11 +77,11 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.GroupId > 0)
             {
-                query = query.Where(e => e.UserGroups.Any(g => g.UserID == e.ID && g.GroupID == parameter.GroupId));
+                query = query.Where(e => e.UserGroups.Any(g => g.UserId == e.ID && g.GroupId == parameter.GroupId));
             }
             if (parameter.GroupIds != null && parameter.GroupIds.Length > 0)
             {
-                query = query.Where(e => e.UserGroups.Any(g => parameter.GroupIds.Contains(g.ID)));
+                query = query.Where(e => e.UserGroups.Any(g => g.UserId == e.ID && parameter.GroupIds.Contains(g.GroupId)));
             }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
@@ -118,7 +116,6 @@ namespace Loowoo.Land.OA.Managers
                 }
                 entity.JobTitleId = model.JobTitleId;
                 entity.RealName = model.RealName;
-                entity.DepartmentId = model.DepartmentId;
                 entity.Role = model.Role;
             }
             DB.SaveChanges();
@@ -129,7 +126,7 @@ namespace Loowoo.Land.OA.Managers
             var user = DB.Users.Find(id);
             if (user != null)
             {
-                var userGroups = DB.UserGroups.Where(e => e.UserID == user.ID);
+                var userGroups = DB.UserGroups.Where(e => e.UserId == user.ID);
                 DB.UserGroups.RemoveRange(userGroups);
                 DB.Users.Remove(user);
 

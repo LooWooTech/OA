@@ -85,13 +85,13 @@ namespace Loowoo.Land.OA.API.Controllers
                         break;
                     case DepartmentLimitMode.Sender:
                         var user = Core.UserManager.GetModel(flowNodeData.UserId);
-                        parameters.DepartmentId = user.DepartmentId;
+                        parameters.DepartmentIds = user.DepartmentIds;
                         break;
                     case DepartmentLimitMode.Poster:
                         var flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
                         var firstData = flowData.Nodes.OrderBy(e => e.ID).FirstOrDefault();
                         var sender = Core.UserManager.GetModel(firstData.UserId);
-                        parameters.DepartmentId = sender.DepartmentId;
+                        parameters.DepartmentIds = sender.DepartmentIds;
                         break;
                 }
             }
@@ -107,12 +107,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     ID = e.ID,
                     RealName = e.RealName,
-                    Department = e.Department == null ? null : e.Department.Name,
-                    DepartmentId = e.DepartmentId,
                     JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
                     JobTitleId = e.JobTitleId,
                     Username = e.Username,
-                    Role = e.Role
+                    Role = e.Role,
+                    Departments = e.UserDepartments.Select(d => new
+                    {
+                        d.Department.Name,
+                        ID = d.DepartmentId
+                    })
                 });
         }
     }

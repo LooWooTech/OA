@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,25 +20,29 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public string RealName { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string Password { get; set; }
         /// <summary>
         /// 登录名
         /// </summary>
         public string Username { get; set; }
-        /// <summary>
-        /// 部门ID
-        /// </summary>
-        public int DepartmentId { get; set; }
 
         public int JobTitleId { get; set; }
 
         public virtual JobTitle JobTitle { get; set; }
 
-        public virtual Department Department { get; set; }
+        [NotMapped]
+        public int[] DepartmentIds { get; set; }
+
+        [JsonIgnore]
+        public virtual List<UserDepartment> UserDepartments { get; set; }
 
         public UserRole Role { get; set; }
 
+        [NotMapped]
+        public int[] GroupIds { get; set; }
+
+        [JsonIgnore]
         public virtual List<UserGroup> UserGroups { get; set; }
 
         [NotMapped]
