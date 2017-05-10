@@ -332,10 +332,6 @@
       <Project>{012befaa-0aa1-4d4e-afd9-45cde3167264}</Project>
       <Name>Loowoo.Land.OA</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Loowoo.Web\Loowoo.Web.csproj">
-      <Project>{c271565e-baed-4715-b14c-21ddd83eec31}</Project>
-      <Name>Loowoo.Web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Loowoo\Loowoo.csproj">
       <Project>{abf4d6ee-8964-40ba-8e87-2a696121bb91}</Project>
       <Name>Loowoo</Name>

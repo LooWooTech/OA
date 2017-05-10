@@ -109,10 +109,25 @@ namespace Loowoo.Land.OA.Managers
                         UserId = nextNodedata.UserId,
                         FlowNodeDataId = nextNodedata.ID,
                     });
+                    Core.FeedManager.Save(new Feed
+                    {
+                        FormId = info.FormId,
+                        InfoId = info.ID,
+                        Action = UserAction.Submit,
+                        FromUserId = currentNodeData.UserId,
+                        ToUserId = nextNodedata.UserId,
+                    });
                 }
                 else
                 {
                     Core.FlowDataManager.Complete(info);
+                    Core.FeedManager.Save(new Feed
+                    {
+                        FormId = info.FormId,
+                        InfoId = info.ID,
+                        Action = UserAction.Submit,
+                        FromUserId = currentNodeData.UserId,
+                    });
                 }
             }
             else if (flow.CanBack)

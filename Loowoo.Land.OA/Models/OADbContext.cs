@@ -29,6 +29,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<FreeFlow> FreeFlows { get; set; }
         public DbSet<FreeFlowNodeData> FreeFlowNodeDatas { get; set; }
 
+
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }

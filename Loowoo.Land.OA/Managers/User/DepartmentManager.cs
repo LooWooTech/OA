@@ -84,6 +84,14 @@ namespace Loowoo.Land.OA.Managers
             {
                 return false;
             }
+            if (DB.UserDepartments.Any(e => e.DepartmentId == id))
+            {
+                throw new ArgumentException("该部门已有用户使用，无法删除");
+            }
+            if (DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(id.ToString())))
+            {
+                throw new Exception("该部门已被流程使用，无法删除");
+            }
             DB.Departments.Remove(model);
             DB.SaveChanges();
             return true;
@@ -112,10 +120,10 @@ namespace Loowoo.Land.OA.Managers
             DB.UserDepartments.RemoveRange(list);
             foreach (var id in departmentIds)
             {
-                DB.UserGroups.Add(new UserGroup
+                DB.UserDepartments.Add(new UserDepartment
                 {
                     UserId = userId,
-                    GroupId = id
+                    DepartmentId = id
                 });
             }
             DB.SaveChanges();

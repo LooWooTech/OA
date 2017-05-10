@@ -138,10 +138,10 @@ namespace Loowoo.Land.OA.API.Controllers
             //更新动态
             Core.FeedManager.Save(new Feed
             {
-                Action = isAdd ? FeedAction.Add : FeedAction.Edit,
+                Action = isAdd ? UserAction.Create : UserAction.Update,
                 FormId = model.FormId,
                 InfoId = model.ID,
-                FromUserId = model.PostUserId,
+                FromUserId = CurrentUser.ID,
             });
 
             return Ok(model);

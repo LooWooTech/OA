@@ -63,6 +63,15 @@ namespace Loowoo.Land.OA.API.Controllers
                     Status = FlowStatus.Doing,
                     FlowNodeDataId = model.FlowNodeDataId
                 });
+
+                Core.FeedManager.Save(new Feed()
+                {
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = userId,
+                    Action = UserAction.Submit,
+                    InfoId = infoId,
+                    Extend = info.Title,
+                });
             }
         }
 
@@ -113,8 +122,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     Role = e.Role,
                     Departments = e.UserDepartments.Select(d => new
                     {
-                        d.Department.Name,
-                        ID = d.DepartmentId
+                        Name = d.Department == null ? null : d.Department.Name,
+                        ID = d.Department == null ? 0 : d.Department.ID,
                     })
                 });
         }

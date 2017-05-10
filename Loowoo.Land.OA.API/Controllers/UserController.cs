@@ -62,14 +62,14 @@ namespace Loowoo.Land.OA.API.Controllers
                     JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
                     Departments = e.UserDepartments.Select(d => new
                     {
-                        d.Department.Name,
-                        ID = d.DepartmentId
+                        Name = d.Department == null ? null : d.Department.Name,
+                        ID = d.Department == null ? 0 : d.Department.ID,
                     }),
                     JobTitleId = e.JobTitleId,
                     Groups = e.UserGroups.Select(g => new
                     {
-                        g.Group.Name,
-                        g.Group.ID,
+                        Name = g.Group == null ? null : g.Group.Name,
+                        ID = g.Group == null ? 0 : g.Group.ID
                     })
                 }),
                 Page = parameter.Page
@@ -88,7 +88,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Save([FromBody] User user, [FromUri]string departmentIds, [FromUri] string groupIds)
+        public IHttpActionResult Save([FromBody] User user)
         {
             if (user == null
                 || string.IsNullOrEmpty(user.Username)
@@ -102,16 +102,14 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             Core.UserManager.Save(user);
-            if (!string.IsNullOrEmpty(departmentIds))
+            if (user.DepartmentIds != null)
             {
-                var ids = groupIds.Split(',').Select(str => int.Parse(str)).ToArray();
-                Core.DepartmentManager.UpdateUserDepartments(user.ID, ids);
+                Core.DepartmentManager.UpdateUserDepartments(user.ID, user.DepartmentIds);
             }
 
-            if (!string.IsNullOrEmpty(groupIds))
+            if (user.GroupIds != null)
             {
-                var ids = groupIds.Split(',').Select(str => int.Parse(str)).ToArray();
-                Core.GroupManager.UpdateUserGroups(user.ID, ids);
+                Core.GroupManager.UpdateUserGroups(user.ID, user.GroupIds);
             }
             return Ok();
         }
