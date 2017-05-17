@@ -36,7 +36,9 @@ namespace Loowoo.Land.OA.Models
 
         public virtual FormInfo Info { get; set; }
 
-        public string Extend { get; set; }
+        public string Title { get; set; }
+
+        public string Description { get; set; }
 
         public DateTime? UpdateTime { get; set; }
 

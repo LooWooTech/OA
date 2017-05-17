@@ -40,10 +40,10 @@ namespace Loowoo.Land.OA.API.Controllers
                     ToUser = e.ToUser == null ? null : e.ToUser.RealName,
                     e.ToUserId,
                     e.InfoId,
-                    Title = e.Info == null ? null : e.Info.Title,
                     FlowStep = e.Info == null ? null : e.Info.FlowStep,
                     Action = e.Action.GetDescription(),
-                    e.Extend,
+                    e.Title,
+                    e.Description,
                     e.CreateTime,
                 }),
                 Page = parameter.Page

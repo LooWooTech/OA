@@ -38,7 +38,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Upload(string name = null, int id = 0, int infoId = 0)
+        public IHttpActionResult Upload(string name = null, int id = 0, int infoId = 0, bool inline = false)
         {
             TaskName = "文件上传";
             var files = HttpContext.Current.Request.Files;
@@ -64,7 +64,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 Size = inputFile.ContentLength,
                 SavePath = fileName,
                 InfoId = infoId,
-                ID = id
+                ID = id,
+                Inline = inline
             };
             Core.FileManager.Save(file);
 
@@ -108,8 +109,6 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-
-
         [HttpGet]
         public IHttpActionResult ConvertToPdf(int id, bool redTitle = false)
         {
@@ -117,6 +116,14 @@ namespace Loowoo.Land.OA.API.Controllers
             var ext = Path.GetExtension(file.SavePath);
             if (ext.EndsWith("doc") || ext.EndsWith("docx"))
             {
+                object docPath = Path.Combine(Environment.CurrentDirectory, _uploadDir, file.SavePath);
+                if (redTitle)
+                {
+                    //如果写入红头文件标题，则改写word文档
+                    //Core.FileManager.AddRedTitle()
+                }
+                var pdfPath = docPath + ".pdf";
+                Core.FileManager.ConvertToPdf(docPath, pdfPath);
                 var pdfFile = new OA.Models.File
                 {
                     FileName = file.FileName + ".pdf",
@@ -124,21 +131,6 @@ namespace Loowoo.Land.OA.API.Controllers
                     SavePath = file.SavePath + ".pdf",
                     Size = file.Size
                 };
-                var docPath = Path.Combine(_uploadDir, file.SavePath);
-                if (redTitle)
-                {
-                    //如果写入红头文件标题，则改写word文档
-                    //Core.FileManager.AddRedTitle()
-                }
-                var doc = new Aspose.Words.Document(docPath);
-                var pdfPath = docPath + ".pdf";
-                var pdf = doc.Save(pdfPath, new Aspose.Words.Saving.PdfSaveOptions
-                {
-                    JpegQuality = 100,
-                    UseHighQualityRendering = true,
-                    ZoomBehavior = Aspose.Words.Saving.PdfZoomBehavior.FitWidth,
-                    SaveFormat = Aspose.Words.SaveFormat.Pdf
-                });
                 Core.FileManager.Save(pdfFile);
                 return Ok(pdfFile);
             }

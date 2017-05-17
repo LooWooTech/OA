@@ -56,6 +56,8 @@ namespace Loowoo.Land.OA.Managers
 
         public FeedManager UserActionManager { get; private set; }
 
+        public MissiveManager MissiveManager { get; private set; }
+
         //public SubScriptionManager SubScriptionManager { get; private set; }
         //public FormManager FormManager { get; private set; }
 

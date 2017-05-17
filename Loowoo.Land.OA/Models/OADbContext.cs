@@ -47,6 +47,8 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<CheckInOut> CheckInOuts { get; set; }
 
+        public DbSet<Missive> Missives { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }

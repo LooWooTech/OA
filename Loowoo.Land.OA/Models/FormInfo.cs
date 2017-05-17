@@ -25,16 +25,11 @@ namespace Loowoo.Land.OA.Models
         public int ID { get; set; }
 
         public int FormId { get; set; }
-        [ForeignKey("FormId")]
-        public virtual Form Form { get; set; }
-        /// <summary>
-        /// 相关联的其他表的主键（比如汽车ID，请假ID）
-        /// </summary>
+
         public int ExtendId { get; set; }
 
-        public string Title { get; set; }
-
-        public string Keywords { get; set; }
+        [ForeignKey("FormId")]
+        public virtual Form Form { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -78,39 +73,11 @@ namespace Loowoo.Land.OA.Models
                 _flowStep = value;
             }
         }
-
-        [JsonIgnore]
-        [Column("Data")]
-        public string Json { get; set; }
-
-        [NotMapped]
-        public object Data
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(Json)) return null;
-                //if (Form != null)
-                //{
-                //    var dataType = GetDataType(Form.DataType);
-                //    if (dataType != null)
-                //    {
-                //        return JsonConvert.DeserializeObject(Json, dataType);
-                //    }
-                //}
-                return JsonConvert.DeserializeObject(Json);
-            }
-            set
-            {
-                Json = JsonConvert.SerializeObject(value);
-            }
-        }
     }
 
     public class FormInfoParameter
     {
         public int FormId { get; set; }
-
-        public string SearchKey { get; set; }
 
         public int CategoryId { get; set; }
 

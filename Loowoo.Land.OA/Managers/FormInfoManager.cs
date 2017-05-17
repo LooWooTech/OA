@@ -35,36 +35,6 @@ namespace Loowoo.Land.OA.Managers
             return false;
         }
 
-        public IEnumerable<FormInfo> GetList(FormInfoParameter parameter)
-        {
-            var query = DB.FormInfos.Where(e => !e.Deleted);
-            if (parameter.FormId > 0)
-            {
-                query = query.Where(e => e.FormId == parameter.FormId);
-            }
-            if (parameter.PostUserId > 0)
-            {
-                query = query.Where(e => e.PostUserId == parameter.PostUserId);
-            }
-            if (parameter.BeginTime.HasValue)
-            {
-                query = query.Where(e => e.CreateTime >= parameter.BeginTime.Value);
-            }
-            if (parameter.EndTime.HasValue)
-            {
-                query = query.Where(e => e.CreateTime <= parameter.EndTime.Value);
-            }
-            if (parameter.CategoryId > 0)
-            {
-                query = query.Where(e => e.CategoryId == parameter.CategoryId);
-            }
-            if (!string.IsNullOrEmpty(parameter.SearchKey))
-            {
-                query = query.Where(e => e.Title.Contains(parameter.SearchKey));
-            }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
-        }
-
         public void Save(FormInfo model)
         {
             var isAdd = model.ID == 0;
@@ -72,14 +42,8 @@ namespace Loowoo.Land.OA.Managers
             if (model.ID > 0)
             {
                 entity = DB.FormInfos.FirstOrDefault(e => e.ID == model.ID);
-                entity.Title = model.Title;
-                entity.Keywords = model.Keywords;
                 entity.CategoryId = model.CategoryId;
                 entity.FlowDataId = model.FlowDataId;
-                if (model.Data != null)
-                {
-                    entity.Data = model.Data;
-                }
             }
             else
             {

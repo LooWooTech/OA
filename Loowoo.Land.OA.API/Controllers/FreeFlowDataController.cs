@@ -70,7 +70,6 @@ namespace Loowoo.Land.OA.API.Controllers
                     ToUserId = userId,
                     Action = UserAction.Submit,
                     InfoId = infoId,
-                    Extend = info.Title,
                 });
             }
         }

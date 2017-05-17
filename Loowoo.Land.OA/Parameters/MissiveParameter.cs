@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Parameters
 {
-    public class MissiveParameter : FormInfoParameter
+    public class MissiveParameter
     {
+        public string SearchKey { get; set; }
 
+        public int[] Ids { get; set; }
     }
 }

@@ -66,9 +66,9 @@ namespace Loowoo.Land.OA.API.Controllers
             data.PostUserId = CurrentUser.ID;
             Core.FormInfoManager.Save(data);
 
-            var apply = data.Json.ToObject<CarApply>();
+            //var apply = data.Json.ToObject<CarApply>();
 
-            Core.FlowDataManager.Submit(data.ID, CurrentUser.ID, toUserId, true, apply.Reason);
+            //Core.FlowDataManager.Submit(data.ID, CurrentUser.ID, toUserId, true, apply.Reason);
         }
 
         [HttpDelete]

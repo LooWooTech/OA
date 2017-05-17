@@ -11,33 +11,30 @@ namespace Loowoo.Land.OA.Models
     /// <summary>
     /// 公文
     /// </summary>
+    [Table("missive")]
     public class Missive
     {
-        [FormInfoField(Name = "Title")]
-        public string WJ_BT { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int ID { get; set; }
 
+        [ForeignKey("ID")]
+        public virtual FormInfo Info { get; set; }
+
+        public string WJ_BT { get; set; }
         /// <summary>
         /// 公文文号
         /// </summary>
-        [FormInfoField(Name = "Keywords")]
-        public string GW_WH { get; set; }
+        public string WH { get; set; }
         /// <summary>
         /// 密级
         /// </summary>
-        public GWMJ GW_MJ { get; set; }
+        public GWMJ MJ { get; set; }
         /// <summary>
         /// 责任人
         /// </summary>
-        public int ZZR_ID { get; set; }
         public string ZRR { get; set; }
-        /// <summary>
-        /// 种类
-        /// </summary>
-        public string GW_ZL { get; set; }
-        /// <summary>
-        /// 缓急
-        /// </summary>
-        public GWHJ GW_HJ { get; set; }
+
+        public ZWGK ZWGK { get; set; }
         /// <summary>
         /// 印发时间
         /// </summary>
@@ -45,11 +42,11 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 生效时间
         /// </summary>
-        public DateTime? SX_RQ { get; set; }
+        public DateTime? SX_SJ { get; set; }
         /// <summary>
         /// 主题词
         /// </summary>
-        public string GW_ZTC { get; set; }
+        public string ZTC { get; set; }
         /// <summary>
         /// 主送机关
         /// </summary>
@@ -61,15 +58,20 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 是否上互联网发布
         /// </summary>
-        public bool SF_FB_WWW { get; set; }
+        public bool HLW_FB { get; set; }
         /// <summary>
         /// 期限
         /// </summary>
         public DateTime? QX_RQ { get; set; }
+        /// <summary>
+        /// 公文来源
+        /// </summary>
+        public string LY { get; set; }
 
-        public File Word { get; set; }
+        public int WordId { get; set; }
 
-        public File[] Excels { get; set; }
+        [ForeignKey("WordId")]
+        public virtual File Word { get; set; }
     }
 
     /// <summary>
@@ -77,11 +79,15 @@ namespace Loowoo.Land.OA.Models
     /// </summary>
     public enum GWMJ
     {
-
+        Level1 = 1,
+        Level2,
+        Level3
     }
 
-    public enum GWHJ
+    public enum ZWGK
     {
-
+        主动公开 = 1,
+        依申请公开 = 2,
+        不公开 = 3
     }
 }

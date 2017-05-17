@@ -19,7 +19,6 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 FormId = formId,
                 Status = status,
-                SearchKey = searchKey,
                 Page = new PageParameter(page, rows),
                 UserId = CurrentUser.ID,
                 PostUserId = postUserId,
@@ -35,12 +34,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 CategoryId = e.Info.CategoryId,
                 CreateTime = e.Info.CreateTime,
                 FlowDataId = e.Info.FlowDataId,
-                Json = e.Info.Json,
                 FormId = e.FormId,
                 InfoId = e.Info.ID,
                 PostUserId = e.Info.PostUserId,
                 Status = e.Status,
-                Title = e.Info.Title,
                 UpdateTime = e.Info.UpdateTime,
                 UserId = e.UserId,
             }).ToList();

@@ -1,6 +1,7 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
+using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -46,13 +47,7 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SaveChanges();
         }
-        /// <summary>
-        /// 作用：查询文件
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月28日10:08:36
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
+
         public IEnumerable<File> GetList(FileParameter parameter)
         {
             var query = DB.Files.AsQueryable();
@@ -76,5 +71,34 @@ namespace Loowoo.Land.OA.Managers
             query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
             return query;
         }
+
+        public void ConvertToPdf(object docPath,object pdfPath)
+        {
+            var word = new Application();
+            object oMissing = System.Reflection.Missing.Value;
+            var doc = word.Documents.Open(ref docPath, ref oMissing,
+                    ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing,
+                    ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing,
+                    ref oMissing, ref oMissing, ref oMissing, ref oMissing);
+            doc.Activate();
+
+            object fileFormat = WdSaveFormat.wdFormatPDF;
+
+            // Save document into PDF Format
+            doc.SaveAs(ref pdfPath,
+                ref fileFormat, ref oMissing, ref oMissing,
+                ref oMissing, ref oMissing, ref oMissing, ref oMissing,
+                ref oMissing, ref oMissing, ref oMissing, ref oMissing,
+                ref oMissing, ref oMissing, ref oMissing, ref oMissing);
+
+            // Close the Word document, but leave the Word application open.
+            // doc has to be cast to type _Document so that it will find the
+            // correct Close method.                
+            object saveChanges = WdSaveOptions.wdDoNotSaveChanges;
+            doc.Close(ref saveChanges, ref oMissing, ref oMissing);
+            doc = null;
+        }
+
+
     }
 }

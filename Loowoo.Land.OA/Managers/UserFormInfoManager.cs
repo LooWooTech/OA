@@ -23,11 +23,7 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.FormId > 0)
             {
-                query = query.Where(e => e.Info.FormId == parameter.FormId);
-            }
-            if (!string.IsNullOrWhiteSpace(parameter.SearchKey))
-            {
-                query = query.Where(e => e.Info.Title.Contains(parameter.SearchKey));
+                query = query.Where(e => e.FormId == parameter.FormId);
             }
             if (parameter.CategoryId > 0)
             {
@@ -47,8 +43,9 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.Completed.HasValue)
             {
-                query = query.Where(e => e.Info.FlowData.Completed == parameter.Completed.Value);
+                query = query.Where(e => e.Info.FlowData != null && e.Info.FlowData.Completed == parameter.Completed.Value);
             }
+
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
