@@ -13,6 +13,8 @@ namespace Loowoo.Land.OA.Managers
 {
     public class FileManager : ManagerBase
     {
+        private string _uploadDir = AppSettings.Get("UploadPath") ?? "upload_files";
+
         public void Save(File file)
         {
             if (file.ID > 0)
@@ -34,6 +36,8 @@ namespace Loowoo.Land.OA.Managers
             if (entity != null)
             {
                 DB.Files.Remove(entity);
+                var children = DB.Files.Where(e => e.ParentId == id);
+                DB.Files.RemoveRange(children);
                 DB.SaveChanges();
             }
         }
@@ -54,6 +58,10 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.InfoId.HasValue)
             {
                 query = query.Where(e => e.InfoId == parameter.InfoId.Value);
+            }
+            if (parameter.ParentId.HasValue)
+            {
+                query = query.Where(e => e.ParentId == parameter.ParentId);
             }
             if(parameter.Inline.HasValue)
             {

@@ -13,5 +13,6 @@ namespace Loowoo.Land.OA.Parameters
         public int? FormId { get; set; }
         public FileType? Type { get; set; }
         public bool? Inline { get; set; }
+        public int? ParentId { get; set; }
     }
 }

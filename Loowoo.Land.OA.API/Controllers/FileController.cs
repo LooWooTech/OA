@@ -17,12 +17,19 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class FileController : ControllerBase
     {
-        private string _uploadDir = "upload_files/";
+        private string _uploadDir = AppSettings.Get("UploadPath") ?? "upload_files/";
 
         [HttpGet]
         public HttpResponseMessage Index(int id)
         {
             var file = Core.FileManager.GetModel(id);
+            if (file == null)
+            {
+                return new HttpResponseMessage
+                {
+                    Content = new StringContent("文件未找到")
+                };
+            }
             var filePath = Path.Combine(_uploadDir, file.SavePath);
             var result = new HttpResponseMessage(HttpStatusCode.OK);
             var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
@@ -109,35 +116,48 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-        [HttpGet]
-        public IHttpActionResult ConvertToPdf(int id, bool redTitle = false)
+        public HttpResponseMessage GetPreviewFile(int infoId)
         {
-            var file = Core.FileManager.GetModel(id);
-            var ext = Path.GetExtension(file.SavePath);
-            if (ext.EndsWith("doc") || ext.EndsWith("docx"))
+            var files = Core.FileManager.GetList(new FileParameter
             {
-                object docPath = Path.Combine(Environment.CurrentDirectory, _uploadDir, file.SavePath);
-                if (redTitle)
+                InfoId = infoId,
+                Inline = true,
+            });
+            var file = files.OrderByDescending(e => e.ID).FirstOrDefault();
+            if (file == null)
+            {
+                return Index(0);
+            }
+            var fileExt = Path.GetExtension(file.FileName);
+            //如果是word文档，则需要转为pdf 并替换原来的word文件
+            if (fileExt.EndsWith("doc") || fileExt.EndsWith("docx"))
+            {
+                var pdfFile = Core.FileManager.GetList(new FileParameter { ParentId = file.ID }).ToList().Where(e => e.FileName.EndsWith("pdf")).FirstOrDefault();
+                if (pdfFile == null)
                 {
-                    //如果写入红头文件标题，则改写word文档
-                    //Core.FileManager.AddRedTitle()
+                    object docPath = Path.Combine(Environment.CurrentDirectory, _uploadDir, file.SavePath);
+                    var pdfPath = docPath + ".pdf";
+                    try
+                    {
+                        Core.FileManager.ConvertToPdf(docPath, pdfPath);
+                        pdfFile = new OA.Models.File
+                        {
+                            FileName = file.FileName + ".pdf",
+                            InfoId = file.InfoId,
+                            SavePath = file.SavePath + ".pdf",
+                            Size = file.Size,
+                            ParentId = file.ID
+                        };
+                        Core.FileManager.Save(pdfFile);
+                    }
+                    catch
+                    {
+                        return Index(0);
+                    }
                 }
-                var pdfPath = docPath + ".pdf";
-                Core.FileManager.ConvertToPdf(docPath, pdfPath);
-                var pdfFile = new OA.Models.File
-                {
-                    FileName = file.FileName + ".pdf",
-                    InfoId = file.InfoId,
-                    SavePath = file.SavePath + ".pdf",
-                    Size = file.Size
-                };
-                Core.FileManager.Save(pdfFile);
-                return Ok(pdfFile);
+                return Index(pdfFile.ID);
             }
-            else
-            {
-                return BadRequest("不支持该文件格式");
-            }
+            return Index(file.ID);
         }
 
         public static string GetContentType(string fileName)

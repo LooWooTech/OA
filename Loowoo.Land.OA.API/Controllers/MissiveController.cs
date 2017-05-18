@@ -3,6 +3,7 @@ using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -84,6 +85,11 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             data.ID = data.Info.ID;
             Core.MissiveManager.Save(data);
+            if (data.WordId > 0)
+            {
+                data.Word = Core.FileManager.GetModel(data.WordId);
+                data.Word.InfoId = data.ID;
+            }
 
             Core.FeedManager.Save(new Feed
             {
@@ -108,5 +114,6 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
         }
+
     }
 }
