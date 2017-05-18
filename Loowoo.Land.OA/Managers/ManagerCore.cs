@@ -47,6 +47,7 @@ namespace Loowoo.Land.OA.Managers
 
         public FreeFlowManager FreeFlowManager { get; private set; }
         public FreeFlowDataManager FreeFlowDataManager { get; private set; }
+        public FreeFlowNodeDataManager FreeFlowNodeDataManager { get; private set; }
 
         public HolidayManager HolidayManager { get; private set; }
         public AttendanceManager AttendanceManager { get; private set; }

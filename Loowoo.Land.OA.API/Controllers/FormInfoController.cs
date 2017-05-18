@@ -68,6 +68,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var canEdit = true;
             var canCancel = false;
             var canSubmitFreeFlow = false;
+            var canCompleteFreeFlow = false;
             var canComplete = false;
             var canBack = false;
 
@@ -88,6 +89,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 //如果该步骤开启了自由流程
                 freeFlowNodeData = flowNodeData.GetLastFreeNodeData(CurrentUser.ID);
                 canSubmitFreeFlow = flowNodeData.CanSubmitFreeFlow(CurrentUser.ID);
+
+                var user = Core.UserManager.GetModel(CurrentUser.ID);
+                canCompleteFreeFlow = flowNodeData.CanCompleteFreeFlow(user);
             }
 
             var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, model.FormId, CurrentUser.ID);
@@ -100,6 +104,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canSubmit = canSubmitFlow || canSubmitFreeFlow,
                 canSubmitFlow,
                 canSubmitFreeFlow,
+                canCompleteFreeFlow,
                 canCancel,
                 canComplete,
                 canBack,

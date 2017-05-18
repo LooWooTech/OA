@@ -68,12 +68,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     FormId = formId,
                     PostUserId = CurrentUser.ID,
+                    Title = data.WJ_BT
                 };
                 Core.FormInfoManager.Save(data.Info);
             }
             else
             {
                 data.Info = Core.FormInfoManager.GetModel(data.ID);
+                data.Info.Title = data.WJ_BT;
             }
             if (data.Info.FlowDataId == 0)
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -17,8 +18,6 @@ namespace Loowoo.Land.OA.Models
 
         public DepartmentLimitMode LimitMode { get; set; }
 
-        [Column("DepartmentIds")]
-        public string DepartmentIdsValue { get; set; }
         /// <summary>
         /// 跨部门
         /// </summary>
@@ -28,13 +27,14 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public bool CrossLevel { get; set; }
 
+        [Column("DepartmentIds")]
+        public string DepartmentIdsValue { get; set; }
         [NotMapped]
         public int[] DepartmentIds
         {
             get
             {
-                if (string.IsNullOrEmpty(DepartmentIdsValue)) return null;
-                return DepartmentIdsValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToArray();
+                return DepartmentIdsValue.ToIntArray();
             }
             set
             {
@@ -44,15 +44,70 @@ namespace Loowoo.Land.OA.Models
                     DepartmentIdsValue = string.Join(",", value);
             }
         }
+
+        [Column("CompleteUserDepartmentIds")]
+        public string CompleteUserDepartmentIdsValue { get; set; }
+        [NotMapped]
+        public int[] CompleteUserDepartmentIds
+        {
+            get
+            {
+                return CompleteUserDepartmentIdsValue.ToIntArray();
+            }
+            set
+            {
+                if (value == null || value.Length == 0)
+                    CompleteUserDepartmentIdsValue = null;
+                else
+                    CompleteUserDepartmentIdsValue = string.Join(",", value);
+            }
+        }
+
+        [Column("CompleteUserJobTitleIds")]
+        public string CompleteUserJobTitleIdsValue { get; set; }
+        [NotMapped]
+        public int[] CompleteUserJobTitleIds
+        {
+            get
+            {
+                return CompleteUserJobTitleIdsValue.ToIntArray();
+            }
+            set
+            {
+                if (value == null || value.Length == 0)
+                    CompleteUserJobTitleIdsValue = null;
+                else
+                    CompleteUserJobTitleIdsValue = string.Join(",", value);
+            }
+        }
+
+        public bool IsCompleteUser(User user)
+        {
+            var inDepartment = CompleteUserDepartmentIds != null && user.DepartmentIds != null && CompleteUserDepartmentIds.Any(id => user.DepartmentIds.Contains(id));
+            var inJobTitle = CompleteUserJobTitleIds != null && CompleteUserJobTitleIds.Contains(user.JobTitleId);
+            if (CompleteUserDepartmentIds != null && CompleteUserJobTitleIds != null)
+            {
+                return inDepartment && inJobTitle;
+            }
+            else if (CompleteUserDepartmentIds != null)
+            {
+                return inDepartment;
+            }
+            else if (CompleteUserJobTitleIds != null)
+            {
+                return inJobTitle;
+            }
+            return false;
+        }
     }
 
     public enum DepartmentLimitMode
     {
         [Description("指定部门")]
-        Assign = 0,
+        Assign = 1,
         [Description("拟稿人部门")]
-        Poster = 1,
+        Poster = 2,
         [Description("自己部门")]
-        Sender = 2,
+        Sender = 3,
     }
 }

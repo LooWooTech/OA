@@ -14,7 +14,7 @@
     <RootNamespace>Loowoo.Land.OA.API</RootNamespace>
     <AssemblyName>Loowoo.Land.OA.API</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />

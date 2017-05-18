@@ -77,6 +77,7 @@
     <Compile Include="Managers\FormManager.cs" />
     <Compile Include="Managers\Flow\FreeFlowDataManager.cs" />
     <Compile Include="Managers\Flow\FreeFlowManager.cs" />
+    <Compile Include="Managers\FreeFlowNodeDataManager.cs" />
     <Compile Include="Managers\HolidayManager.cs" />
     <Compile Include="Managers\MissiveManager.cs" />
     <Compile Include="Managers\User\JobTitleManager.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\CheckInOut.cs" />
     <Compile Include="Models\FreeFlow.cs" />
+    <Compile Include="Models\FreeFlowData.cs" />
     <Compile Include="Models\FreeFlowNodeData.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Missive.cs" />

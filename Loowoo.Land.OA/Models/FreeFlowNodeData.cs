@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public int FlowNodeDataId { get; set; }
+        public int FreeFlowDataId { get; set; }
 
         public int ParentId { get; set; }
 

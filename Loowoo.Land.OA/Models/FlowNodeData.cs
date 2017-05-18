@@ -27,8 +27,6 @@ namespace Loowoo.Land.OA.Models
         [ForeignKey("FlowNodeId")]
         public virtual FlowNode FlowNode { get; set; }
 
-        public virtual List<FreeFlowNodeData> Nodes { get; set; }
-
         public int FlowDataId { get; set; }
 
         public DateTime CreateTime { get; set; }
@@ -43,14 +41,16 @@ namespace Loowoo.Land.OA.Models
 
         public string Content { get; set; }
 
+        [ForeignKey("FreeFlowDataId")]
+        public virtual FreeFlowData FreeFlowData { get; set; }
+
         public bool CanSubmit()
         {
             if (Result.HasValue) return false;
             //如果设置了自由流程
-            if (FlowNode.FreeFlowId > 0 && Nodes.Count > 0)
+            if (FreeFlowData != null)
             {
-                //判断子流程是否结束
-                return Nodes.All(e => e.Submited);
+                return FreeFlowData.Completed;
             }
             return true;
         }
@@ -58,20 +58,27 @@ namespace Loowoo.Land.OA.Models
         public bool CanCancel()
         {
             if (Result.HasValue) return false;
-            return Nodes.Count == 0;
+            return FreeFlowData == null;
         }
 
         public FreeFlowNodeData GetLastFreeNodeData(int userId)
         {
-            return Nodes.OrderByDescending(e => e.ID).FirstOrDefault(e => e.UserId == userId);
+            return FreeFlowData?.GetLastNodeData(userId);
         }
 
         public bool CanSubmitFreeFlow(int userId)
         {
             if (FlowNode.FreeFlowId == 0) return false;
-            if (Nodes.Count == 0 && userId == UserId) return true;
+            if (FreeFlowData == null && userId == UserId) return true;
             var lastNode = GetLastFreeNodeData(userId);
             return lastNode != null && !lastNode.Submited;
+        }
+
+        public bool CanCompleteFreeFlow(User user)
+        {
+            if (FlowNode.FreeFlowId == 0) return false;
+            if (FreeFlowData == null) return false;
+            return FlowNode.FreeFlow.IsCompleteUser(user);
         }
     }
 }

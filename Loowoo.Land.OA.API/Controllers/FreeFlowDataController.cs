@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.API.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
@@ -13,45 +14,43 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData model, int infoId, string toUserIds)
+        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds)
         {
             if (model == null || infoId == 0)
             {
                 throw new Exception("参数不正确");
             }
-            if (string.IsNullOrWhiteSpace(toUserIds))
+
+            var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
+            if (flowNodeData.FreeFlowData == null)
             {
-                throw new ArgumentException("请选择发送人");
-            }
-            var flowNodeData = Core.FlowNodeDataManager.GetModel(model.FlowNodeDataId);
-            if (flowNodeData.Nodes.Count > 0)
-            {
-                model.UserId = CurrentUser.ID;
-                model = Core.FreeFlowDataManager.Update(model);
+                var freeFlowData = new FreeFlowData { ID = flowNodeData.ID };
+                Core.FreeFlowDataManager.Save(freeFlowData);
             }
 
-            FreeFlowNodeData parent = null;
-            if (model.ParentId > 0)
+            model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
+            model.UserId = CurrentUser.ID;
+
+            //如果不是创建自由流程，则需要保存用户的审批意见
+            if (!flowNodeData.FreeFlowData.IsEmpty)
             {
-                parent = Core.FreeFlowDataManager.GetModel(model.ParentId);
+                Core.FreeFlowNodeDataManager.Save(model);
             }
+
+            var targetUserIds = toUserIds.ToIntArray();
+            //如果没有选择发送人，则代表此流程结束
+            if (targetUserIds == null || targetUserIds.Length == 0)
+            {
+                Core.FreeFlowDataManager.Complete(model.FreeFlowDataId, CurrentUser.ID);
+                return;
+            }
+
             var info = Core.FormInfoManager.GetModel(infoId);
-            var targetUserIds = toUserIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(str => int.Parse(str)).ToArray();
-
             foreach (var userId in targetUserIds)
             {
-                //如果是发送给上级，则不创建新的节点
-                if (parent != null && userId == parent.UserId)
+                Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
                 {
-                    continue;
-                }
-                if (parent == null && userId == flowNodeData.UserId)
-                {
-                    continue;
-                }
-                Core.FreeFlowDataManager.Add(new FreeFlowNodeData
-                {
-                    FlowNodeDataId = model.FlowNodeDataId,
+                    FreeFlowDataId = model.FreeFlowDataId,
                     ParentId = model.ID,
                     UserId = userId,
                 });
@@ -61,15 +60,15 @@ namespace Loowoo.Land.OA.API.Controllers
                     FormId = info.FormId,
                     UserId = userId,
                     Status = FlowStatus.Doing,
-                    FlowNodeDataId = model.FlowNodeDataId
+                    FlowNodeDataId = flowNodeDataId
                 });
-
                 Core.FeedManager.Save(new Feed()
                 {
                     FromUserId = CurrentUser.ID,
                     ToUserId = userId,
                     Action = UserAction.Submit,
                     InfoId = infoId,
+                    Title = info.Title
                 });
             }
         }
@@ -125,6 +124,17 @@ namespace Loowoo.Land.OA.API.Controllers
                         ID = d.Department == null ? 0 : d.Department.ID,
                     })
                 });
+        }
+
+        [HttpGet]
+        public void Complete(int id)
+        {
+            var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
+            var user = Core.UserManager.GetModel(CurrentUser.ID);
+            //if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
+            {
+                Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
+            }
         }
     }
 }

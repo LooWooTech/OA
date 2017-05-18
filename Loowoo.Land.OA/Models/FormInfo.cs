@@ -73,6 +73,8 @@ namespace Loowoo.Land.OA.Models
                 _flowStep = value;
             }
         }
+
+        public string Title { get; set; }
     }
 
     public class FormInfoParameter

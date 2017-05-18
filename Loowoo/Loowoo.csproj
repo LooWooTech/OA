@@ -69,6 +69,7 @@
     <Compile Include="Common\PageParameter.cs" />
     <Compile Include="Common\QueryableExtensions.cs" />
     <Compile Include="Common\ServiceFactory.cs" />
+    <Compile Include="Common\StringExtension.cs" />
     <Compile Include="Common\TimeExtensions.cs" />
     <Compile Include="Common\ValidateCode.cs" />
     <Compile Include="Common\PageView.cs" />
