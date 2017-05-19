@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.Managers
             var query = DB.Feeds.Where(e => !e.Deleted);
             if (parameter.FormId > 0)
             {
-                query = query.Where(e => e.FormId == parameter.FormId);
+                query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
             if (parameter.InfoIds != null)
             {

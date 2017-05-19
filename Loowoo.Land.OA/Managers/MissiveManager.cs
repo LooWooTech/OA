@@ -18,10 +18,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => parameter.Ids.Contains(e.ID));
             }
-            //if (parameter.FormId > 0)
-            //{
-            //    query = query.Where(e => e.Info.FormId == parameter.FormId);
-            //}
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.Info.FormId == parameter.FormId);
+            }
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 query = query.Where(e => e.WJ_BT.Contains(parameter.SearchKey));

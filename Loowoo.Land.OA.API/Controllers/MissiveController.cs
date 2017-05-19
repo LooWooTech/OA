@@ -37,6 +37,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var datas = Core.MissiveManager.GetList(new Parameters.MissiveParameter
             {
                 Ids = infoIds,
+                //FormId = formId,
                 SearchKey = searchKey,
             });
             return new PagingResult
@@ -93,7 +94,6 @@ namespace Loowoo.Land.OA.API.Controllers
 
             Core.FeedManager.Save(new Feed
             {
-                FormId = formId,
                 InfoId = data.ID,
                 Title = data.WJ_BT,
                 Description = data.ZTC,

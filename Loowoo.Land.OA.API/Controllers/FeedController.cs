@@ -32,9 +32,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = list.Select(e => new
                 {
                     e.ID,
-                    e.FormId,
-                    FormType = e.Form == null ? null : e.Form.FormType.ToString(),
-                    FormName = e.Form == null ? null : e.Form.Name,
+                    FormId = e.Info == null ? 0 : e.Info.FormId,
+                    FormName = e.Info == null ? null : e.Info.Form.Name,
                     e.FromUserId,
                     FromUser = e.FromUser == null ? null : e.FromUser.RealName,
                     ToUser = e.ToUser == null ? null : e.ToUser.RealName,
@@ -45,6 +44,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Title,
                     e.Description,
                     e.CreateTime,
+                    TypeId = (int)e.Type,
+                    Type = e.Type.GetDescription()
                 }),
                 Page = parameter.Page
             };

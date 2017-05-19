@@ -30,11 +30,9 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoId { get; set; }
 
-        public int FormId { get; set; }
-
-        public virtual Form Form { get; set; }
-
         public virtual FormInfo Info { get; set; }
+
+        public FeedType Type { get; set; }
 
         public string Title { get; set; }
 
@@ -61,11 +59,20 @@ namespace Loowoo.Land.OA.Models
         Submit,
         [Description("退回")]
         Back,
+        [Description("结束")]
+        Complete
     }
 
     public enum FeedType
     {
-
+        [Description("信息")]
+        Info,
+        [Description("流程")]
+        Flow,
+        [Description("传阅流程")]
+        FreeFlow,
+        [Description("评论")]
+        Comment
     }
 
 }

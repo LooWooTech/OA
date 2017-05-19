@@ -111,11 +111,13 @@ namespace Loowoo.Land.OA.Managers
                     });
                     Core.FeedManager.Save(new Feed
                     {
-                        FormId = info.FormId,
                         InfoId = info.ID,
                         Action = UserAction.Submit,
                         FromUserId = currentNodeData.UserId,
                         ToUserId = nextNodedata.UserId,
+                        Type = FeedType.Flow,
+                        Title = info.Title,
+                        Description = currentNodeData.Content
                     });
                 }
                 else
@@ -123,10 +125,12 @@ namespace Loowoo.Land.OA.Managers
                     Core.FlowDataManager.Complete(info);
                     Core.FeedManager.Save(new Feed
                     {
-                        FormId = info.FormId,
                         InfoId = info.ID,
                         Action = UserAction.Submit,
                         FromUserId = currentNodeData.UserId,
+                        Type = FeedType.Flow,
+                        Title = info.Title,
+                        Description = currentNodeData.Content
                     });
                 }
             }

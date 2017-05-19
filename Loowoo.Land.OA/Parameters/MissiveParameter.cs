@@ -9,6 +9,8 @@ namespace Loowoo.Land.OA.Parameters
 {
     public class MissiveParameter
     {
+        public int FormId { get; set; }
+
         public string SearchKey { get; set; }
 
         public int[] Ids { get; set; }

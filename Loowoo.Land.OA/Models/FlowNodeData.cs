@@ -70,7 +70,7 @@ namespace Loowoo.Land.OA.Models
         {
             if (FlowNode.FreeFlowId == 0) return false;
             if (FreeFlowData == null && userId == UserId) return true;
-            if (FreeFlowData.Completed) return false;
+            if (FreeFlowData != null && FreeFlowData.Completed) return false;
 
             var lastNode = GetLastFreeNodeData(userId);
             return lastNode != null && !lastNode.Submited;

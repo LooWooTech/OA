@@ -141,7 +141,6 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.FeedManager.Save(new Feed
             {
                 Action = isAdd ? UserAction.Create : UserAction.Update,
-                FormId = model.FormId,
                 InfoId = model.ID,
                 FromUserId = CurrentUser.ID,
             });

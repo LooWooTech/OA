@@ -131,9 +131,15 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
             var user = Core.UserManager.GetModel(CurrentUser.ID);
-            //if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
+            if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
             {
                 Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
+                Core.FeedManager.Save(new Feed
+                {
+                    
+                    Action = UserAction.Complete,
+                    Title = CurrentUser.RealName + "结束了传阅流程",
+                });
             }
         }
     }
