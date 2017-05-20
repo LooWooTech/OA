@@ -135,11 +135,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 var pdfFile = Core.FileManager.GetList(new FileParameter { ParentId = file.ID }).ToList().Where(e => e.FileName.EndsWith("pdf")).FirstOrDefault();
                 if (pdfFile == null)
                 {
-                    object docPath = Path.Combine(Environment.CurrentDirectory, _uploadDir, file.SavePath);
+                    var docPath = Path.Combine(Environment.CurrentDirectory, _uploadDir, file.SavePath);
                     var pdfPath = docPath + ".pdf";
-                    try
+                    if (Core.FileManager.TryConvertToPdf(docPath, pdfPath))
                     {
-                        Core.FileManager.ConvertToPdf(docPath, pdfPath);
                         pdfFile = new OA.Models.File
                         {
                             FileName = file.FileName + ".pdf",
@@ -149,10 +148,6 @@ namespace Loowoo.Land.OA.API.Controllers
                             ParentId = file.ID
                         };
                         Core.FileManager.Save(pdfFile);
-                    }
-                    catch
-                    {
-                        return Index(0);
                     }
                 }
                 return Index(pdfFile.ID);

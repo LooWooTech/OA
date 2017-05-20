@@ -68,7 +68,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     ToUserId = userId,
                     Action = UserAction.Submit,
                     InfoId = infoId,
-                    Title = info.Title
+                    Title = info.Title,
+                    Type = FeedType.FreeFlow,
                 });
             }
         }
@@ -136,9 +137,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
                 Core.FeedManager.Save(new Feed
                 {
-                    
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = freeFlowData.FlowNodeData.UserId,
                     Action = UserAction.Complete,
-                    Title = CurrentUser.RealName + "结束了传阅流程",
+                    Description = CurrentUser.RealName + "结束了传阅流程",
+                    Type = FeedType.FreeFlow
                 });
             }
         }

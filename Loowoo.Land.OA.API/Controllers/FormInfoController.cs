@@ -143,6 +143,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 Action = isAdd ? UserAction.Create : UserAction.Update,
                 InfoId = model.ID,
                 FromUserId = CurrentUser.ID,
+                Type = FeedType.Info,
+                Title = model.Title,
             });
 
             return Ok(model);
