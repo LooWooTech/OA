@@ -93,43 +93,19 @@ CREATE TABLE IF NOT EXISTS `feed` (
   KEY `ToUserId` (`ToUserId`),
   KEY `FromUserId` (`FromUserId`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.feed: ~30 rows (approximately)
+-- Dumping data for table oa.feed: ~8 rows (approximately)
 /*!40000 ALTER TABLE `feed` DISABLE KEYS */;
 INSERT INTO `feed` (`ID`, `InfoId`, `FormId`, `Type`, `FromUserId`, `ToUserId`, `Action`, `Deleted`, `CreateTime`, `UpdateTime`, `Description`, `Title`) VALUES
-	(1, 1, 1, 0, 5, 0, 0, b'0', '2017-05-17 21:35:05', NULL, NULL, '111111111111111'),
-	(2, 1, 0, 0, 5, 3, 5, b'0', '2017-05-17 21:35:19', NULL, NULL, NULL),
-	(3, 1, 0, 0, 5, 2, 5, b'0', '2017-05-17 21:35:19', NULL, NULL, NULL),
-	(4, 2, 2, 0, 3, 0, 0, b'0', '2017-05-18 10:45:05', NULL, NULL, '11111111111111111111111111111111111'),
-	(5, 2, 2, 0, 3, 14, 5, b'0', '2017-05-18 10:49:33', NULL, NULL, NULL),
-	(6, 2, 0, 0, 14, 5, 5, b'0', '2017-05-18 10:55:56', NULL, NULL, NULL),
-	(7, 2, 0, 0, 14, 3, 5, b'0', '2017-05-18 10:55:56', NULL, NULL, NULL),
-	(8, 2, 0, 0, 14, 2, 5, b'0', '2017-05-18 10:55:56', NULL, NULL, NULL),
-	(9, 1, 1, 0, 5, 0, 0, b'0', '2017-05-18 11:04:30', NULL, '这是发文拟稿，测试专用的', '这是发文拟稿，测试专用的'),
-	(10, 1, 1, 0, 5, 0, 2, b'0', '2017-05-18 11:04:38', NULL, '这是发文拟稿，测试专用的', '这是发文拟稿，测试专用的'),
-	(11, 2, 2, 0, 5, 0, 0, b'0', '2017-05-18 11:05:36', NULL, '水岸东方', '这是收文测试专用的第一季度数据册子定稿'),
-	(12, 2, 2, 0, 5, 14, 5, b'0', '2017-05-18 11:05:50', NULL, NULL, NULL),
-	(13, 1, 1, 0, 5, 3, 5, b'0', '2017-05-18 11:06:13', NULL, NULL, NULL),
-	(14, 2, 0, 0, 14, 5, 5, b'0', '2017-05-18 11:06:36', NULL, NULL, NULL),
-	(15, 2, 0, 0, 14, 3, 5, b'0', '2017-05-18 11:06:36', NULL, NULL, NULL),
-	(16, 2, 0, 0, 14, 2, 5, b'0', '2017-05-18 11:06:36', NULL, NULL, NULL),
-	(17, 1, 2, 0, 5, 0, 0, b'0', '2017-05-18 16:25:49', NULL, NULL, '11111111111111'),
-	(18, 1, 2, 0, 5, 14, 5, b'0', '2017-05-18 16:26:33', NULL, NULL, NULL),
-	(19, 1, 0, 0, 14, 5, 5, b'0', '2017-05-18 17:19:00', NULL, NULL, '11111111111111'),
-	(20, 1, 0, 0, 14, 3, 5, b'0', '2017-05-18 17:19:00', NULL, NULL, '11111111111111'),
-	(21, 1, 0, 0, 14, 2, 5, b'0', '2017-05-18 17:19:00', NULL, NULL, '11111111111111'),
-	(22, 1, 0, 0, 14, 5, 5, b'0', '2017-05-18 17:31:50', NULL, NULL, '11111111111111'),
-	(23, 1, 0, 0, 14, 3, 5, b'0', '2017-05-18 17:31:50', NULL, NULL, '11111111111111'),
-	(24, 1, 0, 0, 14, 2, 5, b'0', '2017-05-18 17:31:50', NULL, NULL, '11111111111111'),
-	(25, 1, 0, 0, 14, 5, 5, b'0', '2017-05-18 17:33:09', NULL, NULL, '11111111111111'),
-	(26, 1, 0, 0, 14, 3, 5, b'0', '2017-05-18 17:33:09', NULL, NULL, '11111111111111'),
-	(27, 1, 0, 0, 14, 2, 5, b'0', '2017-05-18 17:33:09', NULL, NULL, '11111111111111'),
-	(28, 1, 0, 0, 14, 5, 5, b'0', '2017-05-18 17:40:09', NULL, NULL, '11111111111111'),
-	(29, 1, 0, 0, 14, 3, 5, b'0', '2017-05-18 17:40:09', NULL, NULL, '11111111111111'),
-	(30, 1, 0, 0, 14, 2, 5, b'0', '2017-05-18 17:40:09', NULL, NULL, '11111111111111'),
-	(31, 2, 1, 0, 5, 0, 0, b'0', '2017-05-18 20:07:35', NULL, NULL, 'asdfasdfasdf'),
-	(32, 2, 1, 0, 5, 0, 2, b'0', '2017-05-18 20:08:39', NULL, NULL, 'asdfasdfasdf');
+	(1, 3, 0, 0, 5, 0, 0, b'0', '2017-05-19 13:50:21', NULL, NULL, '1111111111111111111111111111111111'),
+	(2, 4, 0, 0, 5, 0, 0, b'0', '2017-05-19 13:50:40', NULL, NULL, '222222222222222222222'),
+	(3, 4, 0, 1, 5, 14, 5, b'0', '2017-05-19 13:50:51', NULL, NULL, '统一'),
+	(4, 4, 0, 2, 14, 5, 5, b'0', '2017-05-19 15:49:58', NULL, NULL, '222222222222222222222'),
+	(5, 4, 0, 2, 14, 3, 5, b'0', '2017-05-19 15:49:58', NULL, NULL, '222222222222222222222'),
+	(6, 4, 0, 2, 14, 2, 5, b'0', '2017-05-19 15:49:58', NULL, NULL, '222222222222222222222'),
+	(7, 0, 0, 2, 5, 14, 7, b'0', '2017-05-20 11:27:47', NULL, '郑良军结束了传阅流程', NULL),
+	(8, 4, 0, 1, 14, 0, 5, b'0', '2017-05-20 11:28:11', NULL, NULL, '222222222222222222222');
 /*!40000 ALTER TABLE `feed` ENABLE KEYS */;
 
 -- Dumping structure for table oa.file
@@ -146,16 +122,14 @@ CREATE TABLE IF NOT EXISTS `file` (
   `ParentId` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `InfoTID` (`InfoId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.file: ~1 rows (approximately)
+-- Dumping data for table oa.file: ~3 rows (approximately)
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
 INSERT INTO `file` (`ID`, `FileName`, `SavePath`, `Size`, `CreateTime`, `UpdateTime`, `InfoId`, `Inline`, `ParentId`) VALUES
-	(1, 'OA系统流程设计.docx', '507f0e806bdc164d94864cc3ca2d4c5f.docx', 87165, '2017-05-18 16:25:40', NULL, 1, b'1', 0),
-	(2, 'OA系统流程设计.docx.pdf', '507f0e806bdc164d94864cc3ca2d4c5f.docx.pdf', 87165, '2017-05-18 19:58:59', NULL, 1, b'0', 1),
-	(3, 'OA系统流程设计.docx.pdf', '507f0e806bdc164d94864cc3ca2d4c5f.docx.pdf', 87165, '2017-05-18 19:59:20', NULL, 1, b'0', 1),
-	(5, '2017第一季度数据册子定稿.doc', '7b27b8cc28ab14bdc03493f2f0c1aa61.doc', 240640, '2017-05-18 20:08:36', NULL, 2, b'1', 0),
-	(7, '2017第一季度数据册子定稿.doc.pdf', '7b27b8cc28ab14bdc03493f2f0c1aa61.doc.pdf', 240640, '2017-05-18 20:09:27', NULL, 2, b'0', 5);
+	(1, '2017第一季度数据册子定稿.doc', '7b27b8cc28ab14bdc03493f2f0c1aa61.doc', 240640, '2017-05-19 13:50:09', NULL, 3, b'1', 0),
+	(2, '指纹打卡考勤机接口 (1).docx', '23f8abc4e9f9458e553f3a7112d393d4.docx', 12422, '2017-05-19 13:50:30', NULL, 4, b'1', 0),
+	(3, '指纹打卡考勤机接口 (1).docx.pdf', '23f8abc4e9f9458e553f3a7112d393d4.docx.pdf', 12422, '2017-05-19 14:10:36', NULL, 4, b'0', 2);
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
 
 -- Dumping structure for table oa.flow
@@ -190,11 +164,11 @@ CREATE TABLE IF NOT EXISTS `flow_data` (
   KEY `FlowId` (`FlowId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.flow_data: ~1 rows (approximately)
+-- Dumping data for table oa.flow_data: ~2 rows (approximately)
 /*!40000 ALTER TABLE `flow_data` DISABLE KEYS */;
 INSERT INTO `flow_data` (`ID`, `InfoId`, `FormId`, `FlowId`, `Completed`) VALUES
-	(1, 1, 2, 2, b'0'),
-	(2, 2, 1, 1, b'0');
+	(1, 3, 1, 1, b'0'),
+	(2, 4, 2, 2, b'1');
 /*!40000 ALTER TABLE `flow_data` ENABLE KEYS */;
 
 -- Dumping structure for table oa.flow_node
@@ -250,12 +224,12 @@ CREATE TABLE IF NOT EXISTS `flow_node_data` (
   KEY `FlowNodeId` (`FlowNodeId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.flow_node_data: ~2 rows (approximately)
+-- Dumping data for table oa.flow_node_data: ~3 rows (approximately)
 /*!40000 ALTER TABLE `flow_node_data` DISABLE KEYS */;
 INSERT INTO `flow_node_data` (`ID`, `FlowDataId`, `ParentId`, `FlowNodeName`, `CreateTime`, `UserId`, `Signature`, `Department`, `UpdateTime`, `Result`, `Content`, `FlowNodeId`) VALUES
-	(1, 1, 0, '接收人', '2017-05-18 16:25:49', 5, '郑良军', '0', '2017-05-18 16:26:32', b'1', NULL, 6),
-	(2, 1, 0, '办公室', '2017-05-18 16:26:32', 14, '陈敏', '0', NULL, NULL, NULL, 7),
-	(3, 2, 0, '拟稿人', '2017-05-18 20:07:34', 5, '郑良军', '0', NULL, NULL, NULL, 1);
+	(1, 1, 0, '拟稿人', '2017-05-19 13:50:20', 5, '郑良军', '0', NULL, NULL, NULL, 1),
+	(2, 2, 0, '接收人', '2017-05-19 13:50:40', 5, '郑良军', '0', '2017-05-19 13:50:51', b'1', NULL, 6),
+	(3, 2, 0, '办公室', '2017-05-19 13:50:51', 14, '陈敏', '0', '2017-05-20 11:28:10', b'1', NULL, 7);
 /*!40000 ALTER TABLE `flow_node_data` ENABLE KEYS */;
 
 -- Dumping structure for table oa.form
@@ -297,13 +271,15 @@ CREATE TABLE IF NOT EXISTS `form_info` (
   KEY `CreateTime` (`CreateTime`),
   KEY `PostUserId` (`PostUserId`),
   KEY `ExtendId` (`ExtendId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.form_info: ~1 rows (approximately)
+-- Dumping data for table oa.form_info: ~4 rows (approximately)
 /*!40000 ALTER TABLE `form_info` DISABLE KEYS */;
 INSERT INTO `form_info` (`ID`, `FormId`, `CategoryId`, `CreateTime`, `UpdateTime`, `Deleted`, `PostUserId`, `FlowDataId`, `FlowStep`, `ExtendId`, `Title`) VALUES
 	(1, 2, 0, '2017-05-18 16:25:49', '2017-05-18 16:25:49', b'0', 5, 1, '办公室', 0, '11111111111111'),
-	(2, 1, 0, '2017-05-18 20:07:34', '2017-05-18 20:07:34', b'0', 5, 2, '拟稿人', 0, 'asdfasdfasdf');
+	(2, 1, 0, '2017-05-18 20:07:34', '2017-05-18 20:07:34', b'0', 5, 2, '科室负责人审核', 0, 'asdfasdfasdf'),
+	(3, 1, 0, '2017-05-19 13:50:20', '2017-05-19 13:50:20', b'0', 5, 1, '拟稿人', 0, '1111111111111111111111111111111111'),
+	(4, 2, 0, '2017-05-19 13:50:40', '2017-05-20 11:28:10', b'0', 5, 2, '完结', 0, '222222222222222222222');
 /*!40000 ALTER TABLE `form_info` ENABLE KEYS */;
 
 -- Dumping structure for table oa.freeflow
@@ -342,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `freeflow_data` (
 -- Dumping data for table oa.freeflow_data: ~1 rows (approximately)
 /*!40000 ALTER TABLE `freeflow_data` DISABLE KEYS */;
 INSERT INTO `freeflow_data` (`ID`, `Completed`, `CreateTime`, `UpdateTime`, `CompletedUserId`) VALUES
-	(2, b'1', '2017-05-18 17:40:09', '2017-05-18 18:21:20', 5);
+	(3, b'1', '2017-05-19 15:49:57', '2017-05-20 11:27:47', 5);
 /*!40000 ALTER TABLE `freeflow_data` ENABLE KEYS */;
 
 -- Dumping structure for table oa.freeflow_nodedata
@@ -366,9 +342,9 @@ CREATE TABLE IF NOT EXISTS `freeflow_nodedata` (
 -- Dumping data for table oa.freeflow_nodedata: ~3 rows (approximately)
 /*!40000 ALTER TABLE `freeflow_nodedata` DISABLE KEYS */;
 INSERT INTO `freeflow_nodedata` (`ID`, `FreeFlowDataId`, `ParentId`, `UserId`, `DepartmentName`, `Signature`, `Content`, `CreateTime`, `UpdateTime`) VALUES
-	(1, 2, 0, 5, NULL, '郑良军', NULL, '2017-05-18 17:40:09', NULL),
-	(2, 2, 0, 3, NULL, '唐尧', NULL, '2017-05-18 17:40:09', NULL),
-	(3, 2, 0, 2, NULL, '汪建龙', NULL, '2017-05-18 17:40:09', NULL);
+	(1, 3, 0, 5, NULL, '郑良军', NULL, '2017-05-19 15:49:58', NULL),
+	(2, 3, 0, 3, NULL, '唐尧', NULL, '2017-05-19 15:49:58', NULL),
+	(3, 3, 0, 2, NULL, '汪建龙', NULL, '2017-05-19 15:49:58', NULL);
 /*!40000 ALTER TABLE `freeflow_nodedata` ENABLE KEYS */;
 
 -- Dumping structure for table oa.group
@@ -411,11 +387,13 @@ CREATE TABLE IF NOT EXISTS `missive` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.missive: ~1 rows (approximately)
+-- Dumping data for table oa.missive: ~4 rows (approximately)
 /*!40000 ALTER TABLE `missive` DISABLE KEYS */;
 INSERT INTO `missive` (`ID`, `WJ_BT`, `WH`, `MJ`, `ZRR`, `FW_RQ`, `SX_SJ`, `ZTC`, `ZS_JG`, `CS_JG`, `HLW_FB`, `QX_RQ`, `LY`, `WordId`, `ZWGK`) VALUES
 	(1, '11111111111111', '111111111111', 1, NULL, '2017-05-18 16:25:41', NULL, NULL, NULL, NULL, b'1', NULL, '111111111111111', 1, 1),
-	(2, 'asdfasdfasdf', NULL, 0, NULL, '2017-05-18 20:07:29', NULL, NULL, NULL, NULL, b'0', NULL, NULL, 5, 1);
+	(2, 'asdfasdfasdf', NULL, 0, NULL, '2017-05-18 20:07:29', NULL, NULL, NULL, NULL, b'0', NULL, NULL, 5, 1),
+	(3, '1111111111111111111111111111111111', '11111', 1, NULL, '2017-05-19 13:50:11', NULL, NULL, NULL, NULL, b'1', NULL, NULL, 1, 1),
+	(4, '222222222222222222222', '222222', 2, NULL, '2017-05-19 13:50:32', NULL, NULL, NULL, NULL, b'0', NULL, '222222222222', 2, 1);
 /*!40000 ALTER TABLE `missive` ENABLE KEYS */;
 
 -- Dumping structure for table oa.organization
@@ -672,22 +650,16 @@ CREATE TABLE IF NOT EXISTS `user_form_info` (
   KEY `UserID` (`UserID`),
   KEY `InfoID` (`InfoID`),
   KEY `FlowNodeDataID` (`FlowNodeDataID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- Dumping data for table oa.user_form_info: ~10 rows (approximately)
+-- Dumping data for table oa.user_form_info: ~5 rows (approximately)
 /*!40000 ALTER TABLE `user_form_info` DISABLE KEYS */;
 INSERT INTO `user_form_info` (`ID`, `UserID`, `FormID`, `InfoID`, `Status`, `FlowNodeDataID`) VALUES
-	(1, 5, 1, 1, 2, 1),
-	(2, 5, 2, 2, 1, 2),
-	(3, 14, 2, 2, 1, 3),
-	(4, 3, 1, 1, 1, 4),
-	(5, 3, 2, 2, 1, 3),
-	(6, 2, 2, 2, 1, 3),
-	(7, 5, 2, 1, 1, 1),
-	(8, 14, 2, 1, 1, 2),
-	(9, 3, 2, 1, 1, 2),
-	(10, 2, 2, 1, 1, 2),
-	(11, 5, 1, 2, 1, 3);
+	(1, 5, 1, 3, 1, 1),
+	(2, 5, 2, 4, 3, 2),
+	(3, 14, 2, 4, 3, 3),
+	(4, 3, 2, 4, 3, 3),
+	(5, 2, 2, 4, 3, 3);
 /*!40000 ALTER TABLE `user_form_info` ENABLE KEYS */;
 
 -- Dumping structure for table oa.user_group
