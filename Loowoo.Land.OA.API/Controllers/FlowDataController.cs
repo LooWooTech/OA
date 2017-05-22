@@ -51,7 +51,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object UserList(int flowId, int nodeId, int flowDataId = 0)
+        public object UserList(int flowId, int nodeId, int flowDataId = 0, string searchKey = null)
         {
             if (flowId == 0)
             {
@@ -95,7 +95,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     }
                 }
             }
-
+            parameter.SearchKey = searchKey;
             var users = Core.UserManager.GetList(parameter);
             return users.Select(e => new UserViewModel
             {
@@ -105,7 +105,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
                 JobTitleId = e.JobTitleId,
                 Role = e.Role
-            }).Where(e => e.ID != CurrentUser.ID);
+            });
         }
 
         [HttpGet]

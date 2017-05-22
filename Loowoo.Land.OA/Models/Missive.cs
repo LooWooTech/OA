@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -60,6 +61,10 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public bool HLW_FB { get; set; }
         /// <summary>
+        /// 是否公开发布
+        /// </summary>
+        public bool GKFB { get; set; }
+        /// <summary>
         /// 期限
         /// </summary>
         public DateTime? QX_RQ { get; set; }
@@ -79,9 +84,10 @@ namespace Loowoo.Land.OA.Models
     /// </summary>
     public enum GWMJ
     {
-        Level1 = 1,
-        Level2,
-        Level3
+        [Description("无")]
+        None,
+        [Description("保密")]
+        Protect
     }
 
     public enum ZWGK
