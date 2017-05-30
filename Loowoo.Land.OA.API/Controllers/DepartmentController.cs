@@ -13,64 +13,21 @@ namespace Loowoo.Land.OA.API.Controllers
     /// </summary>
     public class DepartmentController : ControllerBase
     {
-        /// <summary>
-        /// 作用：新建部门或者更新部门信息 ID>0为更新
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月21日10:23:26
-        /// 修改时间：2017年2月24日09:19:00
-        /// </summary>
-        /// <param name="department"></param>
-        /// <returns></returns>
         [HttpPost]
         public IHttpActionResult Save([FromBody] Department department)
         {
-            TaskName = "保存部门";
             if (department == null || string.IsNullOrEmpty(department.Name))
             {
-                return BadRequest($"{TaskName}:未获取部门信息、部门信息不能为空");
+                return BadRequest("未获取部门信息、部门信息不能为空");
             }
-            if (Core.DepartmentManager.Exist(department.Name))
-            {
-                return BadRequest($"{TaskName}:系统中已存在部门名称为{department.Name}");
-            }
-            if (department.ParentId > 0)
-            {
-                var parent = Core.DepartmentManager.Get(department.ParentId);
-                if (parent == null)
-                {
-                    return BadRequest($"{TaskName}:未找到上级部门信息");
-                }
-            }
-            if (department.ID > 0)
-            {
-                if (!Core.DepartmentManager.Edit(department))
-                {
-                    return BadRequest($"{TaskName}:未找不更新的部门信息");
-                }
-            }
-            else
-            {
-                var id = Core.DepartmentManager.Save(department);
-                if (id <= 0)
-                {
-                    return BadRequest($"{TaskName}:保存部门失败");
-                }
-            }
-
+            Core.DepartmentManager.Save(department);
             return Ok(department);
         }
 
-        /// <summary>
-        /// 作用：获取部门列表
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月21日10:50:31
-        /// </summary>
-        /// <returns></returns>
         [HttpGet]
-        public List<Department> List()
+        public object List()
         {
-            var list = Core.DepartmentManager.GetList();
-            return list;
+            return Core.DepartmentManager.GetList();
         }
 
         /// <summary>

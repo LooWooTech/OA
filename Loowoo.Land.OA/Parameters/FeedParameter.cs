@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Parameters
     {
         public int FormId { get; set; }
 
-        public int[] InfoIds { get; set; }
+        public int UserId { get; set; }
 
         public DateTime? BeginTime { get; set; }
 
@@ -23,6 +23,8 @@ namespace Loowoo.Land.OA.Parameters
         public int ToUserId { get; set; }
 
         public int[] UserIds { get; set; }
+
+        public int[] InfoIds { get; set; }
 
         public PageParameter Page { get; set; }
     }
