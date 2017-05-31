@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.API.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.API.Security;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
@@ -119,5 +120,25 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserManager.Delete(id);
         }
 
+        [HttpGet]
+        public IHttpActionResult UpdatePassword(string oldPassword, string newPassword, string rePassword)
+        {
+            if (string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(rePassword))
+            {
+                return BadRequest("填写不完整");
+            }
+            if (newPassword != rePassword)
+            {
+                return BadRequest("两次输入密码不相同，请重新输入");
+            }
+            var user = Core.UserManager.GetModel(CurrentUser.ID);
+            if (user.Password != oldPassword.MD5())
+            {
+                return BadRequest("旧密码填写不正确");
+            }
+            user.Password = newPassword;
+            Core.UserManager.Save(user);
+            return Ok();
+        }
     }
 }

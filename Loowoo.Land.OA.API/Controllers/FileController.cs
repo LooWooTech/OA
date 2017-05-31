@@ -145,6 +145,7 @@ namespace Loowoo.Land.OA.API.Controllers
                             InfoId = file.InfoId,
                             SavePath = file.SavePath + ".pdf",
                             Size = file.Size,
+                            Inline = true,
                             ParentId = file.ID
                         };
                         Core.FileManager.Save(pdfFile);

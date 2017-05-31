@@ -128,10 +128,11 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public void Complete(int id)
+        public void Complete(int id, int infoId)
         {
             var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
             var user = Core.UserManager.GetModel(CurrentUser.ID);
+            var info = Core.FormInfoManager.GetModel(infoId);
             if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
             {
                 Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
@@ -140,6 +141,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     FromUserId = CurrentUser.ID,
                     ToUserId = freeFlowData.FlowNodeData.UserId,
                     Action = UserAction.Complete,
+                    InfoId = infoId,
+                    Title = info.Title,
                     Description = CurrentUser.RealName + "结束了传阅流程",
                     Type = FeedType.FreeFlow
                 });

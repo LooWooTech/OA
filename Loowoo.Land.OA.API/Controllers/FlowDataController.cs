@@ -74,8 +74,8 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new Parameters.UserParameter();
             if (nextNode != null)
             {
-                parameter.TitleId = nextNode.JobTitleId;
-                parameter.UserId = nextNode.UserId;
+                parameter.TitleIds = nextNode.JobTitleIds;
+                parameter.UserIds = nextNode.UserIds;
                 if (nextNode.LimitMode == DepartmentLimitMode.Assign)
                 {
                     parameter.DepartmentIds = nextNode.DepartmentIds;
