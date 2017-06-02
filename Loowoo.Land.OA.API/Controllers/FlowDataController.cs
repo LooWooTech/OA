@@ -51,25 +51,12 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object UserList(int flowId, int nodeId, int flowDataId = 0)
+        public object UserList(int flowNodeDataId)
         {
-            if (flowId == 0)
-            {
-                return BadRequest("没有指定流程");
-            }
+            var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
+            var flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
 
-            var flow = Core.FlowManager.Get(flowId);
-            if (flow == null)
-            {
-                return BadRequest("没有找到该流程");
-            }
-            //如果没有指定node，那默认为第一个node的下一步
-            if (nodeId == 0)
-            {
-                var node = flow.GetFirstNode();
-                nodeId = node.ID;
-            }
-            var nextNode = flow.GetNextStep(nodeId);
+            var nextNode = flowData.Flow.GetNextStep(flowNodeDataId);
 
             var parameter = new Parameters.UserParameter();
             if (nextNode != null)
@@ -80,32 +67,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     parameter.DepartmentIds = nextNode.DepartmentIds;
                 }
-                else if (nextNode.LimitMode == DepartmentLimitMode.Sender)
+                else if (nextNode.LimitMode == DepartmentLimitMode.Self)
                 {
-                    if (nodeId == 0)
-                    {
-                        parameter.DepartmentIds = CurrentUser.DepartmentIds;
-                    }
-                    else if (flowDataId > 0)
-                    {
-                        var flowData = Core.FlowDataManager.Get(flowDataId);
-                        var senderNodeData = flowData.GetFirstNodeData();
-                        var user = Core.UserManager.GetModel(senderNodeData.UserId);
-                        parameter.DepartmentIds = user.DepartmentIds;
-                    }
+                    var senderNodeData = flowData.GetFirstNodeData();
+                    var user = Core.UserManager.GetModel(senderNodeData.UserId);
+                    parameter.DepartmentIds = user.DepartmentIds;
                 }
             }
 
-            var users = Core.UserManager.GetList(parameter);
-            return users.Select(e => new UserViewModel
-            {
-                ID = e.ID,
-                Username = e.Username,
-                RealName = e.RealName,
-                JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                JobTitleId = e.JobTitleId,
-                Role = e.Role
-            }).Where(e => e.ID != CurrentUser.ID);
+            return Core.UserManager.GetList(parameter).Select(e => new UserViewModel(e));
         }
 
         [HttpGet]

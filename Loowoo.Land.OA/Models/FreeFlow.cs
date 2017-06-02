@@ -108,6 +108,6 @@ namespace Loowoo.Land.OA.Models
         [Description("拟稿人部门")]
         Poster = 2,
         [Description("自己部门")]
-        Sender = 3,
+        Self = 3,
     }
 }

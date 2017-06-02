@@ -26,16 +26,12 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 var freeFlowData = new FreeFlowData { ID = flowNodeData.ID };
                 Core.FreeFlowDataManager.Save(freeFlowData);
+                model.UpdateTime = DateTime.Now;
             }
 
             model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
             model.UserId = CurrentUser.ID;
-
-            //如果不是创建自由流程，则需要保存用户的审批意见
-            if (!flowNodeData.FreeFlowData.IsEmpty)
-            {
-                Core.FreeFlowNodeDataManager.Save(model);
-            }
+            Core.FreeFlowNodeDataManager.Save(model);
 
             var targetUserIds = toUserIds.ToIntArray();
             //如果没有选择发送人，则代表此流程结束
@@ -48,6 +44,9 @@ namespace Loowoo.Land.OA.API.Controllers
             var info = Core.FormInfoManager.GetModel(infoId);
             foreach (var userId in targetUserIds)
             {
+                //传阅流程不需要发给自己
+                if (userId == CurrentUser.ID) continue;
+
                 Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
                 {
                     FreeFlowDataId = model.FreeFlowDataId,
@@ -91,7 +90,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     case DepartmentLimitMode.Assign:
                         parameters.DepartmentIds = freeFlow.DepartmentIds;
                         break;
-                    case DepartmentLimitMode.Sender:
+                    case DepartmentLimitMode.Self:
                         var user = Core.UserManager.GetModel(flowNodeData.UserId);
                         parameters.DepartmentIds = user.DepartmentIds;
                         break;
@@ -111,20 +110,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID)
-                .Select(e => new UserViewModel
-                {
-                    ID = e.ID,
-                    RealName = e.RealName,
-                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                    JobTitleId = e.JobTitleId,
-                    Username = e.Username,
-                    Role = e.Role,
-                    Departments = e.UserDepartments.Select(d => new
-                    {
-                        Name = d.Department == null ? null : d.Department.Name,
-                        ID = d.Department == null ? 0 : d.Department.ID,
-                    })
-                });
+                .Select(e => new UserViewModel(e));
         }
 
         [HttpGet]

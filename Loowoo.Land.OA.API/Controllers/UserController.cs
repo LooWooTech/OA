@@ -35,7 +35,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 ID = user.ID,
                 Username = user.Username,
                 Role = user.Role,
-                RealName = user.RealName
+                RealName = user.RealName,
+                DepartmentIds = user.DepartmentIds,
+                GroupIds = user.GroupIds,
+                JobTitleId = user.JobTitleId,
             });
 
             return user;
@@ -54,25 +57,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var list = Core.UserManager.GetList(parameter);
             return new PagingResult
             {
-                List = list.Select(e => new UserViewModel
-                {
-                    ID = e.ID,
-                    Username = e.Username,
-                    RealName = e.RealName,
-                    Role = e.Role,
-                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                    Departments = e.UserDepartments.Select(d => new
-                    {
-                        Name = d.Department == null ? null : d.Department.Name,
-                        ID = d.Department == null ? 0 : d.Department.ID,
-                    }),
-                    JobTitleId = e.JobTitleId,
-                    Groups = e.UserGroups.Select(g => new
-                    {
-                        Name = g.Group == null ? null : g.Group.Name,
-                        ID = g.Group == null ? 0 : g.Group.ID
-                    })
-                }),
+                List = list.Select(e => new UserViewModel(e)),
                 Page = parameter.Page
             };
         }
@@ -139,6 +124,22 @@ namespace Loowoo.Land.OA.API.Controllers
             user.Password = newPassword;
             Core.UserManager.Save(user);
             return Ok();
+        }
+
+        [HttpGet]
+        public IEnumerable<UserViewModel> RecentList()
+        {
+            var userIds = Core.FeedManager.GetList(new FeedParameter
+            {
+                BeginTime = DateTime.Today.AddDays(-30),
+                FromUserId = CurrentUser.ID,
+            }).Where(e => e.ToUserId > 0).GroupBy(e => e.ToUserId).Select(g => g.Key).ToArray();
+
+            return Core.UserManager.GetList(new UserParameter
+            {
+                UserIds = userIds
+            }).Select(e => new UserViewModel(e));
+
         }
     }
 }
