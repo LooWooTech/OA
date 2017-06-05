@@ -14,23 +14,27 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds)
+        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null)
         {
-            if (model == null || infoId == 0)
+            if (model == null)
             {
-                throw new Exception("参数不正确");
+                throw new Exception("缺少参数model");
+            }
+            if (infoId == 0)
+            {
+                throw new Exception("缺少参数infoId");
             }
 
             var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
             if (flowNodeData.FreeFlowData == null)
             {
-                var freeFlowData = new FreeFlowData { ID = flowNodeData.ID };
-                Core.FreeFlowDataManager.Save(freeFlowData);
-                model.UpdateTime = DateTime.Now;
+                flowNodeData.FreeFlowData = new FreeFlowData { ID = flowNodeData.ID };
+                Core.FreeFlowDataManager.Save(flowNodeData.FreeFlowData);
             }
 
             model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
             model.UserId = CurrentUser.ID;
+            model.UpdateTime = DateTime.Now;
             Core.FreeFlowNodeDataManager.Save(model);
 
             var targetUserIds = toUserIds.ToIntArray();
@@ -40,6 +44,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FreeFlowDataManager.Complete(model.FreeFlowDataId, CurrentUser.ID);
                 return;
             }
+
+            //如果有选择发送人，则标记为没结束
+            flowNodeData.FreeFlowData.Completed = false;
 
             var info = Core.FormInfoManager.GetModel(infoId);
             foreach (var userId in targetUserIds)

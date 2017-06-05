@@ -49,9 +49,14 @@ namespace Loowoo.Land.OA.Managers
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        public UserFormInfo GetModel(int infoId, int formId, int userId)
+        public int[] GetUserIds(int infoId)
         {
-            return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId && e.FormId == formId);
+            return DB.UserFormInfos.Where(e => e.InfoId == infoId && !e.Info.Deleted).Select(e => e.UserId).ToArray();
+        }
+
+        public UserFormInfo GetModel(int infoId, int userId)
+        {
+            return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId && !e.Info.Deleted);
         }
 
         public void Delete(UserFormInfo model)
@@ -92,5 +97,27 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SaveChanges();
         }
+
+        public void OnCancelFlowData(FormInfo info, FlowNodeData nodeData)
+        {
+            info.FlowStep = nodeData.FlowNodeName;
+
+            Delete(new UserFormInfo
+            {
+                InfoId = info.ID,
+                FormId = info.FormId,
+                UserId = nodeData.UserId
+            });
+
+            Save(new UserFormInfo
+            {
+                InfoId = info.ID,
+                FormId = info.FormId,
+                Status = FlowStatus.Doing,
+                UserId = nodeData.UserId,
+                FlowNodeDataId = nodeData.ID
+            });
+        }
+
     }
 }

@@ -25,6 +25,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new PageParameter(page, rows),
                 FormId = formId,
                 InfoIds = infoIds,
+                BeginTime = DateTime.Today.AddMonths(-1),
                 ToUserId = CurrentUser.ID
             };
             var list = Core.FeedManager.GetList(parameter);

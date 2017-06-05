@@ -76,9 +76,9 @@ namespace Loowoo.Land.OA.API.Controllers
             FreeFlowNodeData freeFlowNodeData = null;
             if (model.FlowDataId > 0)
             {
-                canSubmitFlow = model.FlowDataId > 0 && model.FlowData.CanSubmit(CurrentUser.ID);
+                canSubmitFlow = model.FlowData.CanSubmit(CurrentUser.ID);
                 canEdit = canSubmitFlow;
-                canCancel = model.FlowDataId > 0 && model.FlowData.CanCancel(CurrentUser.ID);
+                canCancel = model.FlowData.CanCancel(CurrentUser.ID);
 
                 flowNodeData = model.FlowData.GetLastNodeData();
                 canComplete = model.FlowData.CanComplete(flowNodeData);
@@ -88,13 +88,15 @@ namespace Loowoo.Land.OA.API.Controllers
 
                 //如果该步骤开启了自由流程
                 freeFlowNodeData = flowNodeData.GetLastFreeNodeData(CurrentUser.ID);
-                canSubmitFreeFlow = flowNodeData.CanSubmitFreeFlow(CurrentUser.ID);
+
+
+                canSubmitFreeFlow = !model.FlowData.Completed && flowNodeData.CanSubmitFreeFlow(CurrentUser.ID);
 
                 var user = Core.UserManager.GetModel(CurrentUser.ID);
-                canCompleteFreeFlow = flowNodeData.CanCompleteFreeFlow(user);
+                canCompleteFreeFlow = !model.FlowData.Completed && flowNodeData.CanCompleteFreeFlow(user);
             }
 
-            var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, model.FormId, CurrentUser.ID);
+            var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, CurrentUser.ID);
 
             return new
             {
@@ -133,8 +135,8 @@ namespace Loowoo.Land.OA.API.Controllers
             //初始化流程数据
             if (model.FlowDataId == 0)
             {
-                var form = Core.FormManager.GetModel(model.FormId);
-                Core.FlowDataManager.Create(form.FLowId, model);
+                model.Form = Core.FormManager.GetModel(model.FormId);
+                Core.FlowDataManager.Create(model);
             }
 
             //更新动态

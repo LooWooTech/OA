@@ -44,6 +44,12 @@ namespace Loowoo.Land.OA.Models
         [ForeignKey("FreeFlowDataId")]
         public virtual FreeFlowData FreeFlowData { get; set; }
 
+        [NotMapped]
+        public bool Submited
+        {
+            get { return Result.HasValue; }
+        }
+
         public bool CanSubmit()
         {
             if (Result.HasValue) return false;
@@ -69,11 +75,14 @@ namespace Loowoo.Land.OA.Models
         public bool CanSubmitFreeFlow(int userId)
         {
             if (FlowNode.FreeFlowId == 0) return false;
-            if (FreeFlowData == null && userId == UserId) return true;
-            if (FreeFlowData != null && FreeFlowData.Completed) return false;
 
-            var lastNode = GetLastFreeNodeData(userId);
-            return lastNode != null && !lastNode.Submited;
+            if (FreeFlowData == null && userId == UserId) return true;
+
+            if (FreeFlowData != null)
+            {
+                return FreeFlowData.CanSubmit(userId);
+            }
+            return false;
         }
 
         public bool CanCompleteFreeFlow(User user)

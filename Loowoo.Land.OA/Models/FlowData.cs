@@ -48,24 +48,6 @@ namespace Loowoo.Land.OA.Models
             return lastNode != null && lastNode.CanSubmit();
         }
 
-        /// <summary>
-        /// 判断用户是否可以撤销流程TODO 不支持带分支的流程
-        /// </summary>
-        public bool CanCancel(int userId)
-        {
-            if (Completed) return false;
-            if (Nodes == null || Nodes.Count == 0)
-            {
-                return false;
-            }
-            //获取用户最后一次提交的记录
-            var lastNodeData = GetLastNodeData(userId);
-            if (lastNodeData == null || !lastNodeData.Result.HasValue) return false;
-
-            var nextNodeData = Nodes.FirstOrDefault(e => e.ID > lastNodeData.ID);
-
-            return nextNodeData != null && nextNodeData.CanCancel();
-        }
 
         public FlowNodeData GetLastNodeData(int userId = 0)
         {
@@ -88,10 +70,37 @@ namespace Loowoo.Land.OA.Models
             return Nodes.OrderBy(e => e.ID).FirstOrDefault();
         }
 
+        public FlowNodeData GetNextNodeData(int currentNodeDataId)
+        {
+            return Nodes.Where(e => e.ID > currentNodeDataId).OrderBy(e => e.ID).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 是否可以撤销
+        /// </summary>
+        public bool CanCancel(int userId)
+        {
+            var nodeData = GetLastNodeData(userId);
+            if (nodeData == null || !nodeData.Submited) return false;
+
+            var nextNode = Flow.GetNextStep(nodeData.FlowNodeId);
+            //如果当前步骤是最后一步，想从归档中撤回
+            if (nextNode == null)
+            {
+                return nodeData.UserId == userId;
+            }
+            //否则判断当前步骤的下一步是否已经提交，如果提交，则不能撤回
+            var nextNodeData = GetNextNodeData(nodeData.ID);
+            return nextNodeData == null || nextNodeData.CanCancel();
+        }
+
+        /// <summary>
+        /// 是否可以退回
+        /// </summary>
         public bool CanBack()
         {
             if (Nodes.Count == 0) return false;
-            if (Nodes.Count == 1 && Nodes[0].Result.HasValue) return false;
+            if (Nodes.Count == 1 && Nodes[0].Submited) return false;
             var lastNodeData = GetLastNodeData();
             var lastNode = Flow.GetFirstNode();
             return lastNodeData.FlowNodeId != lastNode.ID;

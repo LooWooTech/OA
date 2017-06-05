@@ -52,7 +52,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 DepartmentId = departmentId,
                 GroupId = groupId,
                 SearchKey = searchKey,
-                Page = new Loowoo.Common.PageParameter(page, rows)
+                Page = new PageParameter(page, rows)
             };
             var list = Core.UserManager.GetList(parameter);
             return new PagingResult
@@ -133,6 +133,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 BeginTime = DateTime.Today.AddDays(-30),
                 FromUserId = CurrentUser.ID,
+                Page = new PageParameter(1, 10)
             }).Where(e => e.ToUserId > 0).GroupBy(e => e.ToUserId).Select(g => g.Key).ToArray();
 
             return Core.UserManager.GetList(new UserParameter

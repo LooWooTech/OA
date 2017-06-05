@@ -27,10 +27,9 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public FlowNodeData CreateNextNodeData(FormInfo info, User user, int currentNodeId)
+        public FlowNodeData CreateNextNodeData(FlowData flowData, User user, int currentNodeId)
         {
-            var flow = Core.FlowManager.Get(info.Form.FLowId);
-            var flowNode = flow?.GetNextStep(currentNodeId);
+            var flowNode = flowData.Flow.GetNextStep(currentNodeId);
 
             var model = new FlowNodeData
             {
@@ -39,11 +38,10 @@ namespace Loowoo.Land.OA.Managers
                 FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
                 Signature = user.RealName,
                 UserId = user.ID,
-                FlowDataId = info.FlowDataId,
+                FlowDataId = flowData.ID,
             };
 
             Core.FlowNodeDataManager.Save(model);
-            info.FlowStep = model.FlowNodeName ?? model.Signature;
             return model;
         }
 
@@ -67,6 +65,5 @@ namespace Loowoo.Land.OA.Managers
             Core.FlowNodeDataManager.Save(model);
             return model;
         }
-
     }
 }
