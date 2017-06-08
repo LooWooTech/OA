@@ -81,9 +81,9 @@ namespace Loowoo.Land.OA.Managers
 
         public bool TryConvertToPdf(string docPath, string pdfPath)
         {
-            var doc = new Aspose.Words.Document(docPath);
             try
             {
+                var doc = new Aspose.Words.Document(docPath);
                 doc.Save(pdfPath, new Aspose.Words.Saving.PdfSaveOptions
                 {
                     JpegQuality = 100,

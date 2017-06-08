@@ -125,7 +125,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AttendanceStatistic.cs" />
-    <Compile Include="Models\CarApply.cs" />
     <Compile Include="Models\FormInfoViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

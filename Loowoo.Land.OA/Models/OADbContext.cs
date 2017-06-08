@@ -39,6 +39,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<JobTitle> JobTitles { get; set; }
 
         public DbSet<Car> Cars { get; set; }
+        public DbSet<CarApply> CarApplies { get; set; }
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }

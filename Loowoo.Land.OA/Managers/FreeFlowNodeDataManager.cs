@@ -13,7 +13,7 @@ namespace Loowoo.Land.OA.Managers
         {
             var user = Core.UserManager.GetModel(model.UserId);
             model.Signature = user.RealName;
-            var entity = DB.FreeFlowNodeDatas.FirstOrDefault(e => e.UserId == model.UserId && e.ParentId == model.ParentId);
+            var entity = DB.FreeFlowNodeDatas.FirstOrDefault(e => e.FreeFlowDataId == model.FreeFlowDataId && e.UserId == model.UserId && e.ParentId == model.ParentId);
             if (entity == null)
             {
                 DB.FreeFlowNodeDatas.Add(model);

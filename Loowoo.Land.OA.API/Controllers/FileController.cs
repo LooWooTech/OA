@@ -150,6 +150,10 @@ namespace Loowoo.Land.OA.API.Controllers
                         };
                         Core.FileManager.Save(pdfFile);
                     }
+                    else
+                    {
+                        return Index(file.ID);
+                    }
                 }
                 return Index(pdfFile.ID);
             }

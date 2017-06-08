@@ -36,7 +36,16 @@ namespace Loowoo.Land.OA.API.Controllers
             model.UserId = CurrentUser.ID;
             model.UpdateTime = DateTime.Now;
             Core.FreeFlowNodeDataManager.Save(model);
-
+            var info = Core.FormInfoManager.GetModel(infoId);
+            //已阅则放到已读箱
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                UserId = CurrentUser.ID,
+                FormId = info.FormId,
+                InfoId = infoId,
+                FlowNodeDataId = flowNodeData.ID,
+                Status = FlowStatus.Done
+            });
             var targetUserIds = toUserIds.ToIntArray();
             //如果没有选择发送人，则代表此流程结束
             if (targetUserIds == null || targetUserIds.Length == 0)
@@ -48,7 +57,6 @@ namespace Loowoo.Land.OA.API.Controllers
             //如果有选择发送人，则标记为没结束
             flowNodeData.FreeFlowData.Completed = false;
 
-            var info = Core.FormInfoManager.GetModel(infoId);
             foreach (var userId in targetUserIds)
             {
                 //传阅流程不需要发给自己

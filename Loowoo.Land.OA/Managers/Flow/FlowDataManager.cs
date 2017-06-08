@@ -40,7 +40,7 @@ namespace Loowoo.Land.OA.Managers
         {
             info.FlowData = CreateFlowData(info.Form.FLowId, info);
             info.FlowDataId = info.FlowData.ID;
-
+            info.FlowData.Flow = Core.FlowManager.Get(info.Form.FLowId);
             //如果第一次提交，则先创建flowdata
             var currentUser = Core.UserManager.GetModel(info.PostUserId);
             //创建第一个节点

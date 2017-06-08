@@ -1,3 +1,23 @@
+--2017-06-06
+CREATE TABLE `car_apply` (
+	`ID` INT(11) NOT NULL,
+	`CarId` INT(11) NOT NULL,
+	`UserId` INT(11) NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	`ScheduleBeginTime` DATETIME NOT NULL,
+	`ScheduleEndTime` DATETIME NULL DEFAULT NULL,
+	`RealEndTime` DATETIME NULL DEFAULT NULL,
+	`Reason` VARCHAR(255) NULL DEFAULT NULL,
+	`Result` BIT(1) NULL DEFAULT NULL,
+	`UpdateTime` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `CarId` (`CarId`),
+	INDEX `UserId` (`UserId`),
+	INDEX `CreateTime` (`CreateTime`)
+)
+ENGINE=InnoDB
+;
+
 --2017-05-26 zlj
 
 ALTER TABLE `missive`
