@@ -51,6 +51,7 @@ namespace Loowoo.Land.OA.Models
 
         public FlowNodeData GetLastNodeData(int userId = 0)
         {
+            if (Nodes == null) return null;
             var query = Nodes.AsQueryable();
             if (userId > 0)
             {

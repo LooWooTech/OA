@@ -69,5 +69,56 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.CarApplies.FirstOrDefault(e => e.ID == id);
         }
+
+        public void SaveApply(CarApply data)
+        {
+            var entity = DB.CarApplies.FirstOrDefault(e => e.CarId == data.CarId
+           && e.Result == null
+           && e.UserId == data.UserId
+            );
+            if (entity == null)
+            {
+                DB.CarApplies.Add(data);
+            }
+        }
+
+        public void Apply(CarApply data)
+        {
+            var car = Get(data.CarId);
+            var info = new FormInfo
+            {
+                ExtendId = data.CarId,
+                Title = "申请用车：" + car.Name + "（" + car.Number + "）",
+                FormId = (int)FormType.Car,
+                PostUserId = data.UserId,
+            };
+            info.Form = Core.FormManager.GetModel(FormType.Car);
+            Core.FormInfoManager.Save(info);
+            data.ID = info.ID;
+            SaveApply(data);
+            //创建流程
+            var flowData = Core.FlowDataManager.CreateFlowData(info);
+
+            var nodeData = flowData.GetFirstNodeData();
+            var nextNodeData = Core.FlowDataManager.SubmitToUser(info.FlowData, data.ApprovalUserId);
+
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = data.ID,
+                UserId = data.UserId,
+                Status = FlowStatus.Done,
+                FormId = info.FormId,
+                FlowNodeDataId = nodeData.ID
+            });
+
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                FlowNodeDataId = nextNodeData.ID,
+                FormId = info.FormId,
+                InfoId = data.ID,
+                UserId = data.ApprovalUserId,
+                Status = FlowStatus.Doing,
+            });
+        }
     }
 }

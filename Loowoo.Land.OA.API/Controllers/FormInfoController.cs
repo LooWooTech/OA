@@ -136,7 +136,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (model.FlowDataId == 0)
             {
                 model.Form = Core.FormManager.GetModel(model.FormId);
-                Core.FlowDataManager.Create(model);
+                Core.FlowDataManager.CreateFlowData(model);
             }
 
             //更新动态

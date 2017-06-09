@@ -36,25 +36,26 @@ namespace Loowoo.Land.OA.Managers
             return entity;
         }
 
-        public FlowData Create(FormInfo info)
+        public FlowData CreateFlowData(FormInfo info)
         {
             info.FlowData = CreateFlowData(info.Form.FLowId, info);
             info.FlowDataId = info.FlowData.ID;
             info.FlowData.Flow = Core.FlowManager.Get(info.Form.FLowId);
-            //如果第一次提交，则先创建flowdata
-            var currentUser = Core.UserManager.GetModel(info.PostUserId);
             //创建第一个节点
-            var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, currentUser, 0);
+            var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, info.PostUserId);
             //创建状态
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                InfoId = info.ID,
-                UserId = info.PostUserId,
-                Status = FlowStatus.Doing,
-                FormId = info.FormId,
-                FlowNodeDataId = nodeData.ID
-            });
             return info.FlowData;
+        }
+
+        public FlowNodeData SubmitToUser(FlowData flowData, int toUserId)
+        {
+            return Core.FlowNodeDataManager.CreateNextNodeData(flowData, toUserId);
+        }
+
+        public FlowNodeData SubmitToBack(FlowData flowData)
+        {
+            var firstNodeData = flowData.GetFirstNodeData();
+            return Core.FlowNodeDataManager.CreateBackNodeData(firstNodeData);
         }
 
         //public void Submit(int infoId, int userId, int toUserId, bool result, string content)

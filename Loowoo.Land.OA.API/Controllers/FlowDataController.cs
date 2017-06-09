@@ -31,9 +31,22 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 获取审批数据
         /// </summary>
         [HttpGet]
-        public object Model(int id)
+        public object Model(int id = 0, int infoId = 0)
         {
-            var flowData = Core.FlowDataManager.Get(id);
+            if (id == 0 || infoId == 0)
+            {
+                throw new Exception("缺少参数ID或InfoID");
+            }
+            FlowData flowData = null;
+            if (id > 0)
+            {
+                flowData = Core.FlowDataManager.Get(id);
+            }
+            else if (infoId > 0)
+            {
+                var info = Core.FormInfoManager.GetModel(infoId);
+                flowData = info.FlowData;
+            }
             if (flowData == null)
             {
                 return BadRequest("参数不正确，没有获取到流程数据");
@@ -63,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     info.Form = Core.FormManager.GetModel(info.FormId);
                 }
                 //创建流程
-                info.FlowData = Core.FlowDataManager.Create(info);
+                info.FlowData = Core.FlowDataManager.CreateFlowData(info);
                 info.FlowDataId = info.FlowData.ID;
             }
 
@@ -91,8 +104,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 //判断是否流程结束
                 if (!info.FlowData.CanComplete(currentNodeData))
                 {
-                    var toUser = Core.UserManager.GetModel(toUserId);
-                    var nextNodedata = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, toUser, currentNodeData.FlowNodeId);
+                    var nextNodedata = Core.FlowDataManager.SubmitToUser(info.FlowData, toUserId);
                     info.FlowStep = nextNodedata.FlowNodeName;
                     Core.UserFormInfoManager.Save(new UserFormInfo
                     {
@@ -137,8 +149,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 var flow = Core.FlowManager.Get(info.Form.FLowId);
                 if (flow.CanBack)
                 {
-                    var firstNodeData = info.FlowData.GetFirstNodeData();
-                    var nextNodeData = Core.FlowNodeDataManager.CreateBackNodeData(info, firstNodeData);
+                    var nextNodeData = Core.FlowDataManager.SubmitToBack(info.FlowData);
                     info.FlowStep = nextNodeData.FlowNodeName;
                     Core.UserFormInfoManager.Save(new UserFormInfo
                     {
@@ -159,12 +170,27 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object UserList(int flowNodeDataId)
+        public object UserList(int flowNodeDataId = 0, int flowId = 0, int flowStep = 1)
         {
-            var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
-            var flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
+            if (flowNodeDataId == 0 && flowId == 0)
+            {
+                throw new ArgumentException("缺少参数FlowNodeDataId或FlowId");
+            }
 
-            var nextNode = flowData.Flow.GetNextStep(flowNodeDataId);
+            FlowNode nextNode = null;
+            FlowData flowData = null;
+            if (flowNodeDataId > 0)
+            {
+                var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
+                flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
+                nextNode = flowData.Flow.GetNextStep(flowNodeData.FlowNodeId);
+            }
+            else
+            {
+                var flow = Core.FlowManager.Get(flowId);
+                nextNode = flow.GetStep(flowStep);
+            }
+
 
             var parameter = new Parameters.UserParameter();
             if (nextNode != null)
@@ -175,7 +201,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     parameter.DepartmentIds = nextNode.DepartmentIds;
                 }
-                else if (nextNode.LimitMode == DepartmentLimitMode.Self)
+                else if (nextNode.LimitMode == DepartmentLimitMode.Self && flowData != null)
                 {
                     var senderNodeData = flowData.GetFirstNodeData();
                     var user = Core.UserManager.GetModel(senderNodeData.UserId);

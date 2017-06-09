@@ -1,3 +1,9 @@
+--2017-06-09
+ALTER TABLE `car_apply`
+	ADD COLUMN `ApprovalUserId` INT NOT NULL AFTER `CreateTime`,
+	ADD INDEX `ApprovalUserId` (`ApprovalUserId`);
+
+
 --2017-06-06
 CREATE TABLE `car_apply` (
 	`ID` INT(11) NOT NULL,

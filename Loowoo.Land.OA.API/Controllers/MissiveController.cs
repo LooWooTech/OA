@@ -90,7 +90,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (data.Info.FlowDataId == 0)
             {
                 data.Info.Form = Core.FormManager.GetModel(formId);
-                Core.FlowDataManager.Create(data.Info);
+                Core.FlowDataManager.CreateFlowData(data.Info);
             }
             data.ID = data.Info.ID;
             Core.MissiveManager.Save(data);
