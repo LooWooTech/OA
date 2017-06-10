@@ -19,7 +19,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("无法撤销");
             }
-            Core.FlowDataManager.Cancel(info, CurrentUser.ID);
+            Core.FlowDataManager.Cancel(info.FlowData, CurrentUser.ID);
+
+            //撤销后更新userforminfo
+            var flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            Core.UserFormInfoManager.OnCancelFlowData(info, flowNodeData);
             return Ok();
         }
 
@@ -27,9 +31,22 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 获取审批数据
         /// </summary>
         [HttpGet]
-        public object Model(int id)
+        public object Model(int id = 0, int infoId = 0)
         {
-            var flowData = Core.FlowDataManager.Get(id);
+            if (id == 0 || infoId == 0)
+            {
+                throw new Exception("缺少参数ID或InfoID");
+            }
+            FlowData flowData = null;
+            if (id > 0)
+            {
+                flowData = Core.FlowDataManager.Get(id);
+            }
+            else if (infoId > 0)
+            {
+                var info = Core.FormInfoManager.GetModel(infoId);
+                flowData = info.FlowData;
+            }
             if (flowData == null)
             {
                 return BadRequest("参数不正确，没有获取到流程数据");
@@ -47,65 +64,152 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
         {
-            Core.FlowDataManager.Submit(infoId, CurrentUser.ID, toUserId, data.Result.Value, data.Content);
+            var info = Core.FormInfoManager.GetModel(infoId);
+            if (info == null)
+            {
+                throw new ArgumentException("参数错误，找不到FormInfo");
+            }
+            if (info.FlowDataId == 0)
+            {
+                if (info.Form == null)
+                {
+                    info.Form = Core.FormManager.GetModel(info.FormId);
+                }
+                //创建流程
+                info.FlowData = Core.FlowDataManager.CreateFlowData(info);
+                info.FlowDataId = info.FlowData.ID;
+            }
+
+            var currentNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            if (currentNodeData.Result.HasValue)
+            {
+                throw new Exception("无法提交");
+            }
+            currentNodeData.Content = data.Content;
+            currentNodeData.Result = data.Result;
+            Core.FlowNodeDataManager.Save(currentNodeData);
+
+            //更新userforminfo的状态
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                FormId = info.FormId,
+                InfoId = info.ID,
+                Status = FlowStatus.Done,
+                UserId = CurrentUser.ID,
+                FlowNodeDataId = currentNodeData.ID
+            });
+
+            if (currentNodeData.Result == true)
+            {
+                //判断是否流程结束
+                if (!info.FlowData.CanComplete(currentNodeData))
+                {
+                    var nextNodedata = Core.FlowDataManager.SubmitToUser(info.FlowData, toUserId);
+                    info.FlowStep = nextNodedata.FlowNodeName;
+                    Core.UserFormInfoManager.Save(new UserFormInfo
+                    {
+                        FormId = info.FormId,
+                        InfoId = info.ID,
+                        Status = FlowStatus.Doing,
+                        UserId = nextNodedata.UserId,
+                        FlowNodeDataId = nextNodedata.ID,
+                    });
+                    Core.FeedManager.Save(new Feed
+                    {
+                        InfoId = info.ID,
+                        Action = UserAction.Submit,
+                        FromUserId = currentNodeData.UserId,
+                        ToUserId = nextNodedata.UserId,
+                        Type = FeedType.Flow,
+                        Title = info.Title,
+                        Description = currentNodeData.Content
+                    });
+                }
+                else
+                {
+                    Core.FlowDataManager.Complete(info);
+                    var userIds = Core.UserFormInfoManager.GetUserIds(infoId);
+                    foreach (var uid in userIds)
+                    {
+                        Core.FeedManager.Save(new Feed
+                        {
+                            InfoId = info.ID,
+                            Action = UserAction.Submit,
+                            FromUserId = currentNodeData.UserId,
+                            ToUserId = uid,
+                            Type = FeedType.Flow,
+                            Title = info.Title,
+                            Description = currentNodeData.Content
+                        });
+                    }
+                }
+            }
+            else
+            {
+                var flow = Core.FlowManager.Get(info.Form.FLowId);
+                if (flow.CanBack)
+                {
+                    var nextNodeData = Core.FlowDataManager.SubmitToBack(info.FlowData);
+                    info.FlowStep = nextNodeData.FlowNodeName;
+                    Core.UserFormInfoManager.Save(new UserFormInfo
+                    {
+                        InfoId = info.ID,
+                        FormId = info.FormId,
+                        UserId = nextNodeData.UserId,
+                        Status = FlowStatus.Back,
+                        FlowNodeDataId = nextNodeData.ID,
+                    });
+                }
+                else
+                {
+                    //如果不可以退回，则直接结束流程
+                    info.FlowData.Completed = true;
+                    Core.FlowDataManager.Save(info.FlowData);
+                }
+            }
         }
 
         [HttpGet]
-        public object UserList(int flowId, int nodeId, int flowDataId = 0)
+        public object UserList(int flowNodeDataId = 0, int flowId = 0, int flowStep = 1)
         {
-            if (flowId == 0)
+            if (flowNodeDataId == 0 && flowId == 0)
             {
-                return BadRequest("没有指定流程");
+                throw new ArgumentException("缺少参数FlowNodeDataId或FlowId");
             }
 
-            var flow = Core.FlowManager.Get(flowId);
-            if (flow == null)
+            FlowNode nextNode = null;
+            FlowData flowData = null;
+            if (flowNodeDataId > 0)
             {
-                return BadRequest("没有找到该流程");
+                var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
+                flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
+                nextNode = flowData.Flow.GetNextStep(flowNodeData.FlowNodeId);
             }
-            //如果没有指定node，那默认为第一个node的下一步
-            if (nodeId == 0)
+            else
             {
-                var node = flow.GetFirstNode();
-                nodeId = node.ID;
+                var flow = Core.FlowManager.Get(flowId);
+                nextNode = flow.GetStep(flowStep);
             }
-            var nextNode = flow.GetNextStep(nodeId);
+
 
             var parameter = new Parameters.UserParameter();
             if (nextNode != null)
             {
-                parameter.TitleId = nextNode.JobTitleId;
-                parameter.UserId = nextNode.UserId;
+                parameter.TitleIds = nextNode.JobTitleIds;
+                parameter.UserIds = nextNode.UserIds;
                 if (nextNode.LimitMode == DepartmentLimitMode.Assign)
                 {
                     parameter.DepartmentIds = nextNode.DepartmentIds;
                 }
-                else if (nextNode.LimitMode == DepartmentLimitMode.Sender)
+                else if (nextNode.LimitMode == DepartmentLimitMode.Self && flowData != null)
                 {
-                    if (nodeId == 0)
-                    {
-                        parameter.DepartmentIds = CurrentUser.DepartmentIds;
-                    }
-                    else if (flowDataId > 0)
-                    {
-                        var flowData = Core.FlowDataManager.Get(flowDataId);
-                        var senderNodeData = flowData.GetFirstNodeData();
-                        var user = Core.UserManager.GetModel(senderNodeData.UserId);
-                        parameter.DepartmentIds = user.DepartmentIds;
-                    }
+                    var senderNodeData = flowData.GetFirstNodeData();
+                    var user = Core.UserManager.GetModel(senderNodeData.UserId);
+                    parameter.DepartmentIds = user.DepartmentIds;
                 }
             }
 
-            var users = Core.UserManager.GetList(parameter);
-            return users.Select(e => new UserViewModel
-            {
-                ID = e.ID,
-                Username = e.Username,
-                RealName = e.RealName,
-                JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                JobTitleId = e.JobTitleId,
-                Role = e.Role
-            }).Where(e => e.ID != CurrentUser.ID);
+            return Core.UserManager.GetList(parameter).Select(e => new UserViewModel(e));
         }
 
         [HttpGet]

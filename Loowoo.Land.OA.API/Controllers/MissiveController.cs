@@ -46,9 +46,17 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     e.ID,
                     e.WJ_BT,
-                    e.WH,
+                    e.WJ_ZH,
+                    JJ_DJ = e.JJ_DJ.GetDescription(),
+                    e.DJR,
+                    e.ZRR,
+                    e.ZS_JG,
+                    e.CS_JG,
+                    e.GK_FB,
+                    ZW_GK = e.ZW_GK.GetDescription(),
+                    e.QX_RQ,
                     e.FW_RQ,
-                    MJ = e.MJ.GetDescription(),
+                    MJ = e.WJ_MJ.GetDescription(),
                     e.Info.FormId,
                     e.Info.CreateTime,
                     e.Info.UpdateTime,
@@ -81,8 +89,8 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             if (data.Info.FlowDataId == 0)
             {
-                var form = Core.FormManager.GetModel(formId);
-                Core.FlowDataManager.Create(form.FLowId, data.Info);
+                data.Info.Form = Core.FormManager.GetModel(formId);
+                Core.FlowDataManager.CreateFlowData(data.Info);
             }
             data.ID = data.Info.ID;
             Core.MissiveManager.Save(data);

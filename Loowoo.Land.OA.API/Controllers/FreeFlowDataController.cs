@@ -14,29 +14,38 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds)
+        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null)
         {
-            if (model == null || infoId == 0)
+            if (model == null)
             {
-                throw new Exception("参数不正确");
+                throw new Exception("缺少参数model");
+            }
+            if (infoId == 0)
+            {
+                throw new Exception("缺少参数infoId");
             }
 
             var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
             if (flowNodeData.FreeFlowData == null)
             {
-                var freeFlowData = new FreeFlowData { ID = flowNodeData.ID };
-                Core.FreeFlowDataManager.Save(freeFlowData);
+                flowNodeData.FreeFlowData = new FreeFlowData { ID = flowNodeData.ID };
+                Core.FreeFlowDataManager.Save(flowNodeData.FreeFlowData);
             }
 
             model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
             model.UserId = CurrentUser.ID;
-
-            //如果不是创建自由流程，则需要保存用户的审批意见
-            if (!flowNodeData.FreeFlowData.IsEmpty)
+            model.UpdateTime = DateTime.Now;
+            Core.FreeFlowNodeDataManager.Save(model);
+            var info = Core.FormInfoManager.GetModel(infoId);
+            //已阅则放到已读箱
+            Core.UserFormInfoManager.Save(new UserFormInfo
             {
-                Core.FreeFlowNodeDataManager.Save(model);
-            }
-
+                UserId = CurrentUser.ID,
+                FormId = info.FormId,
+                InfoId = infoId,
+                FlowNodeDataId = flowNodeData.ID,
+                Status = FlowStatus.Done
+            });
             var targetUserIds = toUserIds.ToIntArray();
             //如果没有选择发送人，则代表此流程结束
             if (targetUserIds == null || targetUserIds.Length == 0)
@@ -45,9 +54,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 return;
             }
 
-            var info = Core.FormInfoManager.GetModel(infoId);
+            //如果有选择发送人，则标记为没结束
+            flowNodeData.FreeFlowData.Completed = false;
+
             foreach (var userId in targetUserIds)
             {
+                //传阅流程不需要发给自己
+                if (userId == CurrentUser.ID) continue;
+
                 Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
                 {
                     FreeFlowDataId = model.FreeFlowDataId,
@@ -91,7 +105,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     case DepartmentLimitMode.Assign:
                         parameters.DepartmentIds = freeFlow.DepartmentIds;
                         break;
-                    case DepartmentLimitMode.Sender:
+                    case DepartmentLimitMode.Self:
                         var user = Core.UserManager.GetModel(flowNodeData.UserId);
                         parameters.DepartmentIds = user.DepartmentIds;
                         break;
@@ -111,27 +125,15 @@ namespace Loowoo.Land.OA.API.Controllers
             }
 
             return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID)
-                .Select(e => new UserViewModel
-                {
-                    ID = e.ID,
-                    RealName = e.RealName,
-                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                    JobTitleId = e.JobTitleId,
-                    Username = e.Username,
-                    Role = e.Role,
-                    Departments = e.UserDepartments.Select(d => new
-                    {
-                        Name = d.Department == null ? null : d.Department.Name,
-                        ID = d.Department == null ? 0 : d.Department.ID,
-                    })
-                });
+                .Select(e => new UserViewModel(e));
         }
 
         [HttpGet]
-        public void Complete(int id)
+        public void Complete(int id, int infoId)
         {
             var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
             var user = Core.UserManager.GetModel(CurrentUser.ID);
+            var info = Core.FormInfoManager.GetModel(infoId);
             if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
             {
                 Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
@@ -140,6 +142,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     FromUserId = CurrentUser.ID,
                     ToUserId = freeFlowData.FlowNodeData.UserId,
                     Action = UserAction.Complete,
+                    InfoId = infoId,
+                    Title = info.Title,
                     Description = CurrentUser.RealName + "结束了传阅流程",
                     Type = FeedType.FreeFlow
                 });

@@ -19,12 +19,14 @@ namespace Loowoo.Land.OA.API.Controllers
             var infoIds = Core.UserFormInfoManager.GetList(new UserFormInfoParameter
             {
                 UserId = CurrentUser.ID
-            }).Select(e => e.InfoId).ToArray();
+            }).GroupBy(e => e.InfoId).Select(g => g.Key).ToArray();
             var parameter = new FeedParameter
             {
                 Page = new PageParameter(page, rows),
                 FormId = formId,
-                InfoIds = infoIds
+                InfoIds = infoIds,
+                BeginTime = DateTime.Today.AddMonths(-1),
+                ToUserId = CurrentUser.ID
             };
             var list = Core.FeedManager.GetList(parameter);
             return new PagingResult

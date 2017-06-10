@@ -62,14 +62,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 }
             }
 
-            if (model.UserId > 0)
-            {
-                var user = Core.UserManager.GetModel(model.UserId);
-                if (user == null)
-                {
-                    return BadRequest($"{TaskName}:未查询到ID为{model.UserId}的用户信息");
-                }
-            }
             #endregion
             Core.FlowNodeManager.Save(model);
             return Ok(model);

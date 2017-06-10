@@ -36,153 +36,152 @@ namespace Loowoo.Land.OA.Managers
             return entity;
         }
 
-        public FlowData Create(int flowId, FormInfo info)
+        public FlowData CreateFlowData(FormInfo info)
         {
-            info.FlowData = CreateFlowData(flowId, info);
+            info.FlowData = CreateFlowData(info.Form.FLowId, info);
             info.FlowDataId = info.FlowData.ID;
-
-            //如果第一次提交，则先创建flowdata
-            var currentUser = Core.UserManager.GetModel(info.PostUserId);
+            info.FlowData.Flow = Core.FlowManager.Get(info.Form.FLowId);
             //创建第一个节点
-            var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info, currentUser, 0);
+            var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, info.PostUserId);
             //创建状态
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                InfoId = info.ID,
-                UserId = info.PostUserId,
-                Status = FlowStatus.Doing,
-                FormId = info.FormId,
-                FlowNodeDataId = nodeData.ID
-            });
             return info.FlowData;
         }
 
-        public void Submit(int infoId, int userId, int toUserId, bool result, string content)
+        public FlowNodeData SubmitToUser(FlowData flowData, int toUserId)
         {
-            var info = Core.FormInfoManager.GetModel(infoId);
-            if (info == null)
-            {
-                throw new ArgumentException("参数错误，找不到FormInfo");
-            }
-            if (info.FlowDataId == 0)
-            {
-                var form = Core.FormManager.GetModel(info.FormId);
-                //创建流程
-                info.FlowData = Create(form.FLowId, info);
-                info.FlowDataId = info.FlowData.ID;
-            }
+            return Core.FlowNodeDataManager.CreateNextNodeData(flowData, toUserId);
+        }
 
-            var currentNodeData = info.FlowData.GetLastNodeData(userId);
-            if (currentNodeData.Result.HasValue)
-            {
-                throw new Exception("无法提交");
-            }
-            currentNodeData.Content = content;
-            currentNodeData.Result = result;
-            Core.FlowNodeDataManager.Save(currentNodeData);
+        public FlowNodeData SubmitToBack(FlowData flowData)
+        {
+            var firstNodeData = flowData.GetFirstNodeData();
+            return Core.FlowNodeDataManager.CreateBackNodeData(firstNodeData);
+        }
 
-            //更新userforminfo的状态
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                FormId = info.FormId,
-                InfoId = info.ID,
-                Status = FlowStatus.Done,
-                UserId = userId,
-                FlowNodeDataId = currentNodeData.ID
-            });
+        //public void Submit(int infoId, int userId, int toUserId, bool result, string content)
+        //{
+        //    var info = Core.FormInfoManager.GetModel(infoId);
+        //    if (info == null)
+        //    {
+        //        throw new ArgumentException("参数错误，找不到FormInfo");
+        //    }
+        //    if (info.FlowDataId == 0)
+        //    {
+        //        var form = Core.FormManager.GetModel(info.FormId);
+        //        //创建流程
+        //        info.FlowData = Create(form.FLowId, info);
+        //        info.FlowDataId = info.FlowData.ID;
+        //    }
 
-            //创建下一步节点
-            var flow = Core.FlowManager.Get(info.Form.FLowId);
-            if (currentNodeData.Result == true)
+        //    var currentNodeData = info.FlowData.GetLastNodeData(userId);
+        //    if (currentNodeData.Result.HasValue)
+        //    {
+        //        throw new Exception("无法提交");
+        //    }
+        //    currentNodeData.Content = content;
+        //    currentNodeData.Result = result;
+        //    Core.FlowNodeDataManager.Save(currentNodeData);
+
+        //    //更新userforminfo的状态
+        //    Core.UserFormInfoManager.Save(new UserFormInfo
+        //    {
+        //        FormId = info.FormId,
+        //        InfoId = info.ID,
+        //        Status = FlowStatus.Done,
+        //        UserId = userId,
+        //        FlowNodeDataId = currentNodeData.ID
+        //    });
+
+        //    //创建下一步节点
+        //    var flow = Core.FlowManager.Get(info.Form.FLowId);
+        //    if (currentNodeData.Result == true)
+        //    {
+        //        //判断是否流程结束
+        //        if (!info.FlowData.CanComplete(currentNodeData))
+        //        {
+        //            var toUser = Core.UserManager.GetModel(toUserId);
+        //            var nextNodedata = Core.FlowNodeDataManager.CreateNextNodeData(info, toUser, currentNodeData.FlowNodeId);
+        //            info.FlowStep = nextNodedata.FlowNodeName;
+        //            Core.UserFormInfoManager.Save(new UserFormInfo
+        //            {
+        //                FormId = info.FormId,
+        //                InfoId = info.ID,
+        //                Status = FlowStatus.Doing,
+        //                UserId = nextNodedata.UserId,
+        //                FlowNodeDataId = nextNodedata.ID,
+        //            });
+        //            Core.FeedManager.Save(new Feed
+        //            {
+        //                InfoId = info.ID,
+        //                Action = UserAction.Submit,
+        //                FromUserId = currentNodeData.UserId,
+        //                ToUserId = nextNodedata.UserId,
+        //                Type = FeedType.Flow,
+        //                Title = info.Title,
+        //                Description = currentNodeData.Content
+        //            });
+        //        }
+        //        else
+        //        {
+        //            Core.FlowDataManager.Complete(info);
+        //            var userIds = Core.UserFormInfoManager.GetUserIds(infoId);
+        //            foreach (var uid in userIds)
+        //            {
+        //                Core.FeedManager.Save(new Feed
+        //                {
+        //                    InfoId = info.ID,
+        //                    Action = UserAction.Submit,
+        //                    FromUserId = currentNodeData.UserId,
+        //                    ToUserId = uid,
+        //                    Type = FeedType.Flow,
+        //                    Title = info.Title,
+        //                    Description = currentNodeData.Content
+        //                });
+        //            }
+        //        }
+        //    }
+        //    else if (flow.CanBack)
+        //    {
+        //        var firstNodeData = info.FlowData.GetFirstNodeData();
+        //        var nextNodeData = Core.FlowNodeDataManager.CreateBackNodeData(info, firstNodeData);
+        //        info.FlowStep = nextNodeData.FlowNodeName;
+        //        Core.UserFormInfoManager.Save(new UserFormInfo
+        //        {
+        //            InfoId = info.ID,
+        //            FormId = info.FormId,
+        //            UserId = nextNodeData.UserId,
+        //            Status = FlowStatus.Back,
+        //            FlowNodeDataId = nextNodeData.ID,
+        //        });
+        //    }
+        //    else
+        //    {
+        //        //如果不可以退回，则直接结束流程
+        //        info.FlowData.Completed = true;
+        //        Core.FlowDataManager.Save(info.FlowData);
+        //    }
+        //}
+
+        public void Cancel(FlowData flowData, int userId)
+        {
+            var nodeData = flowData.GetLastNodeData(userId);
+            var nextNode = flowData.Flow.GetNextStep(nodeData.FlowNodeId);
+            //如果下一步不为空，则需要删除最后的节点记录，如果最后节点
+            if (nextNode != null)
             {
-                //判断是否流程结束
-                if (!info.FlowData.CanComplete(currentNodeData))
+                var nextNodeData = flowData.GetNextNodeData(nodeData.ID);
+                if (nextNodeData != null)
                 {
-                    var toUser = Core.UserManager.GetModel(toUserId);
-                    var nextNodedata = Core.FlowNodeDataManager.CreateNextNodeData(info, toUser, currentNodeData.FlowNodeId);
-                    info.FlowStep = nextNodedata.FlowNodeName;
-                    Core.UserFormInfoManager.Save(new UserFormInfo
-                    {
-                        FormId = info.FormId,
-                        InfoId = info.ID,
-                        Status = FlowStatus.Doing,
-                        UserId = nextNodedata.UserId,
-                        FlowNodeDataId = nextNodedata.ID,
-                    });
-                    Core.FeedManager.Save(new Feed
-                    {
-                        InfoId = info.ID,
-                        Action = UserAction.Submit,
-                        FromUserId = currentNodeData.UserId,
-                        ToUserId = nextNodedata.UserId,
-                        Type = FeedType.Flow,
-                        Title = info.Title,
-                        Description = currentNodeData.Content
-                    });
+                    DB.FlowNodeDatas.Remove(nextNodeData);
                 }
-                else
-                {
-                    Core.FlowDataManager.Complete(info);
-                    Core.FeedManager.Save(new Feed
-                    {
-                        InfoId = info.ID,
-                        Action = UserAction.Submit,
-                        FromUserId = currentNodeData.UserId,
-                        Type = FeedType.Flow,
-                        Title = info.Title,
-                        Description = currentNodeData.Content
-                    });
-                }
-            }
-            else if (flow.CanBack)
-            {
-                var firstNodeData = info.FlowData.GetFirstNodeData();
-                var nextNodeData = Core.FlowNodeDataManager.CreateBackNodeData(info, firstNodeData);
-                info.FlowStep = nextNodeData.FlowNodeName;
-                Core.UserFormInfoManager.Save(new UserFormInfo
-                {
-                    InfoId = info.ID,
-                    FormId = info.FormId,
-                    UserId = nextNodeData.UserId,
-                    Status = FlowStatus.Back,
-                    FlowNodeDataId = nextNodeData.ID,
-                });
             }
             else
             {
-                //如果不可以退回，则直接结束流程
-                info.FlowData.Completed = true;
-                Core.FlowDataManager.Save(info.FlowData);
+                flowData.Completed = false;
             }
-        }
-
-        public void Cancel(FormInfo info, int userId)
-        {
-            if (info.FlowData.Completed) return;
-
-            var lastNodedata = info.FlowData.GetLastNodeData();
-            DB.FlowNodeDatas.Remove(lastNodedata);
-            var cancelFlowData = info.FlowData.GetLastNodeData(userId);
-            cancelFlowData.Result = null;
-            cancelFlowData.UpdateTime = null;
-            info.FlowStep = cancelFlowData.FlowNodeName;
+            nodeData.UpdateTime = null;
+            nodeData.Result = null;
             DB.SaveChanges();
-
-            Core.UserFormInfoManager.Delete(new UserFormInfo
-            {
-                InfoId = info.ID,
-                FormId = info.FormId,
-                UserId = lastNodedata.UserId
-            });
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                InfoId = info.ID,
-                FormId = info.FormId,
-                Status = FlowStatus.Doing,
-                UserId = cancelFlowData.UserId,
-                FlowNodeDataId = cancelFlowData.ID
-            });
-
         }
 
         public void Complete(FormInfo info)

@@ -19,9 +19,13 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
+            if (parameter.UserId > 0)
+            {
+                query = query.Where(e => e.FromUserId == parameter.UserId || e.ToUserId == parameter.UserId);
+            }
             if (parameter.InfoIds != null)
             {
-                query = query.Where(e => parameter.InfoIds.Contains(e.InfoId));
+                query = query.Where(e => parameter.InfoIds.Contains(e.InfoId) || e.InfoId == 0);
             }
             if (parameter.FromUserId > 0)
             {

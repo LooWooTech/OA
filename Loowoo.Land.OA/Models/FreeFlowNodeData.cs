@@ -24,8 +24,6 @@ namespace Loowoo.Land.OA.Models
 
         public string Signature { get; set; }
 
-        public string DepartmentName { get; set; }
-
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
         public DateTime? UpdateTime { get; set; }

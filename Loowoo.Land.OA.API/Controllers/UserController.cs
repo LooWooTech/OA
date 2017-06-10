@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.API.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.API.Security;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
@@ -34,7 +35,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 ID = user.ID,
                 Username = user.Username,
                 Role = user.Role,
-                RealName = user.RealName
+                RealName = user.RealName,
+                DepartmentIds = user.DepartmentIds,
+                GroupIds = user.GroupIds,
+                JobTitleId = user.JobTitleId,
             });
 
             return user;
@@ -48,30 +52,12 @@ namespace Loowoo.Land.OA.API.Controllers
                 DepartmentId = departmentId,
                 GroupId = groupId,
                 SearchKey = searchKey,
-                Page = new Loowoo.Common.PageParameter(page, rows)
+                Page = new PageParameter(page, rows)
             };
             var list = Core.UserManager.GetList(parameter);
             return new PagingResult
             {
-                List = list.Select(e => new UserViewModel
-                {
-                    ID = e.ID,
-                    Username = e.Username,
-                    RealName = e.RealName,
-                    Role = e.Role,
-                    JobTitle = e.JobTitle == null ? null : e.JobTitle.Name,
-                    Departments = e.UserDepartments.Select(d => new
-                    {
-                        Name = d.Department == null ? null : d.Department.Name,
-                        ID = d.Department == null ? 0 : d.Department.ID,
-                    }),
-                    JobTitleId = e.JobTitleId,
-                    Groups = e.UserGroups.Select(g => new
-                    {
-                        Name = g.Group == null ? null : g.Group.Name,
-                        ID = g.Group == null ? 0 : g.Group.ID
-                    })
-                }),
+                List = list.Select(e => new UserViewModel(e)),
                 Page = parameter.Page
             };
         }
@@ -119,5 +105,42 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserManager.Delete(id);
         }
 
+        [HttpGet]
+        public IHttpActionResult UpdatePassword(string oldPassword, string newPassword, string rePassword)
+        {
+            if (string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(rePassword))
+            {
+                return BadRequest("填写不完整");
+            }
+            if (newPassword != rePassword)
+            {
+                return BadRequest("两次输入密码不相同，请重新输入");
+            }
+            var user = Core.UserManager.GetModel(CurrentUser.ID);
+            if (user.Password != oldPassword.MD5())
+            {
+                return BadRequest("旧密码填写不正确");
+            }
+            user.Password = newPassword;
+            Core.UserManager.Save(user);
+            return Ok();
+        }
+
+        [HttpGet]
+        public IEnumerable<UserViewModel> RecentList()
+        {
+            var userIds = Core.FeedManager.GetList(new FeedParameter
+            {
+                BeginTime = DateTime.Today.AddDays(-30),
+                FromUserId = CurrentUser.ID,
+                Page = new PageParameter(1, 10)
+            }).Where(e => e.ToUserId > 0).GroupBy(e => e.ToUserId).Select(g => g.Key).ToArray();
+
+            return Core.UserManager.GetList(new UserParameter
+            {
+                UserIds = userIds
+            }).Select(e => new UserViewModel(e));
+
+        }
     }
 }

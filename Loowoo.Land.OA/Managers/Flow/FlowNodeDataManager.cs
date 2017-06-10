@@ -27,10 +27,11 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public FlowNodeData CreateNextNodeData(FormInfo info, User user, int currentNodeId)
+        public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId)
         {
-            var flow = Core.FlowManager.Get(info.Form.FLowId);
-            var flowNode = flow?.GetNextStep(currentNodeId);
+            var user = Core.UserManager.GetModel(toUserId);
+            var lastNodeData = flowData.GetLastNodeData();
+            var flowNode = flowData.Flow.GetNextStep(lastNodeData == null ? 0 : lastNodeData.FlowNodeId);
 
             var model = new FlowNodeData
             {
@@ -39,11 +40,10 @@ namespace Loowoo.Land.OA.Managers
                 FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
                 Signature = user.RealName,
                 UserId = user.ID,
-                FlowDataId = info.FlowDataId,
+                FlowDataId = flowData.ID,
             };
 
             Core.FlowNodeDataManager.Save(model);
-            info.FlowStep = model.FlowNodeName ?? model.Signature;
             return model;
         }
 
@@ -52,13 +52,13 @@ namespace Loowoo.Land.OA.Managers
             return DB.FlowNodeDatas.FirstOrDefault(e => e.ID == id);
         }
 
-        public FlowNodeData CreateBackNodeData(FormInfo info, FlowNodeData backNodeData)
+        public FlowNodeData CreateBackNodeData(FlowNodeData backNodeData)
         {
             var user = Core.UserManager.GetModel(backNodeData.UserId);
             var model = new FlowNodeData
             {
                 CreateTime = DateTime.Now,
-                FlowDataId = info.FlowDataId,
+                FlowDataId = backNodeData.FlowDataId,
                 Signature = user.RealName,
                 UserId = user.ID,
                 FlowNodeId = backNodeData.FlowNodeId,
@@ -67,6 +67,5 @@ namespace Loowoo.Land.OA.Managers
             Core.FlowNodeDataManager.Save(model);
             return model;
         }
-
     }
 }

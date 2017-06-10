@@ -30,7 +30,7 @@ namespace Loowoo.Land.OA.Models
 
         public FlowNode GetLastNode()
         {
-            foreach(var node in Nodes)
+            foreach (var node in Nodes)
             {
                 if (!Nodes.Any(e => e.PrevId == node.ID))
                 {
@@ -43,6 +43,27 @@ namespace Loowoo.Land.OA.Models
         public FlowNode GetNextStep(int nodeId)
         {
             return Nodes.FirstOrDefault(e => e.PrevId == nodeId);
+        }
+
+        /// <summary>
+        /// 获取第几步的FlowNode
+        /// </summary>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        public FlowNode GetStep(int step)
+        {
+            FlowNode prevStep = null;
+            while (step > 0)
+            {
+                var nextStep = GetNextStep(prevStep == null ? 0 : prevStep.ID);
+                if (nextStep == null)
+                {
+                    break;
+                }
+                prevStep = nextStep;
+                step--;
+            }
+            return prevStep;
         }
     }
 }

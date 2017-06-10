@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +20,25 @@ namespace Loowoo.Land.OA.Models
 
         public string Name { get; set; }
 
-        public int UserId { get; set; }
+        [Column("UserIds")]
+        public string UserIdsValues { get; set; }
+
+        [NotMapped]
+        public int[] UserIds
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(UserIdsValues)) return null;
+                return UserIdsValues.ToIntArray();
+            }
+            set
+            {
+                if (value == null || value.Length == 0)
+                    UserIdsValues = null;
+                else
+                    UserIdsValues = string.Join(",", value);
+            }
+        }
 
         public DepartmentLimitMode LimitMode { get; set; } = DepartmentLimitMode.Assign;
 
@@ -32,7 +51,7 @@ namespace Loowoo.Land.OA.Models
             get
             {
                 if (string.IsNullOrEmpty(DepartmentIdsValue)) return null;
-                return DepartmentIdsValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(id => int.Parse(id)).ToArray();
+                return DepartmentIdsValue.ToIntArray();
             }
             set
             {
@@ -43,7 +62,25 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
-        public int JobTitleId { get; set; }
+        [Column("JobTitleIds")]
+        public string JobTitleIdsValue { get; set; }
+
+        [NotMapped]
+        public int[] JobTitleIds
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(JobTitleIdsValue)) return null;
+                return JobTitleIdsValue.ToIntArray();
+            }
+            set
+            {
+                if (value == null || value.Length == 0)
+                    JobTitleIdsValue = null;
+                else
+                    JobTitleIdsValue = string.Join(",", value);
+            }
+        }
 
         public int FreeFlowId { get; set; }
 
@@ -52,11 +89,11 @@ namespace Loowoo.Land.OA.Models
 
         public int PrevId { get; set; }
 
-        [NotMapped]
-        public FlowNode Prev { get; set; }
+        //[NotMapped]
+        //public FlowNode Prev { get; set; }
 
-        [NotMapped]
-        public FlowNode Next { get; set; }
+        //[NotMapped]
+        //public FlowNode Next { get; set; }
     }
 
 }

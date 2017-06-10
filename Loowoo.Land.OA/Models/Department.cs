@@ -22,7 +22,5 @@ namespace Loowoo.Land.OA.Models
         public string Name { get; set; }
 
         public int Sort { get; set; }
-        [NotMapped]
-        public List<Department> Children { get; set; }
     }
 }

@@ -54,5 +54,14 @@ namespace Loowoo.Land.OA.Models
         {
             return Nodes.OrderByDescending(e => e.ID).FirstOrDefault(e => e.UserId == userId);
         }
+
+        public bool CanSubmit(int userId)
+        {
+            if (FlowNodeData.UserId == userId)
+            {
+                return true;
+            }
+            return !Completed && Nodes.Any(e => e.UserId == userId);
+        }
     }
 }
