@@ -27,7 +27,8 @@ namespace Loowoo.Land.OA.Models
         {
             get
             {
-                if (Enum.TryParse(EName, true, out FormType type))
+                FormType type;
+                if (Enum.TryParse(EName, true, out type))
                 {
                     return type;
                 }
