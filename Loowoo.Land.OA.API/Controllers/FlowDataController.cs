@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object Model(int id = 0, int infoId = 0)
         {
-            if (id == 0 || infoId == 0)
+            if (id == 0 && infoId == 0)
             {
                 throw new Exception("缺少参数ID或InfoID");
             }
