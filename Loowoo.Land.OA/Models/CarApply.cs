@@ -32,6 +32,8 @@ namespace Loowoo.Land.OA.Models
 
         public int ApprovalUserId { get; set; }
 
+        public virtual User ApprovalUser { get; set; }
+
         public DateTime ScheduleBeginTime { get; set; }
 
         public DateTime? ScheduleEndTime { get; set; }

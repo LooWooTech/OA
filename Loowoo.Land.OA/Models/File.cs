@@ -23,6 +23,12 @@ namespace Loowoo.Land.OA.Models
 
         public string FileName { get; set; }
 
+        [NotMapped]
+        public string FileExt
+        {
+            get { return System.IO.Path.GetExtension(FileName); }
+        }
+
         public string SavePath { get; set; }
         /// <summary>
         /// 最小单位

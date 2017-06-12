@@ -35,6 +35,10 @@ namespace Loowoo.Land.OA.Managers
 
         public void Delete(int id)
         {
+            if (DB.CarApplies.Any(e => e.CarId == id))
+            {
+                throw new Exception("车辆已被使用，无法删除");
+            }
             var entity = Get(id);
             entity.Deleted = true;
             DB.SaveChanges();
@@ -72,14 +76,16 @@ namespace Loowoo.Land.OA.Managers
 
         public void SaveApply(CarApply data)
         {
-            var entity = DB.CarApplies.FirstOrDefault(e => e.CarId == data.CarId
-           && e.Result == null
-           && e.UserId == data.UserId
+            DB.CarApplies.AddOrUpdate(data);
+            DB.SaveChanges();
+        }
+
+        public bool HasApply(CarApply data)
+        {
+            return DB.CarApplies.Any(e => e.CarId == data.CarId
+            && e.Result == null
+            && e.UserId == data.UserId
             );
-            if (entity == null)
-            {
-                DB.CarApplies.Add(data);
-            }
         }
 
         public void Apply(CarApply data)

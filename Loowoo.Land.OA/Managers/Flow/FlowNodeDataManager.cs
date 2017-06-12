@@ -29,6 +29,11 @@ namespace Loowoo.Land.OA.Managers
 
         public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId)
         {
+            if (toUserId == 0)
+            {
+                throw new Exception("没有选择发送人");
+            }
+
             var user = Core.UserManager.GetModel(toUserId);
             var lastNodeData = flowData.GetLastNodeData();
             var flowNode = flowData.Flow.GetNextStep(lastNodeData == null ? 0 : lastNodeData.FlowNodeId);

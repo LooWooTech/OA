@@ -52,7 +52,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = Core.CarManager.GetApplies(parameter).Select(e => new
                 {
                     e.ID,
-                    RealName = e.User.RealName,
+                    e.UserId,
+                    ApplyUser = e.User.RealName,
                     e.Car,
                     e.CreateTime,
                     e.ScheduleBeginTime,
@@ -60,7 +61,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.RealEndTime,
                     e.Reason,
                     e.Result,
-                    e.UpdateTime
+                    e.UpdateTime,
+                    e.ApprovalUserId,
+                    ApprovalUser = e.ApprovalUser.RealName
                 }),
                 Page = parameter.Page,
             };
@@ -83,12 +86,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("没有选择审批人");
             }
             data.UserId = CurrentUser.ID;
-
+            if (Core.CarManager.HasApply(data))
+            {
+                throw new Exception("你已经申请过该车辆，还未通过审批");
+            }
             Core.CarManager.Apply(data);
             Core.FeedManager.Save(new Feed
             {
                 Action = UserAction.Apply,
-                Title = CurrentUser.RealName + "申请用车：" + data.Car.Name + "（" + data.Car.Number + "）",
+                Title = CurrentUser.RealName + "申请用车：" + data.Car.Name + "（" + car.Number + "）",
                 InfoId = data.ID,
                 Type = FeedType.Info,
                 ToUserId = data.ApprovalUserId,
@@ -100,6 +106,47 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
             Core.CarManager.Delete(id);
+        }
+
+        [HttpGet]
+        public void Approval(int infoId)
+        {
+            var info = Core.FormInfoManager.GetModel(infoId);
+            //如果流程审批完成
+            if (info.FlowData.Completed)
+            {
+                var model = Core.CarManager.GetCarApply(infoId);
+                model.Car.Status = CarStatus.Using;
+                model.Result = info.FlowData.GetLastNodeData().Result.Value;
+
+                Core.CarManager.SaveApply(model);
+            }
+
+        }
+
+        [HttpGet]
+        public void Back(int infoId)
+        {
+            var model = Core.CarManager.GetCarApply(infoId);
+            if (model == null)
+            {
+                throw new Exception("参数错误");
+            }
+            if (model.RealEndTime.HasValue)
+            {
+                throw new Exception("车辆已归还，归还日期：" + model.RealEndTime.Value.ToShortDateString());
+            }
+            if (model.UserId == CurrentUser.ID)
+            {
+                model.RealEndTime = DateTime.Now;
+                model.UpdateTime = DateTime.Now;
+
+                Core.CarManager.SaveApply(model);
+            }
+            else
+            {
+                throw new Exception("你不能归还该车辆");
+            }
         }
     }
 }

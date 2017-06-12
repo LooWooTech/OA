@@ -44,6 +44,14 @@ namespace Loowoo.Land.OA.Managers
             //创建第一个节点
             var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, info.PostUserId);
             //创建状态
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                FlowNodeDataId = nodeData.ID,
+                FormId = info.FormId,
+                InfoId = info.ID,
+                UserId = info.PostUserId,
+                Status = FlowStatus.Doing,
+            });
             return info.FlowData;
         }
 

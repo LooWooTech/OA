@@ -62,12 +62,12 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
+        public IHttpActionResult Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
             if (info == null)
             {
-                throw new ArgumentException("参数错误，找不到FormInfo");
+                return BadRequest("参数错误，找不到FormInfo");
             }
             if (info.FlowDataId == 0)
             {
@@ -83,7 +83,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var currentNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
             if (currentNodeData.Result.HasValue)
             {
-                throw new Exception("无法提交");
+                return BadRequest("无法提交");
             }
             currentNodeData.Content = data.Content;
             currentNodeData.Result = data.Result;
@@ -167,6 +167,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Core.FlowDataManager.Save(info.FlowData);
                 }
             }
+            return Ok(info.FlowData);
         }
 
         [HttpGet]
