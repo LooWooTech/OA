@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace Loowoo.Land.OA.Models
 {
     /// <summary>
-    /// 车辆申请记录
+    /// 车辆、会议室、公章 申请记录
     /// </summary>
-    [Table("car_apply")]
-    public class CarApply
+    [Table("form_info_extend1")]
+    public class FormInfoExtend1
     {
         /// <summary>
         /// 申请ID，和FormInfoID 一一对应
@@ -20,9 +20,12 @@ namespace Loowoo.Land.OA.Models
         [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
-        public int CarId { get; set; }
+        /// <summary>
+        /// 对应所申请的信息的ID（车辆ID，会议室ID等）
+        /// </summary>
+        public int InfoId { get; set; }
 
-        public virtual Car Car { get; set; }
+        public virtual FormInfo Info { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 

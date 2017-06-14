@@ -66,6 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\FormInfoExtend1Manager.cs" />
+    <Compile Include="Managers\MeetingRoomManager.cs" />
+    <Compile Include="Models\CheckStatus.cs" />
+    <Compile Include="Models\FormInfoExtend1.cs" />
+    <Compile Include="Parameters\Extend1Parameter.cs" />
     <Compile Include="Managers\AttendanceManager.cs" />
     <Compile Include="Managers\CarManager.cs" />
     <Compile Include="Managers\Flow\FlowDataManager.cs" />
@@ -81,11 +86,11 @@
     <Compile Include="Managers\User\JobTitleManager.cs" />
     <Compile Include="Managers\FeedManager.cs" />
     <Compile Include="Models\Attendance.cs" />
-    <Compile Include="Models\CarApply.cs" />
+    <Compile Include="Models\MeetingRoom.cs" />
     <Compile Include="Models\CheckInOut.cs" />
-    <Compile Include="Models\FreeFlow.cs" />
-    <Compile Include="Models\FreeFlowData.cs" />
-    <Compile Include="Models\FreeFlowNodeData.cs" />
+    <Compile Include="Models\Flow\FreeFlow.cs" />
+    <Compile Include="Models\Flow\FreeFlowData.cs" />
+    <Compile Include="Models\Flow\FreeFlowNodeData.cs" />
     <Compile Include="Models\Holiday.cs" />
     <Compile Include="Models\Missive.cs" />
     <Compile Include="Models\PagingResult_T.cs" />
@@ -96,7 +101,7 @@
     <Compile Include="Managers\ManagerBase.cs" />
     <Compile Include="Managers\ManagerCore.cs" />
     <Compile Include="Managers\UserFormInfoManager.cs" />
-    <Compile Include="Models\FlowStatus.cs" />
+    <Compile Include="Models\Flow\FlowStatus.cs" />
     <Compile Include="Models\OADbContext.cs" />
     <Compile Include="Models\HttpDbContextContainer.cs" />
     <Compile Include="Managers\User\DepartmentManager.cs" />
@@ -112,15 +117,14 @@
     <Compile Include="Models\Directory.cs" />
     <Compile Include="Models\Emergency.cs" />
     <Compile Include="Models\File.cs" />
-    <Compile Include="Models\Flow.cs" />
-    <Compile Include="Models\FlowData.cs" />
-    <Compile Include="Models\FlowNode.cs" />
-    <Compile Include="Models\FlowNodeData.cs" />
+    <Compile Include="Models\Flow\Flow.cs" />
+    <Compile Include="Models\Flow\FlowData.cs" />
+    <Compile Include="Models\Flow\FlowNode.cs" />
+    <Compile Include="Models\Flow\FlowNodeData.cs" />
     <Compile Include="Models\Form.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\FormInfo.cs" />
-    <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Step.cs" />
     <Compile Include="Models\Subscription.cs" />
@@ -133,7 +137,6 @@
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserRight.cs" />
     <Compile Include="Parameters\AttendanceParameter.cs" />
-    <Compile Include="Parameters\CarApplyParameter.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
     <Compile Include="Parameters\FeedParameter.cs" />

@@ -35,7 +35,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Delete(int id)
         {
-            if (DB.CarApplies.Any(e => e.CarId == id))
+            if (DB.FormInfoApplies.Any(e => e.InfoId == id))
             {
                 throw new Exception("车辆已被使用，无法删除");
             }
@@ -44,87 +44,27 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        /// <summary>
-        /// 获取申请记录
-        /// </summary>
-        public IEnumerable<CarApply> GetApplies(CarApplyParameter parameter)
+        public void Apply(FormInfoExtend1 data)
         {
-            var query = DB.CarApplies.AsQueryable();
-            if (parameter.CarId > 0)
-            {
-                query = query.Where(e => e.CarId == parameter.CarId);
-            }
-            if (parameter.UserId > 0)
-            {
-                query = query.Where(e => e.UserId == parameter.UserId);
-            }
-            if (parameter.BeginTime.HasValue)
-            {
-                query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
-            }
-            if (parameter.Result.HasValue)
-            {
-                query = query.Where(e => e.Result == parameter.Result.Value);
-            }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
-        }
-
-        public CarApply GetCarApply(int id)
-        {
-            return DB.CarApplies.FirstOrDefault(e => e.ID == id);
-        }
-
-        public void SaveApply(CarApply data)
-        {
-            DB.CarApplies.AddOrUpdate(data);
-            DB.SaveChanges();
-        }
-
-        public bool HasApply(CarApply data)
-        {
-            return DB.CarApplies.Any(e => e.CarId == data.CarId
-            && e.Result == null
-            && e.UserId == data.UserId
-            );
-        }
-
-        public void Apply(CarApply data)
-        {
-            var car = Get(data.CarId);
+            var car = Get(data.InfoId);
             var info = new FormInfo
             {
-                ExtendId = data.CarId,
+                ExtendId = data.InfoId,
                 Title = "申请用车：" + car.Name + "（" + car.Number + "）",
                 FormId = (int)FormType.Car,
                 PostUserId = data.UserId,
             };
             info.Form = Core.FormManager.GetModel(FormType.Car);
+
             Core.FormInfoManager.Save(info);
-            data.ID = info.ID;
-            SaveApply(data);
-            //创建流程
-            var flowData = Core.FlowDataManager.CreateFlowData(info);
+            Core.FormInfoApplyManager.Apply(info, data);
+        }
 
-            var nodeData = flowData.GetFirstNodeData();
-            var nextNodeData = Core.FlowDataManager.SubmitToUser(info.FlowData, data.ApprovalUserId);
-
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                InfoId = data.ID,
-                UserId = data.UserId,
-                Status = FlowStatus.Done,
-                FormId = info.FormId,
-                FlowNodeDataId = nodeData.ID
-            });
-
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                FlowNodeDataId = nextNodeData.ID,
-                FormId = info.FormId,
-                InfoId = data.ID,
-                UserId = data.ApprovalUserId,
-                Status = FlowStatus.Doing,
-            });
+        public void UpdateStatus(int carId, CarStatus status)
+        {
+            var car = Get(carId);
+            car.Status = status;
+            DB.SaveChanges();
         }
     }
 }

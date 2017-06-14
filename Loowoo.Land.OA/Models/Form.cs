@@ -49,6 +49,10 @@ namespace Loowoo.Land.OA.Models
         Leave = 3,
         [Description("任务")]
         Task = 4,
+        [Description("会议室")]
+        MeetingRoom = 5,
+        [Description("公章")]
+        Seal = 6,
 
     }
 }

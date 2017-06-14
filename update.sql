@@ -1,3 +1,11 @@
+--2017-06-14
+ALTER TABLE `car_apply`
+	ALTER `CarId` DROP DEFAULT;
+ALTER TABLE `car_apply`
+	CHANGE COLUMN `CarId` `InfoId` INT(11) NOT NULL AFTER `ID`;
+RENAME TABLE `car_apply` TO `form_info_extend1`;
+
+
 --2017-06-09
 ALTER TABLE `car_apply`
 	ADD COLUMN `ApprovalUserId` INT NOT NULL AFTER `CreateTime`,

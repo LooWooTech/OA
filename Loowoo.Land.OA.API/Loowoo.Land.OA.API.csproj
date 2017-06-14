@@ -153,6 +153,7 @@
     <Compile Include="Controllers\FlowController.cs" />
     <Compile Include="Controllers\FlowDataController.cs" />
     <Compile Include="Controllers\FormController.cs" />
+    <Compile Include="Controllers\FormInfoExtend1Controller.cs" />
     <Compile Include="Controllers\FormInfoController.cs" />
     <Compile Include="Controllers\FreeFlowDataController.cs" />
     <Compile Include="Controllers\GroupController.cs" />

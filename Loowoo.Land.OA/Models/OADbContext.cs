@@ -20,6 +20,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Form> Forms { get; set; }
         public DbSet<FormInfo> FormInfos { get; set; }
         public DbSet<UserFormInfo> UserFormInfos { get; set; }
+        public DbSet<FormInfoExtend1> FormInfoApplies { get; set; }
 
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowNode> FlowNodes { get; set; }
@@ -39,7 +40,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<JobTitle> JobTitles { get; set; }
 
         public DbSet<Car> Cars { get; set; }
-        public DbSet<CarApply> CarApplies { get; set; }
+        public DbSet<MeetingRoom> MeetingRooms { get; set; }
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }
