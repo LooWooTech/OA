@@ -19,10 +19,6 @@ namespace Loowoo.Land.OA.Managers
         public void Save(MeetingRoom model)
         {
             model.Number = model.Number.ToUpper();
-            if (DB.MeetingRooms.Any(e => e.Number == model.Number && (e.ID == 0 || e.ID != model.ID)))
-            {
-                throw new Exception("该车牌号已被使用");
-            }
 
             DB.MeetingRooms.AddOrUpdate(model);
             DB.SaveChanges();
@@ -37,10 +33,33 @@ namespace Loowoo.Land.OA.Managers
         {
             if (DB.FormInfoApplies.Any(e => e.InfoId == id))
             {
-                throw new Exception("车辆已被使用，无法删除");
+                throw new Exception("会议室已被使用，无法删除");
             }
             var entity = Get(id);
             entity.Deleted = true;
+            DB.SaveChanges();
+        }
+
+        public void Apply(FormInfoExtend1 data)
+        {
+            var model = Get(data.InfoId);
+            var info = new FormInfo
+            {
+                ExtendId = data.InfoId,
+                Title = "申请会议室：" + model.Name + "（" + model.Number + "）",
+                FormId = (int)FormType.MeetingRoom,
+                PostUserId = data.UserId,
+            };
+            info.Form = Core.FormManager.GetModel(FormType.MeetingRoom);
+
+            Core.FormInfoManager.Save(info);
+            Core.FormInfoApplyManager.Apply(info, data);
+        }
+
+        public void UpdateStatus(int roomId, MeetingRoomStatus status)
+        {
+            var car = Get(roomId);
+            car.Status = status;
             DB.SaveChanges();
         }
     }

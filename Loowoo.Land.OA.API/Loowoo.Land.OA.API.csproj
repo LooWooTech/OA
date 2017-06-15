@@ -143,6 +143,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Common\FileHelper.cs" />
+    <Compile Include="Controllers\SealController.cs" />
+    <Compile Include="Controllers\MeetingRoomController.cs" />
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\AttendanceController.cs" />

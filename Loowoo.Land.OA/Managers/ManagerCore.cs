@@ -55,6 +55,8 @@ namespace Loowoo.Land.OA.Managers
         public JobTitleManager JobTitleManager { get; private set; }
 
         public CarManager CarManager { get; private set; }
+        public MeetingRoomManager MeetingRoomManager { get; private set; }
+        public SealManager SealManager { get; private set; }
 
         public FeedManager UserActionManager { get; private set; }
 

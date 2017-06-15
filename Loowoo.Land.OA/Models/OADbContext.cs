@@ -41,6 +41,7 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<MeetingRoom> MeetingRooms { get; set; }
+        public DbSet<Seal> Seals { get; set; }
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }

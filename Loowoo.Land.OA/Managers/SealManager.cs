@@ -9,35 +9,29 @@ using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class CarManager : ManagerBase
+    public class SealManager : ManagerBase
     {
-        public IEnumerable<Car> GetList()
+        public IEnumerable<Seal> GetList()
         {
-            return DB.Cars.Where(e => !e.Deleted);
+            return DB.Seals.Where(e => !e.Deleted);
         }
 
-        public void Save(Car model)
+        public void Save(Seal model)
         {
-            model.Number = model.Number.ToUpper();
-            if (DB.Cars.Any(e => e.Number == model.Number && (e.ID == 0 || e.ID != model.ID)))
-            {
-                throw new Exception("该车牌号已被使用");
-            }
-
-            DB.Cars.AddOrUpdate(model);
+            DB.Seals.AddOrUpdate(model);
             DB.SaveChanges();
         }
 
-        public Car Get(int id)
+        public Seal Get(int id)
         {
-            return DB.Cars.FirstOrDefault(e => e.ID == id);
+            return DB.Seals.FirstOrDefault(e => e.ID == id);
         }
 
         public void Delete(int id)
         {
             if (DB.FormInfoApplies.Any(e => e.InfoId == id))
             {
-                throw new Exception("车辆已被使用，无法删除");
+                throw new Exception("会议室已被使用，无法删除");
             }
             var entity = Get(id);
             entity.Deleted = true;
@@ -50,20 +44,20 @@ namespace Loowoo.Land.OA.Managers
             var info = new FormInfo
             {
                 ExtendId = data.InfoId,
-                Title = "申请用车：" + model.Name + "（" + model.Number + "）",
-                FormId = (int)FormType.Car,
+                Title = "申请会议室：" + model.Name,
+                FormId = (int)FormType.Seal,
                 PostUserId = data.UserId,
             };
-            info.Form = Core.FormManager.GetModel(FormType.Car);
+            info.Form = Core.FormManager.GetModel(FormType.Seal);
 
             Core.FormInfoManager.Save(info);
             Core.FormInfoApplyManager.Apply(info, data);
         }
 
-        public void UpdateStatus(int carId, CarStatus status)
+        public void UpdateStatus(int roomId, SealStatus status)
         {
-            var model = Get(carId);
-            model.Status = status;
+            var car = Get(roomId);
+            car.Status = status;
             DB.SaveChanges();
         }
     }

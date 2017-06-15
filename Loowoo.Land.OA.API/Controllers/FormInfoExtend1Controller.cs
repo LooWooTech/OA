@@ -62,8 +62,10 @@ namespace Loowoo.Land.OA.API.Controllers
                         Core.CarManager.UpdateStatus(model.InfoId, CarStatus.Using);
                         break;
                     case FormType.MeetingRoom:
+                        Core.MeetingRoomManager.UpdateStatus(model.InfoId, MeetingRoomStatus.Using);
                         break;
                     case FormType.Seal:
+                        Core.SealManager.UpdateStatus(model.InfoId, SealStatus.Using);
                         break;
                 }
             }
@@ -93,8 +95,10 @@ namespace Loowoo.Land.OA.API.Controllers
                         Core.CarManager.UpdateStatus(apply.InfoId, CarStatus.Unused);
                         break;
                     case FormType.MeetingRoom:
+                        Core.MeetingRoomManager.UpdateStatus(apply.InfoId, MeetingRoomStatus.Unused);
                         break;
                     case FormType.Seal:
+                        Core.SealManager.UpdateStatus(apply.InfoId, SealStatus.Unused);
                         break;
                 }
             }

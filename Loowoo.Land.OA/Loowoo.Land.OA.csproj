@@ -67,9 +67,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
+    <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
     <Compile Include="Models\CheckStatus.cs" />
     <Compile Include="Models\FormInfoExtend1.cs" />
+    <Compile Include="Models\Seal.cs" />
     <Compile Include="Parameters\Extend1Parameter.cs" />
     <Compile Include="Managers\AttendanceManager.cs" />
     <Compile Include="Managers\CarManager.cs" />

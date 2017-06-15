@@ -1,10 +1,38 @@
+--2017-06-15
+
+CREATE TABLE `meetingroom` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(50) NOT NULL,
+	`Number` VARCHAR(50) NOT NULL,
+	`UpdateTime` DATETIME NULL DEFAULT NULL,
+	`Type` INT(11) NOT NULL,
+	`Status` INT(11) NOT NULL,
+	`Deleted` BIT(1) NOT NULL,
+	`PhotoId` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=8
+;
+CREATE TABLE `seal` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Deleted` BIT(1) NOT NULL DEFAULT b'0',
+	`Name` VARCHAR(50) NOT NULL,
+	`Status` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+
 --2017-06-14
 ALTER TABLE `car_apply`
 	ALTER `CarId` DROP DEFAULT;
 ALTER TABLE `car_apply`
 	CHANGE COLUMN `CarId` `InfoId` INT(11) NOT NULL AFTER `ID`;
 RENAME TABLE `car_apply` TO `form_info_extend1`;
-
 
 --2017-06-09
 ALTER TABLE `car_apply`
