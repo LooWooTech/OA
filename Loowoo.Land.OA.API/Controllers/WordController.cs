@@ -25,27 +25,31 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
+        private string GetFilePath(string savePath)
+        {
+            return Path.Combine(_uploadDir, savePath);
+        }
+
         public ActionResult Get(int id)
         {
             var file = Core.FileManager.GetModel(id);
             if (file == null) throw new Exception("文件未找到");
-            var fileExt = Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(_uploadDir, file.SavePath);
+
             //如果是word文档，则需要转为pdf 并替换原来的word文件
-            if (fileExt.EndsWith("doc") || fileExt.EndsWith("docx"))
+            if (file.IsWordFile)
             {
-                Session["CurrentWordFilePath"] = filePath;
                 var page = new Page();
                 string controlOutput = string.Empty;
                 PageOffice.PageOfficeCtrl pc = new PageOffice.PageOfficeCtrl
                 {
-                    SaveFilePage = "/Word/SaveDoc",
+                    SaveFilePage = "/Word/SaveDoc?id=" + id,
                     ServerPage = "/pageoffice/server.aspx",
                     Menubar = false,
                     CustomToolbar = false,
-                    Caption = file.FileName
+                    Caption = file.FileName,
+
                 };
-                pc.WebOpen(filePath, PageOffice.OpenModeType.docAdmin, CurrentUser != null ? CurrentUser.RealName : "未知");
+                pc.WebOpen(file.PhysicalSavePath, PageOffice.OpenModeType.docAdmin, CurrentUser != null ? CurrentUser.RealName : "未知");
                 page.Controls.Add(pc);
                 var sb = new StringBuilder();
                 using (var sw = new StringWriter(sb))
@@ -61,21 +65,20 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
-                return File(filePath, FileController.GetContentType(file.FileName));
+                return File(file.ServerSavePath, file.ContentType);
             }
         }
 
-        public ActionResult SaveDoc()
+        public ActionResult SaveDoc(int id)
         {
-            var filePath = Session["CurrentWordFilePath"] as string;
-            if (filePath != null)
+            var file = Core.FileManager.GetModel(id);
+            if (file == null)
             {
-                PageOffice.FileSaver fs = new PageOffice.FileSaver();
-                filePath = Server.MapPath(filePath);
-                fs.SaveToFile(filePath);
-                fs.Close();
+                throw new Exception("文件未找到");
             }
-
+            var fs = new PageOffice.FileSaver();
+            fs.SaveToFile(file.ServerSavePath);
+            fs.Close();
             return View();
         }
 

@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class MissiveController : ControllerBase
     {
         [HttpGet]
-        public object Get(int id)
+        public object Model(int id)
         {
             return Core.MissiveManager.GetModel(id);
         }
@@ -22,24 +22,20 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
         {
-            var parameter = new UserFormInfoParameter
+            var parameter = new FormInfoParameter
             {
                 FormId = formId,
                 Status = status,
                 Page = new PageParameter(page, rows),
                 UserId = CurrentUser.ID,
                 PostUserId = postUserId,
-                Completed = completed
+                Completed = completed,
+                SearchKey = searchKey,
             };
             var list = Core.UserFormInfoManager.GetList(parameter);
 
-            var infoIds = list.Select(e => e.InfoId).ToArray();
-            var datas = Core.MissiveManager.GetList(new Parameters.MissiveParameter
-            {
-                Ids = infoIds,
-                //FormId = formId,
-                SearchKey = searchKey,
-            });
+            var datas = Core.MissiveManager.GetList(parameter);
+
             return new PagingResult
             {
                 List = datas.Select(e => new

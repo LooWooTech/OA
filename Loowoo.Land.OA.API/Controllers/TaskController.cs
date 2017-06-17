@@ -1,162 +1,112 @@
-﻿using Loowoo.Land.OA.Models;
-using Loowoo.Land.OA.Parameters;
-using System;
-using System.Collections.Generic;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
 {
-    /// <summary>
-    /// 任务管理
-    /// </summary>
-    public class TaskController : LoginControllerBase
+    public class TaskController : ControllerBase
     {
-        /// <summary>
-        /// 作用：创建任务
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日15:26:42
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IHttpActionResult Save([FromBody] Task task)
-        {
-            TaskName = "任务登记";
-            if (task == null || string.IsNullOrEmpty(task.Title) || string.IsNullOrEmpty(task.Content))
-            {
-                return BadRequest($"{TaskName}：任务信息为空、任务标题为空、任务内容为空");
-            }
-            if (task.CreatorID == 0)
-            {
-                return BadRequest($"{TaskName}：任务创建用户ID为0");
-            }
-            var user = Core.UserManager.Get(task.CreatorID);
-            if (user == null)
-            {
-                return BadRequest($"{TaskName}：当前系统未找到创建者信息");
-            }
-            var id = 0;
-            try
-            {
-                id=  Core.TaskManager.Save(task);
-                if (id <= 0)
-                {
-                    return BadRequest($"{TaskName}:任务创建失败");
-                }
-
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, TaskName);
-                return BadRequest($"{TaskName}发生错误");
-            }
-            try
-            {
-                //var flowId = Core.FlowManager.Save(new Flow { Name = task.Title, InfoID = id, InfoType = 2 });
-                //if (flowId > 0)
-                //{
-                //    return Ok();
-                //}
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, $"{TaskName}-Flow信息表创建");
-            }
-            return BadRequest($"{TaskName}:任务保存成功，但是信息关联表FLOW保存失败");
-
-        }
-
-        /// <summary>
-        /// 作用：任务编辑
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日15:59:57
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        [HttpPut]
-        public IHttpActionResult Edit([FromBody] Task task)
-        {
-            TaskName = "任务编辑";
-            if (task == null || task.ID == 0)
-            {
-                return BadRequest($"{TaskName}:请核对任务内容，以及需要编辑任务的ID");
-            }
-            try
-            {
-                if (Core.TaskManager.Edit(task))
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest("编辑失败，未找到编辑的任务信息");
-                }
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, TaskName);
-            }
-            return BadRequest($"{TaskName}:编辑发生错误");
-        }
-
-        /// <summary>
-        /// 作用：获取任务信息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:03:09
-        /// </summary>
-        /// <param name="id">任务ID</param>
-        /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Get(int id)
+        public object Model(int id)
         {
-            TaskName = "获取任务";
-            if (id <= 0)
-            {
-                return BadRequest($"{TaskName}:ID参数不正确");
-            }
-            var task = Core.TaskManager.Get(id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-            return Ok(task);
+            return Core.TaskManager.GetModel(id);
         }
-        /// <summary>
-        /// 作用：任务删除
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:23:21
-        /// </summary>
-        /// <param name="id">任务ID</param>
+
+        [HttpGet]
+        public void UpdateZRR(int id)
+        {
+            var info = Core.FormInfoManager.GetModel(id);
+            //判断当前流程是不是走到了第二步，如果是，第二步的接收人为任务的责任人
+            if (info.FlowData.Nodes.Count == 2)
+            {
+                var lastNodeData = info.FlowData.Nodes[1];
+                var model = Core.TaskManager.GetModel(id);
+                model.ZRR_ID = lastNodeData.UserId;
+                Core.TaskManager.Save(model);
+            }
+        }
+
+        [HttpGet]
+        public object List(string searchKey = null, FlowStatus? status = null, int page = 1, int rows = 20)
+        {
+            var form = Core.FormManager.GetModel(FormType.Task);
+            var parameter = new FormInfoParameter
+            {
+                FormId = form.ID,
+                Status = status,
+                Page = new PageParameter(page, rows),
+                UserId = CurrentUser.ID,
+                SearchKey = searchKey
+            };
+            var datas = Core.TaskManager.GetList(parameter);
+            return new PagingResult
+            {
+                List = datas.Select(e => new
+                {
+                    e.ID,
+                    e.MC,
+                    e.JH_SJ,
+                    e.LY,
+                    e.LY_LX,
+                    e.XB_DW,
+                    e.ZB_DW,
+                    ZRR_Name = e.ZRR == null ? null : e.ZRR.RealName,
+                    e.GZ_MB,
+                    e.Info.FormId,
+                    e.Info.CreateTime,
+                    e.Info.UpdateTime,
+                    e.Info.FlowStep,
+                    e.Info.FlowDataId,
+                }),
+                Page = parameter.Page
+            };
+        }
+
+        [HttpPost]
+        public void Save([FromBody]Task data)
+        {
+            var form = Core.FormManager.GetModel(FormType.Task);
+            var isAdd = data.ID == 0;
+            //判断id，如果不存在则创建forminfo
+            if (data.ID == 0)
+            {
+                data.Info = new FormInfo
+                {
+                    FormId = form.ID,
+                    PostUserId = CurrentUser.ID,
+                    Title = data.MC
+                };
+                Core.FormInfoManager.Save(data.Info);
+            }
+            else
+            {
+                data.Info = Core.FormInfoManager.GetModel(data.ID);
+                data.Info.Title = data.MC;
+            }
+            if (data.Info.FlowDataId == 0)
+            {
+                data.Info.Form = form;
+                Core.FlowDataManager.CreateFlowData(data.Info);
+            }
+            data.ID = data.Info.ID;
+            Core.TaskManager.Save(data);
+
+            Core.FeedManager.Save(new Feed
+            {
+                InfoId = data.ID,
+                Title = data.MC,
+                Description = data.GZ_MB,
+                FromUserId = CurrentUser.ID,
+                Action = isAdd ? UserAction.Create : UserAction.Update,
+            });
+        }
+
         [HttpDelete]
         public void Delete(int id)
         {
-            TaskName = "任务删除";
-            try
-            {
-                Core.TaskManager.Delete(id);
+            Core.TaskManager.Delete(id);
+        }
 
-            }catch(Exception ex)
-            {
-                LogWriter.WriteException(ex, TaskName);
-            }
-        }
-        /// <summary>
-        /// 作用：任务查询
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:22:54
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public List<Task> Search(int page,int rows)
-        {
-            var parameter = new TaskParameter
-            {
-                Page = new Loowoo.Common.PageParameter(page, rows)
-            };
-            var list = Core.TaskManager.Search(parameter);
-            return list;
-        }
     }
 }

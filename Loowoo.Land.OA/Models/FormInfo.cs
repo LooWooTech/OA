@@ -77,18 +77,4 @@ namespace Loowoo.Land.OA.Models
         public string Title { get; set; }
     }
 
-    public class FormInfoParameter
-    {
-        public int FormId { get; set; }
-
-        public int CategoryId { get; set; }
-
-        public int PostUserId { get; set; }
-
-        public DateTime? BeginTime { get; set; }
-
-        public DateTime? EndTime { get; set; }
-
-        public PageParameter Page { get; set; }
-    }
 }

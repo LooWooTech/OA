@@ -10,7 +10,7 @@ namespace Loowoo.Land.OA.Managers
 {
     public class UserFormInfoManager : ManagerBase
     {
-        public IQueryable<UserFormInfo> GetList(UserFormInfoParameter parameter)
+        public IQueryable<UserFormInfo> GetList(FormInfoParameter parameter)
         {
             var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
             if (parameter.UserId > 0)

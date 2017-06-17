@@ -31,13 +31,4 @@ namespace Loowoo.Land.OA.Models
 
         public int FlowNodeDataId { get; set; }
     }
-
-    public class UserFormInfoParameter : FormInfoParameter
-    {
-        public FlowStatus? Status { get; set; }
-
-        public int UserId { get; set; }
-
-        public bool? Completed { get; set; }
-    }
 }

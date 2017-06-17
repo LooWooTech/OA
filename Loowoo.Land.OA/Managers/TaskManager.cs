@@ -8,97 +8,51 @@ using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class TaskManager:ManagerBase
+    public class TaskManager : ManagerBase
     {
-        /// <summary>
-        /// 作用：保存任务  返回任务ID
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日15:01:56
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        public int Save(Task task)
+        public IEnumerable<Task> GetList(FormInfoParameter parameter)
         {
-            using (var db = GetDbContext())
+            var infos = Core.UserFormInfoManager.GetList(parameter);
+            parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
+
+            var query = DB.Tasks.AsQueryable();
+            if (parameter.InfoIds != null)
             {
-                db.Tasks.Add(task);
-                db.SaveChanges();
-                return task.ID;
+                query = query.Where(e => parameter.InfoIds.Contains(e.ID));
             }
-        }
-        /// <summary>
-        /// 作用：任务编辑  成功：true 
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日15:49:24
-        /// </summary>
-        /// <param name="task"></param>
-        /// <returns></returns>
-        public bool Edit(Task task)
-        {
-            using (var db = GetDbContext())
+            if (parameter.FormId > 0)
             {
-                var entry = db.Tasks.Find(task.ID);
-                if (entry != null)
-                {
-                    db.Entry(entry).CurrentValues.SetValues(task);
-                    db.SaveChanges();
-                    return true;
-                }
-                return false;
+                query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
+            if (!string.IsNullOrEmpty(parameter.SearchKey))
+            {
+                query = query.Where(e => e.MC.Contains(parameter.SearchKey));
+            }
+            return query.OrderByDescending(e => e.ID);
         }
 
-        /// <summary>
-        /// 作用：通过ID获取任务
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:02:23
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Task Get(int id)
+        public void Save(Task data)
         {
-            using (var db = GetDbContext())
+            var entity = DB.Tasks.FirstOrDefault(e => e.ID == data.ID);
+            if (entity == null)
             {
-                return db.Tasks.Find(id);
+                DB.Tasks.Add(data);
             }
+            else
+            {
+                DB.Entry(entity).CurrentValues.SetValues(data);
+            }
+            DB.SaveChanges();
         }
 
-        /// <summary>
-        /// 作用：删除任务
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:05:03
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Delete(int id)
+        public Task GetModel(int id)
         {
-            using (var db = GetDbContext())
-            {
-                var entry = db.Tasks.Find(id);
-                if (entry != null)
-                {
-                    entry.Deleted = true;
-                    db.SaveChanges();
-                    return true;
-                }
-                return false;
-            }
+            return DB.Tasks.FirstOrDefault(e => e.ID == id);
         }
-        /// <summary>
-        /// 作用：任务查询
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:10:29
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public List<Task> Search(TaskParameter parameter)
+
+        public void Delete(int id)
         {
-            using (var db = GetDbContext())
-            {
-                var query = db.Tasks.Where(e => e.Deleted == false).AsQueryable();
-                query = query.OrderByDescending(e => e.CreateTime).SetPage(parameter.Page);
-                return query.ToList();
-            }
+            
         }
     }
 }

@@ -61,21 +61,6 @@ namespace Loowoo.Land.OA.Managers
         public FeedManager UserActionManager { get; private set; }
 
         public MissiveManager MissiveManager { get; private set; }
-
-        //public SubScriptionManager SubScriptionManager { get; private set; }
-        //public FormManager FormManager { get; private set; }
-
-
-
-        //public UserFormManager UserFormManager { get; private set; }
-
-
-        //public InfoTypeManager InfoTypeManager { get; private set; }
-        //public DiaryManager DiaryManager { get; private set; }
-        //public StepManager StepManager { get; set; }
-        //public TaskManager TaskManager { get; private set; }
-        //public Car_EventLogManager Car_EventLogManager { get; private set; }
-        //public Meeting_RoomManager Meeting_RoomManager { get; private set; }
-        //public MeetingManager MeetingManager { get; private set; }
+        public TaskManager TaskManager { get; private set; }
     }
 }

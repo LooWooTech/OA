@@ -69,9 +69,11 @@
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
+    <Compile Include="Managers\TaskManager.cs" />
     <Compile Include="Models\CheckStatus.cs" />
     <Compile Include="Models\FormInfoExtend1.cs" />
     <Compile Include="Models\Seal.cs" />
+    <Compile Include="Models\TaskProgress.cs" />
     <Compile Include="Parameters\Extend1Parameter.cs" />
     <Compile Include="Managers\AttendanceManager.cs" />
     <Compile Include="Managers\CarManager.cs" />
@@ -143,11 +145,10 @@
     <Compile Include="Parameters\DocumentParameter.cs" />
     <Compile Include="Parameters\FeedParameter.cs" />
     <Compile Include="Parameters\FileParameter.cs" />
-    <Compile Include="Parameters\MissiveParameter.cs" />
+    <Compile Include="Parameters\FormInfoParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />
-    <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\UserParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

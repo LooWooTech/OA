@@ -16,7 +16,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object List(int formId = 0, int userId = 0, DateTime? beginTime = null, int page = 1, int rows = 20)
         {
-            var infoIds = Core.UserFormInfoManager.GetList(new UserFormInfoParameter
+            var infoIds = Core.UserFormInfoManager.GetList(new FormInfoParameter
             {
                 UserId = CurrentUser.ID
             }).GroupBy(e => e.InfoId).Select(g => g.Key).ToArray();
@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 FormId = formId,
                 InfoIds = infoIds,
                 BeginTime = DateTime.Today.AddMonths(-1),
-                ToUserId = CurrentUser.ID
+                UserId = CurrentUser.ID
             };
             var list = Core.FeedManager.GetList(parameter);
             return new PagingResult

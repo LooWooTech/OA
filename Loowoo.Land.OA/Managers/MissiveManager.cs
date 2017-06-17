@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,15 @@ namespace Loowoo.Land.OA.Managers
 {
     public class MissiveManager : ManagerBase
     {
-        public IEnumerable<Missive> GetList(MissiveParameter parameter)
+        public IEnumerable<Missive> GetList(FormInfoParameter parameter)
         {
+            var infos = Core.UserFormInfoManager.GetList(parameter);
+            parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
+
             var query = DB.Missives.AsQueryable();
-            if (parameter.Ids != null)
+            if (parameter.InfoIds != null)
             {
-                query = query.Where(e => parameter.Ids.Contains(e.ID));
+                query = query.Where(e => parameter.InfoIds.Contains(e.ID));
             }
             if (parameter.FormId > 0)
             {

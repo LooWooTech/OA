@@ -15,7 +15,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
         {
-            var parameter = new UserFormInfoParameter
+            var parameter = new FormInfoParameter
             {
                 FormId = formId,
                 Status = status,
