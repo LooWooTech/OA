@@ -39,6 +39,23 @@ namespace Loowoo.Common
             }
         }
 
+        public static void ReplaceContent(this XWPFDocument doc, string template, string content)
+        {
+            foreach (var p in doc.Paragraphs)
+            {
+                if (p.Text.Contains(template))
+                {
+                    foreach (var r in p.Runs)
+                    {
+                        if (r.Text.Contains(template))
+                        {
+                            r.SetText(r.Text.Replace(template, content));
+                        }
+                    }
+                }
+            }
+        }
+
         public static void SaveAs(this XWPFDocument doc, string savePath)
         {
             using (var ms = new MemoryStream())

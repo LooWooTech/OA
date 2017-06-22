@@ -100,7 +100,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     if (data.RedTitleId > 0)
                     {
                         var redTitle = Core.MissiveManager.GetRedTitle(data.RedTitleId);
-                        Core.FileManager.AddRedTitle(data.ContentId, redTitle);
+                        Core.MissiveManager.AddRedTitle(data, redTitle);
                     }
                 }
             }

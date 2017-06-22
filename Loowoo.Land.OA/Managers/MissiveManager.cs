@@ -1,6 +1,7 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
+using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -70,6 +71,20 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.MissiveRedTitles.AddOrUpdate(model);
             DB.SaveChanges();
+        }
+
+        public void AddRedTitle(Missive model, MissiveRedTitle redTitle)
+        {
+            if (model.ContentId > 0 && model.Content == null)
+            {
+                model.Content = Core.FileManager.GetModel(model.ContentId);
+            }
+            var fileDoc = WordHelper.CreateDoc(model.Content.PhysicalSavePath);
+            var redTitleDoc = WordHelper.CreateDoc(redTitle.Template.PhysicalSavePath);
+            var doc = new XWPFDocument(redTitleDoc.Package);
+            doc.CopyElements(fileDoc);
+            doc.ReplaceContent("{文件字号}", model.WJ_ZH);
+            doc.SaveAs(model.Content.ServerSavePath);
         }
     }
 }

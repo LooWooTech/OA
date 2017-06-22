@@ -101,15 +101,5 @@ namespace Loowoo.Land.OA.Managers
             }
             return true;
         }
-
-        public void AddRedTitle(int contentId, MissiveRedTitle redTitle)
-        {
-            var file = Core.FileManager.GetModel(contentId);
-            var fileDoc = WordHelper.CreateDoc(file.PhysicalSavePath);
-            var redTitleDoc = WordHelper.CreateDoc(redTitle.Template.PhysicalSavePath);
-            var doc = new XWPFDocument(redTitleDoc.Package);
-            doc.CopyElements(fileDoc);
-            doc.SaveAs(file.ServerSavePath);
-        }
     }
 }
