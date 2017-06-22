@@ -127,19 +127,23 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserViewModel> RecentList()
+        public IEnumerable<UserViewModel> RecentList(int formId = 0)
         {
             var userIds = Core.FeedManager.GetList(new FeedParameter
             {
+                FormId = formId,
                 BeginTime = DateTime.Today.AddDays(-30),
                 FromUserId = CurrentUser.ID,
                 Page = new PageParameter(1, 10)
             }).Where(e => e.ToUserId > 0).GroupBy(e => e.ToUserId).Select(g => g.Key).ToArray();
-
-            return Core.UserManager.GetList(new UserParameter
+            if (userIds.Length > 0)
             {
-                UserIds = userIds
-            }).Select(e => new UserViewModel(e));
+                return Core.UserManager.GetList(new UserParameter
+                {
+                    UserIds = userIds
+                }).Select(e => new UserViewModel(e));
+            }
+            return null;
 
         }
     }

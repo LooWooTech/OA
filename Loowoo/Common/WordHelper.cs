@@ -1,4 +1,7 @@
-﻿using NPOI.XWPF.UserModel;
+﻿using NPOI.OpenXml4Net.Exceptions;
+using NPOI.OpenXmlFormats.Dml;
+using NPOI.OpenXmlFormats.Dml.WordProcessing;
+using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +21,55 @@ namespace Loowoo.Common
             }
         }
 
+        public static void CopyElements(this XWPFDocument doc, XWPFDocument srcDoc)
+        {
+            var position = doc.Paragraphs.Count;
+            foreach (var element in srcDoc.BodyElements)
+            {
+                switch (element.ElementType)
+                {
+                    case BodyElementType.PARAGRAPH:
+                        var srcPr = (XWPFParagraph)element;
+                        doc.CopyStyle(srcDoc, srcDoc.GetStyles().GetStyle(srcPr.StyleID));
+                        doc.CreateParagraph();
+                        doc.SetParagraph(srcPr, position);
+                        break;
+                }
+                position++;
+            }
+        }
+
+        public static void SaveAs(this XWPFDocument doc, string savePath)
+        {
+            using (var ms = new MemoryStream())
+            {
+                doc.Write(ms);
+                ms.Flush();
+                using (var fs = new FileStream(savePath, FileMode.OpenOrCreate))
+                {
+                    var data = ms.ToArray();
+                    fs.Write(data, 0, data.Length);
+                    fs.Flush();
+                    data = null;
+                }
+            }
+        }
+
+        private static void CopyStyle(this XWPFDocument srcDoc, XWPFDocument destDoc, XWPFStyle style)
+        {
+            if (destDoc == null || style == null)
+                return;
+
+            if (destDoc.GetStyles() == null)
+            {
+                destDoc.CreateStyles();
+            }
+
+            foreach (var xwpfStyle in srcDoc.GetStyles().GetUsedStyleList(style))
+            {
+                destDoc.GetStyles().AddStyle(xwpfStyle);
+            }
+        }
         public static void WriteTitle(this XWPFDocument doc, string title, string styleId = null, ParagraphAlignment alignment = ParagraphAlignment.CENTER)
         {
             var p = doc.CreateParagraph();

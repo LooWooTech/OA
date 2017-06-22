@@ -21,6 +21,8 @@ namespace Loowoo.Land.OA.Models
         [ForeignKey("ID")]
         public virtual FormInfo Info { get; set; }
 
+        public int RedTitleId { get; set; }
+
         public string WJ_BT { get; set; }
         /// <summary>
         /// 文件字号
@@ -79,10 +81,10 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int GK_FB { get; set; }
 
-        public int WordId { get; set; }
+        public int ContentId { get; set; }
 
-        [ForeignKey("WordId")]
-        public virtual File Word { get; set; }
+        [ForeignKey("ContentId")]
+        public virtual File Content { get; set; }
     }
 
     /// <summary>

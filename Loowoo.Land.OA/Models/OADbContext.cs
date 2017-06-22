@@ -52,6 +52,8 @@ namespace Loowoo.Land.OA.Models
         public DbSet<CheckInOut> CheckInOuts { get; set; }
 
         public DbSet<Missive> Missives { get; set; }
+        public DbSet<MissiveRedTitle> MissiveRedTitles { get; set; }
+
         public DbSet<Task> Tasks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

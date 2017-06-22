@@ -90,10 +90,19 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             data.ID = data.Info.ID;
             Core.MissiveManager.Save(data);
-            if (data.WordId > 0)
+            if (data.ContentId > 0)
             {
-                data.Word = Core.FileManager.GetModel(data.WordId);
-                data.Word.InfoId = data.ID;
+                if (data.Content != null && data.Content.InfoId == 0)
+                {
+                    data.Content = Core.FileManager.GetModel(data.ContentId);
+                    data.Content.InfoId = data.ID;
+                    //添加红头
+                    if (data.RedTitleId > 0)
+                    {
+                        var redTitle = Core.MissiveManager.GetRedTitle(data.RedTitleId);
+                        Core.FileManager.AddRedTitle(data.ContentId, redTitle);
+                    }
+                }
             }
 
             Core.FeedManager.Save(new Feed
@@ -107,10 +116,10 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public void DeleteWord(int id)
+        public void DeleteContent(int id)
         {
             var model = Core.MissiveManager.GetModel(id);
-            model.WordId = 0;
+            model.ContentId = 0;
             Core.MissiveManager.Save(model);
         }
 
@@ -119,5 +128,20 @@ namespace Loowoo.Land.OA.API.Controllers
         {
         }
 
+        [HttpGet]
+        public object RedTitles()
+        {
+            return Core.MissiveManager.GetRedTitles();
+        }
+
+        [HttpPost]
+        public void SaveRedTitle(MissiveRedTitle model)
+        {
+            if (model.TemplateId == 0)
+            {
+                model.Template = null;
+            }
+            Core.MissiveManager.SaveRedTitle(model);
+        }
     }
 }

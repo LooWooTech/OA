@@ -51,5 +51,25 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.Missives.FirstOrDefault(e => e.ID == id);
         }
+
+        public MissiveRedTitle GetRedTitle(int id)
+        {
+            return DB.MissiveRedTitles.Find(id);
+        }
+
+        public IEnumerable<MissiveRedTitle> GetRedTitles()
+        {
+            return DB.MissiveRedTitles;
+        }
+
+        public void SaveRedTitle(MissiveRedTitle model)
+        {
+            if (DB.MissiveRedTitles.Any(e => e.Name == model.Name && e.ID != model.ID))
+            {
+                throw new Exception("该文件字已经添加过");
+            }
+            DB.MissiveRedTitles.AddOrUpdate(model);
+            DB.SaveChanges();
+        }
     }
 }

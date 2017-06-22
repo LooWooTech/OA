@@ -1,4 +1,83 @@
---2017-06-15
+#2017-06-22
+ALTER TABLE `missive`
+	ADD COLUMN `RedTitleId` INT(11) NOT NULL AFTER `ID`;
+
+ALTER TABLE `missive`
+	CHANGE COLUMN `WordId` `ContentId` INT(11) NULL DEFAULT NULL AFTER `RedTitleId`;
+
+
+#2017-06-21 已经执行
+#把已经结束流程的 更新到归档箱
+--update user_form_info
+--set status=3
+--where status!=3 and infoid in (
+--select i.ID 
+--from form_info i
+--left join flow_data f
+--on i.ID = f.InfoId
+--where completed =1
+--)
+
+--#更新已读的
+--update user_form_info uf
+--join freeflow_nodedata ffnd
+--on uf.UserID = ffnd.UserId
+--join flow_node_data fnd
+--on ffnd.freeflowdataid = fnd.ID
+--join flow_data fd
+--on fnd.FlowDataId = fd.ID
+-- set status=2
+--where ffnd.updatetime is not null and uf.InfoID =fd.InfoId
+
+--#删除不该存在的user_form_info
+
+-- CREATE TEMPORARY TABLE IF NOT EXISTS Temp_UserFlowInfo(
+-- 	ID INT(11)
+-- );
+ 
+-- insert into Temp_UserFlowInfo (id) (select uf.id from user_form_info uf
+--	join
+--	(select fd.infoid as infoid,ffnd.userid from freeflow_nodedata ffnd
+--		join flow_node_data fnd
+--		on ffnd.freeflowdataid = fnd.ID
+--		join flow_data fd
+--		on fnd.FlowDataId = fd.ID
+--		where ffnd.updatetime is not null
+--	) ufr
+--	on uf.InfoID = ufr.infoid and uf.userid = ufr.userid);
+	
+--	 insert into Temp_UserFlowInfo (id) (select uf.id from user_form_info uf
+--	join
+--	(select fnd.UserId ,fd.InfoId from flow_node_data fnd
+--		join flow_node fn
+--		on fnd.flownodeid = fn.id
+--		join flow_data fd
+--		on fnd.FlowDataId = fd.ID
+--	) ufr
+--	on uf.InfoID = ufr.infoid and uf.userid = ufr.userid);
+	
+--	delete from user_form_info where id not in(select * from Temp_UserFlowInfo);
+--	DROP TEMPORARY TABLE IF EXISTS Temp_UserFlowInfo
+
+#2017-06-20
+RENAME TABLE `organization` TO `department`;
+
+ALTER TABLE `user`
+	ADD COLUMN `Sort` INT NOT NULL AFTER `Password`;
+
+
+CREATE TABLE `missive_redtitle` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(50) NOT NULL,
+	`FormId` INT(11) NOT NULL DEFAULT '0',
+	`TemplateId` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+#2017-06-15
 
 CREATE TABLE `meetingroom` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
@@ -59,20 +138,20 @@ ENGINE=InnoDB
 
 
 
---2017-06-14
+#2017-06-14
 ALTER TABLE `car_apply`
 	ALTER `CarId` DROP DEFAULT;
 ALTER TABLE `car_apply`
 	CHANGE COLUMN `CarId` `InfoId` INT(11) NOT NULL AFTER `ID`;
 RENAME TABLE `car_apply` TO `form_info_extend1`;
 
---2017-06-09
+#2017-06-09
 ALTER TABLE `car_apply`
 	ADD COLUMN `ApprovalUserId` INT NOT NULL AFTER `CreateTime`,
 	ADD INDEX `ApprovalUserId` (`ApprovalUserId`);
 
 
---2017-06-06
+#2017-06-06
 CREATE TABLE `car_apply` (
 	`ID` INT(11) NOT NULL,
 	`CarId` INT(11) NOT NULL,
@@ -92,7 +171,7 @@ CREATE TABLE `car_apply` (
 ENGINE=InnoDB
 ;
 
---2017-05-26 zlj
+#2017-05-26 zlj
 
 ALTER TABLE `missive`
 	ALTER `MJ` DROP DEFAULT;

@@ -13,8 +13,6 @@ namespace Loowoo.Land.OA.API.Controllers
 
     public class WordController : Controller
     {
-        private string _uploadDir = AppSettings.Get("UploadPath") ?? "/upload_files/";
-
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected UserIdentity CurrentUser
@@ -23,11 +21,6 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return (UserIdentity)Thread.CurrentPrincipal.Identity;
             }
-        }
-
-        private string GetFilePath(string savePath)
-        {
-            return Path.Combine(_uploadDir, savePath);
         }
 
         public ActionResult Get(int id)
@@ -65,7 +58,8 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
-                return File(file.ServerSavePath, file.ContentType);
+                Response.Expires = -1;
+                return File(file.PhysicalSavePath, file.ContentType);
             }
         }
 

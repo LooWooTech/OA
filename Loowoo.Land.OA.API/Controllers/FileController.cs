@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 };
             }
             var result = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(file.ServerSavePath, FileMode.Open, FileAccess.Read);
+            var stream = new FileStream(file.PhysicalSavePath, FileMode.Open, FileAccess.Read);
             result.Content = new StreamContent(stream);
 
             result.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);

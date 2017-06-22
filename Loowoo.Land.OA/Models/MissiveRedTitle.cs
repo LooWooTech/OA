@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    /// <summary>
-    /// 部门
-    /// </summary>
-    [Table("department")]
-    public class Department
+    [Table("missive_redtitle")]
+   public class MissiveRedTitle
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
-        public int ParentId { get; set; }
 
         public string Name { get; set; }
 
-        public int Sort { get; set; }
+        public int TemplateId { get; set; }
+
+        public int FormId { get; set; }
+
+        [ForeignKey("TemplateId")]
+        public virtual File Template { get; set; } = null;
     }
 }

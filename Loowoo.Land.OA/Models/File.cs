@@ -51,6 +51,7 @@ namespace Loowoo.Land.OA.Models
         {
             get
             {
+                if (Size == 0) return "";
                 var k = 1024;
                 var arr = new[] { "B", "K", "M", "G", "P", "B" };
                 var i = (int)Math.Log(Size, k);
@@ -105,41 +106,37 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
-        public static string GetPhysicalSavePath(string savePath)
+        public static string GetPhysicalSavePath(string fileName)
         {
-            return System.IO.Path.Combine(Environment.CurrentDirectory, GetServerSavePath(savePath));
+            if (string.IsNullOrEmpty(fileName)) return null;
+            return System.IO.Path.Combine(Environment.CurrentDirectory, GetServerSavePath(fileName));
         }
 
-        public static string GetServerSavePath(string savePath)
+        public static string GetServerSavePath(string fileName)
         {
-            return System.IO.Path.Combine(_uploadDir, savePath);
+            if (string.IsNullOrEmpty(fileName)) return null;
+            return System.IO.Path.Combine(_uploadDir, fileName);
         }
 
         public static string Upload(HttpPostedFile inputFile)
         {
-            if (!System.IO.Directory.Exists(_uploadDir))
+            var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
+            if (!System.IO.Directory.Exists(dir))
             {
-                System.IO.Directory.CreateDirectory(_uploadDir);
+                System.IO.Directory.CreateDirectory(dir);
             }
             var fileExt = System.IO.Path.GetExtension(inputFile.FileName);
             var fileName = DateTime.Now.Ticks + inputFile.ContentLength + fileExt;
-            inputFile.SaveAs(System.IO.Path.Combine(Environment.CurrentDirectory, GetServerSavePath(fileName)));
+            inputFile.SaveAs(GetPhysicalSavePath(fileName));
             return fileName;
         }
-        
+
         #region content types
         private static readonly string ContentTypes = @"ez,application/andrew-inset
 hqx,application/mac-binhex40
 cpt,application/mac-compactpro
 doc,application/msword
-bin,application/octet-stream
-dms,application/octet-stream
-lha,application/octet-stream
-lzh,application/octet-stream
-exe,application/octet-stream
 class,application/octet-stream
-so,application/octet-stream
-dll,application/octet-stream
 oda,application/oda
 pdf,application/pdf
 ai,application/postscript

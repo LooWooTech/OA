@@ -117,6 +117,8 @@ namespace Loowoo.Land.OA.Managers
                 entity.JobTitleId = model.JobTitleId;
                 entity.RealName = model.RealName;
                 entity.Role = model.Role;
+                entity.Sort = model.Sort;
+
             }
             DB.SaveChanges();
         }

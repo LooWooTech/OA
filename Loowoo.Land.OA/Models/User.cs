@@ -48,6 +48,8 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public string Token { get; set; }
 
+        public int Sort { get; set; }
+
         public bool HasRight(string rightName)
         {
             return UserGroups.Any(e => e.Group.Rights.Any(r => r.Name.Contains(rightName)));

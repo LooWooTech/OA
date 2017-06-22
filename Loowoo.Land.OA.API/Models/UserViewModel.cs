@@ -18,6 +18,7 @@ namespace Loowoo.Land.OA.API.Models
             JobTitleId = user.JobTitleId;
             Username = user.Username;
             Role = user.Role;
+            Sort = user.Sort;
             Departments = user.UserDepartments.Select(d => new
             {
                 Name = d.Department == null ? null : d.Department.Name,
@@ -39,6 +40,8 @@ namespace Loowoo.Land.OA.API.Models
         public int JobTitleId { get; set; }
 
         public UserRole Role { get; set; }
+
+        public int Sort { get; set; }
 
         public IEnumerable<dynamic> Departments { get; set; }
         public IEnumerable<dynamic> Groups { get; set; }
