@@ -22,7 +22,7 @@ namespace Loowoo.Land.OA.API.Controllers
             };
             return new PagingResult
             {
-                List = Core.FormInfoApplyManager.GetList(parameter).Select(e => new
+                List = Core.FormInfoExtend1Manager.GetList(parameter).Select(e => new
                 {
                     e.ID,
                     e.UserId,
@@ -53,9 +53,9 @@ namespace Loowoo.Land.OA.API.Controllers
             //如果流程审批完成
             if (info.FlowData.Completed)
             {
-                var model = Core.FormInfoApplyManager.Get(infoId);
+                var model = Core.FormInfoExtend1Manager.Get(infoId);
                 model.Result = info.FlowData.GetLastNodeData().Result.Value;
-                Core.FormInfoApplyManager.Save(model);
+                Core.FormInfoExtend1Manager.Save(model);
                 switch (info.Form.FormType)
                 {
                     case FormType.Car:
@@ -75,7 +75,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Back(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            var apply = Core.FormInfoApplyManager.Get(infoId);
+            var apply = Core.FormInfoExtend1Manager.Get(infoId);
             if (apply == null)
             {
                 throw new Exception("参数错误");
@@ -88,7 +88,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 apply.RealEndTime = DateTime.Now;
                 apply.UpdateTime = DateTime.Now;
 
-                Core.FormInfoApplyManager.Save(apply);
+                Core.FormInfoExtend1Manager.Save(apply);
                 switch (info.Form.FormType)
                 {
                     case FormType.Car:

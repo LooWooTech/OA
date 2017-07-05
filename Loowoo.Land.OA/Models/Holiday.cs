@@ -24,11 +24,14 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 节假日起始时间
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public DateTime BeginDate { get; set; }
         /// <summary>
         /// 节假日结束时间
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public DateTime EndDate { get; set; }
+
         public DateTime CreateTime { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

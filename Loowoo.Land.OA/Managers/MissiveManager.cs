@@ -75,6 +75,10 @@ namespace Loowoo.Land.OA.Managers
 
         public void AddRedTitle(Missive model, MissiveRedTitle redTitle)
         {
+            if (redTitle.TemplateId == 0 || redTitle.Template == null)
+            {
+                return;
+            }
             if (model.ContentId > 0 && model.Content == null)
             {
                 model.Content = Core.FileManager.GetModel(model.ContentId);

@@ -25,6 +25,8 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public int InfoId { get; set; }
 
+        public int Category { get; set; }
+
         public virtual FormInfo Info { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;

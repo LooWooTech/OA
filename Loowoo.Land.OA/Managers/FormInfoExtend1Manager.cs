@@ -16,7 +16,7 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         public IEnumerable<FormInfoExtend1> GetList(Extend1Parameter parameter)
         {
-            var query = DB.FormInfoApplies.AsQueryable();
+            var query = DB.FormInfoExtend1s.AsQueryable();
             if (parameter.InfoId > 0)
             {
                 query = query.Where(e => e.InfoId == parameter.InfoId);
@@ -32,6 +32,10 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.Result.HasValue)
             {
                 query = query.Where(e => e.Result == parameter.Result.Value);
+            }
+            if (parameter.Category.HasValue)
+            {
+                query = query.Where(e => e.Category == parameter.Category.Value);
             }
             switch (parameter.Status)
             {
@@ -49,18 +53,18 @@ namespace Loowoo.Land.OA.Managers
 
         public FormInfoExtend1 Get(int id)
         {
-            return DB.FormInfoApplies.FirstOrDefault(e => e.ID == id);
+            return DB.FormInfoExtend1s.FirstOrDefault(e => e.ID == id);
         }
 
         public void Save(FormInfoExtend1 data)
         {
-            DB.FormInfoApplies.AddOrUpdate(data);
+            DB.FormInfoExtend1s.AddOrUpdate(data);
             DB.SaveChanges();
         }
 
         public bool HasApply(FormInfoExtend1 data)
         {
-            return DB.FormInfoApplies.Any(e => e.InfoId == data.InfoId
+            return DB.FormInfoExtend1s.Any(e => e.InfoId == data.InfoId
             && e.Result == null
             && e.UserId == data.UserId
             );

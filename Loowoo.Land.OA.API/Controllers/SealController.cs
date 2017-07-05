@@ -50,7 +50,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("没有选择审批人");
             }
             data.UserId = CurrentUser.ID;
-            if (Core.FormInfoApplyManager.HasApply(data))
+            if (Core.FormInfoExtend1Manager.HasApply(data))
             {
                 throw new Exception("你已经申请过该图章，还未通过审批");
             }

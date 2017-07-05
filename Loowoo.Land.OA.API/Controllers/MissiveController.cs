@@ -58,6 +58,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Info.UpdateTime,
                     e.Info.FlowStep,
                     e.Info.FlowDataId,
+                    e.Info.PostUserId,
                 }),
                 Page = parameter.Page
             };

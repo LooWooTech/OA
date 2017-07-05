@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Delete(int id)
         {
-            if (DB.FormInfoApplies.Any(e => e.InfoId == id))
+            if (DB.FormInfoExtend1s.Any(e => e.InfoId == id))
             {
                 throw new Exception("会议室已被使用，无法删除");
             }
@@ -51,7 +51,7 @@ namespace Loowoo.Land.OA.Managers
             info.Form = Core.FormManager.GetModel(FormType.Seal);
 
             Core.FormInfoManager.Save(info);
-            Core.FormInfoApplyManager.Apply(info, data);
+            Core.FormInfoExtend1Manager.Apply(info, data);
         }
 
         public void UpdateStatus(int roomId, SealStatus status)

@@ -1,6 +1,7 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
 using System.Linq;
+using System.Web;
 using System.Web.Http;
 
 namespace Loowoo.Land.OA.API.Controllers
@@ -102,11 +103,43 @@ namespace Loowoo.Land.OA.API.Controllers
             });
         }
 
-        [HttpDelete]
-        public void Delete(int id)
+        [HttpGet]
+        public object ProgressList(int taskId)
         {
-            Core.TaskManager.Delete(id);
+            return Core.TaskManager.GetProgressList(taskId).Select(e => new
+            {
+                e.ID,
+                e.TaskId,
+                e.CreateTime,
+                e.Content,
+                e.UserId,
+                e.User.RealName,
+            });
         }
 
+        [HttpPost]
+        public void SaveProgress(TaskProgress model)
+        {
+            if(model.TaskId == 0 || string.IsNullOrEmpty(model.Content))
+            {
+                throw new System.Exception("参数不正确");
+            }
+            model.UserId = CurrentUser.ID;
+            Core.TaskManager.SaveProgress(model);
+        }
+
+        [HttpDelete]
+        public void DeleteProgress(int id)
+        {
+            var model = Core.TaskManager.GetProgress(id);
+            if(model != null)
+            {
+                if(model.UserId != CurrentUser.ID)
+                {
+                    throw new HttpException(403, "forbidden");
+                }
+                Core.TaskManager.DeleteProgress(model);
+            }
+        }
     }
 }

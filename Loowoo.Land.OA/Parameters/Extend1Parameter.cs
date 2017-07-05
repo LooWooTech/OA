@@ -13,11 +13,15 @@ namespace Loowoo.Land.OA.Models
 
         public int UserId { get; set; }
 
+        public int? Category { get; set; }
+
         public bool? Result { get; set; }
 
         public CheckStatus Status { get; set; }
 
         public DateTime? BeginTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
 
         public PageParameter Page { get; set; }
     }

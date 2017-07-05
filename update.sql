@@ -1,4 +1,79 @@
-#2017-06-22
+----2017-07-05
+CREATE TABLE `holiday` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(50) NOT NULL,
+	`BeginDate` DATE NOT NULL,
+	`EndDate` DATE NOT NULL,
+	`CreateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`Deleted` BIT(1) NOT NULL DEFAULT b'0',
+	PRIMARY KEY (`ID`),
+	INDEX `StartDate` (`BeginDate`)
+)
+ENGINE=InnoDB
+;
+
+
+----2017-06-30
+CREATE TABLE `attendance` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`UserId` INT(11) NULL DEFAULT NULL,
+	`Date` DATE NULL DEFAULT NULL,
+	`AMResult` INT(11) NULL DEFAULT NULL,
+	`PMResult` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `UserId` (`UserId`),
+	INDEX `Date` (`Date`)
+)
+ENGINE=InnoDB
+;
+CREATE TABLE `check_in_out` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`UserId` INT(11) NOT NULL,
+	`CreateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`ID`),
+	INDEX `UserId` (`UserId`)
+)
+ENGINE=InnoDB
+;
+
+
+----2017-06-29
+ALTER TABLE `task_progress`
+	ADD COLUMN `Deleted` BIT NOT NULL AFTER `Content`;
+
+ALTER TABLE `form_info_extend1`
+	ADD COLUMN `Category` INT NOT NULL AFTER `ScheduleBeginTime`;
+
+
+CREATE TABLE `config` (
+	`Key` VARCHAR(50) NOT NULL,
+	`Value` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`Key`)
+)
+ENGINE=InnoDB
+;
+
+
+----2017-06-26
+ALTER TABLE `task`
+	ALTER `ZRR` DROP DEFAULT;
+ALTER TABLE `task`
+	CHANGE COLUMN `ZRR` `ZRR_ID` INT(11) NOT NULL AFTER `LY_LX`;
+ALTER TABLE `task`
+	ALTER `MC` DROP DEFAULT,
+	ALTER `LY` DROP DEFAULT,
+	ALTER `ZB_DW` DROP DEFAULT,
+	ALTER `XB_DW` DROP DEFAULT,
+	ALTER `GZ_MB` DROP DEFAULT;
+ALTER TABLE `task`
+	CHANGE COLUMN `MC` `MC` VARCHAR(50) NOT NULL AFTER `ZRR_ID`,
+	CHANGE COLUMN `LY` `LY` VARCHAR(50) NULL AFTER `MC`,
+	CHANGE COLUMN `ZB_DW` `ZB_DW` VARCHAR(50) NULL AFTER `LY`,
+	CHANGE COLUMN `XB_DW` `XB_DW` VARCHAR(50) NULL AFTER `ZB_DW`,
+	CHANGE COLUMN `GZ_MB` `GZ_MB` VARCHAR(128) NULL AFTER `XB_DW`;
+
+
+----2017-06-22
 ALTER TABLE `missive`
 	ADD COLUMN `RedTitleId` INT(11) NOT NULL AFTER `ID`;
 
@@ -6,8 +81,8 @@ ALTER TABLE `missive`
 	CHANGE COLUMN `WordId` `ContentId` INT(11) NULL DEFAULT NULL AFTER `RedTitleId`;
 
 
-#2017-06-21 已经执行
-#把已经结束流程的 更新到归档箱
+----2017-06-21 已经执行
+----把已经结束流程的 更新到归档箱
 --update user_form_info
 --set status=3
 --where status!=3 and infoid in (
@@ -18,7 +93,7 @@ ALTER TABLE `missive`
 --where completed =1
 --)
 
---#更新已读的
+------更新已读的
 --update user_form_info uf
 --join freeflow_nodedata ffnd
 --on uf.UserID = ffnd.UserId
@@ -29,7 +104,7 @@ ALTER TABLE `missive`
 -- set status=2
 --where ffnd.updatetime is not null and uf.InfoID =fd.InfoId
 
---#删除不该存在的user_form_info
+------删除不该存在的user_form_info
 
 -- CREATE TEMPORARY TABLE IF NOT EXISTS Temp_UserFlowInfo(
 -- 	ID INT(11)
@@ -59,7 +134,7 @@ ALTER TABLE `missive`
 --	delete from user_form_info where id not in(select * from Temp_UserFlowInfo);
 --	DROP TEMPORARY TABLE IF EXISTS Temp_UserFlowInfo
 
-#2017-06-20
+----2017-06-20
 RENAME TABLE `organization` TO `department`;
 
 ALTER TABLE `user`
@@ -77,7 +152,7 @@ COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
-#2017-06-15
+----2017-06-15
 
 CREATE TABLE `meetingroom` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
@@ -138,20 +213,20 @@ ENGINE=InnoDB
 
 
 
-#2017-06-14
+----2017-06-14
 ALTER TABLE `car_apply`
 	ALTER `CarId` DROP DEFAULT;
 ALTER TABLE `car_apply`
 	CHANGE COLUMN `CarId` `InfoId` INT(11) NOT NULL AFTER `ID`;
 RENAME TABLE `car_apply` TO `form_info_extend1`;
 
-#2017-06-09
+----2017-06-09
 ALTER TABLE `car_apply`
 	ADD COLUMN `ApprovalUserId` INT NOT NULL AFTER `CreateTime`,
 	ADD INDEX `ApprovalUserId` (`ApprovalUserId`);
 
 
-#2017-06-06
+----2017-06-06
 CREATE TABLE `car_apply` (
 	`ID` INT(11) NOT NULL,
 	`CarId` INT(11) NOT NULL,
@@ -171,7 +246,7 @@ CREATE TABLE `car_apply` (
 ENGINE=InnoDB
 ;
 
-#2017-05-26 zlj
+----2017-05-26 zlj
 
 ALTER TABLE `missive`
 	ALTER `MJ` DROP DEFAULT;

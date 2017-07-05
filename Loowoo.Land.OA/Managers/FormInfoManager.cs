@@ -61,8 +61,9 @@ namespace Loowoo.Land.OA.Managers
 
         public bool HasDeleteRight(FormInfo info, User user)
         {
-            var action = "Form.Delete." + info.FormId + ".";
-            return info.PostUserId == user.ID && user.HasRight(action);
+            return info.PostUserId == user.ID;
+            //var action = "Form.Delete." + info.FormId + ".";
+            //return info.PostUserId == user.ID && user.HasRight(action);
         }
 
         public void Delete(int id)

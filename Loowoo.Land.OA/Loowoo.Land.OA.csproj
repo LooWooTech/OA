@@ -81,11 +81,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
     <Compile Include="Managers\TaskManager.cs" />
     <Compile Include="Models\CheckStatus.cs" />
+    <Compile Include="Models\Config.cs" />
     <Compile Include="Models\FormInfoExtend1.cs" />
     <Compile Include="Models\MissiveRedTitle.cs" />
     <Compile Include="Models\Seal.cs" />
@@ -105,9 +107,9 @@
     <Compile Include="Managers\MissiveManager.cs" />
     <Compile Include="Managers\User\JobTitleManager.cs" />
     <Compile Include="Managers\FeedManager.cs" />
-    <Compile Include="Models\Attendance.cs" />
+    <Compile Include="Models\Attendance\Attendance.cs" />
     <Compile Include="Models\MeetingRoom.cs" />
-    <Compile Include="Models\CheckInOut.cs" />
+    <Compile Include="Models\Attendance\CheckInOut.cs" />
     <Compile Include="Models\Flow\FreeFlow.cs" />
     <Compile Include="Models\Flow\FreeFlowData.cs" />
     <Compile Include="Models\Flow\FreeFlowNodeData.cs" />
@@ -162,6 +164,7 @@
     <Compile Include="Parameters\FeedParameter.cs" />
     <Compile Include="Parameters\FileParameter.cs" />
     <Compile Include="Parameters\FormInfoParameter.cs" />
+    <Compile Include="Parameters\HolidayParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />

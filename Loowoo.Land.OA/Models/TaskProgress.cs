@@ -19,5 +19,7 @@ namespace Loowoo.Land.OA.Models
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
         public string Content { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

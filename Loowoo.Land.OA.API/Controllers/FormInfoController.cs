@@ -161,6 +161,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 if (Core.FormInfoManager.HasDeleteRight(model, CurrentUser))
                 {
                     Core.FormInfoManager.Delete(id);
+                    return Ok();
                 }
                 else
                 {

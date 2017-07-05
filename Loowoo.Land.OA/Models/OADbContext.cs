@@ -20,7 +20,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Form> Forms { get; set; }
         public DbSet<FormInfo> FormInfos { get; set; }
         public DbSet<UserFormInfo> UserFormInfos { get; set; }
-        public DbSet<FormInfoExtend1> FormInfoApplies { get; set; }
+        public DbSet<FormInfoExtend1> FormInfoExtend1s { get; set; }
 
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowNode> FlowNodes { get; set; }
@@ -55,6 +55,9 @@ namespace Loowoo.Land.OA.Models
         public DbSet<MissiveRedTitle> MissiveRedTitles { get; set; }
 
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskProgress> TaskProgresses { get; set; }
+
+        public DbSet<Config> Configs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

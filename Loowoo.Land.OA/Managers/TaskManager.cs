@@ -3,6 +3,7 @@ using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
@@ -50,9 +51,26 @@ namespace Loowoo.Land.OA.Managers
             return DB.Tasks.FirstOrDefault(e => e.ID == id);
         }
 
-        public void Delete(int id)
+        public IEnumerable<TaskProgress> GetProgressList(int taskId)
         {
-            
+            return DB.TaskProgresses.Where(e => e.TaskId == taskId && !e.Deleted).OrderByDescending(e => e.ID);
+        }
+
+        public void SaveProgress(TaskProgress model)
+        {
+            DB.TaskProgresses.AddOrUpdate(model);
+            DB.SaveChanges();
+        }
+
+        public TaskProgress GetProgress(int id)
+        {
+            return DB.TaskProgresses.Find(id);
+        }
+
+        public void DeleteProgress(TaskProgress model)
+        {
+            model.Deleted = true;
+            DB.SaveChanges();
         }
     }
 }

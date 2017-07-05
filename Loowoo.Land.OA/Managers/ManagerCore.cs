@@ -26,6 +26,8 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
+        public ConfigManager ConfigManager { get; private set; }
+
         public CategoryManager CategoryManager { get; private set; }
         public FileManager FileManager { get; private set; }
 
@@ -36,7 +38,7 @@ namespace Loowoo.Land.OA.Managers
         public FormManager FormManager { get; private set; }
         public FormInfoManager FormInfoManager { get; private set; }
         public UserFormInfoManager UserFormInfoManager { get; private set; }
-        public FormInfoExtend1Manager FormInfoApplyManager { get; private set; }
+        public FormInfoExtend1Manager FormInfoExtend1Manager { get; private set; }
 
         public FeedManager FeedManager { get; private set; }
         public MessageManager MessageManager { get; private set; }
