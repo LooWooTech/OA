@@ -20,6 +20,11 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public string RealName { get; set; }
 
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        public string Mobile { get; set; }
+
         [JsonIgnore]
         public string Password { get; set; }
         /// <summary>

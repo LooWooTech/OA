@@ -26,19 +26,10 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime? UpdateTime { get; set; }
 
-        private bool _completed;
-        public bool Completed
-        {
-            get
-            {
-                if (_completed) return _completed;
-                return Nodes != null && Nodes.All(e => e.Submited);
-            }
-            set
-            {
-                _completed = value;
-            }
-        }
+        public bool Completed { get; set; }
+
+        [NotMapped]
+        public bool AllNodesHasSubmited { get { return Nodes != null && Nodes.All(e => e.Submited); } }
 
         [NotMapped]
         public bool IsEmpty

@@ -37,7 +37,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.ApprovalUserId,
                     ApprovalUser = e.ApprovalUser.RealName,
                     ApplyUser = e.User.RealName,
-                    Name = e.Info.Title,
+                    Title = e.Info.Title,
                     FlowStep = e.Info.FlowStep,
                     Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed,
                 }),

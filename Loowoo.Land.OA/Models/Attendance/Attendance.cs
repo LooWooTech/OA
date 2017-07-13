@@ -80,9 +80,10 @@ namespace Loowoo.Land.OA.Models
         /// 下班最晚打卡时间
         /// </summary>
         public DateTime PMEndTime { get; set; }
-
-
-        public bool IsValid(DateTime time)
+        /// <summary>
+        /// 是否未打卡时间
+        /// </summary>
+        public bool IsCheckTime(DateTime time)
         {
             return (time >= AMBeginTime && time <= AMEndTime) || (time >= PMBeginTime && time <= PMEndTime);
         }

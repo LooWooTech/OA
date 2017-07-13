@@ -1,3 +1,37 @@
+----2017-07-13
+ALTER TABLE `user`
+	ADD COLUMN `Mobile` VARCHAR(50) NULL AFTER `JobTitleId`;
+ALTER TABLE `user`
+	ADD INDEX `Mobile` (`Mobile`);
+
+ALTER TABLE `check_in_out`
+	ADD COLUMN `ApiResult` BIT NULL AFTER `CreateTime`,
+	ADD COLUMN `UpdateTime` DATETIME NULL AFTER `ApiResult`;
+
+----2017-07-11
+CREATE TABLE `task_todo` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`TaskId` INT(11) NOT NULL DEFAULT '0',
+	`ToUserId` INT(11) NOT NULL DEFAULT '0',
+	`Content` VARCHAR(255) NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	`ScheduleTime` DATETIME NULL DEFAULT NULL,
+	`Completed` BIT(1) NOT NULL,
+	`UpdateTime` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `TaskId` (`TaskId`),
+	INDEX `ToUserId` (`ToUserId`),
+	INDEX `ScheduleTime` (`ScheduleTime`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+
+----2017-07-07
+ALTER TABLE `task`
+	ADD COLUMN `XBR` VARCHAR(255) NULL AFTER `BZ`;
+
 ----2017-07-05
 CREATE TABLE `holiday` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,

@@ -18,13 +18,18 @@ namespace Loowoo.Land.OA.API.Controllers
         public void UpdateZRR(int id)
         {
             var info = Core.FormInfoManager.GetModel(id);
-            //判断当前流程是不是走到了第二步，如果是，第二步的接收人为任务的责任人
-            if (info.FlowData.Nodes.Count == 2)
+            var flow = Core.FlowManager.Get(info.Form.FLowId);
+            var firstNode = flow.GetFirstNode();
+            var secondNode = flow.GetNextStep(firstNode.ID);
+            if (secondNode != null)
             {
-                var lastNodeData = info.FlowData.Nodes[1];
-                var model = Core.TaskManager.GetModel(id);
-                model.ZRR_ID = lastNodeData.UserId;
-                Core.TaskManager.Save(model);
+                var lastSecondNodeData = info.FlowData.GetLastNodeDataByNodeId(secondNode.ID);
+                if (lastSecondNodeData != null)
+                {
+                    var model = Core.TaskManager.GetModel(id);
+                    model.ZRR_ID = lastSecondNodeData.UserId;
+                    Core.TaskManager.Save(model);
+                }
             }
         }
 
@@ -104,6 +109,32 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
+        public object TodoList(int taskId)
+        {
+            return Core.TaskManager.GetTodoList(taskId);
+        }
+
+        [HttpPost]
+        public void SaveTodo(TaskTodo model)
+        {
+            Core.TaskManager.SaveTodo(model);
+        }
+
+        [HttpGet]
+        public void UpdateTodoStatus(int id)
+        {
+            var model = Core.TaskManager.GetTodo(id);
+            model.Completed = !model.Completed;
+            Core.TaskManager.SaveTodo(model);
+        }
+
+        [HttpDelete]
+        public void DeleteTodo(int id)
+        {
+            Core.TaskManager.DeleteTodo(id);
+        }
+
+        [HttpGet]
         public object ProgressList(int taskId)
         {
             return Core.TaskManager.GetProgressList(taskId).Select(e => new
@@ -120,7 +151,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void SaveProgress(TaskProgress model)
         {
-            if(model.TaskId == 0 || string.IsNullOrEmpty(model.Content))
+            if (model.TaskId == 0 || string.IsNullOrEmpty(model.Content))
             {
                 throw new System.Exception("参数不正确");
             }
@@ -132,9 +163,9 @@ namespace Loowoo.Land.OA.API.Controllers
         public void DeleteProgress(int id)
         {
             var model = Core.TaskManager.GetProgress(id);
-            if(model != null)
+            if (model != null)
             {
-                if(model.UserId != CurrentUser.ID)
+                if (model.UserId != CurrentUser.ID)
                 {
                     throw new HttpException(403, "forbidden");
                 }

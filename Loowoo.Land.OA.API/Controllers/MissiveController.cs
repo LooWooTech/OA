@@ -32,7 +32,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 Completed = completed,
                 SearchKey = searchKey,
             };
-            var list = Core.UserFormInfoManager.GetList(parameter);
 
             var datas = Core.MissiveManager.GetList(parameter);
 

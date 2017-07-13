@@ -59,13 +59,13 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("你已经申请过该会议室，还未通过审批");
             }
-            Core.MeetingRoomManager.Apply(data);
+            var info = Core.MeetingRoomManager.Apply(data);
             Core.FeedManager.Save(new Feed
             {
                 Action = UserAction.Apply,
-                Title = "申请用会议室：" + car.Name + "（" + car.Number + "）",
+                Title = info.Title,
                 InfoId = data.ID,
-                Type = FeedType.Info,
+                Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
             });

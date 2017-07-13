@@ -27,6 +27,7 @@ namespace Loowoo.Land.OA.Models
 
         public int Category { get; set; }
 
+        [ForeignKey("ID")]
         public virtual FormInfo Info { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;

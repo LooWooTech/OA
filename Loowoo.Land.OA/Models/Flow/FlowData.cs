@@ -76,6 +76,11 @@ namespace Loowoo.Land.OA.Models
             return Nodes.Where(e => e.ID > currentNodeDataId).OrderBy(e => e.ID).FirstOrDefault();
         }
 
+        public FlowNodeData GetLastNodeDataByNodeId(int nodeId)
+        {
+            return Nodes.Where(e => e.FlowNodeId == nodeId).OrderBy(e => e.ID).LastOrDefault();
+        }
+
         /// <summary>
         /// 是否可以撤销
         /// </summary>

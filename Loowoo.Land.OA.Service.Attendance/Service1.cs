@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Service.Attendance
@@ -17,8 +18,15 @@ namespace Loowoo.Land.OA.Service.Attendance
             InitializeComponent();
         }
 
-        protected override void OnStart(string[] args)
+        private AttendanceService _service = new AttendanceService();
+
+        protected async override void OnStart(string[] args)
         {
+            while (true)
+            {
+                await _service.Start();
+                Thread.Sleep(10);
+            }
         }
 
         protected override void OnStop()

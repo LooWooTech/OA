@@ -34,7 +34,7 @@ namespace Loowoo.Land.OA.Managers
             }
             else
             {
-                model.Completed = model.Nodes.All(e => e.Submited);
+                model.Completed = model.AllNodesHasSubmited;
             }
             model.CompletedUserId = currentUserId;
             model.UpdateTime = DateTime.Now;

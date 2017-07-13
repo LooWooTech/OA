@@ -40,7 +40,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public void Apply(FormInfoExtend1 data)
+        public FormInfo Apply(FormInfoExtend1 data)
         {
             var model = Get(data.InfoId);
             var info = new FormInfo
@@ -54,6 +54,7 @@ namespace Loowoo.Land.OA.Managers
 
             Core.FormInfoManager.Save(info);
             Core.FormInfoExtend1Manager.Apply(info, data);
+            return info;
         }
 
         public void UpdateStatus(int roomId, MeetingRoomStatus status)

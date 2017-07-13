@@ -54,13 +54,13 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("你已经申请过该图章，还未通过审批");
             }
-            Core.SealManager.Apply(data);
+            var info = Core.SealManager.Apply(data);
             Core.FeedManager.Save(new Feed
             {
                 Action = UserAction.Apply,
-                Title = "申请图章：" + model.Name,
+                Title = info.Title,
                 InfoId = data.ID,
-                Type = FeedType.Info,
+                Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
             });

@@ -15,6 +15,8 @@ namespace Loowoo.Land.OA.Managers
     {
         public IEnumerable<Missive> GetList(FormInfoParameter parameter)
         {
+            var page = parameter.Page;
+            parameter.Page = null;
             var infos = Core.UserFormInfoManager.GetList(parameter);
             parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
 
@@ -31,7 +33,8 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.WJ_BT.Contains(parameter.SearchKey));
             }
-            return query.OrderByDescending(e => e.ID);
+            parameter.Page = page;
+            return query.OrderByDescending(e => e.ID).SetPage(page);
         }
 
         public void Save(Missive data)

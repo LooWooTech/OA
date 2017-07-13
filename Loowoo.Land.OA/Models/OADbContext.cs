@@ -55,6 +55,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<MissiveRedTitle> MissiveRedTitles { get; set; }
 
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskTodo> Todos { get; set; }
         public DbSet<TaskProgress> TaskProgresses { get; set; }
 
         public DbSet<Config> Configs { get; set; }

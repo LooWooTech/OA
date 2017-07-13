@@ -15,6 +15,13 @@ namespace Loowoo.Land.OA.Models
 
         public int UserId { get; set; }
 
+        public virtual User User { get; set; }
+
         public DateTime CreateTime { get; set; } = DateTime.Now;
+
+
+        public bool? ApiResult { get; set; }
+
+        public DateTime? UpdateTime { get; set; }
     }
 }

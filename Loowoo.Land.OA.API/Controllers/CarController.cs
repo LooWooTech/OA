@@ -65,7 +65,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Action = UserAction.Apply,
                 Title = "申请用车：" + car.Name + "（" + car.Number + "）",
                 InfoId = data.ID,
-                Type = FeedType.Info,
+                Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
             });

@@ -51,6 +51,40 @@ namespace Loowoo.Land.OA.Managers
             return DB.Tasks.FirstOrDefault(e => e.ID == id);
         }
 
+        public IEnumerable<TaskTodo> GetTodoList(int taskId)
+        {
+            return DB.Todos.Where(e => e.TaskId == taskId);
+        }
+
+        public void SaveTodo(TaskTodo model)
+        {
+            if (model.ID > 0)
+            {
+                var entity = DB.Todos.Find(model.ID);
+                entity.UpdateTime = DateTime.Now;
+                entity.Content = model.Content;
+                entity.ToUserId = model.ToUserId;
+                entity.Completed = model.Completed;
+            }
+            else
+            {
+                DB.Todos.Add(model);
+            }
+            DB.SaveChanges();
+        }
+
+        public TaskTodo GetTodo(int id)
+        {
+            return DB.Todos.Find(id);
+        }
+
+        public void DeleteTodo(int id)
+        {
+            var model = GetTodo(id);
+            DB.Todos.Remove(model);
+            DB.SaveChanges();
+        }
+
         public IEnumerable<TaskProgress> GetProgressList(int taskId)
         {
             return DB.TaskProgresses.Where(e => e.TaskId == taskId && !e.Deleted).OrderByDescending(e => e.ID);

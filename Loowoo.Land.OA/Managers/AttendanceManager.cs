@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.Managers
         public void AddCheckInOut(int userId)
         {
             var time = GetAttendanceTime();
-            if (!time.IsValid(DateTime.Now))
+            if (!time.IsCheckTime(DateTime.Now))
             {
                 throw new Exception("该时间段签到无效");
             }
@@ -48,6 +48,13 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
+        public void SaveApiResult(CheckInOut log)
+        {
+            var entity = DB.CheckInOuts.Find(log.ID);
+            entity.ApiResult = log.ApiResult;
+            DB.SaveChanges();
+        }
+
         private DateTime ConvertConfigTimeToDateTime(string key, string defaultValue)
         {
             var timespan = Core.ConfigManager.GetValue(key, defaultValue).ToTimeSpan();
@@ -65,22 +72,43 @@ namespace Loowoo.Land.OA.Managers
             };
         }
 
-        public IEnumerable<CheckInOut> GetLogs(AttendanceParameter parameter)
+        public IEnumerable<CheckInOut> GetLogs(CheckInOutParameter parameter)
         {
             var query = DB.CheckInOuts.AsQueryable();
             if (parameter.UserId > 0)
             {
                 query = query.Where(e => e.UserId == parameter.UserId);
             }
-            if (parameter.BeginDate.HasValue)
+            if (parameter.BeginTime.HasValue)
             {
-                query = query.Where(e => e.CreateTime >= parameter.BeginDate.Value);
+                query = query.Where(e => e.CreateTime >= parameter.BeginTime.Value);
             }
-            if (parameter.EndDate.HasValue)
+            if (parameter.EndTime.HasValue)
             {
-                query = query.Where(e => e.CreateTime <= parameter.EndDate.Value);
+                query = query.Where(e => e.CreateTime <= parameter.EndTime.Value);
             }
+            if (parameter.FalseOrNullApiResult == true)
+            {
+                query = query.Where(e => e.ApiResult == null || e.ApiResult == false);
+            }
+
             return query.OrderBy(e => e.ID);
+        }
+
+        public FormInfo Apply(FormInfoExtend1 data)
+        {
+            var info = new FormInfo
+            {
+                ExtendId = data.InfoId,
+                Title = $"申请{((LeaveType)data.Category).GetDescription()} 请假时间：{data.ScheduleBeginTime.ToString("yyyy-MM-dd HH:mm")} {data.ScheduleEndTime?.ToString("~ yyyy-MM-dd HH:mm")}",
+                FormId = (int)FormType.Leave,
+                PostUserId = data.UserId,
+            };
+            info.Form = Core.FormManager.GetModel(FormType.Leave);
+
+            Core.FormInfoManager.Save(info);
+            Core.FormInfoExtend1Manager.Apply(info, data);
+            return info;
         }
 
         public IEnumerable<Attendance> GetList(AttendanceParameter parameter)

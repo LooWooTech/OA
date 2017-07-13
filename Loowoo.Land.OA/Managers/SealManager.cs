@@ -38,13 +38,13 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public void Apply(FormInfoExtend1 data)
+        public FormInfo Apply(FormInfoExtend1 data)
         {
             var model = Get(data.InfoId);
             var info = new FormInfo
             {
                 ExtendId = data.InfoId,
-                Title = "申请会议室：" + model.Name,
+                Title = "申请公章：" + model.Name,
                 FormId = (int)FormType.Seal,
                 PostUserId = data.UserId,
             };
@@ -52,6 +52,7 @@ namespace Loowoo.Land.OA.Managers
 
             Core.FormInfoManager.Save(info);
             Core.FormInfoExtend1Manager.Apply(info, data);
+            return info;
         }
 
         public void UpdateStatus(int roomId, SealStatus status)

@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 EndDate = endDate,
                 UserId = CurrentUser.ID
             };
+
             var list = Core.AttendanceManager.GetList(parameter);
 
             var leaves = Core.FormInfoExtend1Manager.GetList(new Extend1Parameter
@@ -34,7 +36,12 @@ namespace Loowoo.Land.OA.API.Controllers
             return new
             {
                 list,
-                logs = Core.AttendanceManager.GetLogs(parameter),
+                logs = Core.AttendanceManager.GetLogs(new CheckInOutParameter
+                {
+                    BeginTime = beginDate,
+                    EndTime = endDate,
+                    UserId = CurrentUser.ID,
+                }),
                 leaves = leaves.Select(e => new
                 {
                     e.Info.Title,
@@ -66,10 +73,24 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.AttendanceManager.AddCheckInOut(CurrentUser.ID);
         }
 
-        [HttpGet]
-        public IHttpActionResult Log(DateTime? date = null, int page = 1, int rows = 20)
+        [HttpPost]
+        public void Apply([FromBody]FormInfoExtend1 data)
         {
-            throw new NotImplementedException();
+            if (data.ApprovalUserId == 0)
+            {
+                throw new Exception("没有选择审批人");
+            }
+            data.UserId = CurrentUser.ID;
+            var info = Core.AttendanceManager.Apply(data);
+            Core.FeedManager.Save(new Feed
+            {
+                Action = UserAction.Apply,
+                Title = info.Title,
+                Type = FeedType.Flow,
+                ToUserId = data.ApprovalUserId,
+                FromUserId = CurrentUser.ID,
+            });
         }
+
     }
 }

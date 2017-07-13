@@ -14,4 +14,15 @@ namespace Loowoo.Land.OA.Parameters
 
         public DateTime? EndDate { get; set; }
     }
+
+    public class CheckInOutParameter
+    {
+        public int? UserId { get; set; }
+
+        public DateTime? BeginTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
+
+        public bool? FalseOrNullApiResult { get; set; }
+    }
 }
