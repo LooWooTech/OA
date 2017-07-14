@@ -13,11 +13,14 @@ namespace Loowoo.Land.OA.Service.Attendance
     {
         private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
 
+        private int _recountTimes = 0;
+
         public async System.Threading.Tasks.Task Start()
         {
             var time = Core.AttendanceManager.GetAttendanceTime();
             if (time.IsCheckTime(DateTime.Now))
             {
+                _recountTimes = 0;
                 var count = await Execute(time);
                 if (count == 0)
                 {
@@ -27,7 +30,12 @@ namespace Loowoo.Land.OA.Service.Attendance
             else
             {
                 //非打卡时间，每隔1小时，计算一次考勤情况
-                Thread.Sleep(1000 * 60 * 60);
+                Thread.Sleep(1000 * 60);
+                if (_recountTimes < 3)
+                {
+                    var count = await CheckLogs(DateTime.Today, DateTime.Now);
+                    _recountTimes++;
+                }
             }
         }
 

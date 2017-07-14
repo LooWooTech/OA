@@ -12,14 +12,13 @@ namespace Loowoo.Land.OA.Service.Attendance
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+#if DEBUG
+            new Service1().Start();
+#else
+            ServiceBase.Run(new[] { new Service1() });
+#endif
         }
     }
 }

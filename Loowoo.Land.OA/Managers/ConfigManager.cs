@@ -14,6 +14,11 @@ namespace Loowoo.Land.OA.Managers
             return DB.Configs.FirstOrDefault(e => e.Key == key.ToLower());
         }
 
+        public IEnumerable<Config> GetList()
+        {
+            return DB.Configs;
+        }
+
         private Config GetModel(string key, string value)
         {
             var model = GetModel(key);
@@ -29,6 +34,28 @@ namespace Loowoo.Land.OA.Managers
         {
             var model = GetModel(key, defaultValue);
             return model.Value;
+        }
+
+        //public void SaveBatch(List<Config> list)
+        //{
+        //    foreach(var item in list)
+        //    {
+        //        if (string.IsNullOrEmpty(item.Key)) continue;
+        //        item.Key = item.Key.ToLower();
+        //        var entity = DB.Configs.FirstOrDefault(e => e.Key == item.Key);
+        //        if(entity == null)
+        //        {
+        //            DB.Configs.Add(item);
+        //        }
+        //    }
+        //    DB.SaveChanges();
+        //}
+
+        public void Delete(string key)
+        {
+            var entity = DB.Configs.FirstOrDefault(e => e.Key == key.ToLower());
+            DB.Configs.Remove(entity);
+            DB.SaveChanges();
         }
 
         public void SetValue(string key, string value)

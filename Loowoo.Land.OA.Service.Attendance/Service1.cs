@@ -20,6 +20,11 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         private AttendanceService _service = new AttendanceService();
 
+        public void Start()
+        {
+            OnStart(null);
+        }
+
         protected async override void OnStart(string[] args)
         {
             while (true)
