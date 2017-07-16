@@ -58,18 +58,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void SaveTodo(TaskTodo model)
         {
-            if (model.ID > 0)
-            {
-                var entity = DB.Todos.Find(model.ID);
-                entity.UpdateTime = DateTime.Now;
-                entity.Content = model.Content;
-                entity.ToUserId = model.ToUserId;
-                entity.Completed = model.Completed;
-            }
-            else
-            {
-                DB.Todos.Add(model);
-            }
+            DB.Todos.AddOrUpdate(model);
             DB.SaveChanges();
         }
 

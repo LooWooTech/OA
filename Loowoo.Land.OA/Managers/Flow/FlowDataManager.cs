@@ -38,9 +38,10 @@ namespace Loowoo.Land.OA.Managers
 
         public FlowData CreateFlowData(FormInfo info)
         {
-            info.FlowData = CreateFlowData(info.Form.FLowId, info);
+            var form = info.Form ?? Core.FormManager.GetModel(info.FormId);
+            info.FlowData = CreateFlowData(form.FLowId, info);
             info.FlowDataId = info.FlowData.ID;
-            info.FlowData.Flow = Core.FlowManager.Get(info.Form.FLowId);
+            info.FlowData.Flow = Core.FlowManager.Get(form.FLowId);
             //创建第一个节点
             var nodeData = Core.FlowNodeDataManager.CreateNextNodeData(info.FlowData, info.PostUserId);
             //创建状态

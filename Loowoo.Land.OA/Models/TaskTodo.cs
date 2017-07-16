@@ -18,6 +18,12 @@ namespace Loowoo.Land.OA.Models
 
         public string Content { get; set; }
 
+        public string Note { get; set; }
+
+        public int CreatorId { get; set; }
+
+        public virtual User Creator { get; set; }
+
         public int ToUserId { get; set; }
 
         public virtual User ToUser { get; set; }

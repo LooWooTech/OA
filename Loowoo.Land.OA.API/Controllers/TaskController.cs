@@ -1,5 +1,6 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
+using System;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -111,13 +112,36 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object TodoList(int taskId)
         {
-            return Core.TaskManager.GetTodoList(taskId);
+            return Core.TaskManager.GetTodoList(taskId).Select(e => new
+            {
+                e.ID,
+                e.Completed,
+                e.Content,
+                e.CreateTime,
+                e.ScheduleTime,
+                e.TaskId,
+                e.ToUserId,
+                e.CreatorId,
+                CreatorName = e.Creator.RealName,
+                ToUserName = e.ToUser == null ? null:e.ToUser.RealName,
+                e.UpdateTime
+            });
         }
 
         [HttpPost]
         public void SaveTodo(TaskTodo model)
         {
+            model.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveTodo(model);
+            Core.FeedManager.Save(new Feed
+            {
+                FromUserId = model.CreatorId,
+                ToUserId = model.ToUserId,
+                InfoId = model.TaskId,
+                Title = model.Content,
+                Type = FeedType.Task,
+                Action = UserAction.Create,
+            });
         }
 
         [HttpGet]
@@ -125,6 +149,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var model = Core.TaskManager.GetTodo(id);
             model.Completed = !model.Completed;
+            model.UpdateTime = DateTime.Now;
             Core.TaskManager.SaveTodo(model);
         }
 

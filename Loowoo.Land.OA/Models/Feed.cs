@@ -69,8 +69,10 @@ namespace Loowoo.Land.OA.Models
         Info,
         [Description("流程")]
         Flow,
-        [Description("传阅流程")]
+        [Description("转发")]
         FreeFlow,
+        [Description("任务")]
+        Task,
         [Description("评论")]
         Comment
     }

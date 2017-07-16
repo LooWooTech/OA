@@ -1,3 +1,10 @@
+----2017-07-14
+ALTER TABLE `task_todo`
+	ADD COLUMN `CreatorId` INT(11) NOT NULL DEFAULT '0' AFTER `ToUserId`,
+	ADD INDEX `CreatorId` (`CreatorId`);
+ALTER TABLE `task_todo`
+	ADD COLUMN `Note` VARCHAR(255) NULL DEFAULT '0' AFTER `Completed`;
+
 ----2017-07-13
 ALTER TABLE `user`
 	ADD COLUMN `Mobile` VARCHAR(50) NULL AFTER `JobTitleId`;
