@@ -133,13 +133,15 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             model.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveTodo(model);
+            //创建自由流程，转发给此人
+            
             Core.FeedManager.Save(new Feed
             {
                 FromUserId = model.CreatorId,
                 ToUserId = model.ToUserId,
                 InfoId = model.TaskId,
                 Title = model.Content,
-                Type = FeedType.Task,
+                Type = FeedType.Info,
                 Action = UserAction.Create,
             });
         }

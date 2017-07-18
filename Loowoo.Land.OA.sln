@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA", "Loowoo.Land.OA\Loowoo.Land.OA.csproj", "{012BEFAA-0AA1-4D4E-AFD9-45CDE3167264}"
 EndProject
@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.Service.Attendance", "Loowoo.Land.OA.Service.Attendance\Loowoo.Land.OA.Service.Attendance.csproj", "{66CE7B98-A212-4275-BB1C-C890DDB9588D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6A6EB644-F7D5-4060-93DA-873E87AC23EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{66CE7B98-A212-4275-BB1C-C890DDB9588D} = {6A6EB644-F7D5-4060-93DA-873E87AC23EF}
 	EndGlobalSection
 EndGlobal

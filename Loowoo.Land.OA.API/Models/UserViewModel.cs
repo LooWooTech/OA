@@ -19,6 +19,8 @@ namespace Loowoo.Land.OA.API.Models
             Username = user.Username;
             Role = user.Role;
             Sort = user.Sort;
+            Mobile = user.Mobile;
+
             Departments = user.UserDepartments.Select(d => new
             {
                 Name = d.Department == null ? null : d.Department.Name,
@@ -35,7 +37,7 @@ namespace Loowoo.Land.OA.API.Models
         public int ID { get; set; }
         public string Username { get; set; }
         public string RealName { get; set; }
-
+        public string Mobile { get; set; }
         public string JobTitle { get; set; }
         public int JobTitleId { get; set; }
 

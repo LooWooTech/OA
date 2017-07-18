@@ -18,7 +18,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FileController : ControllerBase
     {
         [HttpGet]
-        public HttpResponseMessage Index(int id)
+        public HttpResponseMessage Index(int id, string action = "preview")
         {
             var file = Core.FileManager.GetModel(id);
             if (file == null)
@@ -32,12 +32,29 @@ namespace Loowoo.Land.OA.API.Controllers
             var stream = new FileStream(file.PhysicalSavePath, FileMode.Open, FileAccess.Read);
             result.Content = new StreamContent(stream);
 
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
+            if (action == "download")
             {
-                FileName = file.FileName,
-            };
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = file.FileName,
+                };
+            }
+            else
+            {
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
+                {
+                    FileName = file.FileName,
+                };
+            }
             return result;
+        }
+
+        [HttpGet]
+        public HttpResponseMessage Download(int id)
+        {
+            return Index(id, "download");
         }
 
         [HttpPost]

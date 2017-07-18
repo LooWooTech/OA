@@ -71,8 +71,6 @@ namespace Loowoo.Land.OA.Models
         Flow,
         [Description("转发")]
         FreeFlow,
-        [Description("任务")]
-        Task,
         [Description("评论")]
         Comment
     }
