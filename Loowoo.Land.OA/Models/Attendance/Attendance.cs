@@ -87,6 +87,18 @@ namespace Loowoo.Land.OA.Models
         {
             return (time >= AMBeginTime && time <= AMEndTime) || (time >= PMBeginTime && time <= PMEndTime);
         }
+
+        /// <summary>
+        /// 获取最近的时间点
+        /// </summary>
+        public DateTime GetLatestTime(DateTime time)
+        {
+            if (time <= AMBeginTime) return AMBeginTime;
+            if (time <= AMEndTime) return AMEndTime;
+            if (time <= PMBeginTime) return PMBeginTime;
+            if (time <= PMEndTime) return PMEndTime;
+            return time.Date.AddDays(1);
+        }
     }
 
     public enum AttendanceResult

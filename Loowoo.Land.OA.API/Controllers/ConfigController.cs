@@ -17,9 +17,9 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Save(string key, string value)
+        public void Save(Config data)
         {
-            Core.ConfigManager.SetValue(key, value);
+            Core.ConfigManager.SetValue(data.Key, data.Value);
         }
 
         //[HttpPost]

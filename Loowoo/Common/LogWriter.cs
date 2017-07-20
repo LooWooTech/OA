@@ -27,6 +27,7 @@ namespace Loowoo.Common
             {
                 return;
             }
+            Console.Write(content);
             var filePath = GetFilePath(filePrefix);
             File.AppendAllText(filePath, content);
         }

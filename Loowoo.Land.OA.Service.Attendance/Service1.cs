@@ -25,13 +25,9 @@ namespace Loowoo.Land.OA.Service.Attendance
             OnStart(null);
         }
 
-        protected async override void OnStart(string[] args)
+        protected override void OnStart(string[] args)
         {
-            while (true)
-            {
-                await _service.Start();
-                Thread.Sleep(10);
-            }
+            _service.Start();
         }
 
         protected override void OnStop()
