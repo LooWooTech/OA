@@ -89,11 +89,7 @@ namespace Loowoo.Land.OA.Models
 
         public int PrevId { get; set; }
 
-        //[NotMapped]
-        //public FlowNode Prev { get; set; }
-
-        //[NotMapped]
-        //public FlowNode Next { get; set; }
+        //public int ParentId { get; set; }
     }
 
 }

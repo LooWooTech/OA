@@ -38,16 +38,6 @@ namespace Loowoo.Land.OA.Models
         public virtual User ZRR { get; set; }
 
         /// <summary>
-        /// 主办单位
-        /// </summary>
-        public string ZB_DW { get; set; }
-
-        /// <summary>
-        /// 协办单位
-        /// </summary>
-        public string XB_DW { get; set; }
-
-        /// <summary>
         /// 工作目标
         /// </summary>
         public string GZ_MB { get; set; }
