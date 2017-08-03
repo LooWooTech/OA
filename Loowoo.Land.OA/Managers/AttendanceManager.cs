@@ -50,8 +50,9 @@ namespace Loowoo.Land.OA.Managers
 
         public void SaveApiResult(CheckInOut log)
         {
-            var entity = DB.CheckInOuts.Find(log.ID);
-            entity.ApiResult = log.ApiResult;
+            log.UpdateTime = DateTime.Now;
+            var entity = DB.CheckInOuts.FirstOrDefault(e => e.ID == log.ID);
+            DB.Entry(entity).CurrentValues.SetValues(log);
             DB.SaveChanges();
         }
 
@@ -87,9 +88,9 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.CreateTime <= parameter.EndTime.Value);
             }
-            if (parameter.FalseOrNullApiResult == true)
+            if (parameter.HasChecked == false)
             {
-                query = query.Where(e => e.ApiResult == null || e.ApiResult == false);
+                query = query.Where(e => e.ApiResult == null);
             }
 
             return query.OrderBy(e => e.ID);

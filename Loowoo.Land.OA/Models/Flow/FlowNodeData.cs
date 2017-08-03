@@ -41,6 +41,13 @@ namespace Loowoo.Land.OA.Models
 
         public string Content { get; set; }
 
+        public int ParentId { get; set; }
+
+        /// <summary>
+        /// 相关联的id
+        /// </summary>
+        public int ExtendId { get; set; }
+
         [ForeignKey("FreeFlowDataId")]
         public virtual FreeFlowData FreeFlowData { get; set; }
 
@@ -50,21 +57,9 @@ namespace Loowoo.Land.OA.Models
             get { return Result.HasValue; }
         }
 
-        public bool CanSubmit()
+        public bool HasChanged()
         {
-            if (Result.HasValue) return false;
-            //如果设置了自由流程
-            if (FreeFlowData != null)
-            {
-                return FreeFlowData.Completed;
-            }
-            return true;
-        }
-
-        public bool CanCancel()
-        {
-            if (Result.HasValue) return false;
-            return FreeFlowData == null;
+            return Result.HasValue || FreeFlowData != null;
         }
 
         public FreeFlowNodeData GetLastFreeNodeData(int userId)

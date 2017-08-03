@@ -32,6 +32,7 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         protected override void OnStop()
         {
+            _service.Stop();
         }
     }
 }

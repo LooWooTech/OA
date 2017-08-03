@@ -72,7 +72,9 @@ namespace Loowoo.Land.OA.Models
         [Description("转发")]
         FreeFlow,
         [Description("评论")]
-        Comment
+        Comment,
+        [Description("任务")]
+        Task
     }
 
 }

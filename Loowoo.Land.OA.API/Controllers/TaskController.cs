@@ -1,6 +1,7 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -13,25 +14,6 @@ namespace Loowoo.Land.OA.API.Controllers
         public object Model(int id)
         {
             return Core.TaskManager.GetModel(id);
-        }
-
-        [HttpGet]
-        public void UpdateZRR(int id)
-        {
-            var info = Core.FormInfoManager.GetModel(id);
-            var flow = Core.FlowManager.Get(info.Form.FLowId);
-            var firstNode = flow.GetFirstNode();
-            var secondNode = flow.GetNextStep(firstNode.ID);
-            if (secondNode != null)
-            {
-                var lastSecondNodeData = info.FlowData.GetLastNodeDataByNodeId(secondNode.ID);
-                if (lastSecondNodeData != null)
-                {
-                    var model = Core.TaskManager.GetModel(id);
-                    model.ZRR_ID = lastSecondNodeData.UserId;
-                    Core.TaskManager.Save(model);
-                }
-            }
         }
 
         [HttpGet]
@@ -52,14 +34,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = datas.Select(e => new
                 {
                     e.ID,
-                    e.MC,
-                    e.JH_SJ,
-                    e.LY,
-                    e.LY_LX,
-                    e.XB_DW,
-                    e.ZB_DW,
-                    ZRR_Name = e.ZRR == null ? null : e.ZRR.RealName,
-                    e.GZ_MB,
+                    e.Name,
+                    e.ScheduleDate,
+                    e.From,
+                    e.FromType,
+                    e.Goal,
                     e.Info.FormId,
                     e.Info.CreateTime,
                     e.Info.UpdateTime,
@@ -82,48 +61,123 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     FormId = form.ID,
                     PostUserId = CurrentUser.ID,
-                    Title = data.MC
+                    Title = data.Name
                 };
                 Core.FormInfoManager.Save(data.Info);
             }
             else
             {
                 data.Info = Core.FormInfoManager.GetModel(data.ID);
-                data.Info.Title = data.MC;
+                data.Info.Title = data.Name;
             }
             if (data.Info.FlowDataId == 0)
             {
                 data.Info.Form = form;
                 Core.FlowDataManager.CreateFlowData(data.Info);
             }
-            data.ID = data.Info.ID;
             Core.TaskManager.Save(data);
 
             Core.FeedManager.Save(new Feed
             {
                 InfoId = data.ID,
-                Title = data.MC,
-                Description = data.GZ_MB,
+                Title = data.Name,
+                Description = data.Goal,
                 FromUserId = CurrentUser.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
             });
         }
 
         [HttpGet]
-        public object TodoList(int taskId)
+        public object SubTaskList(int taskId)
         {
-            return Core.TaskManager.GetTodoList(taskId).Select(e => new
+            return Core.TaskManager.GetSubTaskList(taskId).Select(e => new
+            {
+                e.ID,
+                e.CreateTime,
+                e.CreatorId,
+                CreatorName = e.Creator == null ? "" : e.Creator.RealName,
+                e.Completed,
+                e.Content,
+                e.UpdateTime,
+                e.ToDepartmentId,
+                e.ToDepartmentName,
+                e.ToUserId,
+                ToUserName = e.ToUser == null ? "" : e.ToUser.RealName,
+                e.TaskId,
+                e.ScheduleDate,
+                e.ParentId,
+                e.IsMaster,
+                Todos = e.Todos.Select(t => new
+                {
+                    t.ID,
+                    t.CreateTime,
+                    t.ScheduleDate,
+                    t.ToUserId,
+                    ToUserName = t.ToUser == null ? "" : t.ToUser.RealName,
+                    t.SubTaskId,
+                    t.UpdateTime,
+                    t.Completed,
+                    t.Content,
+                })
+            });
+        }
+
+        [HttpPost]
+        public void SaveSubTask(SubTask data)
+        {
+            if (data.ToDepartmentId == 0)
+            {
+                throw new Exception("没有指定科室");
+            }
+            if (data.ToUserId == 0)
+            {
+                throw new Exception("没有指定责任人");
+            }
+            var info = Core.FormInfoManager.GetModel(data.TaskId);
+            var department = Core.DepartmentManager.Get(data.ToDepartmentId);
+            data.ToDepartmentName = department.Name;
+            data.CreatorId = CurrentUser.ID;
+            Core.TaskManager.SaveSubTask(data);
+
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = data.TaskId,
+                FormId = info.FormId,
+                UserId = data.ToUserId,
+                Status = FlowStatus.Doing,
+            });
+            //通知相关人员
+            Core.FeedManager.Save(new Feed
+            {
+                Action = UserAction.Create,
+                FromUserId = CurrentUser.ID,
+                ToUserId = data.ToUserId,
+                Title = info.Title,
+                Description = data.Content,
+                Type = FeedType.Task,
+                InfoId = data.TaskId,
+            });
+        }
+
+        [HttpDelete]
+        public void DeleteSubTask(int id)
+        {
+            Core.TaskManager.DeleteSubTask(id);
+        }
+
+        [HttpGet]
+        public object TodoList(int subTaskId)
+        {
+            return Core.TaskManager.GetTodoList(subTaskId).Select(e => new
             {
                 e.ID,
                 e.Completed,
                 e.Content,
                 e.CreateTime,
-                e.ScheduleTime,
-                e.TaskId,
+                e.ScheduleDate,
+                e.SubTaskId,
                 e.ToUserId,
-                e.CreatorId,
-                CreatorName = e.Creator.RealName,
-                ToUserName = e.ToUser == null ? null:e.ToUser.RealName,
+                ToUserName = e.ToUser == null ? null : e.ToUser.RealName,
                 e.UpdateTime
             });
         }
@@ -133,13 +187,11 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             model.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveTodo(model);
+
             //创建自由流程，转发给此人
-            
             Core.FeedManager.Save(new Feed
             {
-                FromUserId = model.CreatorId,
                 ToUserId = model.ToUserId,
-                InfoId = model.TaskId,
                 Title = model.Content,
                 Type = FeedType.Info,
                 Action = UserAction.Create,
@@ -159,45 +211,6 @@ namespace Loowoo.Land.OA.API.Controllers
         public void DeleteTodo(int id)
         {
             Core.TaskManager.DeleteTodo(id);
-        }
-
-        [HttpGet]
-        public object ProgressList(int taskId)
-        {
-            return Core.TaskManager.GetProgressList(taskId).Select(e => new
-            {
-                e.ID,
-                e.TaskId,
-                e.CreateTime,
-                e.Content,
-                e.UserId,
-                e.User.RealName,
-            });
-        }
-
-        [HttpPost]
-        public void SaveProgress(TaskProgress model)
-        {
-            if (model.TaskId == 0 || string.IsNullOrEmpty(model.Content))
-            {
-                throw new System.Exception("参数不正确");
-            }
-            model.UserId = CurrentUser.ID;
-            Core.TaskManager.SaveProgress(model);
-        }
-
-        [HttpDelete]
-        public void DeleteProgress(int id)
-        {
-            var model = Core.TaskManager.GetProgress(id);
-            if (model != null)
-            {
-                if (model.UserId != CurrentUser.ID)
-                {
-                    throw new HttpException(403, "forbidden");
-                }
-                Core.TaskManager.DeleteProgress(model);
-            }
         }
     }
 }

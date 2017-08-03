@@ -17,29 +17,39 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
+        public int ParentId { get; set; }
+
+        public int CreatorId { get; set; }
+
+        public virtual User Creator { get; set; }
+
         public int TaskId { get; set; }
 
         public string Content { get; set; }
 
         public int ToUserId { get; set; }
 
+        public virtual User ToUser { get; set; }
+
         public int ToDepartmentId { get; set; }
+
+        public string ToDepartmentName { get; set; }
+
         /// <summary>
         /// 为否为主办科室
         /// </summary>
-        public bool IsMaster { get; set; }
+        [NotMapped]
+        public bool IsMaster { get { return ParentId == 0; } }
 
         public DateTime ScheduleDate { get; set; }
 
-        public DateTime CreateTime { get; set; }
-
-        public int GroupId { get; set; }
-
-        public virtual SubTaskGroup Group { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         public bool Completed { get; set; }
 
-        public DateTime? CompleteDate { get; set; }
+        public DateTime? UpdateTime { get; set; }
+
+        public virtual List<TaskTodo> Todos { get; set; }
 
     }
 }

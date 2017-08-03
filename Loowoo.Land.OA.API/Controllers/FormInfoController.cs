@@ -76,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
             FreeFlowNodeData freeFlowNodeData = null;
             if (model.FlowDataId > 0)
             {
-                canSubmitFlow = model.FlowData.CanSubmit(CurrentUser.ID);
+                canSubmitFlow = Core.FlowDataManager.CanSubmit(model.FlowData, CurrentUser.ID);
                 canEdit = canSubmitFlow;
                 canCancel = model.FlowData.CanCancel(CurrentUser.ID);
 

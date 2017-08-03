@@ -19,9 +19,10 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
-
         public bool? ApiResult { get; set; }
 
         public DateTime? UpdateTime { get; set; }
+
+        public string ApiContent { get; set; }
     }
 }

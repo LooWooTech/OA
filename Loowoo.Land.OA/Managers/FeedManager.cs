@@ -62,5 +62,10 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.Feeds.Find(id);
         }
+
+        public Feed GetModel(int fromUserId, int toUserId, int infoId)
+        {
+            return DB.Feeds.FirstOrDefault(e => e.FromUserId == fromUserId && e.ToUserId == toUserId && e.InfoId == infoId);
+        }
     }
 }

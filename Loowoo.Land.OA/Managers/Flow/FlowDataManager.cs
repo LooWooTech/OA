@@ -67,6 +67,19 @@ namespace Loowoo.Land.OA.Managers
             return Core.FlowNodeDataManager.CreateBackNodeData(firstNodeData);
         }
 
+        public bool CanSubmit(FlowData flowData, int userId)
+        {
+            if (flowData.Completed) return false;
+            if (flowData.Nodes == null || flowData.Nodes.Count == 0)
+            {
+                return true;
+            }
+
+            var lastNode = flowData.GetLastNodeData(userId);
+
+            return lastNode != null && Core.FlowNodeDataManager.CanSubmit(lastNode);
+        }
+
         //public void Submit(int infoId, int userId, int toUserId, bool result, string content)
         //{
         //    var info = Core.FormInfoManager.GetModel(infoId);

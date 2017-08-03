@@ -27,29 +27,38 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId)
+        public FlowNodeData CreateNextNodeData(FlowNodeData currentNodeData, int toUserId)
+        {
+            var flowNode = Core.FlowNodeManager.GetNextNode(currentNodeData.FlowNodeId);
+            return CreateNodeData(currentNodeData.FlowDataId, flowNode, toUserId);
+        }
+
+        public FlowNodeData CreateNodeData(int flowDataId, FlowNode flowNode, int toUserId)
         {
             if (toUserId == 0)
             {
                 throw new Exception("没有选择发送人");
             }
 
-            var user = Core.UserManager.GetModel(toUserId);
-            var lastNodeData = flowData.GetLastNodeData();
-            var flowNode = flowData.Flow.GetNextStep(lastNodeData == null ? 0 : lastNodeData.FlowNodeId);
-
+            var toUser = Core.UserManager.GetModel(toUserId);
             var model = new FlowNodeData
             {
-                CreateTime = DateTime.Now,
                 FlowNodeId = flowNode == null ? 0 : flowNode.ID,
-                FlowNodeName = flowNode == null ? user.RealName : flowNode.Name,
-                Signature = user.RealName,
-                UserId = user.ID,
-                FlowDataId = flowData.ID,
+                FlowNodeName = flowNode == null ? toUser.RealName : flowNode.Name,
+                Signature = toUser.RealName,
+                UserId = toUser.ID,
+                FlowDataId = flowDataId,
             };
 
             Core.FlowNodeDataManager.Save(model);
             return model;
+        }
+
+        public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId)
+        {
+            var lastNodeData = flowData.GetLastNodeData();
+            var flowNode = flowData.Flow.GetNextStep(lastNodeData == null ? 0 : lastNodeData.FlowNodeId);
+            return CreateNodeData(flowData.ID, flowNode, toUserId);
         }
 
         public FlowNodeData GetModel(int id)
@@ -71,6 +80,60 @@ namespace Loowoo.Land.OA.Managers
             };
             Core.FlowNodeDataManager.Save(model);
             return model;
+        }
+
+        public FlowNodeData CreateChildNodeData(FlowNodeData parent, int toUserId)
+        {
+            if (toUserId == 0)
+            {
+                throw new Exception("没有选择发送人");
+            }
+            var user = Core.UserManager.GetModel(toUserId);
+            var model = new FlowNodeData
+            {
+                FlowNodeId = parent.FlowNodeId,
+                FlowNodeName = parent.FlowNodeName,
+                Signature = user.RealName,
+                UserId = user.ID,
+                FlowDataId = parent.FlowDataId,
+                ParentId = parent.ID,
+            };
+            Core.FlowNodeDataManager.Save(model);
+            return model;
+        }
+
+        public bool CanSubmit(FlowNodeData model)
+        {
+            var result = !model.Result.HasValue;
+            if (!result && model.FreeFlowData != null)
+            {
+                result = model.FreeFlowData.Completed;
+            }
+            if (!result)
+            {
+                var children = DB.FlowNodeDatas.Where(e => e.ParentId == model.ID);
+                foreach (var child in children)
+                {
+                    result = CanSubmit(child);
+                    if (!result) break;
+                }
+            }
+            return result;
+        }
+
+        public void Submit(FlowNodeData model)
+        {
+            var entity = DB.FlowNodeDatas.FirstOrDefault(e => e.ID == model.ID);
+            entity.Content = model.Content;
+            entity.UpdateTime = DateTime.Now;
+            entity.Result = model.Result;
+            DB.SaveChanges();
+        }
+
+        public void Delete(FlowNodeData flowNodeData)
+        {
+            DB.FlowNodeDatas.Remove(flowNodeData);
+            DB.SaveChanges();
         }
     }
 }

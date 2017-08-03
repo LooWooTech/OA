@@ -19,38 +19,29 @@ namespace Loowoo.Land.OA.Models
 
         [ForeignKey("ID")]
         public virtual FormInfo Info { get; set; }
-
-        public string MC { get; set; }
-
+        /// <summary>
+        /// 任务名称
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// 任务来源
         /// </summary>
-        public RWLY_LX LY_LX { get; set; }
-
+        public TaskFromType FromType { get; set; }
         /// <summary>
         /// 来源
         /// </summary>
-        public string LY { get; set; }
-
-        public int ZRR_ID { get; set; }
-
-        [ForeignKey("ZRR_ID")]
-        public virtual User ZRR { get; set; }
-
+        public string From { get; set; }
         /// <summary>
         /// 工作目标
         /// </summary>
-        public string GZ_MB { get; set; }
-
+        public string Goal { get; set; }
         /// <summary>
         /// 计划完成时间
         /// </summary>
-        public DateTime? JH_SJ { get; set; }
-
-        public string BZ { get; set; }
+        public DateTime? ScheduleDate { get; set; }
     }
 
-    public enum RWLY_LX
+    public enum TaskFromType
     {
         [Description("省")]
         Province = 1,

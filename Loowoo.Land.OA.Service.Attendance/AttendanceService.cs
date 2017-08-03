@@ -45,21 +45,18 @@ namespace Loowoo.Land.OA.Service.Attendance
         private async System.Threading.Tasks.Task Dowork()
         {
             var time = Core.AttendanceManager.GetAttendanceTime();
-            if (time.IsCheckTime(DateTime.Now))
+            if (time.IsCheckTime(DateTime.Now, 3))
             {
                 _recountTimes = 0;
                 var count = await Execute(time);
                 if (count == 0)
                 {
                     //如果是上班时间，则调用次数比较快
-                    if (DateTime.Now < time.AMEndTime)
-                    {
-                        Thread.Sleep(100);
-                    }
-                    else
-                    {
-                        Thread.Sleep(1000 * 60);
-                    }
+                    Thread.Sleep(500);
+                }
+                else
+                {
+                    Thread.Sleep(10);
                 }
             }
             else
@@ -118,7 +115,7 @@ namespace Loowoo.Land.OA.Service.Attendance
             {
                 return await CheckLogs(DateTime.Today, DateTime.Now);
             }
-        } 
+        }
 
         private async Task<int> CheckLogs(DateTime beginTime, DateTime endTime)
         {
@@ -127,25 +124,27 @@ namespace Loowoo.Land.OA.Service.Attendance
             {
                 BeginTime = beginTime,
                 EndTime = endTime,
-                FalseOrNullApiResult = true
+                HasChecked = false,
             });
             foreach (var log in logs)
             {
-                if (log.ApiResult == true) continue;
+                if (log.ApiResult.HasValue) continue;
                 var json = await InvokeApiAsync(log);
-                var result = string.IsNullOrEmpty(json) ? default(bool) : false;
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                log.ApiResult = data.ContainsKey("success") && data["success"] == "true";
+                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && data["msg"].Contains("成功");
+                log.ApiContent = data.ToJson();
                 Core.AttendanceManager.SaveApiResult(log);
-                LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t签到成功：{log.ID}-{log.UserId}\r\n");
+                LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");
             }
             return logs.Count();
         }
 
         private HttpClient _client = new HttpClient();
+        private string _apiUrl = AppSettings.Get("ApiUrl");
         public async Task<string> InvokeApiAsync(CheckInOut log)
         {
-            return await _client.GetStringAsync($"http://dh.pingshikaohe.com/attendance/fin2.do?username={log.User.RealName}&tel={log.User.Mobile}");
+            var url = _apiUrl.Replace("{username}", log.User.RealName).Replace("{tel}", log.User.Mobile);
+            return await _client.GetStringAsync(url);
         }
     }
 }

@@ -83,9 +83,10 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 是否未打卡时间
         /// </summary>
-        public bool IsCheckTime(DateTime time)
+        public bool IsCheckTime(DateTime time, int margin = 0)
         {
-            return (time >= AMBeginTime && time <= AMEndTime) || (time >= PMBeginTime && time <= PMEndTime);
+            return (time >= AMBeginTime.AddMinutes(-margin) && time <= AMEndTime.AddMinutes(margin)) 
+                || (time >= PMBeginTime.AddMinutes(-margin) && time <= PMEndTime.AddMinutes(margin));
         }
 
         /// <summary>

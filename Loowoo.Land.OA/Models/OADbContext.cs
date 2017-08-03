@@ -56,7 +56,7 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskTodo> Todos { get; set; }
-        public DbSet<TaskProgress> TaskProgresses { get; set; }
+        public DbSet<SubTask> SubTasks { get; set; }
 
         public DbSet<Config> Configs { get; set; }
 

@@ -52,13 +52,18 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
+        public FlowNode GetNextNode(int flowNodeId)
+        {
+            return DB.FlowNodes.FirstOrDefault(e => e.PrevId == flowNodeId);
+        }
+
         public FlowNode Get(int id)
         {
             if (id <= 0)
             {
                 return null;
             }
-            return DB.FlowNodes.Find(id);
+            return DB.FlowNodes.FirstOrDefault(e => e.ID == id);
         }
 
     }

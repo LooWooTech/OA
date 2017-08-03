@@ -18,13 +18,15 @@ namespace Loowoo.Land.OA.Models
 
         public string Content { get; set; }
 
+        public int CreatorId { get; set; }
+
         public int ToUserId { get; set; }
 
         public virtual User ToUser { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
-        public DateTime? ScheduleTime { get; set; }
+        public DateTime? ScheduleDate { get; set; }
 
         public bool Completed { get; set; }
 

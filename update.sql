@@ -1,3 +1,63 @@
+----2017-08-03
+ALTER TABLE `task_todo`
+	CHANGE COLUMN `TaskId` `SubTaskId` INT(11) NOT NULL DEFAULT '0' AFTER `ID`,
+	DROP COLUMN `Note`;
+ALTER TABLE `task_todo`
+	CHANGE COLUMN `ScheduleTime` `ScheduleDate` DATETIME NULL DEFAULT NULL AFTER `CreateTime`;
+
+----2017-07-31
+ALTER TABLE `flow_node_data`
+	ADD COLUMN `ExtendId` INT NOT NULL AFTER `FlowNodeId`,
+	ADD INDEX `ExtendId` (`ExtendId`);
+
+CREATE TABLE `sub_task` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`ParentId` INT(11) NOT NULL,
+	`TaskId` INT(11) NOT NULL,
+	`CreatorId` INT(11) NOT NULL,
+	`ToUserId` INT(11) NOT NULL,
+	`ToDepartmentId` INT(11) NOT NULL,
+	`ToDepartmentName` VARCHAR(50) NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	`UpdateTime` DATETIME NULL DEFAULT NULL,
+	`Completed` BIT(1) NOT NULL,
+	`ScheduleDate` DATETIME NULL DEFAULT NULL,
+	`Content` VARCHAR(512) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `ToUserId` (`ToUserId`),
+	INDEX `TaskId` (`TaskId`),
+	INDEX `ParentId` (`ParentId`),
+	INDEX `CreatorId` (`CreatorId`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=6
+;
+
+
+DROP TABLE `task_progress`;
+DROP TABLE `task`;
+
+CREATE TABLE `task` (
+	`ID` INT NOT NULL,
+	`Name` VARCHAR(50) NULL,
+	`FromType` INT NOT NULL,
+	`From` VARCHAR(128) NULL,
+	`Goal` VARCHAR(512) NULL,
+	`ScheduleDate` DATETIME NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `CreatorId` (`CreatorId`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+----2017-07-24
+ALTER TABLE `task`
+	DROP COLUMN `XB_DW`,
+	DROP COLUMN `XBR`;
+
+
 ----2017-07-14
 ALTER TABLE `task_todo`
 	ADD COLUMN `CreatorId` INT(11) NOT NULL DEFAULT '0' AFTER `ToUserId`,

@@ -33,31 +33,16 @@ namespace Loowoo.Land.OA.Models
 
         public virtual List<FlowNodeData> Nodes { get; set; }
 
-        /// <summary>
-        /// 判断用户是否可以提交
-        /// </summary>
-        public bool CanSubmit(int userId)
-        {
-            if (Completed) return false;
-            if (Nodes == null || Nodes.Count == 0)
-            {
-                return true;
-            }
-            var lastNode = GetLastNodeData(userId);
-
-            return lastNode != null && lastNode.CanSubmit();
-        }
-
-
-        public FlowNodeData GetLastNodeData(int userId = 0)
+        public FlowNodeData GetLastNodeData()
         {
             if (Nodes == null) return null;
-            var query = Nodes.AsQueryable();
-            if (userId > 0)
-            {
-                query = query.Where(e => e.UserId == userId);
-            }
-            return query.OrderByDescending(e => e.ID).FirstOrDefault();
+            return Nodes.Where(e => e.ParentId == 0).OrderByDescending(e => e.ID).FirstOrDefault();
+        }
+
+        public FlowNodeData GetLastNodeData(int userId)
+        {
+            if (Nodes == null) return null;
+            return Nodes.Where(e => e.UserId == userId).OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
         public bool CanComplete(FlowNodeData data)
@@ -68,17 +53,17 @@ namespace Loowoo.Land.OA.Models
 
         public FlowNodeData GetFirstNodeData()
         {
-            return Nodes.OrderBy(e => e.ID).FirstOrDefault();
+            return Nodes.Where(e => e.ParentId == 0).OrderBy(e => e.ID).FirstOrDefault();
         }
 
         public FlowNodeData GetNextNodeData(int currentNodeDataId)
         {
-            return Nodes.Where(e => e.ID > currentNodeDataId).OrderBy(e => e.ID).FirstOrDefault();
+            return Nodes.Where(e => e.ID > currentNodeDataId && e.ParentId == 0).OrderBy(e => e.ID).FirstOrDefault();
         }
 
         public FlowNodeData GetLastNodeDataByNodeId(int nodeId)
         {
-            return Nodes.Where(e => e.FlowNodeId == nodeId).OrderBy(e => e.ID).LastOrDefault();
+            return Nodes.Where(e => e.FlowNodeId == nodeId && e.ParentId == 0).OrderBy(e => e.ID).LastOrDefault();
         }
 
         /// <summary>
@@ -97,7 +82,7 @@ namespace Loowoo.Land.OA.Models
             }
             //否则判断当前步骤的下一步是否已经提交，如果提交，则不能撤回
             var nextNodeData = GetNextNodeData(nodeData.ID);
-            return nextNodeData == null || nextNodeData.CanCancel();
+            return nextNodeData == null || (!nextNodeData.HasChanged() && !Nodes.Any(e => e.ParentId == nextNodeData.ID));
         }
 
         /// <summary>

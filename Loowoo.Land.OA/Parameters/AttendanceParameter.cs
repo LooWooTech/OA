@@ -23,6 +23,6 @@ namespace Loowoo.Land.OA.Parameters
 
         public DateTime? EndTime { get; set; }
 
-        public bool? FalseOrNullApiResult { get; set; }
+        public bool? HasChecked { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace Loowoo.Land.OA.Managers
             }
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
-                query = query.Where(e => e.MC.Contains(parameter.SearchKey));
+                query = query.Where(e => e.Name.Contains(parameter.SearchKey));
             }
             return query.OrderByDescending(e => e.ID);
         }
@@ -51,9 +51,33 @@ namespace Loowoo.Land.OA.Managers
             return DB.Tasks.FirstOrDefault(e => e.ID == id);
         }
 
-        public IEnumerable<TaskTodo> GetTodoList(int taskId)
+        public IEnumerable<SubTask> GetSubTaskList(int taskId)
         {
-            return DB.Todos.Where(e => e.TaskId == taskId);
+            return DB.SubTasks.Where(e => e.TaskId == taskId);
+        }
+
+        public void SaveSubTask(SubTask model)
+        {
+            if (model.ID > 0)
+            {
+                var entity = DB.SubTasks.FirstOrDefault(e => e.ID == model.ID);
+                if (entity.IsMaster != model.IsMaster)
+                {
+                    throw new Exception("不能切换主办协办属性");
+                }
+                DB.Entry(entity).CurrentValues.SetValues(model);
+            }
+            else
+            {
+                DB.SubTasks.Add(model);
+            }
+            DB.SaveChanges();
+        }
+
+
+        public IEnumerable<TaskTodo> GetTodoList(int subTaskId)
+        {
+            return DB.Todos.Where(e => e.SubTaskId == subTaskId);
         }
 
         public void SaveTodo(TaskTodo model)
@@ -74,25 +98,15 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public IEnumerable<TaskProgress> GetProgressList(int taskId)
+        public SubTask GetSubTask(int subTaskId)
         {
-            return DB.TaskProgresses.Where(e => e.TaskId == taskId && !e.Deleted).OrderByDescending(e => e.ID);
+            return DB.SubTasks.FirstOrDefault(e => e.ID == subTaskId);
         }
 
-        public void SaveProgress(TaskProgress model)
+        public void DeleteSubTask(int subTaskId)
         {
-            DB.TaskProgresses.AddOrUpdate(model);
-            DB.SaveChanges();
-        }
-
-        public TaskProgress GetProgress(int id)
-        {
-            return DB.TaskProgresses.Find(id);
-        }
-
-        public void DeleteProgress(TaskProgress model)
-        {
-            model.Deleted = true;
+            var entity = GetSubTask(subTaskId);
+            DB.SubTasks.Remove(entity);
             DB.SaveChanges();
         }
     }
