@@ -91,9 +91,8 @@ namespace Loowoo.Land.OA.Managers
             return DB.Todos.Find(id);
         }
 
-        public void DeleteTodo(int id)
+        public void DeleteTodo(TaskTodo model)
         {
-            var model = GetTodo(id);
             DB.Todos.Remove(model);
             DB.SaveChanges();
         }
@@ -103,10 +102,16 @@ namespace Loowoo.Land.OA.Managers
             return DB.SubTasks.FirstOrDefault(e => e.ID == subTaskId);
         }
 
-        public void DeleteSubTask(int subTaskId)
+        public void DeleteSubTask(SubTask model)
         {
-            var entity = GetSubTask(subTaskId);
-            DB.SubTasks.Remove(entity);
+            if (model.IsMaster)
+            {
+                if (DB.SubTasks.Any(e => e.ParentId == model.ID))
+                {
+                    throw new Exception("不能直接删除主办单位的任务，请先删除其协办单位");
+                }
+            }
+            DB.SubTasks.Remove(model);
             DB.SaveChanges();
         }
     }

@@ -88,7 +88,6 @@
     <Compile Include="Models\MissiveRedTitle.cs" />
     <Compile Include="Models\Seal.cs" />
     <Compile Include="Models\Task\SubTaskGroup.cs" />
-    <Compile Include="Models\Task\TaskApproval.cs" />
     <Compile Include="Models\Task\TaskTodo.cs" />
     <Compile Include="Models\Task\TaskProgress.cs" />
     <Compile Include="Parameters\Extend1Parameter.cs" />

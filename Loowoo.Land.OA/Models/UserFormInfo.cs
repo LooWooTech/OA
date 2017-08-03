@@ -23,12 +23,8 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoId { get; set; }
 
-        public int FormId { get; set; }
-
         public virtual FormInfo Info { get; set; }
 
         public FlowStatus Status { get; set; }
-
-        public int FlowNodeDataId { get; set; }
     }
 }

@@ -34,7 +34,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 CategoryId = e.Info.CategoryId,
                 CreateTime = e.Info.CreateTime,
                 FlowDataId = e.Info.FlowDataId,
-                FormId = e.FormId,
                 InfoId = e.Info.ID,
                 PostUserId = e.Info.PostUserId,
                 Status = e.Status,

@@ -133,16 +133,40 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有指定责任人");
             }
-            var info = Core.FormInfoManager.GetModel(data.TaskId);
+            var isAdd = data.ID == 0;
             var department = Core.DepartmentManager.Get(data.ToDepartmentId);
             data.ToDepartmentName = department.Name;
             data.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveSubTask(data);
+            if (!isAdd) return;
+
+            var info = Core.FormInfoManager.GetModel(data.TaskId);
+            var flowData = info.FlowData;
+            var flowNodeData = flowData.GetFlowNodeDataByStep((int)TaskFlowStep.Working);
+            //如果还没指派过任务
+            if (flowNodeData == null)
+            {
+                //创建任务办理流程记录（不指定任何人）
+                flowNodeData = Core.FlowNodeDataManager.CreateNextNodeData(flowData, 0);
+            }
+            var toUserNodeData = flowData.Nodes.FirstOrDefault(e => e.ParentId == flowNodeData.ID && e.UserId == data.ToUserId);
+            if (toUserNodeData == null)
+            {
+                if (data.IsMaster)
+                {
+                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId);
+                }
+                else
+                {
+                    var parentTask = Core.TaskManager.GetSubTask(data.ParentId);
+                    var parentTaskFlowNodeData = flowData.Nodes.FirstOrDefault(e => e.ParentId == flowNodeData.ID && e.UserId == parentTask.ToUserId);
+                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(parentTaskFlowNodeData, data.ToUserId);
+                }
+            }
 
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = data.TaskId,
-                FormId = info.FormId,
                 UserId = data.ToUserId,
                 Status = FlowStatus.Doing,
             });
@@ -162,7 +186,16 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpDelete]
         public void DeleteSubTask(int id)
         {
-            Core.TaskManager.DeleteSubTask(id);
+            var model = Core.TaskManager.GetSubTask(id);
+            Core.TaskManager.DeleteSubTask(model);
+
+            var info = Core.FormInfoManager.GetModel(model.TaskId);
+
+            var parentNodeData = info.FlowData.GetFlowNodeDataByStep((int)TaskFlowStep.Working);
+            var flowNodeData = info.FlowData.Nodes.FirstOrDefault(e => e.UserId == model.ToUserId && e.ParentId == parentNodeData.ID);
+            Core.FlowNodeDataManager.Delete(flowNodeData);
+            Core.UserFormInfoManager.Delete(info.ID, model.ToUserId);
+
         }
 
         [HttpGet]
@@ -187,7 +220,12 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             model.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveTodo(model);
-
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = model.SubTask.TaskId,
+                UserId = model.ToUserId,
+                Status = FlowStatus.Doing
+            });
             //创建自由流程，转发给此人
             Core.FeedManager.Save(new Feed
             {
@@ -210,7 +248,14 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpDelete]
         public void DeleteTodo(int id)
         {
-            Core.TaskManager.DeleteTodo(id);
+            var model = Core.TaskManager.GetTodo(id);
+            var infoId = model.SubTask.TaskId;
+            Core.TaskManager.DeleteTodo(model);
+            if (!model.SubTask.Todos.Any(e => e.ToUserId == model.ToUserId))
+            {
+                Core.UserFormInfoManager.Delete(infoId, model.ToUserId);
+                Core.FeedManager.Delete(new Feed { InfoId = infoId, ToUserId = model.ToUserId, FromUserId = model.CreatorId });
+            }
         }
     }
 }

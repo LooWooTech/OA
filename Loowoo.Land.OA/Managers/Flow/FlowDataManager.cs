@@ -47,8 +47,6 @@ namespace Loowoo.Land.OA.Managers
             //创建状态
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
-                FlowNodeDataId = nodeData.ID,
-                FormId = info.FormId,
                 InfoId = info.ID,
                 UserId = info.PostUserId,
                 Status = FlowStatus.Doing,
@@ -209,7 +207,7 @@ namespace Loowoo.Land.OA.Managers
         public void Complete(FormInfo info)
         {
             //更新所有参与的人，状态改为已完成
-            var list = DB.UserFormInfos.Where(e => e.InfoId == info.ID && e.FormId == info.FormId);
+            var list = DB.UserFormInfos.Where(e => e.InfoId == info.ID);
             foreach (var item in list)
             {
                 item.Status = FlowStatus.Completed;

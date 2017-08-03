@@ -89,14 +89,10 @@ namespace Loowoo.Land.OA.Managers
                 InfoId = data.ID,
                 UserId = data.UserId,
                 Status = FlowStatus.Done,
-                FormId = info.FormId,
-                FlowNodeDataId = nodeData.ID
             });
 
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
-                FlowNodeDataId = nextNodeData.ID,
-                FormId = info.FormId,
                 InfoId = data.ID,
                 UserId = data.ApprovalUserId,
                 Status = FlowStatus.Doing,

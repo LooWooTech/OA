@@ -35,12 +35,7 @@ namespace Loowoo.Land.OA.Managers
 
         public FlowNodeData CreateNodeData(int flowDataId, FlowNode flowNode, int toUserId)
         {
-            if (toUserId == 0)
-            {
-                throw new Exception("没有选择发送人");
-            }
-
-            var toUser = Core.UserManager.GetModel(toUserId);
+            var toUser = Core.UserManager.GetModel(toUserId) ?? new User();
             var model = new FlowNodeData
             {
                 FlowNodeId = flowNode == null ? 0 : flowNode.ID,
@@ -130,9 +125,10 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public void Delete(FlowNodeData flowNodeData)
+        public void Delete(FlowNodeData model)
         {
-            DB.FlowNodeDatas.Remove(flowNodeData);
+            if (model == null) return;
+            DB.FlowNodeDatas.Remove(model);
             DB.SaveChanges();
         }
     }

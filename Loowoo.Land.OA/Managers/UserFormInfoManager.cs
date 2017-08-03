@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.FormId > 0)
             {
-                query = query.Where(e => e.FormId == parameter.FormId);
+                query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
             if (parameter.CategoryId > 0)
             {
@@ -59,9 +59,9 @@ namespace Loowoo.Land.OA.Managers
             return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId && !e.Info.Deleted);
         }
 
-        public void Delete(UserFormInfo model)
+        public void Delete(int infoId, int userId)
         {
-            var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId && e.FormId == model.FormId);
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId);
             DB.UserFormInfos.Remove(entity);
             DB.SaveChanges();
         }
@@ -86,7 +86,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Save(UserFormInfo model)
         {
-            var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId && e.FormId == model.FormId);
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId);
             if (entity != null)
             {
                 entity.Status = model.Status;
@@ -102,20 +102,13 @@ namespace Loowoo.Land.OA.Managers
         {
             info.FlowStep = nodeData.FlowNodeName;
 
-            Delete(new UserFormInfo
-            {
-                InfoId = info.ID,
-                FormId = info.FormId,
-                UserId = nodeData.UserId
-            });
+            Delete(info.ID, nodeData.UserId);
 
             Save(new UserFormInfo
             {
                 InfoId = info.ID,
-                FormId = info.FormId,
                 Status = FlowStatus.Doing,
                 UserId = nodeData.UserId,
-                FlowNodeDataId = nodeData.ID
             });
         }
 

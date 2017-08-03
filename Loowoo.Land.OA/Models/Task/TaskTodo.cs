@@ -16,6 +16,8 @@ namespace Loowoo.Land.OA.Models
 
         public int SubTaskId { get; set; }
 
+        public virtual SubTask SubTask { get; set; }
+
         public string Content { get; set; }
 
         public int CreatorId { get; set; }

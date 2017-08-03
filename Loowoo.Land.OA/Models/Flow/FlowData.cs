@@ -97,6 +97,12 @@ namespace Loowoo.Land.OA.Models
             return lastNodeData.FlowNodeId != lastNode.ID;
         }
 
+        public FlowNodeData GetFlowNodeDataByStep(int flowStep)
+        {
+            var step = Flow.GetStep(flowStep);
+            return Nodes.Where(e => e.ParentId == 0 && e.FlowNodeId == step.ID).OrderByDescending(e => e.ID).FirstOrDefault();
+        }
+
         //public bool CanEdit(int userId)
         //{
         //    //最新的节点是不是第一个节点

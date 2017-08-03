@@ -58,6 +58,32 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
+        public void Delete(Feed template)
+        {
+            if (template.ID > 0)
+            {
+                DB.Feeds.Remove(template);
+            }
+            else
+            {
+                var query = DB.Feeds.AsQueryable();
+                if (template.ToUserId > 0)
+                {
+                    query = query.Where(e => e.ToUserId == template.ToUserId);
+                }
+                if (template.FromUserId > 0)
+                {
+                    query = query.Where(e => e.FromUserId == template.FromUserId);
+                }
+                if (template.InfoId > 0)
+                {
+                    query = query.Where(e => e.InfoId == template.InfoId);
+                }
+                DB.Feeds.RemoveRange(query);
+            }
+            DB.SaveChanges();
+        }
+
         public Feed GetModel(int id)
         {
             return DB.Feeds.Find(id);

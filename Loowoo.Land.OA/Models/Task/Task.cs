@@ -50,4 +50,12 @@ namespace Loowoo.Land.OA.Models
         [Description("区")]
         Area
     }
+
+    public enum TaskFlowStep
+    {
+        Create = 1,
+        Working = 2,
+        Check = 3,
+        Done = 4
+    }
 }
