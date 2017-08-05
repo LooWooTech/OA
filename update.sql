@@ -1,3 +1,8 @@
+----2017-08-04
+ALTER TABLE `sub_task`
+	ADD COLUMN `Status` INT(11) NOT NULL AFTER `ToUserId`,
+	DROP COLUMN `Completed`;
+
 ----2017-08-03
 ALTER TABLE `task_todo`
 	CHANGE COLUMN `TaskId` `SubTaskId` INT(11) NOT NULL DEFAULT '0' AFTER `ID`,

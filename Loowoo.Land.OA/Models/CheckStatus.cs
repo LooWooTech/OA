@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Loowoo.Land.OA.Models
 {
     /// <summary>
-    /// 审核状态
+    /// 审批状态
     /// </summary>
     public enum CheckStatus
     {

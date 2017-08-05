@@ -194,9 +194,9 @@ CREATE TABLE IF NOT EXISTS `flow_node` (
 /*!40000 ALTER TABLE `flow_node` DISABLE KEYS */;
 INSERT INTO `flow_node` (`ID`, `FreeFlowId`, `FlowId`, `Name`, `UserId`, `GroupID`, `PrevId`, `DepartmentIds`, `JobTitleId`, `LimitMode`) VALUES
 	(1, 1, 1, '拟稿人', 0, 1, 0, NULL, 4, 0),
-	(2, 0, 1, '科室负责人审核', 0, 2, 1, '2', 0, 0),
-	(3, 0, 1, '办公室审核', 0, 3, 2, '1', 0, 0),
-	(4, 0, 1, '分管领导审核', 0, 4, 3, '0', 0, 0),
+	(2, 0, 1, '科室负责人审批', 0, 2, 1, '2', 0, 0),
+	(3, 0, 1, '办公室审批', 0, 3, 2, '1', 0, 0),
+	(4, 0, 1, '分管领导审批', 0, 4, 3, '0', 0, 0),
 	(5, 0, 1, '签发', 4, 0, 4, '0', 0, 0),
 	(6, 0, 2, '接收人', 0, 0, 0, '1', 0, 0),
 	(7, 4, 2, '办公室', 0, 0, 6, '1', 3, 1);
@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `form_info` (
 /*!40000 ALTER TABLE `form_info` DISABLE KEYS */;
 INSERT INTO `form_info` (`ID`, `FormId`, `CategoryId`, `CreateTime`, `UpdateTime`, `Deleted`, `PostUserId`, `FlowDataId`, `FlowStep`, `ExtendId`, `Title`) VALUES
 	(1, 2, 0, '2017-05-18 16:25:49', '2017-05-18 16:25:49', b'0', 5, 1, '办公室', 0, '11111111111111'),
-	(2, 1, 0, '2017-05-18 20:07:34', '2017-05-18 20:07:34', b'0', 5, 2, '科室负责人审核', 0, 'asdfasdfasdf'),
+	(2, 1, 0, '2017-05-18 20:07:34', '2017-05-18 20:07:34', b'0', 5, 2, '科室负责人审批', 0, 'asdfasdfasdf'),
 	(3, 1, 0, '2017-05-19 13:50:20', '2017-05-19 13:50:20', b'0', 5, 1, '拟稿人', 0, '1111111111111111111111111111111111'),
 	(4, 2, 0, '2017-05-19 13:50:40', '2017-05-20 11:28:10', b'0', 5, 2, '完结', 0, '222222222222222222222');
 /*!40000 ALTER TABLE `form_info` ENABLE KEYS */;

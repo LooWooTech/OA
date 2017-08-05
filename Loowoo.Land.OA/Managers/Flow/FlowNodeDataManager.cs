@@ -27,13 +27,13 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public FlowNodeData CreateNextNodeData(FlowNodeData currentNodeData, int toUserId)
+        public FlowNodeData CreateNextNodeData(FlowNodeData currentNodeData, int toUserId, int extendId = 0)
         {
             var flowNode = Core.FlowNodeManager.GetNextNode(currentNodeData.FlowNodeId);
-            return CreateNodeData(currentNodeData.FlowDataId, flowNode, toUserId);
+            return CreateNodeData(currentNodeData.FlowDataId, flowNode, toUserId, extendId);
         }
 
-        public FlowNodeData CreateNodeData(int flowDataId, FlowNode flowNode, int toUserId)
+        public FlowNodeData CreateNodeData(int flowDataId, FlowNode flowNode, int toUserId, int extendId = 0)
         {
             var toUser = Core.UserManager.GetModel(toUserId) ?? new User();
             var model = new FlowNodeData
@@ -43,17 +43,18 @@ namespace Loowoo.Land.OA.Managers
                 Signature = toUser.RealName,
                 UserId = toUser.ID,
                 FlowDataId = flowDataId,
+                ExtendId = extendId
             };
 
             Core.FlowNodeDataManager.Save(model);
             return model;
         }
 
-        public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId)
+        public FlowNodeData CreateNextNodeData(FlowData flowData, int toUserId, int extendId = 0)
         {
             var lastNodeData = flowData.GetLastNodeData();
             var flowNode = flowData.Flow.GetNextStep(lastNodeData == null ? 0 : lastNodeData.FlowNodeId);
-            return CreateNodeData(flowData.ID, flowNode, toUserId);
+            return CreateNodeData(flowData.ID, flowNode, toUserId, extendId);
         }
 
         public FlowNodeData GetModel(int id)
@@ -77,7 +78,7 @@ namespace Loowoo.Land.OA.Managers
             return model;
         }
 
-        public FlowNodeData CreateChildNodeData(FlowNodeData parent, int toUserId)
+        public FlowNodeData CreateChildNodeData(FlowNodeData parent, int toUserId, int extendId = 0)
         {
             if (toUserId == 0)
             {
@@ -92,6 +93,7 @@ namespace Loowoo.Land.OA.Managers
                 UserId = user.ID,
                 FlowDataId = parent.FlowDataId,
                 ParentId = parent.ID,
+                ExtendId = extendId
             };
             Core.FlowNodeDataManager.Save(model);
             return model;
@@ -130,6 +132,11 @@ namespace Loowoo.Land.OA.Managers
             if (model == null) return;
             DB.FlowNodeDatas.Remove(model);
             DB.SaveChanges();
+        }
+
+        public FlowNodeData GetModelByExtendId(int extendId, int userId)
+        {
+            return DB.FlowNodeDatas.Where(e => e.ExtendId == extendId && e.UserId == userId).OrderByDescending(e => e.ID).FirstOrDefault();
         }
     }
 }

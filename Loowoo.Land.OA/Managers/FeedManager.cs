@@ -39,7 +39,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
             }
-            return query.GroupBy(e => e.InfoId).Select(g => g.FirstOrDefault()).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Feed model)

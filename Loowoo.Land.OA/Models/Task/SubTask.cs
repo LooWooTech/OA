@@ -45,11 +45,18 @@ namespace Loowoo.Land.OA.Models
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 
-        public bool Completed { get; set; }
-
         public DateTime? UpdateTime { get; set; }
 
         public virtual List<TaskTodo> Todos { get; set; }
 
+        public SubTaskStatus Status { get; set; }
+    }
+
+    public enum SubTaskStatus
+    {
+        Doing,
+        Checking,
+        Complete,
+        Back
     }
 }

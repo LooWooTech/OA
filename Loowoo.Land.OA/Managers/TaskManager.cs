@@ -51,9 +51,12 @@ namespace Loowoo.Land.OA.Managers
             return DB.Tasks.FirstOrDefault(e => e.ID == id);
         }
 
-        public IEnumerable<SubTask> GetSubTaskList(int taskId)
+        public IEnumerable<SubTask> GetSubTaskList(int taskId, int? parentId = null)
         {
-            return DB.SubTasks.Where(e => e.TaskId == taskId);
+            var query = DB.SubTasks.Where(e => e.TaskId == taskId);
+            if (parentId.HasValue)
+                query = query.Where(e => e.ParentId == parentId.Value);
+            return query;
         }
 
         public void SaveSubTask(SubTask model)

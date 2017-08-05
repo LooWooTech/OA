@@ -96,7 +96,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 e.CreateTime,
                 e.CreatorId,
                 CreatorName = e.Creator == null ? "" : e.Creator.RealName,
-                e.Completed,
+                e.Status,
                 e.Content,
                 e.UpdateTime,
                 e.ToDepartmentId,
@@ -110,6 +110,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Todos = e.Todos.Select(t => new
                 {
                     t.ID,
+                    t.CreatorId,
                     t.CreateTime,
                     t.ScheduleDate,
                     t.ToUserId,
@@ -142,26 +143,11 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var info = Core.FormInfoManager.GetModel(data.TaskId);
             var flowData = info.FlowData;
-            var flowNodeData = flowData.GetFlowNodeDataByStep((int)TaskFlowStep.Working);
-            //如果还没指派过任务
-            if (flowNodeData == null)
-            {
-                //创建任务办理流程记录（不指定任何人）
-                flowNodeData = Core.FlowNodeDataManager.CreateNextNodeData(flowData, 0);
-            }
-            var toUserNodeData = flowData.Nodes.FirstOrDefault(e => e.ParentId == flowNodeData.ID && e.UserId == data.ToUserId);
+            var flowNodeData = flowData.GetFirstNodeData();
+            var toUserNodeData = Core.FlowNodeDataManager.GetModelByExtendId(data.ID, data.ToUserId);
             if (toUserNodeData == null)
             {
-                if (data.IsMaster)
-                {
-                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId);
-                }
-                else
-                {
-                    var parentTask = Core.TaskManager.GetSubTask(data.ParentId);
-                    var parentTaskFlowNodeData = flowData.Nodes.FirstOrDefault(e => e.ParentId == flowNodeData.ID && e.UserId == parentTask.ToUserId);
-                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(parentTaskFlowNodeData, data.ToUserId);
-                }
+                toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId, data.ID);
             }
 
             Core.UserFormInfoManager.Save(new UserFormInfo
@@ -176,7 +162,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Action = UserAction.Create,
                 FromUserId = CurrentUser.ID,
                 ToUserId = data.ToUserId,
-                Title = info.Title,
+                Title = "[创建任务]" + info.Title,
                 Description = data.Content,
                 Type = FeedType.Task,
                 InfoId = data.TaskId,
@@ -189,49 +175,209 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.TaskManager.GetSubTask(id);
             Core.TaskManager.DeleteSubTask(model);
 
-            var info = Core.FormInfoManager.GetModel(model.TaskId);
-
-            var parentNodeData = info.FlowData.GetFlowNodeDataByStep((int)TaskFlowStep.Working);
-            var flowNodeData = info.FlowData.Nodes.FirstOrDefault(e => e.UserId == model.ToUserId && e.ParentId == parentNodeData.ID);
+            var flowNodeData = Core.FlowNodeDataManager.GetModelByExtendId(model.ID, model.ToUserId);
             Core.FlowNodeDataManager.Delete(flowNodeData);
-            Core.UserFormInfoManager.Delete(info.ID, model.ToUserId);
+            Core.UserFormInfoManager.Delete(model.TaskId, model.ToUserId);
+            Core.FeedManager.Delete(new Feed { ToUserId = model.ToUserId, InfoId = model.TaskId });
+        }
 
+        /// <summary>
+        /// 提交子任务，创建子任务相关流程
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content"></param>
+        /// <param name="result"></param>
+        /// <param name="toUserId"></param>
+        [HttpGet]
+        public void SubmitSubTask(int id, string content = null, bool result = true, int toUserId = 0)
+        {
+            var model = Core.TaskManager.GetSubTask(id);
+            if (model.IsMaster)
+            {
+                var children = Core.TaskManager.GetSubTaskList(model.TaskId, model.ID);
+                if (!children.All(e => e.Status == SubTaskStatus.Complete))
+                {
+                    throw new Exception("子任务还没完成，无法提交");
+                }
+            }
+            if (model.Todos.Any(e => !e.Completed))
+            {
+                throw new Exception("子任务还没完成，无法提交");
+            }
+            model.Status = SubTaskStatus.Checking;
+
+            var flowNodeData = Core.FlowNodeDataManager.GetModelByExtendId(model.ID, model.ToUserId);
+            if (flowNodeData.Submited)
+            {
+                return;
+            }
+            flowNodeData.Content = content;
+            flowNodeData.Result = result;
+            Core.FlowNodeDataManager.Submit(flowNodeData);
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = model.TaskId,
+                UserId = model.ToUserId,
+                Status = FlowStatus.Done
+            });
+
+            //如果是协办科室，则直接提交结束
+            if (!model.IsMaster)
+            {
+                var parentSubTask = Core.TaskManager.GetSubTask(model.ParentId);
+                toUserId = parentSubTask.ToUserId;
+            }
+            else
+            {
+                //判断子任务是否都已经完成
+
+                //主办科室提交，则需要创建分管领导主流程
+                if (toUserId == 0)
+                {
+                    throw new Exception("没有指定分管领导");
+                }
+            }
+            Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, toUserId, model.ID);
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = model.TaskId,
+                UserId = toUserId,
+                Status = FlowStatus.Doing,
+            });
+            Core.FeedManager.Save(new Feed
+            {
+                FromUserId = model.ToUserId,
+                ToUserId = toUserId,
+                Action = UserAction.Submit,
+                Type = FeedType.Flow,
+                InfoId = model.TaskId,
+                Title = "[提交任务]" + model.Content,
+            });
         }
 
         [HttpGet]
-        public object TodoList(int subTaskId)
+        public IEnumerable<FlowNodeData> CheckList(int taskId)
         {
-            return Core.TaskManager.GetTodoList(subTaskId).Select(e => new
+            var info = Core.FormInfoManager.GetModel(taskId);
+            return info.FlowData.Nodes.Where(e => e.UserId == CurrentUser.ID);
+        }
+
+        /// <summary>
+        /// 分管领导审批
+        /// </summary>
+        [HttpGet]
+        public void CheckSubTask(int id, string content = null, bool result = true)
+        {
+            var model = Core.FlowNodeDataManager.GetModel(id);
+            if (model == null || model.Submited)
             {
-                e.ID,
-                e.Completed,
-                e.Content,
-                e.CreateTime,
-                e.ScheduleDate,
-                e.SubTaskId,
-                e.ToUserId,
-                ToUserName = e.ToUser == null ? null : e.ToUser.RealName,
-                e.UpdateTime
+                throw new Exception("没有需要审批的流程");
+            }
+            model.Content = content;
+            model.Result = result;
+            var subTask = Core.TaskManager.GetSubTask(model.ExtendId);
+            //更新自己当前的流程状态
+            Core.FlowNodeDataManager.Submit(model);
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = subTask.TaskId,
+                Status = FlowStatus.Done,
+                UserId = model.UserId
             });
+
+            int toUserId = 0;
+            if (result)
+            {
+                subTask.Status = SubTaskStatus.Complete;
+                //如果是是主办科室，则需要发给局领导，如果是协办科室，则结束
+                if (subTask.IsMaster)
+                {
+                    //判断该Task的其他的主办是否全部完成，如果是，则发给局领导
+                    var list = Core.TaskManager.GetSubTaskList(subTask.TaskId, 0).ToList();
+                    var allCompleted = list.Where(e => e.ID != subTask.ID).All(e => e.Status == SubTaskStatus.Complete);
+                    if (allCompleted)
+                    {
+                        var info = Core.FormInfoManager.GetModel(subTask.TaskId);
+                        var flowData = info.FlowData;
+                        //局领导的ID在主流程的最后一步
+                        var flowNode = flowData.Flow.GetLastNode();
+                        var user = Core.FlowNodeManager.GetUserList(flowNode).FirstOrDefault();
+                        if (user == null)
+                        {
+                            throw new Exception("流程未配置局领导ID");
+                        }
+
+                        toUserId = flowNode.UserIds[0];
+                        Core.FlowNodeDataManager.CreateNodeData(flowData.ID, flowNode, toUserId);
+                        Core.FeedManager.Save(new Feed
+                        {
+                            FromUserId = CurrentUser.ID,
+                            ToUserId = toUserId,
+                            Action = UserAction.Submit,
+                            Type = FeedType.Flow,
+                            InfoId = subTask.TaskId,
+                            Title = "[任务审批] " + info.Title
+                        });
+                    }
+                }
+                Core.FeedManager.Save(new Feed
+                {
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = subTask.ToUserId,
+                    Action = UserAction.Submit,
+                    Type = FeedType.Flow,
+                    InfoId = subTask.TaskId,
+                    Title = "[任务完成] " + subTask.Content
+                });
+            }
+            else
+            {
+                subTask.Status = SubTaskStatus.Back;
+                var parentFlowNodeData = Core.FlowNodeDataManager.GetModel(model.ParentId);
+                toUserId = parentFlowNodeData.UserId;
+                Core.FlowNodeDataManager.CreateChildNodeData(model, toUserId, subTask.ID);
+                Core.FeedManager.Save(new Feed
+                {
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = toUserId,
+                    Action = UserAction.Submit,
+                    Type = FeedType.Flow,
+                    InfoId = subTask.TaskId,
+                    Title = "[任务失败] " + subTask.Content
+                });
+            }
+            if (toUserId > 0)
+            {
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = subTask.TaskId,
+                    Status = FlowStatus.Back,
+                    UserId = toUserId
+                });
+            }
         }
 
         [HttpPost]
         public void SaveTodo(TaskTodo model)
         {
+            var subTask = Core.TaskManager.GetSubTask(model.SubTaskId);
             model.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveTodo(model);
+
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
-                InfoId = model.SubTask.TaskId,
+                InfoId = subTask.TaskId,
                 UserId = model.ToUserId,
                 Status = FlowStatus.Doing
             });
-            //创建自由流程，转发给此人
+
             Core.FeedManager.Save(new Feed
             {
+                InfoId = subTask.TaskId,
                 ToUserId = model.ToUserId,
                 Title = model.Content,
-                Type = FeedType.Info,
+                FromUserId = CurrentUser.ID,
+                Type = FeedType.Task,
                 Action = UserAction.Create,
             });
         }
@@ -249,9 +395,10 @@ namespace Loowoo.Land.OA.API.Controllers
         public void DeleteTodo(int id)
         {
             var model = Core.TaskManager.GetTodo(id);
-            var infoId = model.SubTask.TaskId;
+            var subTask = Core.TaskManager.GetSubTask(model.SubTaskId);
+            var infoId = subTask.TaskId;
             Core.TaskManager.DeleteTodo(model);
-            if (!model.SubTask.Todos.Any(e => e.ToUserId == model.ToUserId))
+            if (!subTask.Todos.Any(e => e.ToUserId == model.ToUserId))
             {
                 Core.UserFormInfoManager.Delete(infoId, model.ToUserId);
                 Core.FeedManager.Delete(new Feed { InfoId = infoId, ToUserId = model.ToUserId, FromUserId = model.CreatorId });

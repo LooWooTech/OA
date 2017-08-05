@@ -1,4 +1,5 @@
 ﻿using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,5 +67,28 @@ namespace Loowoo.Land.OA.Managers
             return DB.FlowNodes.FirstOrDefault(e => e.ID == id);
         }
 
+        public IEnumerable<User> GetUserList(FlowNode node, FlowData flowData = null)
+        {
+            var parameter = new UserParameter
+            {
+                UserIds = node.UserIds,
+                TitleIds = node.JobTitleIds,
+            };
+
+            if (node != null)
+            {
+                if (node.LimitMode == DepartmentLimitMode.Assign)
+                {
+                    parameter.DepartmentIds = node.DepartmentIds;
+                }
+                else if (node.LimitMode == DepartmentLimitMode.Self && flowData != null)
+                {
+                    var senderNodeData = flowData.GetFirstNodeData();
+                    var user = Core.UserManager.GetModel(senderNodeData.UserId);
+                    parameter.DepartmentIds = user.DepartmentIds;
+                }
+            }
+            return Core.UserManager.GetList(parameter);
+        }
     }
 }

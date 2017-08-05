@@ -186,25 +186,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 nextNode = flow.GetStep(flowStep);
             }
 
-
-            var parameter = new Parameters.UserParameter();
-            if (nextNode != null)
-            {
-                parameter.TitleIds = nextNode.JobTitleIds;
-                parameter.UserIds = nextNode.UserIds;
-                if (nextNode.LimitMode == DepartmentLimitMode.Assign)
-                {
-                    parameter.DepartmentIds = nextNode.DepartmentIds;
-                }
-                else if (nextNode.LimitMode == DepartmentLimitMode.Self && flowData != null)
-                {
-                    var senderNodeData = flowData.GetFirstNodeData();
-                    var user = Core.UserManager.GetModel(senderNodeData.UserId);
-                    parameter.DepartmentIds = user.DepartmentIds;
-                }
-            }
-
-            return Core.UserManager.GetList(parameter).Select(e => new UserViewModel(e));
+            return Core.FlowNodeManager.GetUserList(nextNode, flowData).Select(e => new UserViewModel(e));
         }
 
         [HttpGet]
