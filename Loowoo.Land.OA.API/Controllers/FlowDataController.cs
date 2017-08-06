@@ -28,7 +28,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         /// <summary>
-        /// 获取审批数据
+        /// 获取审核数据
         /// </summary>
         [HttpGet]
         public object Model(int id = 0, int infoId = 0)

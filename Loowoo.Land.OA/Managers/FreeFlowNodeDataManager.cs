@@ -9,7 +9,7 @@ namespace Loowoo.Land.OA.Managers
 {
     public class FreeFlowNodeDataManager : ManagerBase
     {
-        public void Add(FreeFlowNodeData model)
+        public bool Add(FreeFlowNodeData model)
         {
             var user = Core.UserManager.GetModel(model.UserId);
             model.Signature = user.RealName;
@@ -18,11 +18,9 @@ namespace Loowoo.Land.OA.Managers
             {
                 DB.FreeFlowNodeDatas.Add(model);
                 DB.SaveChanges();
+                return true;
             }
-            else
-            {
-                model = entity;
-            }
+            return false;
         }
 
         public FreeFlowNodeData Update(FreeFlowNodeData model)

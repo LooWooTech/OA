@@ -40,7 +40,7 @@ namespace Loowoo.Land.OA.Managers
                 //检查有没有在此节点的流程，如果有，则不能删除
                 if (DB.FlowNodeDatas.Any(e => e.FlowNodeId == model.ID && e.Result == null))
                 {
-                    throw new Exception("该节点还有流程在审批，暂时无法删除");
+                    throw new Exception("该节点还有流程在审核，暂时无法删除");
                 }
 
                 var next = DB.FlowNodes.FirstOrDefault(e => e.PrevId == model.ID);

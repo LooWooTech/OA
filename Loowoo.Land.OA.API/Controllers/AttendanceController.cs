@@ -78,7 +78,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             if (data.ApprovalUserId == 0)
             {
-                throw new Exception("没有选择审批人");
+                throw new Exception("没有选择审核人");
             }
             data.UserId = CurrentUser.ID;
             var info = Core.AttendanceManager.Apply(data);

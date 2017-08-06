@@ -34,8 +34,8 @@ namespace Loowoo.Land.OA.Models
 
     }
     /// <summary>
-    /// 步骤与审批人的关系 
-    /// 当前步骤的审批人 一人 或者多人
+    /// 步骤与审核人的关系 
+    /// 当前步骤的审核人 一人 或者多人
     /// </summary>
     [Table("step_user")]
     public class StepUser
@@ -44,7 +44,7 @@ namespace Loowoo.Land.OA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// 审批流程ID
+        /// 审核流程ID
         /// </summary>
         public int StepID { get; set; }
         /// <summary>

@@ -50,7 +50,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Approval(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            //如果流程审批完成
+            //如果流程审核完成
             if (info.FlowData.Completed)
             {
                 var model = Core.FormInfoExtend1Manager.Get(infoId);

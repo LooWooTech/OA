@@ -263,7 +263,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         /// <summary>
-        /// 分管领导审批
+        /// 分管领导审核
         /// </summary>
         [HttpGet]
         public void CheckSubTask(int id, string content = null, bool result = true)
@@ -271,7 +271,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.FlowNodeDataManager.GetModel(id);
             if (model == null || model.Submited)
             {
-                throw new Exception("没有需要审批的流程");
+                throw new Exception("没有需要审核的流程");
             }
             model.Content = content;
             model.Result = result;
@@ -316,7 +316,7 @@ namespace Loowoo.Land.OA.API.Controllers
                             Action = UserAction.Submit,
                             Type = FeedType.Flow,
                             InfoId = subTask.TaskId,
-                            Title = "[任务审批] " + info.Title
+                            Title = "[任务审核] " + info.Title
                         });
                     }
                 }

@@ -1,4 +1,5 @@
 ﻿using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -15,6 +16,5 @@ namespace Loowoo.Land.OA.Managers
             DB.FreeFlows.AddOrUpdate(model);
             DB.SaveChanges();
         }
-
     }
 }

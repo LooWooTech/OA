@@ -60,27 +60,30 @@ namespace Loowoo.Land.OA.API.Controllers
                 //传阅流程不需要发给自己
                 if (userId == CurrentUser.ID) continue;
 
-                Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
+                var added = Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
                 {
                     FreeFlowDataId = model.FreeFlowDataId,
                     ParentId = model.ID,
                     UserId = userId,
                 });
-                Core.UserFormInfoManager.Save(new UserFormInfo
+                if (added)
                 {
-                    InfoId = info.ID,
-                    UserId = userId,
-                    Status = FlowStatus.Doing,
-                });
-                Core.FeedManager.Save(new Feed()
-                {
-                    FromUserId = CurrentUser.ID,
-                    ToUserId = userId,
-                    Action = UserAction.Submit,
-                    InfoId = infoId,
-                    Title = info.Title,
-                    Type = FeedType.FreeFlow,
-                });
+                    Core.UserFormInfoManager.Save(new UserFormInfo
+                    {
+                        InfoId = info.ID,
+                        UserId = userId,
+                        Status = FlowStatus.Doing,
+                    });
+                    Core.FeedManager.Save(new Feed()
+                    {
+                        FromUserId = CurrentUser.ID,
+                        ToUserId = userId,
+                        Action = UserAction.Submit,
+                        InfoId = infoId,
+                        Title = info.Title,
+                        Type = FeedType.FreeFlow,
+                    });
+                }
             }
         }
 
@@ -88,7 +91,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public object UserList(int flowNodeDataId, string key)
         {
             var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
-            if (flowNodeData.FlowNode.FreeFlowId == 0)
+            if (flowNodeData.FlowNode.FreeFlow == null)
             {
                 return null;
             }

@@ -52,12 +52,12 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             if (data.ApprovalUserId == 0)
             {
-                throw new Exception("没有选择审批人");
+                throw new Exception("没有选择审核人");
             }
             data.UserId = CurrentUser.ID;
             if (Core.FormInfoExtend1Manager.HasApply(data))
             {
-                throw new Exception("你已经申请过该车辆，还未通过审批");
+                throw new Exception("你已经申请过该车辆，还未通过审核");
             }
             Core.CarManager.Apply(data);
             Core.FeedManager.Save(new Feed
