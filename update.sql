@@ -1,3 +1,8 @@
+----2017-08-07
+ALTER TABLE `user`
+	ADD COLUMN `Deleted` BIT NOT NULL AFTER `Mobile`;
+
+
 ----2017-08-04
 ALTER TABLE `sub_task`
 	ADD COLUMN `Status` INT(11) NOT NULL AFTER `ToUserId`,

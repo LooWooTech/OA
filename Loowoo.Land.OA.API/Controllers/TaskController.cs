@@ -205,6 +205,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("子任务还没完成，无法提交");
             }
             model.Status = SubTaskStatus.Checking;
+            model.UpdateTime = DateTime.Now;
 
             var flowNodeData = Core.FlowNodeDataManager.GetModelByExtendId(model.ID, model.ToUserId);
             if (flowNodeData.Submited)
@@ -256,10 +257,9 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<FlowNodeData> CheckList(int taskId)
+        public IEnumerable<FlowNodeData> CheckList(int taskId, int userId = 0)
         {
-            var info = Core.FormInfoManager.GetModel(taskId);
-            return info.FlowData.Nodes.Where(e => e.UserId == CurrentUser.ID);
+            return Core.FlowNodeDataManager.GetList(taskId, userId);
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace Loowoo.Land.OA.API.Controllers
                             throw new Exception("流程未配置局领导ID");
                         }
 
-                        toUserId = flowNode.UserIds[0];
+                        toUserId = user.ID;
                         Core.FlowNodeDataManager.CreateNodeData(flowData.ID, flowNode, toUserId);
                         Core.FeedManager.Save(new Feed
                         {

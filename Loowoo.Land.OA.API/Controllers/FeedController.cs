@@ -23,7 +23,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 BeginTime = DateTime.Today.AddDays(-15),
                 ToUserId = CurrentUser.ID
             };
-            var list = Core.FeedManager.GetList(parameter);
+            var list = Core.FeedManager.GetList(parameter).GroupBy(e => new { e.Info, e.FromUserId, e.ToUserId }).Select(g => g.FirstOrDefault());
+
             return new PagingResult
             {
                 List = list.Select(e => new

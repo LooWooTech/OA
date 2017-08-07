@@ -55,6 +55,8 @@ namespace Loowoo.Land.OA.Models
 
         public int Sort { get; set; }
 
+        public bool Deleted { get; set; }
+
         public bool HasRight(string rightName)
         {
             return UserGroups.Any(e => e.Group.Rights.Any(r => r.Name.Contains(rightName)));

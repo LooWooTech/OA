@@ -224,5 +224,10 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.FlowDatas.FirstOrDefault(e => e.ID == flowDataId);
         }
+
+        public FlowData GetModelByInfoid(int infoId)
+        {
+            return DB.FlowDatas.FirstOrDefault(e => e.InfoId == infoId);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Managers
         {
             username = username.ToLower();
             password = password.MD5();
-            var model = DB.Users.FirstOrDefault(e => e.Username == username && e.Password == password);
+            var model = DB.Users.FirstOrDefault(e => !e.Deleted && e.Username == username && e.Password == password);
             if (model != null)
             {
                 model.DepartmentIds = model.UserDepartments.Select(e => e.DepartmentId).ToArray();
@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 return null;
             }
-            var model = DB.Users.Find(id);
+            var model = DB.Users.FirstOrDefault(e => e.ID == id);
             if (model != null)
             {
                 model.DepartmentIds = model.UserDepartments.Select(e => e.DepartmentId).ToArray();
@@ -45,7 +45,7 @@ namespace Loowoo.Land.OA.Managers
 
         public IEnumerable<User> GetList(UserParameter parameter)
         {
-            var query = DB.Users.AsQueryable();
+            var query = DB.Users.Where(e => !e.Deleted);
             if (parameter.UserId > 0)
             {
                 query = query.Where(e => e.ID == parameter.UserId);
@@ -120,10 +120,7 @@ namespace Loowoo.Land.OA.Managers
             var user = DB.Users.Find(id);
             if (user != null)
             {
-                var userGroups = DB.UserGroups.Where(e => e.UserId == user.ID);
-                DB.UserGroups.RemoveRange(userGroups);
-                DB.Users.Remove(user);
-
+                user.Deleted = true;
                 DB.SaveChanges();
             }
         }

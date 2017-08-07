@@ -138,5 +138,16 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.FlowNodeDatas.Where(e => e.ExtendId == extendId && e.UserId == userId).OrderByDescending(e => e.ID).FirstOrDefault();
         }
+
+        public IEnumerable<FlowNodeData> GetList(int infoId, int userId)
+        {
+            var flowData = Core.FlowDataManager.GetModelByInfoid(infoId);
+            var list = flowData.Nodes.AsQueryable();
+            if (userId > 0)
+            {
+                list = list.Where(e => e.UserId == userId);
+            }
+            return list;
+        }
     }
 }
