@@ -44,14 +44,13 @@ DROP TABLE `task_progress`;
 DROP TABLE `task`;
 
 CREATE TABLE `task` (
-	`ID` INT NOT NULL,
-	`Name` VARCHAR(50) NULL,
-	`FromType` INT NOT NULL,
-	`From` VARCHAR(128) NULL,
-	`Goal` VARCHAR(512) NULL,
-	`ScheduleDate` DATETIME NULL,
-	PRIMARY KEY (`ID`),
-	INDEX `CreatorId` (`CreatorId`)
+	`ID` INT(11) NOT NULL,
+	`Name` VARCHAR(50) NULL DEFAULT NULL,
+	`FromType` INT(11) NOT NULL,
+	`From` VARCHAR(128) NULL DEFAULT NULL,
+	`Goal` VARCHAR(512) NULL DEFAULT NULL,
+	`ScheduleDate` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`)
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB

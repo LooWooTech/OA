@@ -63,20 +63,15 @@ namespace Loowoo.Common
             return Convert.FromBase64String(base64String);
         }
 
-        private static byte[] AES_KEY;
-        private static byte[] AES_IV;
-        static EncryptExtensions()
-        {
-            AES_KEY = Encoding.UTF8.GetBytes("loowootechaeskey");
-            AES_IV = AES_KEY;
-        }
+        private const string DEFAULT_KEY = "[zhoushan.dinghai]loowootech.com";
+        private const string DEFAULT_IV = "victoryisuponus!";
 
-        public static byte[] AESEncrypt(this string plainText)
+        public static byte[] AESEncrypt(this string plainText, string aesKey = DEFAULT_KEY, string aesIv = DEFAULT_IV)
         {
             using (var aes = Aes.Create())
             {
-                aes.Key = AES_KEY;
-                aes.IV = AES_IV;
+                aes.Key = Encoding.UTF8.GetBytes(aesKey);
+                aes.IV = Encoding.UTF8.GetBytes(aesIv);
 
                 var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                 using (var ms = new MemoryStream())
@@ -93,18 +88,18 @@ namespace Loowoo.Common
             }
         }
 
-        public static string AESDecrypt(this string encrypted)
+        public static string AESDecrypt(this string encrypted, string aesKey = DEFAULT_KEY, string aesIv = DEFAULT_IV)
         {
             var bytes = Encoding.UTF8.GetBytes(encrypted);
-            return bytes.AESDecrypt();
+            return bytes.AESDecrypt(aesKey, aesIv);
         }
 
-        public static string AESDecrypt(this byte[] encryptedBytes)
+        public static string AESDecrypt(this byte[] encryptedBytes, string aesKey = DEFAULT_KEY, string aesIv = DEFAULT_IV)
         {
             using (var aes = Aes.Create())
             {
-                aes.Key = AES_KEY;
-                aes.IV = AES_IV;
+                aes.Key = Encoding.UTF8.GetBytes(aesKey);
+                aes.IV = Encoding.UTF8.GetBytes(aesIv);
 
                 var result = string.Empty;
                 var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
