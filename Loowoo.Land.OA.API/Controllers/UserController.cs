@@ -54,7 +54,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows)
             };
-            var list = Core.UserManager.GetList(parameter);
+            var list = Core.UserManager.GetList(parameter).OrderBy(x => x.Sort);
             return new PagingResult
             {
                 List = list.Select(e => new UserViewModel(e)),
