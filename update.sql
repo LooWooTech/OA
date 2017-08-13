@@ -1,3 +1,11 @@
+----2017-08-08
+ALTER TABLE `missive`
+	ADD COLUMN `Important` BIT NOT NULL AFTER `GK_FB`;
+
+ALTER TABLE `freeflow_nodedata`
+	ADD COLUMN `IsCc` BIT NOT NULL AFTER `UpdateTime`;
+
+
 ----2017-08-07
 ALTER TABLE `user`
 	ADD COLUMN `Deleted` BIT NOT NULL AFTER `Mobile`;

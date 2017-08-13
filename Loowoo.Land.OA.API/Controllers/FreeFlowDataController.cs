@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null)
+        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null, string ccUserIds = null)
         {
             if (model == null)
             {
@@ -31,7 +31,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 flowNodeData.FreeFlowData = new FreeFlowData { ID = flowNodeData.ID };
                 Core.FreeFlowDataManager.Save(flowNodeData.FreeFlowData);
             }
-
             model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
             model.UserId = CurrentUser.ID;
             model.UpdateTime = DateTime.Now;
@@ -45,10 +44,12 @@ namespace Loowoo.Land.OA.API.Controllers
                 Status = FlowStatus.Done
             });
             var targetUserIds = toUserIds.ToIntArray();
+            var ccTargetUserIds = ccUserIds.ToIntArray();
             //如果没有选择发送人，则代表此流程结束
-            if (targetUserIds == null || targetUserIds.Length == 0)
+            if ((targetUserIds == null || targetUserIds.Length == 0)
+                && (ccTargetUserIds == null || ccTargetUserIds.Length == 0))
             {
-                Core.FreeFlowDataManager.Complete(model.FreeFlowDataId, CurrentUser.ID);
+                Core.FreeFlowDataManager.TryComplete(model.FreeFlowDataId, CurrentUser.ID);
                 return;
             }
 
@@ -57,33 +58,44 @@ namespace Loowoo.Land.OA.API.Controllers
 
             foreach (var userId in targetUserIds)
             {
-                //传阅流程不需要发给自己
-                if (userId == CurrentUser.ID) continue;
+                SubmitFreeFlowNodeData(model, info, userId);
+            }
 
-                var added = Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
+            foreach (var userId in ccTargetUserIds)
+            {
+                SubmitFreeFlowNodeData(model, info, userId, true);
+            }
+        }
+
+        private void SubmitFreeFlowNodeData(FreeFlowNodeData model, FormInfo info, int userId, bool isCc = false)
+        {
+            //传阅流程不需要发给自己
+            if (userId == CurrentUser.ID) return;
+
+            var added = Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
+            {
+                FreeFlowDataId = model.FreeFlowDataId,
+                ParentId = model.ID,
+                UserId = userId,
+                IsCc = isCc
+            });
+            if (added)
+            {
+                Core.UserFormInfoManager.Save(new UserFormInfo
                 {
-                    FreeFlowDataId = model.FreeFlowDataId,
-                    ParentId = model.ID,
+                    InfoId = info.ID,
                     UserId = userId,
+                    Status = FlowStatus.Doing,
                 });
-                if (added)
+                Core.FeedManager.Save(new Feed()
                 {
-                    Core.UserFormInfoManager.Save(new UserFormInfo
-                    {
-                        InfoId = info.ID,
-                        UserId = userId,
-                        Status = FlowStatus.Doing,
-                    });
-                    Core.FeedManager.Save(new Feed()
-                    {
-                        FromUserId = CurrentUser.ID,
-                        ToUserId = userId,
-                        Action = UserAction.Submit,
-                        InfoId = infoId,
-                        Title = info.Title,
-                        Type = FeedType.FreeFlow,
-                    });
-                }
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = userId,
+                    Action = UserAction.Submit,
+                    InfoId = info.ID,
+                    Title = info.Title,
+                    Type = FeedType.FreeFlow,
+                });
             }
         }
 
@@ -130,12 +142,13 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public void Complete(int id, int infoId)
         {
-            var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
             var user = Core.UserManager.GetModel(CurrentUser.ID);
             var info = Core.FormInfoManager.GetModel(infoId);
-            if (freeFlowData.FlowNodeData.CanCompleteFreeFlow(user))
+            if (Core.FreeFlowDataManager.CanComplete(info.FlowData, user))
             {
-                Core.FreeFlowDataManager.Complete(id, CurrentUser.ID, true);
+                Core.FreeFlowDataManager.TryComplete(id, CurrentUser.ID, true);
+
+                var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
                 Core.FeedManager.Save(new Feed
                 {
                     FromUserId = CurrentUser.ID,

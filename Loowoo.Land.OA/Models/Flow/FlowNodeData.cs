@@ -66,25 +66,5 @@ namespace Loowoo.Land.OA.Models
         {
             return FreeFlowData?.GetLastNodeData(userId);
         }
-
-        public bool CanSubmitFreeFlow(int userId)
-        {
-            if (FlowNode.FreeFlowId == 0) return false;
-
-            if (FreeFlowData == null && userId == UserId) return true;
-
-            if (FreeFlowData != null)
-            {
-                return FreeFlowData.CanSubmit(userId);
-            }
-            return false;
-        }
-
-        public bool CanCompleteFreeFlow(User user)
-        {
-            if (FlowNode.FreeFlowId == 0) return false;
-            if (FreeFlowData == null || FreeFlowData.Completed) return false;
-            return FlowNode.FreeFlow.IsCompleteUser(user);
-        }
     }
 }

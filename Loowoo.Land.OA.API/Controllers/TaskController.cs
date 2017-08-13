@@ -1,5 +1,6 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,9 +189,11 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <param name="content"></param>
         /// <param name="result"></param>
         /// <param name="toUserId"></param>
-        [HttpGet]
-        public void SubmitSubTask(int id, string content = null, bool result = true, int toUserId = 0)
+        [HttpPost]
+        public void SubmitSubTask(int id, JToken data, int toUserId = 0)
         {
+            var content = data["content"].Value<string>();
+            var result = true;
             var model = Core.TaskManager.GetSubTask(id);
             if (model.IsMaster)
             {
@@ -265,9 +268,10 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <summary>
         /// 分管领导审核
         /// </summary>
-        [HttpGet]
-        public void CheckSubTask(int id, string content = null, bool result = true)
+        [HttpPost]
+        public void CheckSubTask(int id, JToken data, bool result = true)
         {
+            var content = data["content"].Value<string>();
             var model = Core.FlowNodeDataManager.GetModel(id);
             if (model == null || model.Submited)
             {

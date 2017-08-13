@@ -65,7 +65,21 @@ namespace Loowoo.Land.OA.Managers
             return Core.FlowNodeDataManager.CreateBackNodeData(firstNodeData);
         }
 
-        public bool CanSubmit(FlowData flowData, int userId)
+        public bool CanCancel(FlowData flowData, FlowNodeData flowNodeData)
+        {
+            if (flowNodeData == null || !flowNodeData.Submited) return false;
+            var nextNode = flowData.Flow.GetNextStep(flowNodeData.FlowNodeId);
+            //如果当前步骤是最后一步，想从归档中撤回
+            if (nextNode == null)
+            {
+                return true;
+            }
+            //否则判断当前步骤的下一步是否已经提交，如果提交，则不能撤回
+            var nextNodeData = flowData.GetNextNodeData(flowNodeData.ID);
+            return nextNodeData == null || (!nextNodeData.HasChanged() && !flowData.Nodes.Any(e => e.ParentId == nextNodeData.ID));
+        }
+
+        public bool CanSubmit(FlowData flowData, FlowNodeData flowNodeData)
         {
             if (flowData.Completed) return false;
             if (flowData.Nodes == null || flowData.Nodes.Count == 0)
@@ -73,9 +87,25 @@ namespace Loowoo.Land.OA.Managers
                 return true;
             }
 
-            var lastNode = flowData.GetLastNodeData(userId);
+            return flowNodeData != null && Core.FlowNodeDataManager.CanSubmit(flowNodeData);
+        }
 
-            return lastNode != null && Core.FlowNodeDataManager.CanSubmit(lastNode);
+        public bool CanComplete(Flow flow, FlowNodeData data)
+        {
+            var lastNode = flow.GetLastNode();
+            return lastNode.ID == data.FlowNodeId;
+        }
+
+        /// <summary>
+        /// 是否可以退回
+        /// </summary>
+        public bool CanBack(FlowData flowData)
+        {
+            if (flowData.Nodes.Count == 0) return false;
+            if (flowData.Nodes.Count == 1 && flowData.Nodes[0].Submited) return false;
+            var lastNodeData = flowData.GetLastNodeData();
+            var lastNode = flowData.Flow.GetFirstNode();
+            return lastNodeData.FlowNodeId != lastNode.ID;
         }
 
         //public void Submit(int infoId, int userId, int toUserId, bool result, string content)
@@ -182,9 +212,8 @@ namespace Loowoo.Land.OA.Managers
         //    }
         //}
 
-        public void Cancel(FlowData flowData, int userId)
+        public void Cancel(FlowData flowData, FlowNodeData nodeData)
         {
-            var nodeData = flowData.GetLastNodeData(userId);
             var nextNode = flowData.Flow.GetNextStep(nodeData.FlowNodeId);
             //如果下一步不为空，则需要删除最后的节点记录，如果最后节点
             if (nextNode != null)

@@ -129,6 +129,14 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
+        public void UpdateImportant(int id)
+        {
+            var model = Core.MissiveManager.GetModel(id);
+            model.Important = true;
+            Core.MissiveManager.Save(model);
+        }
+
+        [HttpGet]
         public object RedTitles()
         {
             return Core.MissiveManager.GetRedTitles();

@@ -18,6 +18,11 @@ namespace Loowoo.Land.OA.Models
 
         public int ParentId { get; set; }
 
+        /// <summary>
+        /// 是否为抄送（不需要填写意见）
+        /// </summary>
+        public bool IsCc { get; set; }
+
         public int UserId { get; set; }
 
         public string Content { get; set; }

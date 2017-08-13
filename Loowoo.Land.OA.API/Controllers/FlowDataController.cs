@@ -15,14 +15,15 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Cancel(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            if (!info.FlowData.CanCancel(CurrentUser.ID))
+            var flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            if (!Core.FlowDataManager.CanCancel(info.FlowData, flowNodeData))
             {
                 return BadRequest("无法撤销");
             }
-            Core.FlowDataManager.Cancel(info.FlowData, CurrentUser.ID);
+            Core.FlowDataManager.Cancel(info.FlowData, flowNodeData);
 
             //撤销后更新userforminfo
-            var flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
             Core.UserFormInfoManager.OnCancelFlowData(info, flowNodeData);
             return Ok();
         }
@@ -52,12 +53,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest("参数不正确，没有获取到流程数据");
             }
             var flowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+            var lastNodeData = flowData.GetLastNodeData();
             return new
             {
                 flowData,
                 flowNodeData,
-                canBack = flowData.CanBack(),
-                canComplete = flowData.CanComplete(flowNodeData)
+                canBack = Core.FlowDataManager.CanBack(flowData),
+                canSubmitFlow = Core.FlowDataManager.CanSubmit(flowData, flowNodeData),
+                canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData),
+                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, CurrentUser.ID),
             };
         }
 
@@ -100,7 +104,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (currentNodeData.Result == true)
             {
                 //判断是否流程结束
-                if (!info.FlowData.CanComplete(currentNodeData))
+                if (!Core.FlowDataManager.CanComplete(info.FlowData.Flow, currentNodeData))
                 {
                     var nextNodedata = Core.FlowDataManager.SubmitToUser(info.FlowData, toUserId);
                     info.FlowStep = nextNodedata.FlowNodeName;

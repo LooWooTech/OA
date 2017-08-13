@@ -71,28 +71,32 @@ namespace Loowoo.Land.OA.API.Controllers
             var canComplete = false;
             var canBack = false;
 
-            FlowNodeData flowNodeData = null;
+            FlowNodeData lastNodeData = null;
             FreeFlowNodeData freeFlowNodeData = null;
             if (model.FlowDataId > 0)
             {
-                canSubmitFlow = Core.FlowDataManager.CanSubmit(model.FlowData, CurrentUser.ID);
+                var flowData = model.FlowData ?? Core.FlowDataManager.Get(model.FlowDataId);
+                var currentFlowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+                canSubmitFlow = Core.FlowDataManager.CanSubmit(model.FlowData, currentFlowNodeData);
                 canEdit = canSubmitFlow;
-                canCancel = model.FlowData.CanCancel(CurrentUser.ID);
+                canCancel = Core.FlowDataManager.CanCancel(flowData, currentFlowNodeData);
 
-                flowNodeData = model.FlowData.GetLastNodeData();
-                canComplete = model.FlowData.CanComplete(flowNodeData);
-                canEdit = flowNodeData.UserId == CurrentUser.ID && !flowNodeData.Result.HasValue;
+                lastNodeData = model.FlowData.GetLastNodeData();
+
+                canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData);
+
+                canEdit = lastNodeData.UserId == CurrentUser.ID && !lastNodeData.Result.HasValue;
                 //当前步骤如果是流程的第一步，则不能退
-                canBack = model.FlowData.CanBack();
+                canBack = Core.FlowDataManager.CanBack(flowData);
 
                 //如果该步骤开启了自由流程
-                freeFlowNodeData = flowNodeData.GetLastFreeNodeData(CurrentUser.ID);
+                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(CurrentUser.ID);
 
 
-                canSubmitFreeFlow = !model.FlowData.Completed && flowNodeData.CanSubmitFreeFlow(CurrentUser.ID);
+                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, CurrentUser.ID);
 
                 var user = Core.UserManager.GetModel(CurrentUser.ID);
-                canCompleteFreeFlow = !model.FlowData.Completed && flowNodeData.CanCompleteFreeFlow(user);
+                canCompleteFreeFlow = Core.FreeFlowDataManager.CanComplete(flowData, user);
             }
 
             var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, CurrentUser.ID);
@@ -110,7 +114,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canComplete,
                 canBack,
                 status = userformInfo.Status,
-                flowNodeData,
+                flowNodeData = lastNodeData,
                 freeFlowNodeData
             };
         }
