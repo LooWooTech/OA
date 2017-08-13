@@ -34,7 +34,7 @@ namespace Loowoo.Land.OA.Managers
 
         public bool Delete(int id)
         {
-            var model = DB.Departments.Find(id);
+            var model = DB.Departments.FirstOrDefault(x => x.ID == id);
             if (model == null)
             {
                 return false;
