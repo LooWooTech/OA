@@ -23,6 +23,12 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
+        public ActionResult Link(int id)
+        {
+            ViewBag.ID = id;
+            return View();
+        }
+
         public ActionResult Get(int id)
         {
             var file = Core.FileManager.GetModel(id);

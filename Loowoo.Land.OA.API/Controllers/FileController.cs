@@ -166,5 +166,24 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return Index(file.ID);
         }
+
+        [HttpGet]
+        public string WordEditUrl(int id)
+        {
+            var url = "/word/get?id=" + id;
+            var file = Core.FileManager.GetModel(id);
+            if (file == null)
+            {
+                throw new Exception("未找到该文件");
+            }
+            if (file.IsWordFile)
+            {
+                return PageOffice.PageOfficeLink.OpenWindow(url, string.Empty);
+            }
+            else
+            {
+                return url;
+            }
+        }
     }
 }

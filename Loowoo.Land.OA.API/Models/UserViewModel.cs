@@ -26,6 +26,7 @@ namespace Loowoo.Land.OA.API.Models
                 Name = d.Department == null ? null : d.Department.Name,
                 ID = d.Department == null ? 0 : d.Department.ID,
                 ParentId = d.Department == null ? 0 : d.Department.ParentId,
+                Sort = d.Department == null ? 0 : d.Department.Sort,
             });
             Groups = user.UserGroups.Select(g => new
             {

@@ -1,3 +1,8 @@
+----2017-08-14
+update freeflow_nodedata set iscc=true;
+update freeflow_nodedata set iscc=false where content is not null;
+update freeflow_nodedata set iscc=false where userid in (9,11,12,13,192);
+
 ----2017-08-08
 ALTER TABLE `missive`
 	ADD COLUMN `Important` BIT NOT NULL AFTER `GK_FB`;
