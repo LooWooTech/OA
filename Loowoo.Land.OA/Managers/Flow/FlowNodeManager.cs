@@ -71,8 +71,8 @@ namespace Loowoo.Land.OA.Managers
         {
             var parameter = new UserParameter
             {
-                UserIds = node.UserIds,
-                TitleIds = node.JobTitleIds,
+                UserIds = node?.UserIds,
+                TitleIds = node?.JobTitleIds,
             };
 
             if (node != null)

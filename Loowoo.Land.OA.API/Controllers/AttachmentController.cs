@@ -32,7 +32,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 var url = PageOffice.PageOfficeLink.OpenWindow(Url.Action("Doc", new { id }), string.Empty);
                 return Redirect(url);
             }
-            return File(file.PhysicalSavePath, file.ContentType, file.FileName);
+            return File(file.PhysicalSavePath, file.ContentType);
         }
 
         public ActionResult Doc(int id)
