@@ -60,6 +60,8 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Config> Configs { get; set; }
 
+        public DbSet<Sms> Sms { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }

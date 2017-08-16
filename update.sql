@@ -1,3 +1,16 @@
+----2017-08-16 Ricepig
+CREATE TABLE `sms` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Numbers` VARCHAR(512) NOT NULL,
+	`Content` VARCHAR(512) NOT NULL,	
+	`CreateTime` DATETIME NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `SendTime` (`SendTime`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
 ----2017-08-14
 update freeflow_nodedata set iscc=true;
 update freeflow_nodedata set iscc=false where content is not null;
@@ -401,3 +414,4 @@ ALTER TABLE `flow_node`
 	CHANGE COLUMN `UserId` `UserIds` VARCHAR(50) NULL DEFAULT '0' AFTER `Name`,
 	CHANGE COLUMN `JobTitleId` `JobTitleIds` VARCHAR(50) NULL AFTER `DepartmentIds`,
 	DROP COLUMN `GroupID`;
+
