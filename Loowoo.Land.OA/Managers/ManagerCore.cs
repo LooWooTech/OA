@@ -64,5 +64,7 @@ namespace Loowoo.Land.OA.Managers
 
         public MissiveManager MissiveManager { get; private set; }
         public TaskManager TaskManager { get; private set; }
+
+        public SmsManager SmsManager { get; private set; }
     }
 }

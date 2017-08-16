@@ -76,10 +76,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\SmsManager.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
+    <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\Task\SubTask.cs" />
     <Compile Include="Managers\TaskManager.cs" />
     <Compile Include="Models\CheckStatus.cs" />

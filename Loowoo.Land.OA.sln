@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA", "Loowoo.Land.OA\Loowoo.Land.OA.csproj", "{012BEFAA-0AA1-4D4E-AFD9-45CDE3167264}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.Service.Attendance", "Loowoo.Land.OA.Service.Attendance\Loowoo.Land.OA.Service.Attendance.csproj", "{66CE7B98-A212-4275-BB1C-C890DDB9588D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6A6EB644-F7D5-4060-93DA-873E87AC23EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.Service.SMS", "Loowoo.Land.OA.Service.SMS\Loowoo.Land.OA.Service.SMS.csproj", "{89D84B3C-6037-4047-B54B-2B5B820E510B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,11 +43,16 @@ Global
 		{66CE7B98-A212-4275-BB1C-C890DDB9588D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66CE7B98-A212-4275-BB1C-C890DDB9588D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66CE7B98-A212-4275-BB1C-C890DDB9588D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D84B3C-6037-4047-B54B-2B5B820E510B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D84B3C-6037-4047-B54B-2B5B820E510B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D84B3C-6037-4047-B54B-2B5B820E510B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D84B3C-6037-4047-B54B-2B5B820E510B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{66CE7B98-A212-4275-BB1C-C890DDB9588D} = {6A6EB644-F7D5-4060-93DA-873E87AC23EF}
+		{89D84B3C-6037-4047-B54B-2B5B820E510B} = {6A6EB644-F7D5-4060-93DA-873E87AC23EF}
 	EndGlobalSection
 EndGlobal
