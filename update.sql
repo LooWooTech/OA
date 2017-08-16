@@ -4,8 +4,7 @@ CREATE TABLE `sms` (
 	`Numbers` VARCHAR(512) NOT NULL,
 	`Content` VARCHAR(512) NOT NULL,	
 	`CreateTime` DATETIME NOT NULL,
-	PRIMARY KEY (`ID`),
-	INDEX `SendTime` (`SendTime`)
+	PRIMARY KEY (`ID`),	
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
