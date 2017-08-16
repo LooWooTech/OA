@@ -57,7 +57,8 @@ namespace Loowoo.Land.OA.API.Controllers
             return new
             {
                 flowData,
-                flowNodeData,
+                flowNodeData = lastNodeData,
+                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(CurrentUser.ID),
                 canBack = Core.FlowDataManager.CanBack(flowData),
                 canSubmitFlow = Core.FlowDataManager.CanSubmit(flowData, flowNodeData),
                 canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData),
@@ -165,7 +166,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Core.FlowDataManager.Save(info.FlowData);
                 }
             }
-            return Ok(info.FlowData);
+            return Ok(data);
         }
 
         [HttpGet]

@@ -116,8 +116,8 @@ namespace Loowoo.Land.OA.Models
     public enum JJDJ
     {
         [Description("普通")]
-        Normal = 1,
+        Normal = 0,
         [Description("加急")]
-        Fast,
+        Fast = 1,
     }
 }

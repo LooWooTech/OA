@@ -42,7 +42,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.ID,
                     e.WJ_BT,
                     e.WJ_ZH,
-                    JJ_DJ = e.JJ_DJ.GetDescription(),
+                    e.JJ_DJ,
                     e.DJR,
                     e.ZRR,
                     e.ZS_JG,
@@ -58,6 +58,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Info.FlowStep,
                     e.Info.FlowDataId,
                     e.Info.PostUserId,
+                    e.Important
                 }),
                 Page = parameter.Page
             };

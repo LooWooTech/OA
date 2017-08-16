@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FreeFlowDataController : ControllerBase
     {
         [HttpPost]
-        public void Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null, string ccUserIds = null)
+        public object Submit([FromBody]FreeFlowNodeData model, int flowNodeDataId, int infoId, string toUserIds = null, string ccUserIds = null)
         {
             if (model == null)
             {
@@ -50,21 +50,28 @@ namespace Loowoo.Land.OA.API.Controllers
                 && (ccTargetUserIds == null || ccTargetUserIds.Length == 0))
             {
                 Core.FreeFlowDataManager.TryComplete(model.FreeFlowDataId, CurrentUser.ID);
-                return;
+                return model;
             }
 
             //如果有选择发送人，则标记为没结束
             flowNodeData.FreeFlowData.Completed = false;
-
-            foreach (var userId in targetUserIds)
+            if (targetUserIds != null)
             {
-                SubmitFreeFlowNodeData(model, info, userId);
+                foreach (var userId in targetUserIds)
+                {
+                    SubmitFreeFlowNodeData(model, info, userId);
+                }
             }
 
-            foreach (var userId in ccTargetUserIds)
+            if (ccTargetUserIds != null)
             {
-                SubmitFreeFlowNodeData(model, info, userId, true);
+                foreach (var userId in ccTargetUserIds)
+                {
+                    if (targetUserIds != null && targetUserIds.Contains(userId)) continue;
+                    SubmitFreeFlowNodeData(model, info, userId, true);
+                }
             }
+            return model;
         }
 
         private void SubmitFreeFlowNodeData(FreeFlowNodeData model, FormInfo info, int userId, bool isCc = false)
