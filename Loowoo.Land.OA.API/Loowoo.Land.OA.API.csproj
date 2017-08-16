@@ -162,7 +162,7 @@
     <Compile Include="Controllers\MissiveController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\WordController.cs" />
+    <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="CorsHandler.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -220,8 +220,8 @@
     <Content Include="Views\web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Views\Word\Get.cshtml" />
-    <Content Include="Views\Word\SaveDoc.cshtml" />
+    <Content Include="Views\Attachment\Doc.cshtml" />
+    <Content Include="Views\Attachment\SaveDoc.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

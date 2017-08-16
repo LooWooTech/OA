@@ -33,6 +33,7 @@ namespace Loowoo.Land.OA.Models
 
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserFlowContact> UserFlowContacts { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Department> Departments { get; set; }
