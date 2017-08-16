@@ -86,6 +86,11 @@ namespace Loowoo.Land.OA.Managers
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
+        public IEnumerable<UserFlowContact> GetFlowContacts(int userId)
+        {
+            return DB.UserFlowContacts.Where(e => e.UserId == userId);
+        }
+
         public void Save(User model)
         {
             model.Username = model.Username.ToLower();
@@ -123,6 +128,27 @@ namespace Loowoo.Land.OA.Managers
                 user.Deleted = true;
                 DB.SaveChanges();
             }
+        }
+
+        public void SaveFlowContact(UserFlowContact model)
+        {
+            var entity = DB.UserFlowContacts.FirstOrDefault(e => e.UserId == model.UserId && e.ContactId == model.ContactId);
+            if(entity == null)
+            {
+                DB.UserFlowContacts.Add(model);
+                DB.SaveChanges();
+            }
+        }
+
+        public UserFlowContact GetFlowContact(int id)
+        {
+            return DB.UserFlowContacts.FirstOrDefault(e => e.ID == id);
+        }
+
+        public void DeleteFlowContact(UserFlowContact model)
+        {
+            DB.UserFlowContacts.Remove(model);
+            DB.SaveChanges();
         }
     }
 }
