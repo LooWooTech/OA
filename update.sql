@@ -5,9 +5,20 @@ CREATE TABLE `sms` (
 	`Content` VARCHAR(512) NOT NULL,	
 	`CreateTime` DATETIME NOT NULL,
 	PRIMARY KEY (`ID`),
-	INDEX `SendTime` (`SendTime`)
+	INDEX `CreateTime` (`CreateTime`)
 )
 COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+----2017-08-16
+CREATE TABLE `user_flow_contact` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`UserId` INT(11) NOT NULL,
+	`ContactId` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `UserId` (`UserId`)
+)
 ENGINE=InnoDB
 ;
 
