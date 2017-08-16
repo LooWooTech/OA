@@ -47,6 +47,7 @@ namespace Loowoo.Land.OA.Models
 
         public bool CanComplete(FlowNodeData data)
         {
+            if (data == null) return false;
             var lastNode = Flow.GetLastNode();
             return lastNode.ID == data.FlowNodeId;
         }

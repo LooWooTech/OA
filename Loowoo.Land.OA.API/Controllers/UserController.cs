@@ -99,6 +99,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return Ok();
         }
+
         [HttpDelete]
         public void Delete(int id)
         {
@@ -145,6 +146,27 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return null;
 
+        }
+
+        [HttpGet]
+        public IEnumerable<UserViewModel> FlowContacts()
+        {
+            return Core.UserManager.GetFlowContacts(CurrentUser.ID).Select(e => new UserViewModel(e.Contact));
+        }
+        [HttpGet]
+        public void SaveFlowContact(int userId)
+        {
+            Core.UserManager.SaveFlowContact(new UserFlowContact { UserId = CurrentUser.ID, ContactId = userId });
+        }
+        [HttpDelete]
+        public void DeleteFlowContact(int id)
+        {
+            var entity = Core.UserManager.GetFlowContact(id);
+            if (entity == null || entity.UserId != CurrentUser.ID)
+            {
+                throw new Exception("无法删除");
+            }
+            Core.UserManager.DeleteFlowContact(entity);
         }
     }
 }

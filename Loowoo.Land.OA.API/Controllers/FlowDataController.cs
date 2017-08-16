@@ -52,12 +52,13 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest("参数不正确，没有获取到流程数据");
             }
             var flowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+            var lastNodeData = flowData.GetLastNodeData();
             return new
             {
                 flowData,
                 flowNodeData,
                 canBack = flowData.CanBack(),
-                canComplete = flowData.CanComplete(flowNodeData)
+                canComplete = flowData.CanComplete(lastNodeData)
             };
         }
 

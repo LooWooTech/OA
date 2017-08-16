@@ -1,3 +1,15 @@
+----2017-08-16
+CREATE TABLE `user_flow_contact` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`UserId` INT(11) NOT NULL,
+	`ContactId` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `UserId` (`UserId`)
+)
+ENGINE=InnoDB
+;
+
+
 ----2017-08-03
 ALTER TABLE `task_todo`
 	CHANGE COLUMN `TaskId` `SubTaskId` INT(11) NOT NULL DEFAULT '0' AFTER `ID`,
