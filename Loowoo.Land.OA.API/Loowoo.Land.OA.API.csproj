@@ -160,6 +160,7 @@
     <Compile Include="Controllers\HolidayController.cs" />
     <Compile Include="Controllers\JobTitleController.cs" />
     <Compile Include="Controllers\MissiveController.cs" />
+    <Compile Include="Controllers\SmsController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\AttachmentController.cs" />

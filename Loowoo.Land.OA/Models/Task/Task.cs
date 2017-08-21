@@ -20,6 +20,10 @@ namespace Loowoo.Land.OA.Models
         [ForeignKey("ID")]
         public virtual FormInfo Info { get; set; }
         /// <summary>
+        /// 任务编号
+        /// </summary>
+        public string Number { get; set; }
+        /// <summary>
         /// 任务名称
         /// </summary>
         public string Name { get; set; }
