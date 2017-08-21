@@ -13,14 +13,10 @@ namespace Loowoo.Land.OA.Managers
             return DB.Sms.FirstOrDefault();
         }
 
-        public void Delete(int id)
+        public void Delete(Sms model)
         {
-            var sms = DB.Sms.FirstOrDefault(x => x.ID == id);
-            if(sms != null)
-            {
-                DB.Sms.Remove(sms);
-                DB.SaveChanges();
-            }
+            DB.Sms.Remove(model);
+            DB.SaveChanges();
         }
         public void Create(Sms sms)
         {

@@ -11,12 +11,9 @@ namespace Loowoo.Land.OA.Managers
 
         public int Save(FlowData flowData)
         {
-            using (var db = GetDbContext())
-            {
-                db.FlowDatas.Add(flowData);
-                db.SaveChanges();
-                return flowData.ID;
-            }
+            DB.FlowDatas.Add(flowData);
+            DB.SaveChanges();
+            return flowData.ID;
         }
 
         private FlowData CreateFlowData(int flowId, FormInfo info)

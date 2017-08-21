@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace Loowoo.Land.OA.Service.SMS
 {
     public class SmsService
-    {        
+    {
         private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
-        private bool _stop = false;        
+        private bool _stop = false;
         private Thread _worker;
-        
+
         private readonly string _applicationCode = ConfigurationManager.AppSettings["ApplicationID"];
         private readonly string _password = ConfigurationManager.AppSettings["Password"];
         private readonly string _extendCode = ConfigurationManager.AppSettings["ExtendCode"];
@@ -31,7 +31,7 @@ namespace Loowoo.Land.OA.Service.SMS
                     try
                     {
                         Dowork();
-                        Thread.Sleep(50);
+                        Thread.Sleep(1000);
                     }
                     catch (Exception ex)
                     {
@@ -55,28 +55,28 @@ namespace Loowoo.Land.OA.Service.SMS
         private void Dowork()
         {
             var sms = Core.SmsManager.PeekNew();
-            if(sms!= null)
+            if (sms != null)
             {
                 try
                 {
                     SendSms(sms);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t发送短信失败：{sms.Content}===>{sms.Numbers}\r\n{ex}\r\n");
                 }
 
-                Core.SmsManager.Delete(sms.ID);
+                Core.SmsManager.Delete(sms);
             }
         }
+        private OpenMas.Sms _client = new OpenMas.Sms(ConfigurationManager.AppSettings["MASAddress"]);
 
         private void SendSms(Sms sms)
         {
-            var client = new OpenMas.Sms(_masAddress);
-            var mobileList = sms.Numbers.Trim().Split(',');            
-            var msgID = client.SendMessage(mobileList, sms.Content, _extendCode, _applicationCode, _password);
+            var mobileList = sms.Numbers.Trim().Split(',');
+            var msgID = _client.SendMessage(mobileList, sms.Content, _extendCode, _applicationCode, _password);
             LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t发送短信成功：{sms.Content}===>{sms.Numbers}\r\n");
         }
     }
-   
+
 }

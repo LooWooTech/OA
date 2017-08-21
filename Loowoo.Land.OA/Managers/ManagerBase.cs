@@ -11,17 +11,17 @@ namespace Loowoo.Land.OA.Managers
     {
         protected ManagerCore Core { get { return ManagerCore.Instance; } }
 
+        private OADbContext _db;
         protected OADbContext DB
         {
             get
             {
-                return HttpDbContextContainer.GetDbContext<OADbContext>() ?? GetDbContext();
+                if(_db == null)
+                {
+                    _db = HttpDbContextContainer.GetDbContext<OADbContext>() ?? new OADbContext();
+                }
+                return _db;
             }
-        }
-
-        protected OADbContext GetDbContext()
-        {
-            return new OADbContext();
         }
     }
 }

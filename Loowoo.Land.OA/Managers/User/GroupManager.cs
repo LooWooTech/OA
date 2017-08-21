@@ -104,15 +104,12 @@ namespace Loowoo.Land.OA.Managers
         /// <returns></returns>
         public List<Group> GetByUserId(int userId)
         {
-            using (var db = GetDbContext())
+            var relation = DB.UserGroups.Where(e => e.UserId == userId).ToList();
+            foreach (var item in relation)
             {
-                var relation = db.UserGroups.Where(e => e.UserId == userId).ToList();
-                foreach(var item in relation)
-                {
-                    item.Group = db.Groups.Find(item.GroupId);
-                }
-                return relation.Select(e => e.Group).ToList();
+                item.Group = DB.Groups.Find(item.GroupId);
             }
+            return relation.Select(e => e.Group).ToList();
         }
 
         /// <summary>
