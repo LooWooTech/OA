@@ -149,7 +149,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserViewModel> FlowContacts()
+        public IEnumerable<UserViewModel> FlowContactList()
         {
             return Core.UserManager.GetFlowContacts(CurrentUser.ID).Select(e => new UserViewModel(e.Contact));
         }
@@ -159,10 +159,10 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserManager.SaveFlowContact(new UserFlowContact { UserId = CurrentUser.ID, ContactId = userId });
         }
         [HttpDelete]
-        public void DeleteFlowContact(int id)
+        public void DeleteFlowContact(int userId)
         {
-            var entity = Core.UserManager.GetFlowContact(id);
-            if (entity == null || entity.UserId != CurrentUser.ID)
+            var entity = Core.UserManager.GetFlowContact(userId, CurrentUser.ID);
+            if (entity == null)
             {
                 throw new Exception("无法删除");
             }

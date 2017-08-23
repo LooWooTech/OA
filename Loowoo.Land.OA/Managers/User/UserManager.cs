@@ -133,16 +133,16 @@ namespace Loowoo.Land.OA.Managers
         public void SaveFlowContact(UserFlowContact model)
         {
             var entity = DB.UserFlowContacts.FirstOrDefault(e => e.UserId == model.UserId && e.ContactId == model.ContactId);
-            if(entity == null)
+            if (entity == null)
             {
                 DB.UserFlowContacts.Add(model);
                 DB.SaveChanges();
             }
         }
 
-        public UserFlowContact GetFlowContact(int id)
+        public UserFlowContact GetFlowContact(int contactId, int userId)
         {
-            return DB.UserFlowContacts.FirstOrDefault(e => e.ID == id);
+            return DB.UserFlowContacts.FirstOrDefault(e => e.ContactId == contactId && e.UserId == userId);
         }
 
         public void DeleteFlowContact(UserFlowContact model)

@@ -16,11 +16,16 @@ namespace Loowoo.Land.OA.Managers
         {
             get
             {
-                if(_db == null)
+                var db = HttpDbContextContainer.GetDbContext<OADbContext>();
+                if (db == null)
                 {
-                    _db = HttpDbContextContainer.GetDbContext<OADbContext>() ?? new OADbContext();
+                    if (_db == null)
+                    {
+                        _db = new OADbContext();
+                    }
+                    db = _db;
                 }
-                return _db;
+                return db;
             }
         }
     }

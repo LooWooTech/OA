@@ -131,7 +131,7 @@ namespace Loowoo.Land.OA.Service.Attendance
                 if (log.ApiResult.HasValue) continue;
                 var json = await InvokeApiAsync(log);
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && data["msg"].Contains("成功");
+                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
                 log.ApiContent = data.ToJson();
                 Core.AttendanceManager.SaveApiResult(log);
                 LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");
