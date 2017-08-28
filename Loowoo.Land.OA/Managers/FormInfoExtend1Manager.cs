@@ -16,42 +16,53 @@ namespace Loowoo.Land.OA.Managers
         /// </summary>
         public IEnumerable<FormInfoExtend1> GetList(Extend1Parameter parameter)
         {
-            var query = DB.FormInfoExtend1s.AsQueryable();
-            if (parameter.InfoId > 0)
+            var query = DB.UserFormInfos.AsQueryable();
+            if (parameter.ApprovalUserId > 0)
             {
-                query = query.Where(e => e.InfoId == parameter.InfoId);
-            }
-            if (parameter.UserId > 0)
-            {
-                query = query.Where(e => e.UserId == parameter.UserId);
+                query = query.Where(e => e.UserId == parameter.ApprovalUserId);
             }
             if (parameter.BeginTime.HasValue)
             {
-                query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
+                query = query.Where(e => e.Info.CreateTime > parameter.BeginTime);
             }
-            if (parameter.Result.HasValue)
+            if (parameter.UserId > 0)
             {
-                query = query.Where(e => e.Result == parameter.Result.Value);
-            }
-            if (parameter.Category.HasValue)
-            {
-                query = query.Where(e => e.Category == parameter.Category.Value);
+                query = query.Where(e => e.Info.PostUserId == parameter.UserId);
             }
             switch (parameter.Status)
             {
                 case CheckStatus.All:
                     break;
                 case CheckStatus.Uncheck:
-                    query = query.Where(e => !e.Result.HasValue);
+                    query = query.Where(e => e.Status == FlowStatus.Doing);
                     break;
                 case CheckStatus.Checked:
-                    query = query.Where(e => e.Result.HasValue);
+                    query = query.Where(e => e.Status != FlowStatus.Doing);
                     break;
             }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            var formInfoIds = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).Select(e => e.InfoId).ToArray();
+
+            var list = DB.FormInfoExtend1s.Where(e => formInfoIds.Contains(e.ID));
+            if (parameter.InfoId > 0)
+            {
+                list = list.Where(e => e.InfoId == parameter.InfoId);
+            }
+            if (parameter.UserId > 0)
+            {
+                list = list.Where(e => e.UserId == parameter.UserId);
+            }
+            if (parameter.Result.HasValue)
+            {
+                list = list.Where(e => e.Result == parameter.Result.Value);
+            }
+            if (parameter.Category.HasValue)
+            {
+                list = list.Where(e => e.Category == parameter.Category.Value);
+            }
+            return list.OrderByDescending(e => e.ID);
         }
 
-        public FormInfoExtend1 Get(int id)
+        public FormInfoExtend1 GetModel(int id)
         {
             return DB.FormInfoExtend1s.FirstOrDefault(e => e.ID == id);
         }
@@ -72,7 +83,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Apply(FormInfo info, FormInfoExtend1 data)
         {
-            if(info.ID == 0)
+            if (info.ID == 0)
             {
                 throw new Exception("请先保存formInfo");
             }
@@ -97,6 +108,11 @@ namespace Loowoo.Land.OA.Managers
                 UserId = data.ApprovalUserId,
                 Status = FlowStatus.Doing,
             });
+        }
+
+        public void Approval(FormInfo info, FormInfoExtend1 data, int toUserId)
+        {
+
         }
     }
 }

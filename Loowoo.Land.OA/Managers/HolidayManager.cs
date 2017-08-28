@@ -36,6 +36,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.BeginDate >= parameter.BeginDate);
             }
+            if(parameter.EndDate.HasValue)
+            {
+                query = query.Where(e => e.EndDate <= parameter.EndDate);
+            }
             return query.OrderBy(e => e.BeginDate).SetPage(parameter.Page);
         }
 

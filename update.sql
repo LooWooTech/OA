@@ -1,3 +1,31 @@
+----2017-08-28
+ALTER TABLE `holiday`
+	ADD INDEX `EndDate` (`EndDate`);
+
+----2017-08-25
+ALTER TABLE `flow_node`
+	ADD COLUMN `CanComplete` BIT NOT NULL AFTER `LimitMode`;
+
+INSERT INTO `form` (`Name`, `FlowID`,`EName`) VALUES ('ว๋ผู', '7','leave');
+
+ALTER TABLE `form_info`
+	ADD COLUMN `Remind` BIT NOT NULL AFTER `CreateTime`;
+
+ALTER TABLE `form_info`
+	DROP COLUMN `ExtendId`;
+
+ALTER TABLE `user_form_info`
+	DROP COLUMN `FormID`;
+
+ALTER TABLE `user_form_info`
+	DROP COLUMN `FlowNodeDataID`;
+
+ALTER TABLE `feed`
+	DROP COLUMN `FormId`;
+
+
+Update form_info set formId=7 where formId=3
+
 ----2017-08-21
 ALTER TABLE `task`
 	ADD COLUMN `Number` VARCHAR(50) NULL AFTER `ID`;

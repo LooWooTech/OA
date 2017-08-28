@@ -49,7 +49,6 @@ namespace Loowoo.Land.OA.Managers
             var model = Get(data.InfoId);
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
                 Title = "申请用车：" + model.Name + "（" + model.Number + "）",
                 FormId = (int)FormType.Car,
                 PostUserId = data.UserId,

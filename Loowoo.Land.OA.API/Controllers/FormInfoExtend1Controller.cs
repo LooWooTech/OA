@@ -18,6 +18,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = infoId,
                 UserId = userId,
                 Status = status,
+                ApprovalUserId = CurrentUser.ID,
                 Page = new PageParameter(page, rows)
             };
             return new PagingResult
@@ -35,6 +36,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Result,
                     e.UpdateTime,
                     e.ApprovalUserId,
+                    e.Info.FlowDataId,
                     ApprovalUser = e.ApprovalUser.RealName,
                     ApplyUser = e.User.RealName,
                     Title = e.Info.Title,
@@ -51,9 +53,10 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var info = Core.FormInfoManager.GetModel(infoId);
             //如果流程审核完成
+            //TODO重新写
             if (info.FlowData.Completed)
             {
-                var model = Core.FormInfoExtend1Manager.Get(infoId);
+                var model = Core.FormInfoExtend1Manager.GetModel(infoId);
                 model.Result = info.FlowData.GetLastNodeData().Result.Value;
                 Core.FormInfoExtend1Manager.Save(model);
                 switch (info.Form.FormType)
@@ -67,15 +70,17 @@ namespace Loowoo.Land.OA.API.Controllers
                     case FormType.Seal:
                         Core.SealManager.UpdateStatus(model.InfoId, SealStatus.Using);
                         break;
+                    case FormType.Leave:
+                        break;
                 }
             }
         }
 
         [HttpGet]
-        public void Back(int infoId)
+        public void Back(int id, DateTime? backTime = null)
         {
-            var info = Core.FormInfoManager.GetModel(infoId);
-            var apply = Core.FormInfoExtend1Manager.Get(infoId);
+            var info = Core.FormInfoManager.GetModel(id);
+            var apply = Core.FormInfoExtend1Manager.GetModel(id);
             if (apply == null)
             {
                 throw new Exception("参数错误");
@@ -85,7 +90,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
             if (apply.UserId == CurrentUser.ID)
             {
-                apply.RealEndTime = DateTime.Now;
+                apply.RealEndTime = backTime ?? DateTime.Now;
                 apply.UpdateTime = DateTime.Now;
 
                 Core.FormInfoExtend1Manager.Save(apply);

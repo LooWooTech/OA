@@ -125,7 +125,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void SaveSubTask(SubTask data)
+        public IHttpActionResult SaveSubTask(SubTask data)
         {
             if (data.ToDepartmentId == 0)
             {
@@ -140,34 +140,38 @@ namespace Loowoo.Land.OA.API.Controllers
             data.ToDepartmentName = department.Name;
             data.CreatorId = CurrentUser.ID;
             Core.TaskManager.SaveSubTask(data);
-            if (!isAdd) return;
 
-            var info = Core.FormInfoManager.GetModel(data.TaskId);
-            var flowData = info.FlowData;
-            var flowNodeData = flowData.GetFirstNodeData();
-            var toUserNodeData = Core.FlowNodeDataManager.GetModelByExtendId(data.ID, data.ToUserId);
-            if (toUserNodeData == null)
+            if (isAdd)
             {
-                toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId, data.ID);
+                var info = Core.FormInfoManager.GetModel(data.TaskId);
+                var flowData = info.FlowData;
+                var flowNodeData = flowData.GetFirstNodeData();
+                var toUserNodeData = Core.FlowNodeDataManager.GetModelByExtendId(data.ID, data.ToUserId);
+                if (toUserNodeData == null)
+                {
+                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId, data.ID);
+                }
+
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = data.TaskId,
+                    UserId = data.ToUserId,
+                    Status = FlowStatus.Doing,
+                });
+                //通知相关人员
+                Core.FeedManager.Save(new Feed
+                {
+                    Action = UserAction.Create,
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = data.ToUserId,
+                    Title = "[创建任务]" + info.Title,
+                    Description = data.Content,
+                    Type = FeedType.Task,
+                    InfoId = data.TaskId,
+                });
             }
 
-            Core.UserFormInfoManager.Save(new UserFormInfo
-            {
-                InfoId = data.TaskId,
-                UserId = data.ToUserId,
-                Status = FlowStatus.Doing,
-            });
-            //通知相关人员
-            Core.FeedManager.Save(new Feed
-            {
-                Action = UserAction.Create,
-                FromUserId = CurrentUser.ID,
-                ToUserId = data.ToUserId,
-                Title = "[创建任务]" + info.Title,
-                Description = data.Content,
-                Type = FeedType.Task,
-                InfoId = data.TaskId,
-            });
+            return Ok(data);
         }
 
         [HttpDelete]

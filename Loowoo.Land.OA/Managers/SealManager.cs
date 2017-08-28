@@ -43,7 +43,6 @@ namespace Loowoo.Land.OA.Managers
             var model = Get(data.InfoId);
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
                 Title = "申请公章：" + model.Name,
                 FormId = (int)FormType.Seal,
                 PostUserId = data.UserId,

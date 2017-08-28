@@ -168,5 +168,20 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             Core.UserManager.DeleteFlowContact(entity);
         }
+
+        /// <summary>
+        /// 获取上级审核人
+        /// </summary>
+        [HttpGet]
+        public IEnumerable<UserViewModel> ParentTitleUserList(int userId = 0)
+        {
+            User user = CurrentUser;
+            if (userId > 0)
+            {
+                user = Core.UserManager.GetModel(userId);
+            }
+            return Core.UserManager.GetParentTitleUsers(user).Select(e => new UserViewModel(e));
+        }
+
     }
 }

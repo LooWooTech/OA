@@ -43,6 +43,24 @@ namespace Loowoo.Land.OA.Managers
             return DB.Users.Any(e => e.Username == name.ToLower());
         }
 
+        public IEnumerable<User> GetParentTitleUsers(User currentUser)
+        {
+            var parentTitle = Core.JobTitleManager.GetParent(currentUser.JobTitleId);
+            if (parentTitle == null) return new User[0];
+            var parentTitleId = parentTitle.ID;
+            var query = DB.Users.Where(e => !e.Deleted && e.JobTitleId == parentTitleId);
+            var departmentIds = currentUser.DepartmentIds;
+            var departmentUsers = query.Where(e => e.UserDepartments.Any(d => departmentIds.Contains(d.DepartmentId)));
+            if (departmentUsers.Count() == 0)
+            {
+                return query.ToList();
+            }
+            else
+            {
+                return departmentUsers.ToList();
+            }
+        }
+
         public IEnumerable<User> GetList(UserParameter parameter)
         {
             var query = DB.Users.Where(e => !e.Deleted);

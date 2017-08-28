@@ -98,15 +98,18 @@ namespace Loowoo.Land.OA.Managers
 
         public FormInfo Apply(FormInfoExtend1 data)
         {
+            var form = Core.FormManager.GetModel(FormType.Leave);
+            if (form == null || form.FLowId == 0)
+            {
+                throw new Exception("Form或流程未配置");
+            }
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
-                Title = $"申请{((LeaveType)data.Category).GetDescription()} 请假时间：{data.ScheduleBeginTime.ToString("yyyy-MM-dd HH:mm")} {data.ScheduleEndTime?.ToString("~ yyyy-MM-dd HH:mm")}",
+                Title = $"[{((LeaveType)data.Category).GetDescription()}请假] {data.ScheduleBeginTime.ToString("yyyy-MM-dd HH:mm")} {data.ScheduleEndTime?.ToString("~ yyyy-MM-dd HH:mm")}",
                 FormId = (int)FormType.Leave,
                 PostUserId = data.UserId,
             };
-            info.Form = Core.FormManager.GetModel(FormType.Leave);
-
+            info.Form = form;
             Core.FormInfoManager.Save(info);
             Core.FormInfoExtend1Manager.Apply(info, data);
             return info;

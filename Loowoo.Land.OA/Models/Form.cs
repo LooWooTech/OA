@@ -42,17 +42,18 @@ namespace Loowoo.Land.OA.Models
     public enum FormType
     {
         [Description("公文")]
-        Missive = 1,
+        SendMissive = 1,
+        [Description("收文")]
+        ReceiveMissive=2,
         [Description("车辆")]
-        Car = 2,
-        [Description("请假")]
-        Leave = 3,
+        Car = 3,
         [Description("任务")]
         Task = 4,
         [Description("会议室")]
         MeetingRoom = 5,
         [Description("公章")]
         Seal = 6,
-
+        [Description("请假")]
+        Leave = 7,
     }
 }

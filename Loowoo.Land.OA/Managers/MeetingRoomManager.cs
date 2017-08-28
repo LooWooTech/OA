@@ -45,7 +45,6 @@ namespace Loowoo.Land.OA.Managers
             var model = Get(data.InfoId);
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
                 Title = "申请会议室：" + model.Name + "（" + model.Number + "）",
                 FormId = (int)FormType.MeetingRoom,
                 PostUserId = data.UserId,

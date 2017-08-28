@@ -76,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (model.FlowDataId > 0)
             {
                 var flowData = model.FlowData ?? Core.FlowDataManager.Get(model.FlowDataId);
-                var currentFlowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+                var currentFlowNodeData = flowData.GetUserLastNodeData(CurrentUser.ID);
                 canSubmitFlow = Core.FlowDataManager.CanSubmit(model.FlowData, currentFlowNodeData);
                 canEdit = canSubmitFlow;
                 canCancel = Core.FlowDataManager.CanCancel(flowData, currentFlowNodeData);

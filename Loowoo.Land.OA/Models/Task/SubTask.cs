@@ -41,7 +41,7 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public bool IsMaster { get { return ParentId == 0; } }
 
-        public DateTime ScheduleDate { get; set; }
+        public DateTime? ScheduleDate { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 

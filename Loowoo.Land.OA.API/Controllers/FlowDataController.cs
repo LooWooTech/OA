@@ -15,7 +15,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Cancel(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            var flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            var flowNodeData = info.FlowData.GetUserLastNodeData(CurrentUser.ID);
             if (!Core.FlowDataManager.CanCancel(info.FlowData, flowNodeData))
             {
                 return BadRequest("无法撤销");
@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.FlowDataManager.Cancel(info.FlowData, flowNodeData);
 
             //撤销后更新userforminfo
-            flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            flowNodeData = info.FlowData.GetUserLastNodeData(CurrentUser.ID);
             Core.UserFormInfoManager.OnCancelFlowData(info, flowNodeData);
             return Ok();
         }
@@ -52,7 +52,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("参数不正确，没有获取到流程数据");
             }
-            var flowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+            var flowNodeData = flowData.GetUserLastNodeData(CurrentUser.ID);
             var lastNodeData = flowData.GetLastNodeData();
             return new
             {
@@ -85,7 +85,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 info.FlowDataId = info.FlowData.ID;
             }
 
-            var currentNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            var currentNodeData = info.FlowData.GetUserLastNodeData(CurrentUser.ID);
             if (currentNodeData.Result.HasValue)
             {
                 return BadRequest("无法提交");
