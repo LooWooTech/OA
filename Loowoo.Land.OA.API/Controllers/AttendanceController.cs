@@ -42,6 +42,11 @@ namespace Loowoo.Land.OA.API.Controllers
                     EndTime = endDate,
                     UserId = CurrentUser.ID,
                 }),
+                holiday = Core.HolidayManager.GetList(new HolidayParameter
+                {
+                    BeginDate = beginDate,
+                    EndDate = endDate
+                }),
                 leaves = leaves.Select(e => new
                 {
                     e.Info.Title,

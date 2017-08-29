@@ -20,6 +20,21 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.ApprovalUserId > 0)
             {
                 query = query.Where(e => e.UserId == parameter.ApprovalUserId);
+                switch (parameter.Status)
+                {
+                    case CheckStatus.All:
+                        break;
+                    case CheckStatus.Uncheck:
+                        query = query.Where(e => e.Status == FlowStatus.Doing);
+                        break;
+                    case CheckStatus.Checked:
+                        query = query.Where(e => e.Status != FlowStatus.Doing);
+                        break;
+                }
+            }
+            if(parameter.FormId>0)
+            {
+                query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
             if (parameter.BeginTime.HasValue)
             {
@@ -28,18 +43,9 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.UserId > 0)
             {
                 query = query.Where(e => e.Info.PostUserId == parameter.UserId);
+
             }
-            switch (parameter.Status)
-            {
-                case CheckStatus.All:
-                    break;
-                case CheckStatus.Uncheck:
-                    query = query.Where(e => e.Status == FlowStatus.Doing);
-                    break;
-                case CheckStatus.Checked:
-                    query = query.Where(e => e.Status != FlowStatus.Doing);
-                    break;
-            }
+
             var formInfoIds = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).Select(e => e.InfoId).ToArray();
 
             var list = DB.FormInfoExtend1s.Where(e => formInfoIds.Contains(e.ID));
@@ -59,7 +65,21 @@ namespace Loowoo.Land.OA.Managers
             {
                 list = list.Where(e => e.Category == parameter.Category.Value);
             }
-            return list.OrderByDescending(e => e.ID);
+            if (parameter.UserId > 0)
+            {
+                switch (parameter.Status)
+                {
+                    case CheckStatus.All:
+                        break;
+                    case CheckStatus.Uncheck:
+                        list = list.Where(e => e.Result == null);
+                        break;
+                    case CheckStatus.Checked:
+                        list = list.Where(e => e.Result.HasValue);
+                        break;
+                }
+            }
+            return list.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public FormInfoExtend1 GetModel(int id)
@@ -93,7 +113,9 @@ namespace Loowoo.Land.OA.Managers
             var flowData = Core.FlowDataManager.CreateFlowData(info);
 
             var nodeData = flowData.GetFirstNodeData();
-            var nextNodeData = Core.FlowDataManager.SubmitToUser(info.FlowData, data.ApprovalUserId);
+            Core.FlowNodeDataManager.Submit(nodeData);
+
+            var nextNodeData = Core.FlowNodeDataManager.CreateNextNodeData(flowData, data.ApprovalUserId);
 
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
@@ -108,11 +130,6 @@ namespace Loowoo.Land.OA.Managers
                 UserId = data.ApprovalUserId,
                 Status = FlowStatus.Doing,
             });
-        }
-
-        public void Approval(FormInfo info, FormInfoExtend1 data, int toUserId)
-        {
-
         }
     }
 }

@@ -11,19 +11,21 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoExtend1Controller : ControllerBase
     {
         [HttpGet]
-        public PagingResult List(int infoId = 0, int userId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
+        public PagingResult List(int formId, int infoId = 0, int userId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
         {
             var parameter = new Extend1Parameter
             {
+                FormId = formId,
                 InfoId = infoId,
                 UserId = userId,
                 Status = status,
-                ApprovalUserId = CurrentUser.ID,
+                ApprovalUserId = approvalUserId,
                 Page = new PageParameter(page, rows)
             };
+            var list = Core.FormInfoExtend1Manager.GetList(parameter);
             return new PagingResult
             {
-                List = Core.FormInfoExtend1Manager.GetList(parameter).Select(e => new
+                List = list.Select(e => new
                 {
                     e.ID,
                     e.UserId,
@@ -47,33 +49,68 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-
         [HttpGet]
-        public void Approval(int infoId)
+        public void Approval(int id, bool result = true, int toUserId = 0)
         {
-            var info = Core.FormInfoManager.GetModel(infoId);
-            //如果流程审核完成
-            //TODO重新写
-            if (info.FlowData.Completed)
+            var info = Core.FormInfoManager.GetModel(id);
+            var currentNodeData = info.FlowData.GetLastNodeData();
+            if (currentNodeData.UserId != CurrentUser.ID)
             {
-                var model = Core.FormInfoExtend1Manager.GetModel(infoId);
-                model.Result = info.FlowData.GetLastNodeData().Result.Value;
-                Core.FormInfoExtend1Manager.Save(model);
-                switch (info.Form.FormType)
-                {
-                    case FormType.Car:
-                        Core.CarManager.UpdateStatus(model.InfoId, CarStatus.Using);
-                        break;
-                    case FormType.MeetingRoom:
-                        Core.MeetingRoomManager.UpdateStatus(model.InfoId, MeetingRoomStatus.Using);
-                        break;
-                    case FormType.Seal:
-                        Core.SealManager.UpdateStatus(model.InfoId, SealStatus.Using);
-                        break;
-                    case FormType.Leave:
-                        break;
-                }
+                currentNodeData = info.FlowData.GetChildNodeData(currentNodeData.ID);
             }
+            if (currentNodeData == null)
+            {
+                throw new Exception("您没有参与此次流程审核");
+            }
+            currentNodeData.Result = result;
+            Core.FlowNodeDataManager.Submit(currentNodeData);
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = id,
+                Status = FlowStatus.Done,
+                UserId = CurrentUser.ID
+            });
+            var model = Core.FormInfoExtend1Manager.GetModel(id);
+
+            if (toUserId > 0)
+            {
+                Core.FlowNodeDataManager.CreateChildNodeData(currentNodeData, toUserId);
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = id,
+                    Status = FlowStatus.Doing,
+                    UserId = toUserId
+                });
+                Core.FeedManager.Save(new Feed
+                {
+                    Action = UserAction.Submit,
+                    InfoId = id,
+                    Title = info.Title,
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = toUserId,
+                    Type = FeedType.Info,
+                });
+                model.ApprovalUserId = toUserId;
+                model.UpdateTime = DateTime.Now;
+            }
+            else
+            {
+                model.ApprovalUserId = CurrentUser.ID;
+                model.Result = result;
+                model.UpdateTime = DateTime.Now;
+                Core.FlowDataManager.Complete(info);
+                Core.FeedManager.Save(new Feed
+                {
+                    Action = UserAction.Submit,
+                    Type = FeedType.Info,
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = model.UserId,
+                    Title = "你申请的假期已审核通过",
+                    Description = info.Title,
+                    InfoId = info.ID,
+                });
+            }
+            Core.FormInfoExtend1Manager.Save(model);
         }
 
         [HttpGet]

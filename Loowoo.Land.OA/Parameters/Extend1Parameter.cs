@@ -20,6 +20,8 @@ namespace Loowoo.Land.OA.Models
 
     public class Extend1Parameter
     {
+        public int FormId { get; set; }
+
         public int InfoId { get; set; }
 
         public int UserId { get; set; }

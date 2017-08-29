@@ -35,11 +35,15 @@ namespace Loowoo.Land.OA.Managers
 
         public FlowNodeData CreateNodeData(int flowDataId, FlowNode flowNode, int toUserId, int extendId = 0)
         {
+            if (flowNode == null)
+            {
+                throw new Exception("流程配置不正确，请停止提交并联系管理员");
+            }
             var toUser = Core.UserManager.GetModel(toUserId) ?? new User();
             var model = new FlowNodeData
             {
-                FlowNodeId = flowNode == null ? 0 : flowNode.ID,
-                FlowNodeName = flowNode == null ? toUser.RealName : flowNode.Name,
+                FlowNodeId = flowNode.ID,
+                FlowNodeName = flowNode.Name,
                 Signature = toUser.RealName,
                 UserId = toUser.ID,
                 FlowDataId = flowDataId,
