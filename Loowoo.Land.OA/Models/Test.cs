@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,19 +8,12 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    [Table("user_department")]
-    public class UserDepartment
+    [Table("test")]
+    public class Test
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public int UserId { get; set; }
-
-        public int DepartmentId { get; set; }
-
-        [JsonIgnore]
-        public virtual User User { get; set; }
-
-        public virtual Department Department { get; set; }
+        public DateTime Version { get; set; }
     }
 }

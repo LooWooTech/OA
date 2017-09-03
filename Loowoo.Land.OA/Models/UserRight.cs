@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    [Table("user_right")]
-    public class UserRight
+    [Table("group_right")]
+    public class GroupRight
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
@@ -22,5 +22,13 @@ namespace Loowoo.Land.OA.Models
         /// Url正则匹配：
         /// </summary>
         public string Name { get; set; }
+    }
+
+    public enum UserRightType
+    {
+        View = 1,
+        Edit = 2,
+        Delete = 3,
+        Submit = 4
     }
 }

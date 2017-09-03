@@ -57,7 +57,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 return BadRequest("参数错误");
             }
 
-            var canView = Core.FormInfoManager.CanView(model.FormId, model.ID, CurrentUser.ID);
+            var canView = Core.FormInfoManager.CanView(model, CurrentUser);
             if (!canView)
             {
                 return BadRequest("您没有权限查看该文档");
@@ -113,7 +113,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canCancel,
                 canComplete,
                 canBack,
-                status = userformInfo.Status,
+                status = userformInfo == null ? FlowStatus.Done : userformInfo.Status,
                 flowNodeData = lastNodeData,
                 freeFlowNodeData
             };

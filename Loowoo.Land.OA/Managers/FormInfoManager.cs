@@ -54,9 +54,9 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public bool CanView(int formId, int infoId, int userId)
+        public bool CanView(FormInfo info, User user)
         {
-            return DB.UserFormInfos.Any(e => e.InfoId == infoId && e.UserId == userId);
+            return user.HasRight(info.Form.FormType, UserRightType.View) || DB.UserFormInfos.Any(e => e.InfoId == info.ID && e.UserId == user.ID);
         }
 
         public bool HasDeleteRight(FormInfo info, User user)

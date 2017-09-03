@@ -13,12 +13,11 @@ namespace Loowoo.Land.OA.Managers
     {
         public IEnumerable<Task> GetList(FormInfoParameter parameter)
         {
-            var infos = Core.UserFormInfoManager.GetList(parameter);
-            parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
-
             var query = DB.Tasks.AsQueryable();
-            if (parameter.InfoIds != null)
+            if (!parameter.HasViewRight)
             {
+                var infos = Core.UserFormInfoManager.GetList(parameter);
+                parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
                 query = query.Where(e => parameter.InfoIds.Contains(e.ID));
             }
             if (parameter.FormId > 0)
@@ -29,7 +28,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Name.Contains(parameter.SearchKey));
             }
-            return query.OrderByDescending(e => e.ID);
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Task data)

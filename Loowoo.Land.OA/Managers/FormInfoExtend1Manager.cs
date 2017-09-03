@@ -46,7 +46,7 @@ namespace Loowoo.Land.OA.Managers
 
             }
 
-            var formInfoIds = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).Select(e => e.InfoId).ToArray();
+            var formInfoIds = query.OrderByDescending(e => e.ID).Select(e => e.InfoId).ToArray();
 
             var list = DB.FormInfoExtend1s.Where(e => formInfoIds.Contains(e.ID));
             if (parameter.InfoId > 0)

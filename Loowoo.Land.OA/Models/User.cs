@@ -39,7 +39,6 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public int[] DepartmentIds { get; set; }
 
-        [JsonIgnore]
         public virtual List<UserDepartment> UserDepartments { get; set; }
 
         public UserRole Role { get; set; }
@@ -47,7 +46,6 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public int[] GroupIds { get; set; }
 
-        [JsonIgnore]
         public virtual List<UserGroup> UserGroups { get; set; }
 
         [NotMapped]
@@ -57,9 +55,15 @@ namespace Loowoo.Land.OA.Models
 
         public bool Deleted { get; set; }
 
+        public bool HasRight(FormType form, UserRightType type)
+        {
+            var rightName = $"Form.{form.ToString()}.{type.ToString()}";
+            return HasRight(rightName);
+        }
+
         public bool HasRight(string rightName)
         {
-            return UserGroups.Any(e => e.Group.Rights.Any(r => r.Name.Contains(rightName)));
+            return UserGroups != null && UserGroups.Any(e => e.Group.HasRight(rightName));
         }
 
         public void Validate()

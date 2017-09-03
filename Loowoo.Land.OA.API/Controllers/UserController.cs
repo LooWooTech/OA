@@ -39,6 +39,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 DepartmentIds = user.DepartmentIds,
                 GroupIds = user.GroupIds,
                 JobTitleId = user.JobTitleId,
+                UserDepartments = user.UserDepartments,
+                UserGroups = user.UserGroups,
+                JobTitle = user.JobTitle,
+                Mobile = user.Mobile,
+                Sort = user.Sort,
             });
 
             return user;

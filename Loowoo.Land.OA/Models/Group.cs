@@ -22,7 +22,12 @@ namespace Loowoo.Land.OA.Models
 
         public GroupType Type { get; set; }
 
-        public virtual List<UserRight> Rights { get; set; }
+        public virtual List<GroupRight> Rights { get; set; }
+
+        public bool HasRight(string right)
+        {
+            return Rights != null && Rights.Any(e => e.Name == right);
+        }
     }
 
     public enum GroupType

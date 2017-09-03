@@ -36,6 +36,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<UserFlowContact> UserFlowContacts { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
+        public DbSet<GroupRight> GroupRights { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
@@ -62,6 +63,8 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Config> Configs { get; set; }
 
         public DbSet<Sms> Sms { get; set; }
+
+        public DbSet<Test> Tests { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

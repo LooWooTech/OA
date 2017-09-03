@@ -30,5 +30,7 @@ namespace Loowoo.Land.OA.Models
         public string SearchKey { get; set; }
 
         public int[] InfoIds { get; set; }
+
+        public bool HasViewRight { get; set; }
     }
 }

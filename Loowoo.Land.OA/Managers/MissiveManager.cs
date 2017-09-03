@@ -17,6 +17,7 @@ namespace Loowoo.Land.OA.Managers
         {
             var page = parameter.Page;
             parameter.Page = null;
+
             var infos = Core.UserFormInfoManager.GetList(parameter);
             parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
 

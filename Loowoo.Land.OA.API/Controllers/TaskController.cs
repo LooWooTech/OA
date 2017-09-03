@@ -27,7 +27,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 Status = status,
                 Page = new PageParameter(page, rows),
                 UserId = CurrentUser.ID,
-                SearchKey = searchKey
+                SearchKey = searchKey,
+                HasViewRight = CurrentUser.HasRight(FormType.Task, UserRightType.View),
             };
             var datas = Core.TaskManager.GetList(parameter);
             return new PagingResult

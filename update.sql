@@ -1,3 +1,6 @@
+-- 2018-09-03
+RENAME TABLE `user_right` TO `group_right`;
+
 -- 2017-08-28
 ALTER TABLE `holiday`
 	ADD INDEX `EndDate` (`EndDate`);
