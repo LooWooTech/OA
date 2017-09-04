@@ -1,5 +1,6 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -25,11 +26,11 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 FormId = form.ID,
                 Status = status,
-                Page = new PageParameter(page, rows),
-                UserId = CurrentUser.ID,
+                UserId = status == null && CurrentUser.HasRight(FormType.Task, UserRightType.View) ? 0 : CurrentUser.ID,
                 SearchKey = searchKey,
-                HasViewRight = CurrentUser.HasRight(FormType.Task, UserRightType.View),
+                Page = new PageParameter(page, rows)
             };
+
             var datas = Core.TaskManager.GetList(parameter);
             return new PagingResult
             {
@@ -136,6 +137,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有指定责任人");
             }
+            if (data.IsMaster && data.LeaderId == 0)
+            {
+                throw new Exception("没有指定分管领导");
+            }
             var isAdd = data.ID == 0;
             var department = Core.DepartmentManager.Get(data.ToDepartmentId);
             data.ToDepartmentName = department.Name;
@@ -159,12 +164,29 @@ namespace Loowoo.Land.OA.API.Controllers
                     UserId = data.ToUserId,
                     Status = FlowStatus.Doing,
                 });
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = data.TaskId,
+                    UserId = data.LeaderId,
+                    Status = FlowStatus.Doing,
+                });
                 //通知相关人员
                 Core.FeedManager.Save(new Feed
                 {
                     Action = UserAction.Create,
                     FromUserId = CurrentUser.ID,
                     ToUserId = data.ToUserId,
+                    Title = "[创建任务]" + info.Title,
+                    Description = data.Content,
+                    Type = FeedType.Task,
+                    InfoId = data.TaskId,
+                });
+                //通知相关人员
+                Core.FeedManager.Save(new Feed
+                {
+                    Action = UserAction.Create,
+                    FromUserId = CurrentUser.ID,
+                    ToUserId = data.LeaderId,
                     Title = "[创建任务]" + info.Title,
                     Description = data.Content,
                     Type = FeedType.Task,
@@ -190,12 +212,8 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <summary>
         /// 提交子任务，创建子任务相关流程
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="content"></param>
-        /// <param name="result"></param>
-        /// <param name="toUserId"></param>
         [HttpPost]
-        public void SubmitSubTask(int id, JToken data, int toUserId = 0)
+        public void SubmitSubTask(int id, JToken data)
         {
             var content = data["content"].Value<string>();
             var result = true;
@@ -230,6 +248,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Status = FlowStatus.Done
             });
 
+            int toUserId = 0;
             //如果是协办科室，则直接提交结束
             if (!model.IsMaster)
             {
@@ -238,13 +257,8 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
-                //判断子任务是否都已经完成
-
                 //主办科室提交，则需要创建分管领导主流程
-                if (toUserId == 0)
-                {
-                    throw new Exception("没有指定分管领导");
-                }
+                toUserId = model.LeaderId;
             }
             Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, toUserId, model.ID);
             Core.UserFormInfoManager.Save(new UserFormInfo

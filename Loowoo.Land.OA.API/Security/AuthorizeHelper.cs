@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.API.Security
     {
         public static UserIdentity GetIdentity(HttpContext context)
         {
-            var tokenKey = AppSettings.Get("TokenKey") ?? "Token";
+            var tokenKey = AppSettings.Get("TokenKey") ?? "token";
             var token = context.Request[tokenKey] ?? context.Request.Headers[tokenKey];
             if (!string.IsNullOrWhiteSpace(token))
             {

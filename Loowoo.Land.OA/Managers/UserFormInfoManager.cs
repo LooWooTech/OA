@@ -10,7 +10,7 @@ namespace Loowoo.Land.OA.Managers
 {
     public class UserFormInfoManager : ManagerBase
     {
-        public IQueryable<UserFormInfo> GetList(FormInfoParameter parameter)
+        public int[] GetUserInfoIds(FormInfoParameter parameter)
         {
             var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
             if (parameter.UserId > 0)
@@ -46,7 +46,11 @@ namespace Loowoo.Land.OA.Managers
                 query = query.Where(e => e.Info.FlowData != null && e.Info.FlowData.Completed == parameter.Completed.Value);
             }
 
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID)
+                .GroupBy(e => e.InfoId)
+                //.SetPage(parameter.Page)
+                .Select(g => g.Key)
+                .ToArray();
         }
 
         public int[] GetUserIds(int infoId)

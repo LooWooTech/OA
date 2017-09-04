@@ -14,16 +14,8 @@ namespace Loowoo.Land.OA.Managers
         public IEnumerable<Task> GetList(FormInfoParameter parameter)
         {
             var query = DB.Tasks.AsQueryable();
-            if (!parameter.HasViewRight)
-            {
-                var infos = Core.UserFormInfoManager.GetList(parameter);
-                parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
-                query = query.Where(e => parameter.InfoIds.Contains(e.ID));
-            }
-            if (parameter.FormId > 0)
-            {
-                query = query.Where(e => e.Info.FormId == parameter.FormId);
-            }
+            parameter.InfoIds = Core.UserFormInfoManager.GetUserInfoIds(parameter);
+            query = query.Where(e => parameter.InfoIds.Contains(e.ID));
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 query = query.Where(e => e.Name.Contains(parameter.SearchKey));

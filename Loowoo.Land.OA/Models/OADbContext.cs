@@ -64,8 +64,6 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Sms> Sms { get; set; }
 
-        public DbSet<Test> Tests { get; set; }
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }

@@ -15,13 +15,8 @@ namespace Loowoo.Land.OA.Managers
     {
         public IEnumerable<Missive> GetList(FormInfoParameter parameter)
         {
-            var page = parameter.Page;
-            parameter.Page = null;
-
-            var infos = Core.UserFormInfoManager.GetList(parameter);
-            parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
-
             var query = DB.Missives.AsQueryable();
+            parameter.InfoIds = Core.UserFormInfoManager.GetUserInfoIds(parameter);
             if (parameter.InfoIds != null)
             {
                 query = query.Where(e => parameter.InfoIds.Contains(e.ID));
@@ -34,8 +29,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.WJ_BT.Contains(parameter.SearchKey));
             }
-            parameter.Page = page;
-            return query.OrderByDescending(e => e.ID).SetPage(page);
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Missive data)

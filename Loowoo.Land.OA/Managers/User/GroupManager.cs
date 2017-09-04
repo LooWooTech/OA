@@ -7,11 +7,11 @@ using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class GroupManager:ManagerBase
+    public class GroupManager : ManagerBase
     {
         public int Save(Group group)
         {
-            if(group.ID>0)
+            if (group.ID > 0)
             {
                 var entity = DB.Groups.FirstOrDefault(e => e.ID == group.ID);
                 entity.Name = group.Name;

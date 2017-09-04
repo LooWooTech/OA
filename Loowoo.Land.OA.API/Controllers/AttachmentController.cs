@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (file == null) throw new Exception("文件未找到");
             if (file.IsWordFile)
             {
-                var url = PageOffice.PageOfficeLink.OpenWindow(Url.Action("Doc", new { id }), string.Empty);
+                var url = $"PageOffice://|{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}{Url.Action("Doc", new { id })}";
                 return Redirect(url);
             }
             return File(file.PhysicalSavePath, file.ContentType);

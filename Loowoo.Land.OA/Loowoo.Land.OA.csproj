@@ -90,7 +90,6 @@
     <Compile Include="Models\MissiveRedTitle.cs" />
     <Compile Include="Models\Seal.cs" />
     <Compile Include="Models\Task\TaskTodo.cs" />
-    <Compile Include="Models\Test.cs" />
     <Compile Include="Models\UserFlowContact.cs" />
     <Compile Include="Parameters\Extend1Parameter.cs" />
     <Compile Include="Managers\AttendanceManager.cs" />
@@ -157,7 +156,7 @@
     <Compile Include="Models\UserDepartment.cs" />
     <Compile Include="Models\UserFormInfo.cs" />
     <Compile Include="Models\UserGroup.cs" />
-    <Compile Include="Models\UserRight.cs" />
+    <Compile Include="Models\GroupRight.cs" />
     <Compile Include="Parameters\AttendanceParameter.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
@@ -168,7 +167,6 @@
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />
-    <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\UserParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

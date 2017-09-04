@@ -31,6 +31,8 @@ namespace Loowoo.Land.OA.Models
 
         public virtual User ToUser { get; set; }
 
+        public int LeaderId { get; set; }
+
         public int ToDepartmentId { get; set; }
 
         public string ToDepartmentName { get; set; }
