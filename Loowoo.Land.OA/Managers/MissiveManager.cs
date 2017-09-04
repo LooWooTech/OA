@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.WJ_BT.Contains(parameter.SearchKey));
             }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID);
         }
 
         public void Save(Missive data)

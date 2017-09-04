@@ -12,11 +12,20 @@ namespace Loowoo.Land.OA.Managers
     {
         public int[] GetUserInfoIds(FormInfoParameter parameter)
         {
-            var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
+            var query = GetList(parameter);
             if (parameter.UserId > 0)
             {
-                query = query.Where(e => e.UserId == parameter.UserId);
+                return query.Select(e => e.InfoId).ToArray();
             }
+            else
+            {
+                return query.GroupBy(e => e.InfoId).Select(g => g.Key).SetPage(parameter.Page).ToArray();
+            }
+        }
+
+        public IEnumerable<UserFormInfo> GetList(FormInfoParameter parameter)
+        {
+            var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
             if (parameter.PostUserId > 0)
             {
                 query = query.Where(e => e.Info.PostUserId == parameter.PostUserId);
@@ -45,12 +54,14 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Info.FlowData != null && e.Info.FlowData.Completed == parameter.Completed.Value);
             }
-
-            return query.OrderByDescending(e => e.ID)
-                .GroupBy(e => e.InfoId)
-                //.SetPage(parameter.Page)
-                .Select(g => g.Key)
-                .ToArray();
+            if (parameter.UserId > 0)
+            {
+                return query.Where(e => e.UserId == parameter.UserId).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            }
+            else
+            {
+                return query.OrderByDescending(e => e.ID);
+            }
         }
 
         public int[] GetUserIds(int infoId)

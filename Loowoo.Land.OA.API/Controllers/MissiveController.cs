@@ -34,11 +34,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 SearchKey = searchKey,
             };
 
-            var datas = Core.MissiveManager.GetList(parameter);
+            var list = Core.MissiveManager.GetList(parameter);
 
             return new PagingResult
             {
-                List = datas.Select(e => new
+                List = list.Select(e => new
                 {
                     e.ID,
                     e.WJ_BT,

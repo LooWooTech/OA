@@ -13,14 +13,15 @@ namespace Loowoo.Land.OA.Managers
     {
         public IEnumerable<Task> GetList(FormInfoParameter parameter)
         {
-            var query = DB.Tasks.AsQueryable();
             parameter.InfoIds = Core.UserFormInfoManager.GetUserInfoIds(parameter);
+
+            var query = DB.Tasks.AsQueryable();
             query = query.Where(e => parameter.InfoIds.Contains(e.ID));
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 query = query.Where(e => e.Name.Contains(parameter.SearchKey));
             }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID);
         }
 
         public void Save(Task data)

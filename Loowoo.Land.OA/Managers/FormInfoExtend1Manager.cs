@@ -32,7 +32,7 @@ namespace Loowoo.Land.OA.Managers
                         break;
                 }
             }
-            if(parameter.FormId>0)
+            if (parameter.FormId > 0)
             {
                 query = query.Where(e => e.Info.FormId == parameter.FormId);
             }
@@ -46,7 +46,7 @@ namespace Loowoo.Land.OA.Managers
 
             }
 
-            var formInfoIds = query.OrderByDescending(e => e.ID).Select(e => e.InfoId).ToArray();
+            var formInfoIds = query.OrderByDescending(e => e.ID).GroupBy(e => e.InfoId).SetPage(parameter.Page).Select(g => g.Key).ToArray();
 
             var list = DB.FormInfoExtend1s.Where(e => formInfoIds.Contains(e.ID));
             if (parameter.InfoId > 0)
