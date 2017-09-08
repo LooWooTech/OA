@@ -17,10 +17,6 @@ namespace Loowoo.Land.OA.Managers
 
             var query = DB.Tasks.AsQueryable();
             query = query.Where(e => parameter.InfoIds.Contains(e.ID));
-            if (!string.IsNullOrEmpty(parameter.SearchKey))
-            {
-                query = query.Where(e => e.Name.Contains(parameter.SearchKey));
-            }
             return query.OrderByDescending(e => e.ID);
         }
 

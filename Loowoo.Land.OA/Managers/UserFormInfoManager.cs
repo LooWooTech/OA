@@ -13,6 +13,7 @@ namespace Loowoo.Land.OA.Managers
         public int[] GetUserInfoIds(FormInfoParameter parameter)
         {
             var query = GetList(parameter);
+
             if (parameter.UserId > 0)
             {
                 return query.Select(e => e.InfoId).ToArray();
@@ -33,6 +34,10 @@ namespace Loowoo.Land.OA.Managers
             if (parameter.FormId > 0)
             {
                 query = query.Where(e => e.Info.FormId == parameter.FormId);
+            }
+            if (!string.IsNullOrWhiteSpace(parameter.SearchKey))
+            {
+                query = query.Where(e => e.Info.Title.Contains(parameter.SearchKey));
             }
             if (parameter.CategoryId > 0)
             {

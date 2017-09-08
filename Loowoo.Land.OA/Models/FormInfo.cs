@@ -48,7 +48,7 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 是否提醒、催办
         /// </summary>
-        public bool Remind { get; set; }
+        public bool Reminded { get; set; }
         /// <summary>
         /// 当前办理的步骤，可以是人名或节点名称，每次创建新的节点，需要更新，如果完成
         /// </summary>

@@ -1,9 +1,15 @@
--- 2018-09-04
+-- 2017-09-07
+ALTER TABLE `form_info`
+	ALTER `Remind` DROP DEFAULT;
+ALTER TABLE `form_info`
+	CHANGE COLUMN `Remind` `Reminded` BIT(1) NOT NULL AFTER `CreateTime`;
+
+-- 2017-09-04
 ALTER TABLE `sub_task`
 	ADD COLUMN `LeaderId` INT NOT NULL AFTER `Content`;
 
 
--- 2018-09-03
+-- 2017-09-03
 RENAME TABLE `user_right` TO `group_right`;
 
 -- 2017-08-28
