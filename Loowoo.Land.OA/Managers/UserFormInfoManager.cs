@@ -86,23 +86,6 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        //public void UpdateStatues(int infoId, int userId, FlowStatus status)
-        //{
-        //    var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId);
-        //    entity.Status = status;
-        //    DB.SaveChanges();
-        //}
-
-        //public void Add(UserFormInfo model)
-        //{
-        //    var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId);
-        //    if (entity != null)
-        //    {
-        //        throw new Exception("记录已存在");
-        //    }
-        //    DB.UserFormInfos.Add(model);
-        //    DB.SaveChanges();
-        //}
 
         public void Save(UserFormInfo model)
         {
@@ -117,20 +100,5 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SaveChanges();
         }
-
-        public void OnCancelFlowData(FormInfo info, FlowNodeData nodeData)
-        {
-            info.FlowStep = nodeData.FlowNodeName;
-
-            Delete(info.ID, nodeData.UserId);
-
-            Save(new UserFormInfo
-            {
-                InfoId = info.ID,
-                Status = FlowStatus.Doing,
-                UserId = nodeData.UserId,
-            });
-        }
-
     }
 }

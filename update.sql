@@ -1,3 +1,10 @@
+-- 2017-09-12
+ALTER TABLE `flow_node`
+	ALTER `CanComplete` DROP DEFAULT;
+ALTER TABLE `flow_node`
+	CHANGE COLUMN `CanComplete` `CanSkip` BIT(1) NOT NULL AFTER `LimitMode`;
+
+
 -- 2017-09-07
 ALTER TABLE `form_info`
 	ALTER `Remind` DROP DEFAULT;

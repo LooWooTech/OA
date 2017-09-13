@@ -92,7 +92,7 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 是否可以结束流程
         /// </summary>
-        public bool CanComplete { get; set; }
+        public bool CanSkip { get; set; }
     }
 
 }

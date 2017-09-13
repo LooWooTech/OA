@@ -51,28 +51,35 @@ namespace Loowoo.Land.OA.Managers
             return info.FlowData;
         }
 
-        public FlowNodeData SubmitToUser(FlowData flowData, int toUserId)
+        public FlowNodeData SubmitToUser(FlowData flowData, int toUserId, int flowNodeId = 0)
         {
-            return Core.FlowNodeDataManager.CreateNextNodeData(flowData, toUserId);
+            if (flowNodeId > 0)
+            {
+                var flowNode = Core.FlowNodeManager.Get(flowNodeId);
+                return Core.FlowNodeDataManager.CreateNodeData(flowData.ID, flowNode, toUserId);
+            }
+            else
+            {
+                return Core.FlowNodeDataManager.CreateNextNodeData(flowData, toUserId);
+            }
         }
 
-        public FlowNodeData SubmitToBack(FlowData flowData)
+        public FlowNodeData SubmitToBack(FlowData flowData, FlowNodeData currentNodeData)
         {
-            var firstNodeData = flowData.GetFirstNodeData();
-            return Core.FlowNodeDataManager.CreateBackNodeData(firstNodeData);
+            var prevNodeData = flowData.GetPrevNodeData(currentNodeData);
+            return Core.FlowNodeDataManager.CreateBackNodeData(prevNodeData);
         }
 
         public bool CanCancel(FlowData flowData, FlowNodeData flowNodeData)
         {
             if (flowNodeData == null || !flowNodeData.Submited) return false;
-            var nextNode = flowData.Flow.GetNextStep(flowNodeData.FlowNodeId);
-            //如果当前步骤是最后一步，想从归档中撤回
-            if (nextNode == null)
-            {
-                return true;
-            }
-            //否则判断当前步骤的下一步是否已经提交，如果提交，则不能撤回
+            //var childNodeData = flowData.Nodes.OrderBy(e => e.ID).FirstOrDefault(e => e.ParentId == flowNodeData.ID);
+            //if (childNodeData != null)
+            //{
+            //    return false;
+            //}
             var nextNodeData = flowData.GetNextNodeData(flowNodeData.ID);
+            //否则判断当前步骤的下一步是否已经提交，如果提交，则不能撤回
             return nextNodeData == null || (!nextNodeData.HasChanged() && !flowData.Nodes.Any(e => e.ParentId == nextNodeData.ID));
         }
 
@@ -90,7 +97,7 @@ namespace Loowoo.Land.OA.Managers
         public bool CanComplete(Flow flow, FlowNodeData data)
         {
             var lastNode = flow.GetLastNode();
-            return lastNode.ID == data.FlowNodeId;
+            return lastNode.ID == data.FlowNodeId || lastNode.CanSkip;
         }
 
         /// <summary>
@@ -211,15 +218,10 @@ namespace Loowoo.Land.OA.Managers
 
         public void Cancel(FlowData flowData, FlowNodeData nodeData)
         {
-            var nextNode = flowData.Flow.GetNextStep(nodeData.FlowNodeId);
-            //如果下一步不为空，则需要删除最后的节点记录，如果最后节点
-            if (nextNode != null)
+            var nextNodeData = flowData.GetNextNodeData(nodeData.ID);
+            if (nextNodeData != null)
             {
-                var nextNodeData = flowData.GetNextNodeData(nodeData.ID);
-                if (nextNodeData != null)
-                {
-                    DB.FlowNodeDatas.Remove(nextNodeData);
-                }
+                DB.FlowNodeDatas.Remove(nextNodeData);
             }
             else
             {
@@ -228,6 +230,27 @@ namespace Loowoo.Land.OA.Managers
             nodeData.UpdateTime = null;
             nodeData.Result = null;
             DB.SaveChanges();
+
+            var infoId = flowData.InfoId;
+            var toUserId = nextNodeData.UserId;
+            var fromUserId = nodeData.UserId;
+
+            if (nextNodeData != null)
+            {
+                Core.UserFormInfoManager.Delete(infoId, toUserId);
+                Core.FeedManager.Delete(new Feed
+                {
+                    InfoId = infoId,
+                    FromUserId = fromUserId,
+                    ToUserId = toUserId
+                });
+            }
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = infoId,
+                UserId = fromUserId,
+                Status = FlowStatus.Doing
+            });
         }
 
         public void Complete(FormInfo info)

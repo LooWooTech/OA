@@ -66,6 +66,20 @@ namespace Loowoo.Land.OA.Models
             return Nodes.Where(e => e.ParentId == 0 && e.FlowNodeId == step.ID).OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
+        public FlowNodeData GetPrevNodeData(FlowNodeData currentNodeData)
+        {
+            if (currentNodeData.ParentId > 0)
+            {
+                return Nodes.FirstOrDefault(e => e.ID == currentNodeData.ParentId);
+            }
+            return Nodes.Where(e => 
+            e.ParentId == 0 
+            && e.ID < currentNodeData.ID 
+            && e.Result == true
+            && e.FlowNodeId != currentNodeData.FlowNodeId
+            ).OrderByDescending(e => e.ID).FirstOrDefault();
+        }
+
         public FlowNodeData GetChildNodeData(int parentId)
         {
             return Nodes.Where(e => e.ParentId == parentId).OrderByDescending(e => e.ID).FirstOrDefault();
