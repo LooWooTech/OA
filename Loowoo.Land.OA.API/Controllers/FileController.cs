@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 };
             }
             var result = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(file.PhysicalSavePath, FileMode.Open, FileAccess.Read);
+            var stream = new FileStream(file.PhysicalPath, FileMode.Open, FileAccess.Read);
             result.Content = new StreamContent(stream);
 
             if (action == "download")
@@ -58,18 +58,17 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Upload(string name = null, int id = 0, int infoId = 0, bool inline = false)
+        public OA.Models.File Upload(string name = null, int id = 0, int infoId = 0, bool inline = false)
         {
-            TaskName = "文件上传";
             var files = HttpContext.Current.Request.Files;
             if (files.Count == 0)
             {
-                return BadRequest("没有上传文件");
+                throw new Exception("没有上传文件");
             }
             var inputFile = string.IsNullOrWhiteSpace(name) ? files[0] : files[name];
             if (inputFile == null)
             {
-                return BadRequest($"{TaskName}:未找到文件{name}相关信息");
+                throw new Exception("未找到指定的name");
             }
 
             var fileName = OA.Models.File.Upload(inputFile);
@@ -84,7 +83,7 @@ namespace Loowoo.Land.OA.API.Controllers
             };
             Core.FileManager.Save(file);
 
-            return Ok(file);
+            return file;
         }
 
         [HttpPost]
@@ -142,7 +141,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 var pdfFile = Core.FileManager.GetList(new FileParameter { ParentId = file.ID }).ToList().Where(e => e.FileName.EndsWith("pdf")).FirstOrDefault();
                 if (pdfFile == null)
                 {
-                    var docPath = Path.Combine(Environment.CurrentDirectory, file.ServerSavePath);
+                    var docPath = Path.Combine(Environment.CurrentDirectory, file.AbsolutelyPath);
                     var pdfPath = docPath + ".pdf";
                     if (Core.FileManager.TryConvertToPdf(docPath, pdfPath))
                     {

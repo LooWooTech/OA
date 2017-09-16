@@ -63,6 +63,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Config> Configs { get; set; }
 
         public DbSet<Sms> Sms { get; set; }
+        public DbSet<Salary> Salaries { get; internal set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

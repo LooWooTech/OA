@@ -66,5 +66,7 @@ namespace Loowoo.Land.OA.Managers
         public TaskManager TaskManager { get; private set; }
 
         public SmsManager SmsManager { get; private set; }
+
+        public SalaryManager SalaryManager { get; private set; }
     }
 }

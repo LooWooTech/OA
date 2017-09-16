@@ -135,10 +135,10 @@ namespace Loowoo.Common
             return ReadData(GetSheet(filePath, sheetIndex));
         }
 
-        public static List<ExcelCell> ReadData(this ISheet sheet)
+        public static List<ExcelCell> ReadData(this ISheet sheet, int startRow = 0)
         {
             var list = new List<ExcelCell>();
-            for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; i++)
+            for (var i = startRow; i <= sheet.LastRowNum; i++)
             {
                 var row = sheet.GetRow(i);
                 if (row == null) continue;

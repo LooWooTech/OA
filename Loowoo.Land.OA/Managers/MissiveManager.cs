@@ -70,12 +70,12 @@ namespace Loowoo.Land.OA.Managers
             {
                 model.Content = Core.FileManager.GetModel(model.ContentId);
             }
-            var fileDoc = WordHelper.CreateDoc(model.Content.PhysicalSavePath);
-            var redTitleDoc = WordHelper.CreateDoc(redTitle.Template.PhysicalSavePath);
+            var fileDoc = WordHelper.CreateDoc(model.Content.PhysicalPath);
+            var redTitleDoc = WordHelper.CreateDoc(redTitle.Template.PhysicalPath);
             var doc = new XWPFDocument(redTitleDoc.Package);
             doc.CopyElements(fileDoc);
             doc.ReplaceContent("{文件字号}", model.WJ_ZH);
-            doc.SaveAs(model.Content.ServerSavePath);
+            doc.SaveAs(model.Content.AbsolutelyPath);
         }
     }
 }

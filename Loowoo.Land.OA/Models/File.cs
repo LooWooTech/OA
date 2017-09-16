@@ -72,15 +72,19 @@ namespace Loowoo.Land.OA.Models
         public bool Inline { get; set; }
 
         private static string _uploadDir = AppSettings.Get("UploadPath") ?? "upload_files/";
-
+        /// <summary>
+        /// 站点绝对路径
+        /// </summary>
         [NotMapped]
-        public string ServerSavePath
+        public string AbsolutelyPath
         {
-            get { return GetServerSavePath(SavePath); }
+            get { return GetAbsolutelyPath(SavePath); }
         }
-
+        /// <summary>
+        /// 物理路径
+        /// </summary>
         [NotMapped]
-        public string PhysicalSavePath
+        public string PhysicalPath
         {
             get { return GetPhysicalSavePath(SavePath); }
         }
@@ -109,10 +113,10 @@ namespace Loowoo.Land.OA.Models
         public static string GetPhysicalSavePath(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
-            return System.IO.Path.Combine(Environment.CurrentDirectory, GetServerSavePath(fileName));
+            return System.IO.Path.Combine(Environment.CurrentDirectory, GetAbsolutelyPath(fileName));
         }
 
-        public static string GetServerSavePath(string fileName)
+        public static string GetAbsolutelyPath(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
             return System.IO.Path.Combine(_uploadDir, fileName);
