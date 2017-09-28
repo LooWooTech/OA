@@ -29,23 +29,26 @@ namespace Loowoo.Land.OA.Models
         [Newtonsoft.Json.JsonIgnore]
         public string Json { get; set; }
 
+
+        private Document _data;
         [NotMapped]
         public Document Data
         {
             get
             {
-                var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string,object>>(Json);
-                var doc = new Document();
-                foreach (var kv in data)
+                if (_data == null)
                 {
-                    doc[kv.Key] = kv.Value;
+                    _data = new Document();
+                    if (!string.IsNullOrEmpty(Json))
+                    {
+                        var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(Json);
+                        foreach (var kv in data)
+                        {
+                            _data[kv.Key] = kv.Value;
+                        }
+                    }
                 }
-                return doc;
-            }
-            set
-            {
-                Data = value;
-                Json = Data.ToJson();
+                return _data;
             }
         }
     }
@@ -73,6 +76,8 @@ namespace Loowoo.Land.OA.Models
     {
         public SalaryColumn(int order, string name)
         {
+            Order = order;
+            Name = name;
         }
 
         public int Order { get; set; }

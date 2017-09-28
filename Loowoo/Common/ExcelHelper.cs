@@ -100,10 +100,10 @@ namespace Loowoo.Common
             var result = new ExcelCell();
             switch (cell.CellType)
             {
+                case CellType.Formula:
                 case CellType.Numeric:
                     result.Value = cell.NumericCellValue;
                     break;
-                case CellType.Formula:
                 case CellType.Blank:
                 case CellType.Error:
                 case CellType.Unknown:
@@ -144,10 +144,6 @@ namespace Loowoo.Common
                 if (row == null) continue;
                 foreach (var cell in row.Cells)
                 {
-                    if (cell.CellType == CellType.Blank || cell.CellType == CellType.Formula)
-                    {
-                        continue;
-                    }
                     var excelCell = ConvertToExcelCell(cell);
                     excelCell.ComputeSpace(cell, list);
                     list.Add(excelCell);

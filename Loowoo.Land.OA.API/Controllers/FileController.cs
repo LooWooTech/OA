@@ -71,16 +71,10 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("未找到指定的name");
             }
 
-            var fileName = OA.Models.File.Upload(inputFile);
-            var file = new OA.Models.File
-            {
-                FileName = inputFile.FileName,
-                Size = inputFile.ContentLength,
-                SavePath = fileName,
-                InfoId = infoId,
-                ID = id,
-                Inline = inline
-            };
+            var file  = OA.Models.File.Upload(inputFile);
+            file.InfoId = infoId;
+            file.ID = id;
+            file.Inline = inline;
             Core.FileManager.Save(file);
 
             return file;

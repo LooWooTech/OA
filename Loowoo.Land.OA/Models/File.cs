@@ -122,17 +122,22 @@ namespace Loowoo.Land.OA.Models
             return System.IO.Path.Combine(_uploadDir, fileName);
         }
 
-        public static string Upload(HttpPostedFile inputFile)
+        public static File Upload(HttpPostedFile file)
         {
             var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
             if (!System.IO.Directory.Exists(dir))
             {
                 System.IO.Directory.CreateDirectory(dir);
             }
-            var fileExt = System.IO.Path.GetExtension(inputFile.FileName);
-            var fileName = DateTime.Now.Ticks + inputFile.ContentLength + fileExt;
-            inputFile.SaveAs(GetPhysicalSavePath(fileName));
-            return fileName;
+            var fileExt = System.IO.Path.GetExtension(file.FileName);
+            var fileName = DateTime.Now.Ticks + file.ContentLength + fileExt;
+            file.SaveAs(GetPhysicalSavePath(fileName));
+            return new File
+            {
+                FileName = file.FileName,
+                Size = file.ContentLength,
+                SavePath = fileName
+            };
         }
 
         #region content types

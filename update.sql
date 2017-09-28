@@ -1,3 +1,19 @@
+-- 2017-09-27
+CREATE TABLE `salary` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`UserId` INT(11) NOT NULL,
+	`Year` INT(11) NOT NULL,
+	`Month` INT(11) NOT NULL,
+	`CreateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`Data` TEXT NOT NULL,
+	PRIMARY KEY (` ID`),
+	INDEX `UserId_Year_Month` (`UserId`, `Year`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+
 -- 2017-09-12
 ALTER TABLE `flow_node`
 	ALTER `CanComplete` DROP DEFAULT;

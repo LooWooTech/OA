@@ -80,9 +80,9 @@
     <Reference Include="NPOI.OpenXmlFormats, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
-    <Reference Include="PageOffice, Version=3.0.0.1, Culture=neutral, PublicKeyToken=1d75ee5788809228, processorArchitecture=MSIL">
+    <Reference Include="PageOffice, Version=4.0.0.1, Culture=neutral, PublicKeyToken=1d75ee5788809228, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Zhuozhengsoft\PageOffice\PageOffice.dll</HintPath>
+      <HintPath>..\libs\PageOffice.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
@@ -139,12 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="pageoffice\login.aspx" />
-    <Content Include="pageoffice\posetup.exe" />
-    <Content Include="pageoffice\seal.aspx" />
-    <Content Include="pageoffice\sealPic.aspx" />
-    <Content Include="pageoffice\sealsetup.exe" />
-    <Content Include="pageoffice\server.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -187,34 +181,6 @@
     <Compile Include="Models\AttendanceStatistic.cs" />
     <Compile Include="Models\FormInfoViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
-    <Compile Include="pageoffice\login.aspx.cs">
-      <DependentUpon>login.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="pageoffice\login.aspx.designer.cs">
-      <DependentUpon>login.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="pageoffice\seal.aspx.cs">
-      <DependentUpon>seal.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="pageoffice\seal.aspx.designer.cs">
-      <DependentUpon>seal.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="pageoffice\sealPic.aspx.cs">
-      <DependentUpon>sealPic.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="pageoffice\sealPic.aspx.designer.cs">
-      <DependentUpon>sealPic.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="pageoffice\server.aspx.cs">
-      <DependentUpon>server.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="pageoffice\server.aspx.designer.cs">
-      <DependentUpon>server.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticateModule.cs" />
     <Compile Include="Security\AuthorizeHelper.cs" />
@@ -223,13 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="pageoffice\lic\license.lic" />
-    <Content Include="pageoffice\template\file001.doc" />
-    <Content Include="pageoffice\template\file002.xls" />
-    <Content Include="pageoffice\template\file003.ppt" />
-    <Content Include="pageoffice\template\file004.docx" />
-    <Content Include="pageoffice\template\file005.xlsx" />
-    <Content Include="pageoffice\template\file006.pptx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -239,6 +198,7 @@
     </Content>
     <Content Include="Views\Attachment\Doc.cshtml" />
     <Content Include="Views\Attachment\SaveDoc.cshtml" />
+    <Content Include="templates\salary_templates.zip" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
