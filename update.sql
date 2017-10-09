@@ -1,10 +1,27 @@
+-- 2017-10-09
+CREATE TABLE `missive_webservice_log` (
+	`ID` INT(11) NOT NULL,
+	`Uid` VARCHAR(50) NOT NULL,
+	`MissiveId` INT(11) NOT NULL,
+	`Result` BIT(1) NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	`UpdateTime` DATETIME NULL DEFAULT NULL,
+	`Type` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `MissiveId` (`MissiveId`),
+	INDEX `GUID` (`Uid`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
 -- 2017-09-27
 CREATE TABLE `salary` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`UserId` INT(11) NOT NULL,
 	`Year` INT(11) NOT NULL,
 	`Month` INT(11) NOT NULL,
-	`CreateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`CreateTime` DATETIME NOT NULL,
 	`Data` TEXT NOT NULL,
 	PRIMARY KEY (` ID`),
 	INDEX `UserId_Year_Month` (`UserId`, `Year`)

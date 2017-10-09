@@ -70,11 +70,6 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.Type.HasValue)
             {
-                string[] fileExt = null;
-                switch (parameter.Type.Value)
-                {
-
-                }
                 query = query.Where(e => e.FileName.EndsWith(parameter.Type.Value.ToString()));
             }
             query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);

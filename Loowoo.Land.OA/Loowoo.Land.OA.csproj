@@ -82,6 +82,7 @@
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
+    <Compile Include="Models\MissiveWebServiceLog.cs" />
     <Compile Include="Models\Salary.cs" />
     <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\Task\SubTask.cs" />

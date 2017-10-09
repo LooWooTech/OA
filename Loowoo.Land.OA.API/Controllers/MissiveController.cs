@@ -91,13 +91,16 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FlowDataManager.CreateFlowData(data.Info);
             }
             data.ID = data.Info.ID;
+
+            var file = data.Content;
+            data.Content = null;
             Core.MissiveManager.Save(data);
             if (data.ContentId > 0)
             {
-                if (data.Content != null && data.Content.InfoId == 0)
+                if (file != null && file.InfoId == 0)
                 {
-                    data.Content = Core.FileManager.GetModel(data.ContentId);
-                    data.Content.InfoId = data.ID;
+                    file.InfoId = data.ID;
+                    Core.FileManager.Save(file);
                     //添加红头
                     if (data.RedTitleId > 0)
                     {
