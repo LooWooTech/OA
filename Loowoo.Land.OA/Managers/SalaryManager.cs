@@ -1,5 +1,6 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using System;
@@ -22,11 +23,22 @@ namespace Loowoo.Land.OA.Managers
             return DB.Salaries.Where(e => e.UserId == userId).GroupBy(e => e.Year).Select(g => g.Key).ToArray();
         }
 
-        public IEnumerable<Salary> GetList(int year, int userId)
+        public IEnumerable<Salary> GetList(SalaryParameter parameter)
         {
-            var query = DB.Salaries.Where(e => e.Year == year && e.UserId == userId);
-
-            return query.OrderByDescending(e => e.ID);
+            var query = DB.Salaries.AsQueryable();
+            if (parameter.Year > 0)
+            {
+                query = query.Where(e => e.Year == parameter.Year);
+            }
+            if (parameter.Month > 0)
+            {
+                query = query.Where(e => e.Month == parameter.Month);
+            }
+            if (parameter.UserId > 0)
+            {
+                query = query.Where(e => e.UserId == parameter.UserId);
+            }
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         private List<SalaryColumn> GetColumns(string[] names)

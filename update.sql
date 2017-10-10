@@ -1,3 +1,15 @@
+-- 2017-10-10
+ALTER TABLE `missive`
+	ADD COLUMN `NotReport` BIT NOT NULL AFTER `Important`;
+
+ALTER TABLE `missive_webservice_log`
+	ALTER `Result` DROP DEFAULT;
+ALTER TABLE `missive_webservice_log`
+	CHANGE COLUMN `Result` `Result` BIT(1) NULL AFTER `MissiveId`,
+	ADD COLUMN `UserId` INT NOT NULL AFTER `Result`;
+
+RENAME TABLE `missive_webservice_log` TO `missive_service_log`;
+
 -- 2017-10-09
 CREATE TABLE `missive_webservice_log` (
 	`ID` INT(11) NOT NULL,

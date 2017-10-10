@@ -1,5 +1,6 @@
 ﻿using Loowoo.Common;
 using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +23,33 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object List(int year, int userId = 0)
+        public object List(int year, int month = 0, int userId = 0, int page = 1, int rows = 12)
         {
+            var hasViewAllRight = CurrentUser.HasRight("Form.Salary.View");
             if (userId == 0)
             {
-                userId = CurrentUser.ID;
+                if (!hasViewAllRight)
+                {
+                    userId = CurrentUser.ID;
+                    month = 0;
+                }
             }
-            return Core.SalaryManager.GetList(year, userId);
+            else if (userId != CurrentUser.ID)
+            {
+                if (!hasViewAllRight)
+                {
+                    throw new Exception("无法查看他人工资");
+                }
+            }
+            var parameter = new SalaryParameter
+            {
+                Year = year,
+                Month = month,
+                UserId = userId,
+                Page = new PageParameter(page, rows)
+            };
+            var list = Core.SalaryManager.GetList(parameter).Select(e => new Models.SalaryViewModel(e));
+            return new { List = list, Page = parameter.Page };
         }
 
         [HttpPost]
@@ -55,10 +76,16 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有选择Excel文件");
             }
+
             var date = new DateTime(year, month, 1);
             if (date > DateTime.Now)
             {
                 throw new Exception("日期选择不正确");
+            }
+
+            if (!CurrentUser.HasRight("Form.Salary.Edit"))
+            {
+                throw new Exception("没有权限导入工资单");
             }
 
             foreach (var filePath in files.Split(','))

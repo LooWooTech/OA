@@ -156,5 +156,14 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             Core.MissiveManager.SaveRedTitle(model);
         }
+
+        /// <summary>
+        /// 上报到市里OA
+        /// </summary>
+        [HttpGet]
+        public void Report(int id)
+        {
+            Core.MissiveManager.AddMissiveServiceLog(id);
+        }
     }
 }

@@ -67,7 +67,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -82,7 +84,7 @@
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
-    <Compile Include="Models\MissiveWebServiceLog.cs" />
+    <Compile Include="Models\MissiveServiceLog.cs" />
     <Compile Include="Models\Salary.cs" />
     <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\Task\SubTask.cs" />
@@ -169,14 +171,24 @@
     <Compile Include="Parameters\HolidayParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
+    <Compile Include="Parameters\SalaryParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />
     <Compile Include="Parameters\UserParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Managers\App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo\Loowoo.csproj">
@@ -184,7 +196,9 @@
       <Name>Loowoo</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

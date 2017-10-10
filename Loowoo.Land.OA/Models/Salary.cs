@@ -19,6 +19,8 @@ namespace Loowoo.Land.OA.Models
 
         public int UserId { get; set; }
 
+        public virtual User User { get; set; }
+
         public int Year { get; set; }
 
         public int Month { get; set; }

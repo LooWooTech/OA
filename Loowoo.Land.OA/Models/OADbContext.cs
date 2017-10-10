@@ -55,7 +55,7 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Missive> Missives { get; set; }
         public DbSet<MissiveRedTitle> MissiveRedTitles { get; set; }
-        public DbSet<MissiveWebServiceLog> MissiveWebServiceLogs { get; set; }
+        public DbSet<MissiveServiceLog> MissiveServiceLogs { get; set; }
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskTodo> Todos { get; set; }
