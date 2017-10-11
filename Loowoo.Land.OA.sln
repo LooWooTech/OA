@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.Service.SMS"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.Service.Missive", "Loowoo.Land.OA.Service.Missive\Loowoo.Land.OA.Service.Missive.csproj", "{4514435E-C6B5-4395-8711-4E1AB306B795}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loowoo.Land.OA.TaskClient", "Loowoo.Land.OA.TaskClient\Loowoo.Land.OA.TaskClient.csproj", "{508D5EFF-365E-40C1-83B9-634E8D6DC468}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{4514435E-C6B5-4395-8711-4E1AB306B795}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4514435E-C6B5-4395-8711-4E1AB306B795}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4514435E-C6B5-4395-8711-4E1AB306B795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{508D5EFF-365E-40C1-83B9-634E8D6DC468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{508D5EFF-365E-40C1-83B9-634E8D6DC468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{508D5EFF-365E-40C1-83B9-634E8D6DC468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{508D5EFF-365E-40C1-83B9-634E8D6DC468}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
