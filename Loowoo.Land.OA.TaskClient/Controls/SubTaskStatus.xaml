@@ -5,8 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="60">
+             d:DesignHeight="50" d:DesignWidth="80">
     <Grid>
-        <Label x:Name="txtStatus" Content="√" FontSize="36" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF009536" FontWeight="Bold" />
+        <Label Visibility="Hidden" Padding="24,0,0,0" x:Name="ctrDoneStatus" Content="完成" FontSize="20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
+            <Label.Background>
+                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/icon_complete.png" Stretch="None" AlignmentX="Left"/>
+            </Label.Background>
+        </Label>
+        <Label Padding="0,0,0,0" x:Name="ctrDoingStatus" Content="未完成" FontSize="20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
+        </Label>
     </Grid>
 </UserControl>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Loowoo.Land.OA.TaskClient.Models;
 
 namespace Loowoo.Land.OA.TaskClient.Controls
 {
@@ -23,6 +24,12 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public SubTaskStatus()
         {
             InitializeComponent();
+        }
+
+        public void UpdateControl(Models.SubTaskStatus status)
+        {
+            ctrDoingStatus.Visibility = status == Models.SubTaskStatus.Doing ? Visibility.Visible : Visibility.Hidden;
+            ctrDoneStatus.Visibility = status == Models.SubTaskStatus.Complete ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }

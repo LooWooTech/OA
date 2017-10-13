@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Land.OA.TaskClient.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public SubTaskRow()
         {
             InitializeComponent();
+            ctrName.FontSize = Config.FontSize;
+        }
+
+        public SubTaskRow(Models.SubTaskViewModel row) : this()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ctrName.Text = row.Name.Replace("\n", " ");
+                ctrStatus.UpdateControl(row.Status);
+            }));
         }
     }
 }

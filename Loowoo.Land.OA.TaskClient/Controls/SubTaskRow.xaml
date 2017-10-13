@@ -5,16 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="800">
+             d:DesignHeight="120" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="180"/>
             <ColumnDefinition Width="80"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="txtName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" Margin="10"/>
+        <TextBlock x:Name="ctrName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF0F6F4E"/>
         <local:SubTaskStatus x:Name="ctrStatus" Grid.Column="2"/>
-        <Border VerticalAlignment="Bottom" Grid.ColumnSpan="3" Height="1" Style="{DynamicResource BorderStyle1}"/>
-
+        <Border Margin="0,10,10,0" VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
+        <Border Margin="0,10,10,0" Grid.Column="2" VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
     </Grid>
 </UserControl>

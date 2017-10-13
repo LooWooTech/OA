@@ -44,6 +44,8 @@ namespace Loowoo.Land.OA.TaskClient.Models
         public DateTime? UpdateTime { get; set; }
 
         public SubTaskStatus Status { get; set; }
+
+        public List<SubTask> Children { get; set; } = new List<SubTask>();
     }
 
     public enum SubTaskStatus

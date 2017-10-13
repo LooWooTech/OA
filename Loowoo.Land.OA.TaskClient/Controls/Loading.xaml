@@ -8,6 +8,5 @@
              d:DesignHeight="500" d:DesignWidth="1280">
     <Grid>
         <Label x:Name="ctrMessage" Content="加载数据中..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-
     </Grid>
 </UserControl>

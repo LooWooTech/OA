@@ -5,15 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100">
-    <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30*"/>
-                <RowDefinition Height="70*"/>
-            </Grid.RowDefinitions>
-            <Label x:Name="ctrMonth" Content="" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold" Background="#FFEE4242" Foreground="White"/>
-            <Label x:Name="ctrDay" Content="" Grid.Row="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="#FF3A3939" Background="White"/>
-        </Grid>
-    </Border>
+             d:DesignHeight="50" d:DesignWidth="180">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Width="130" Padding="24,0,0,0" x:Name="ctrDate" Content="10月20日" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="24" Foreground="#FF1E559A" >
+            <Label.Background>
+                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/icon_time.png" Stretch="None" AlignmentX="Left"  AlignmentY="Center"/>
+            </Label.Background>
+        </Label>
+    </Grid>
 </UserControl>

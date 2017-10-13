@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
 using Loowoo.Land.OA.Parameters;
 using Newtonsoft.Json.Linq;
@@ -34,25 +35,31 @@ namespace Loowoo.Land.OA.API.Controllers
             var datas = Core.TaskManager.GetList(parameter);
             return new PagingResult
             {
-                List = datas.Select(e => new
-                {
-                    e.ID,
-                    e.Number,
-                    e.Name,
-                    e.ScheduleDate,
-                    e.From,
-                    e.FromType,
-                    e.Goal,
-                    e.Info.FormId,
-                    e.Info.CreateTime,
-                    e.Info.UpdateTime,
-                    e.Info.FlowStep,
-                    e.Info.FlowDataId,
-                    e.Info.Reminded,
-                    Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed
-                }),
+                List = datas.Select(e => new Models.TaskViewModel(e)),
                 Page = parameter.Page
             };
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public object TasksForLED()
+        {
+            var form = Core.FormManager.GetModel(FormType.Task);
+            var parameter = new FormInfoParameter
+            {
+                FormId = form.ID,
+                ExcludeStatus = FlowStatus.Completed,
+            };
+
+            var datas = Core.TaskManager.GetList(parameter);
+            return datas.Select(e => new TaskViewModel(e));
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public object SubTasksForLED(int taskId)
+        {
+            return Core.TaskManager.GetSubTaskList(taskId).Select(e => new SubTaskViewModel(e));
         }
 
         [HttpPost]
@@ -93,42 +100,11 @@ namespace Loowoo.Land.OA.API.Controllers
             });
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public object SubTaskList(int taskId)
         {
-            return Core.TaskManager.GetSubTaskList(taskId).Select(e => new
-            {
-                e.ID,
-                e.CreateTime,
-                e.CreatorId,
-                CreatorName = e.Creator == null ? "" : e.Creator.RealName,
-                e.Status,
-                e.Content,
-                e.UpdateTime,
-                e.ToDepartmentId,
-                e.ToDepartmentName,
-                e.ToUserId,
-                ToUserName = e.ToUser == null ? "" : e.ToUser.RealName,
-                e.TaskId,
-                e.ScheduleDate,
-                e.ParentId,
-                e.IsMaster,
-                e.LeaderId,
-                LeaderName = e.Leader == null ? "" : e.Leader.RealName,
-                Todos = e.Todos.Select(t => new
-                {
-                    t.ID,
-                    t.CreatorId,
-                    t.CreateTime,
-                    t.ScheduleDate,
-                    t.ToUserId,
-                    ToUserName = t.ToUser == null ? "" : t.ToUser.RealName,
-                    t.SubTaskId,
-                    t.UpdateTime,
-                    t.Completed,
-                    t.Content,
-                })
-            });
+            return Core.TaskManager.GetSubTaskList(taskId).Select(e => new SubTaskViewModel(e));
         }
 
         [HttpPost]

@@ -11,6 +11,8 @@ namespace Loowoo.Land.OA.Models
     {
         public FlowStatus? Status { get; set; }
 
+        public FlowStatus? ExcludeStatus { get; set; }
+
         public int UserId { get; set; }
 
         public bool? Completed { get; set; }

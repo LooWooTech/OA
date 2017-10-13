@@ -47,6 +47,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Status == parameter.Status.Value);
             }
+            if (parameter.ExcludeStatus.HasValue)
+            {
+                query = query.Where(e => e.Status != parameter.ExcludeStatus.Value);
+            }
             if (parameter.BeginTime.HasValue)
             {
                 query = query.Where(e => e.Info.CreateTime >= parameter.BeginTime.Value);

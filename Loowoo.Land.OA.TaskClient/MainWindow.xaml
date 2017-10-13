@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient"
         xmlns:Controls="clr-namespace:Loowoo.Land.OA.TaskClient.Controls" x:Class="Loowoo.Land.OA.TaskClient.MainWindow"
         mc:Ignorable="d"
-        Title="任务单" Height="576" Width="1280">
+        Title="任务单" Height="576" Width="1280" WindowStyle="None" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="76"/>
+            <RowDefinition Height="86"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Controls:TaskTable Grid.RowSpan="2" />
-        <Controls:Loading Background="#FFFFFFFF" Grid.Row="1" />
+        <Controls:TaskTable Grid.RowSpan="2" x:Name="ctrTaskTable" />
     </Grid>
 </Window>

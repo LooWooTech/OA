@@ -24,5 +24,10 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         {
             InitializeComponent();
         }
+
+        public void UpdateControl(string value)
+        {
+            ctrDate.Content = value;
+        }
     }
 }
