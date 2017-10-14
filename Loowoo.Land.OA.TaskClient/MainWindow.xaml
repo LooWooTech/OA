@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient"
         xmlns:Controls="clr-namespace:Loowoo.Land.OA.TaskClient.Controls" x:Class="Loowoo.Land.OA.TaskClient.MainWindow"
         mc:Ignorable="d"
-        Title="任务单" Height="576" Width="1280" WindowStyle="None" ResizeMode="NoResize">
+        Title="任务单" Height="576" Width="1280" WindowStyle="None" ResizeMode="NoResize" FontFamily="Microsoft YaHei">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="86"/>

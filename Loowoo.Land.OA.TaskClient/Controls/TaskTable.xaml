@@ -50,8 +50,10 @@
             </Label>
         </Border>
         <Border Grid.Row="1" Grid.Column="4" Background="#FFF8F3"></Border>
-        <Grid Grid.Row="1" Grid.ColumnSpan="5" x:Name="ctrTaskList">
+        <Grid Grid.Row="1" Grid.ColumnSpan="5" x:Name="container_task">
         </Grid>
         <local:Loading x:Name="ctrLoading" Grid.Row="1" Grid.ColumnSpan="5"  Visibility="Hidden" />
+        <Grid Grid.Row="1" Name="container_date"></Grid>
+        <Grid Grid.Row="1" Grid.Column="3" Name="container_department"></Grid>
     </Grid>
 </UserControl>

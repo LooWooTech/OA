@@ -35,18 +35,56 @@ namespace Loowoo.Land.OA.TaskClient.Controls
             {
                 Model = model;
                 ctrTaskName.Content = "项目内容：" + model.TaskName.Replace("\n", " ");
-                ctrTaskList.Children.Clear();
-
+                container_task.Children.Clear();
+                container_date.Children.Clear();
+                container_department.Children.Clear();
                 var marginTop = 0;
+                CompleteDate prevDateControl = null;
+                TaskDepartment prevDepartment = null;
                 foreach (var row in model.Rows)
                 {
-                    ctrTaskList.Children.Add(new TaskTableRow(row)
+                    //添加任务列表
+                    container_task.Children.Add(new TaskTableRow(row)
                     {
                         VerticalAlignment = VerticalAlignment.Top,
                         Height = row.RowsHeight * Config.RowHeight,
                         Margin = new Thickness(0, marginTop, 0, 0)
                     });
+                    //添加日期列表，如果日期重复，则合并
+                    var newDateControl = new CompleteDate(row.ScheduleDate)
+                    {
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Height = row.RowsHeight * Config.RowHeight,
+                        Margin = new Thickness(0, marginTop, 0, 0)
+                    };
+                    if (prevDateControl != null && newDateControl.ctrDate.Content.ToString() == prevDateControl.ctrDate.Content.ToString())
+                    {
+                        prevDateControl.Height += newDateControl.Height;
+                    }
+                    else
+                    {
+                        prevDateControl = newDateControl;
+                        container_date.Children.Add(newDateControl);
+                    }
+                    //添加部门列表，如果重复则合并
+                    var newDepartment = new TaskDepartment(row.Department)
+                    {
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Height = row.RowsHeight * Config.RowHeight,
+                        Margin = new Thickness(0, marginTop, 0, 0)
+                    };
+                    if (prevDepartment != null && newDepartment.ctrName.Text == prevDepartment.ctrName.Text)
+                    {
+                        prevDepartment.Height += newDepartment.Height;
+                    }
+                    else
+                    {
+                        prevDepartment = newDepartment;
+                        container_department.Children.Add(newDepartment);
+                    }
+
                     marginTop += row.RowsHeight * Config.RowHeight;
+
                 }
             }));
         }
@@ -54,12 +92,12 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public void Play()
         {
             ctrLoading.Visibility = Visibility.Hidden;
-            ctrTaskList.Opacity = 100;
+            container_task.Opacity = 100;
         }
 
         public void Stop()
         {
-            ctrTaskList.Opacity = 0;
+            container_task.Opacity = 0;
         }
 
         public async System.Threading.Tasks.Task Await(int seconds)

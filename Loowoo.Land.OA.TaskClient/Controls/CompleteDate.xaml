@@ -18,5 +18,6 @@
                 <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/icon_time.png" Stretch="None" AlignmentX="Left"  AlignmentY="Center"/>
             </Label.Background>
         </Label>
+        <Border Grid.Column="0" Height="1" Margin="10,0,10,0" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
     </Grid>
 </UserControl>

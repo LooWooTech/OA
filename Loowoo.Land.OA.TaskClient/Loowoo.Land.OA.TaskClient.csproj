@@ -73,6 +73,9 @@
     <Compile Include="Controls\SubTaskStatus.xaml.cs">
       <DependentUpon>SubTaskStatus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TaskDepartment.xaml.cs">
+      <DependentUpon>TaskDepartment.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TaskTable.xaml.cs">
       <DependentUpon>TaskTable.xaml</DependentUpon>
     </Compile>
@@ -93,6 +96,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SubTaskStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TaskDepartment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

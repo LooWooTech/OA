@@ -17,19 +17,19 @@ using System.Windows.Shapes;
 namespace Loowoo.Land.OA.TaskClient.Controls
 {
     /// <summary>
-    /// Interaction logic for CompleteDate.xaml
+    /// Interaction logic for TaskDepartment.xaml
     /// </summary>
-    public partial class CompleteDate : UserControl
+    public partial class TaskDepartment : UserControl
     {
-        public CompleteDate()
+        public TaskDepartment()
         {
             InitializeComponent();
-            ctrDate.FontSize = Config.FontSize;
+            ctrName.FontSize = Config.FontSize;
         }
 
-        public CompleteDate(DateTime? date) : this()
+        public TaskDepartment(string name):this()
         {
-            ctrDate.Content = date.HasValue ? date.Value.ToString("M月d日") : "待定";
+            ctrName.Text = name;
         }
     }
 }
