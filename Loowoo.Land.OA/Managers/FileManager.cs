@@ -31,6 +31,11 @@ namespace Loowoo.Land.OA.Managers
             return DB.Files.FirstOrDefault(e => e.ID == id);
         }
 
+        public File GetModel(int infoId,string fileName)
+        {
+            return DB.Files.FirstOrDefault(e => e.InfoId == infoId && e.FileName == fileName);
+        }
+
         public void Delete(int id)
         {
             var entity = DB.Files.FirstOrDefault(e => e.ID == id);

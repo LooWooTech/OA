@@ -95,6 +95,11 @@ namespace Loowoo.Land.OA.Models
         /// 是否不需要上报到市局OA
         /// </summary>
         public bool NotReport { get; set; }
+
+        /// <summary>
+        /// 文件摘要
+        /// </summary>
+        public string WJ_ZY { get; set; }
     }
 
     /// <summary>

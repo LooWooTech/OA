@@ -22,7 +22,7 @@ namespace Loowoo.Land.OA.Service.Missive
             {
                 foreach (var file in files)
                 {
-                    result = client.wj_fj(newId, file.FileName, $"uploadFile\\{newId}\\{file.FileName}", file.Inline ? "zw" : "fj");
+                    result = client.wj_fj(newId, file.FileName, $"uploadFile\\{newId}\\{file.SaveName}", file.Inline ? "zw" : "fj");
                     if (result == "true")
                     {
                         using (var fs = System.IO.File.OpenRead(file.PhysicalPath))

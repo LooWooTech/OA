@@ -76,5 +76,10 @@ namespace Loowoo.Land.OA.Managers
                 DB.SaveChanges();
             }
         }
+
+        public FormInfo GetModelByUid(string fromXxid)
+        {
+            return DB.FormInfos.FirstOrDefault(e => e.Uid == fromXxid);
+        }
     }
 }

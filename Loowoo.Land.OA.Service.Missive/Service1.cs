@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.Service.Missive
             InitializeComponent();
         }
 
-        private MissiveReceiveService _service = new MissiveReceiveService();
+        private MissiveSendService _service = new MissiveSendService();
 
         protected override void OnStart(string[] args)
         {

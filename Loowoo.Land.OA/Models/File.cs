@@ -40,6 +40,15 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
+        [NotMapped]
+        public string SaveName
+        {
+            get
+            {
+                return SavePath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
+            }
+        }
+
         public string SavePath { get; set; }
         /// <summary>
         /// 最小单位
@@ -138,6 +147,39 @@ namespace Loowoo.Land.OA.Models
                 Size = file.ContentLength,
                 SavePath = fileName
             };
+        }
+
+        public static File Upload(byte[] data, string fileName, string saveName = null)
+        {
+            var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            if (string.IsNullOrEmpty(saveName))
+            {
+                var fileExt = System.IO.Path.GetExtension(fileName);
+                saveName = DateTime.Now.Ticks + data.Length + fileExt;
+            }
+
+            var savePath = GetPhysicalSavePath(saveName);
+
+            System.IO.File.WriteAllBytes(saveName, data);
+            return new File
+            {
+                FileName = fileName,
+                Size = data.Length,
+                SavePath = fileName
+            };
+        }
+
+        public static int Append(byte[] data, string saveName)
+        {
+            var savePath = GetPhysicalSavePath(saveName);
+            var oldData = System.IO.File.ReadAllBytes(savePath);
+            var newData = oldData.Concat(data).ToArray();
+            System.IO.File.WriteAllBytes(savePath, newData);
+            return newData.Length;
         }
 
         #region content types

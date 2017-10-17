@@ -77,6 +77,8 @@ namespace Loowoo.Land.OA.Models
         }
 
         public string Title { get; set; }
+
+        public string Uid { get; set; }
     }
 
 }

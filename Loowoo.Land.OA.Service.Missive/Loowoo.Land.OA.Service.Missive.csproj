@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JSWJWebService.cs" />
-    <Compile Include="MissiveReceiveService.cs" />
+    <Compile Include="MissiveSendService.cs" />
     <Compile Include="IMissiveWebService.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Service.Missive
 {
-    public class MissiveReceiveService
+    public class MissiveSendService
     {
         private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
         private IMissiveWebService _service;

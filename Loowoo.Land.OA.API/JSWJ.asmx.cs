@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Land.OA.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +17,7 @@ namespace Loowoo.Land.OA.API
     // [System.Web.Script.Services.ScriptService]
     public class JSWJ : System.Web.Services.WebService
     {
+        private readonly Managers.ManagerCore Core = Managers.ManagerCore.Instance;
 
         [WebMethod]
         public string HelloWorld()
@@ -44,7 +46,7 @@ namespace Loowoo.Land.OA.API
         /// <param name="fromWebServicePath">来源地址，String值，填写外部OA自己的地址</param>
         /// <returns></returns>
         [WebMethod]
-        public bool  js_wj2(
+        public bool js_wj2(
                     string id,
                     string mmjb,
                     string jjcd,
@@ -62,8 +64,37 @@ namespace Loowoo.Land.OA.API
                     string fromXxid,
                     string fromWebServicePath)
         {
+            var info = Core.FormInfoManager.GetModelByUid(fromXxid);
+            if (info == null)
+            {
+                var form = Core.FormManager.GetModel(FormType.ReceiveMissive);
+                info = new FormInfo
+                {
+                    Title = bt,
+                    CreateTime = string.IsNullOrEmpty(qsrq) ? DateTime.Now : DateTime.Parse(qsrq),
+                    FormId = form.ID,
+                    Uid = fromXxid
+                };
+                Core.FormInfoManager.Save(info);
+            }
+            if (info.FlowDataId == 0)
+            {
+                Core.FlowDataManager.CreateFlowData(info);
+            }
 
-            throw new NotImplementedException();
+            //TODO 关于推送用户，姓名是否一致
+            var missive = new Missive
+            {
+                WJ_MJ = mmjb == "普件" || string.IsNullOrEmpty(mmjb) ? WJMJ.Normal : WJMJ.Secret,
+                JJ_DJ = jjcd == "普件" || string.IsNullOrEmpty(jjcd) ? JJDJ.Normal : JJDJ.Fast,
+                WJ_ZH = lwbh,
+                WJ_BT = bt,
+                WJ_LY = lwdw,
+                ZTC = ztc,
+                WJ_ZY = zy,
+            };
+            Core.MissiveManager.Save(missive);
+            return true;
         }
 
         /// <summary>
@@ -76,9 +107,19 @@ namespace Loowoo.Land.OA.API
         /// </param>
         /// <param name="lytype">附件类型，String值，填写值“zw”或者“fj”，代表正文或者附件，通常正文只有一个</param>
         /// <returns></returns>
+        [WebMethod]
         public bool wj_fj(string ftableid, string fjmc, string fjpath, string lytype)
         {
-            throw new NotImplementedException();
+            var info = Core.FormInfoManager.GetModelByUid(ftableid);
+            var file = new File
+            {
+                FileName = fjmc,
+                InfoId = info.ID,
+                SavePath = fjpath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? fjmc,
+                Inline = lytype == "zw" ? true : false
+            };
+            Core.FileManager.Save(file);
+            return true;
         }
 
         /// <summary>
@@ -88,14 +129,43 @@ namespace Loowoo.Land.OA.API
         /// <param name="fjmc">文件名称，String值，需要与js_wjfj方法里面的文件名称对应</param>
         /// <param name="newid">唯一识别值，String值，36位GUID值，与js_wjfj里面的ftableid一致</param>
         /// <returns></returns>
+        [WebMethod]
         public bool getFile(byte[] file, string fjmc, string newid)
         {
-            throw new NotImplementedException();
+            var info = Core.FormInfoManager.GetModelByUid(newid);
+            var model = Core.FileManager.GetModel(info.ID, fjmc);
+            if (model != null)
+            {
+                var data = File.Upload(file, fjmc, model.SavePath);
+                model.Size = file.Length;
+                Core.FileManager.Save(model);
+                return true;
+            }
+            return false;
         }
 
-        public bool getFile_DWJ(byte[] file, string fjmc, string newid,bool ifCreate)
+        /// <summary>
+        /// 发送文件方法（传输文件）
+        /// </summary>
+        /// <param name="file">文件数据，字节数组，需要将文件以流的方式转换为字节数组进行发送</param>
+        /// <param name="fjmc">文件名称，String值，需要与js_wjfj方法里面的文件名称对应</param>
+        /// <param name="newid">唯一识别值，String值，36位GUID值，与js_wjfj里面的ftableid一致</param>
+        /// <param name="ifCreate">判断追加还是新建，string值，填写true表示新建，填写false表示追加</param>
+        /// <returns></returns>
+        [WebMethod]
+        public bool getFile_DWJ(byte[] file, string fjmc, string newid, bool ifCreate = true)
         {
-            throw new NotImplementedException();
+            if (ifCreate) return getFile(file, fjmc, newid);
+
+            var info = Core.FormInfoManager.GetModelByUid(newid);
+            var model = Core.FileManager.GetModel(info.ID, fjmc);
+            if (model != null)
+            {
+                model.Size = File.Append(file, model.SavePath);
+                Core.FileManager.Save(model);
+                return true;
+            }
+            return false;
         }
     }
 }
