@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Loowoo.Land.OA.Managers;
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace Loowoo.Land.OA.Service.Attendance
 {
     public class AttendanceService
     {
-        private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
         private bool _stop = false;
         private int _recountTimes = 0;
         private Thread _worker;
@@ -44,7 +44,8 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         private async System.Threading.Tasks.Task Dowork()
         {
-            var time = Core.AttendanceManager.GetAttendanceTime();
+            var manager = new AttendanceManager();
+            var time = manager.GetAttendanceTime();
             if (time.IsCheckTime(DateTime.Now, 3))
             {
                 _recountTimes = 0;
@@ -119,8 +120,9 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         private async Task<int> CheckLogs(DateTime beginTime, DateTime endTime)
         {
+            var manager = new AttendanceManager();
             //根据当前时间 遍历打卡记录
-            var logs = Core.AttendanceManager.GetLogs(new Parameters.CheckInOutParameter
+            var logs = manager.GetLogs(new Parameters.CheckInOutParameter
             {
                 BeginTime = beginTime,
                 EndTime = endTime,
@@ -133,7 +135,7 @@ namespace Loowoo.Land.OA.Service.Attendance
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
                 log.ApiContent = data.ToJson();
-                Core.AttendanceManager.SaveApiResult(log);
+                manager.SaveApiResult(log);
                 LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");
             }
             return logs.Count();

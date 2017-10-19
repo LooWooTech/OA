@@ -24,7 +24,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public TaskDepartment()
         {
             InitializeComponent();
-            ctrName.FontSize = Config.FontSize;
+            ctrName.FontSize = Config.FontSize > Config.MaxFontSize ? Config.MaxFontSize : Config.FontSize;
         }
 
         public TaskDepartment(string name):this()

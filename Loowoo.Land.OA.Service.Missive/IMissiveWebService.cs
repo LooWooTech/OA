@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Service.Missive
 {
-    interface IMissiveWebService
+    public interface IMissiveWebService
     {
         bool Report(MissiveServiceLog log);
     }

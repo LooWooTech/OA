@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.Managers
         protected ManagerCore Core { get { return ManagerCore.Instance; } }
 
         private OADbContext _db;
-        protected OADbContext DB
+        protected virtual OADbContext DB
         {
             get
             {

@@ -41,20 +41,20 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                 var marginTop = 0;
                 CompleteDate prevDateControl = null;
                 TaskDepartment prevDepartment = null;
-                foreach (var row in model.Rows)
+                foreach (var row in model.Children)
                 {
                     //添加任务列表
                     container_task.Children.Add(new TaskTableRow(row)
                     {
                         VerticalAlignment = VerticalAlignment.Top,
-                        Height = row.RowsHeight * Config.RowHeight,
+                        Height = row.Rows * Config.RowHeight,
                         Margin = new Thickness(0, marginTop, 0, 0)
                     });
                     //添加日期列表，如果日期重复，则合并
                     var newDateControl = new CompleteDate(row.ScheduleDate)
                     {
                         VerticalAlignment = VerticalAlignment.Top,
-                        Height = row.RowsHeight * Config.RowHeight,
+                        Height = row.Rows * Config.RowHeight,
                         Margin = new Thickness(0, marginTop, 0, 0)
                     };
                     if (prevDateControl != null && newDateControl.ctrDate.Content.ToString() == prevDateControl.ctrDate.Content.ToString())
@@ -70,7 +70,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                     var newDepartment = new TaskDepartment(row.Department)
                     {
                         VerticalAlignment = VerticalAlignment.Top,
-                        Height = row.RowsHeight * Config.RowHeight,
+                        Height = row.Rows * Config.RowHeight,
                         Margin = new Thickness(0, marginTop, 0, 0)
                     };
                     if (prevDepartment != null && newDepartment.ctrName.Text == prevDepartment.ctrName.Text)
@@ -83,7 +83,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                         container_department.Children.Add(newDepartment);
                     }
 
-                    marginTop += row.RowsHeight * Config.RowHeight;
+                    marginTop += row.Rows * Config.RowHeight;
 
                 }
             }));

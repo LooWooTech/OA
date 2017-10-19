@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="150">
     <Grid>
-        <TextBlock x:Name="ctrName" Text="" TextWrapping="NoWrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF717E0F"/>
-        <Border Height="1" Margin="10,0,10,0" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
+        <TextBlock x:Name="ctrName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF717E0F"/>
+        <Border Height="1" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
     </Grid>
 </UserControl>

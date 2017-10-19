@@ -6,21 +6,22 @@
              xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="1280">
-    <Grid>
+    <Grid x:Name="container">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="280"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="16*"/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="ctrMasterTaskName" Text="" Grid.Column="1" TextWrapping="NoWrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF0F6F4E"/>
+        <TextBlock x:Name="ctrMasterTaskName" TextWrapping="Wrap" Text="" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF0F6F4E"/>
         <local:SubTaskList x:Name="ctrTaskList" Grid.Column="2" Grid.ColumnSpan="3"/>
-        <Border Grid.Column="1" Height="1" Margin="10,0,10,0" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
-        <Border Grid.Column="4" Height="1" Margin="10,0,10,0" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
+        <Border Grid.Column="1" Width="1" Visibility="Hidden"  HorizontalAlignment="Right" Style="{DynamicResource BorderStyle1}" />
+        <Border Grid.Column="1" Height="1"  VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
+        <Border Grid.Column="4" Height="1"  VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
 
     </Grid>
 </UserControl>

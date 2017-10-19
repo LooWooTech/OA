@@ -29,6 +29,10 @@ namespace Loowoo.Land.OA.TaskClient.Controls
 
         public SubTaskRow(Models.SubTaskViewModel row) : this()
         {
+            if (string.IsNullOrEmpty(row.Name))
+            {
+                container.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Pixel);
+            }
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 ctrName.Text = row.Name.Replace("\n", " ");

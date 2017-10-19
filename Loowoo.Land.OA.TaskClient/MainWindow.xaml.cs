@@ -66,6 +66,7 @@ namespace Loowoo.Land.OA.TaskClient
                     var models = BuildTaskViewModels(task, subTasks);
                     foreach (var item in models)
                     {
+                        if (item.Children.Count == 0) continue;
                         ctrTaskTable.UpdateModel(item);
                         ctrTaskTable.Play();
                         await ctrTaskTable.Await(Config.PlaySeconds);
@@ -106,18 +107,31 @@ namespace Loowoo.Land.OA.TaskClient
                     };
                     if (totalRows + childViewModel.Rows > Config.MaxRows)
                     {
-                        break;
+                        taskViewModel.Children.Add(masterViewModel);
+
+                        masterViewModel = new MasterTaskViewModel
+                        {
+                            ID = master.ID,
+                            ScheduleDate = master.ScheduleDate,
+                            TaskName = master.Content,
+                            Department = master.ToDepartmentName,
+                        };
+                        masterViewModel.Children.Add(childViewModel);
+
+                        totalRows = masterViewModel.Rows;
+                        taskViewModel = new TaskViewModel { TaskName = task.Name };
+                        list.Add(taskViewModel);
                     }
                     else
                     {
-                        masterViewModel.Rows.Add(childViewModel);
+                        masterViewModel.Children.Add(childViewModel);
                         totalRows += childViewModel.Rows;
                     }
                 }
 
-                if (masterViewModel.Rows.Count > 0)
+                if (masterViewModel.Children.Count > 0)
                 {
-                    taskViewModel.Rows.Add(masterViewModel);
+                    taskViewModel.Children.Add(masterViewModel);
                 }
                 if (totalRows >= Config.MaxRows)
                 {

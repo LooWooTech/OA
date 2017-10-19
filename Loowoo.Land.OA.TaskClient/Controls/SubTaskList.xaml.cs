@@ -26,18 +26,29 @@ namespace Loowoo.Land.OA.TaskClient.Controls
             InitializeComponent();
         }
 
-        public void UpdateControl(List<SubTaskViewModel> rows)
+        public void UpdateControl(MasterTaskViewModel master)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 container.Children.Clear();
                 var i = 0;
-                foreach (var row in rows)
+                var totalRows = 0;
+                foreach (var child in master.Children)
                 {
-                    container.Children.Add(new SubTaskRow(row)
+                    var isLast = i == master.Children.Count - 1;
+                    var height = child.Rows * Config.RowHeight;
+                    if (isLast)
+                    {
+                        if (totalRows + child.Rows < master.Rows)
+                        {
+                            height = (master.Rows - totalRows) * Config.RowHeight;
+                        }
+                    }
+                    totalRows += child.Rows;
+                    container.Children.Add(new SubTaskRow(child)
                     {
                         VerticalAlignment = VerticalAlignment.Top,
-                        Height = row.Rows * Config.RowHeight,
+                        Height = height,
                         Margin = new Thickness(0, Config.RowHeight * i, 0, 0)
                     });
                     i++;

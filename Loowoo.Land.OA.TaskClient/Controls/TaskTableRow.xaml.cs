@@ -24,7 +24,6 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public TaskTableRow()
         {
             InitializeComponent();
-            ctrTaskList.FontSize = Config.FontSize;
             ctrMasterTaskName.FontSize = Config.FontSize;
         }
 
@@ -38,12 +37,19 @@ namespace Loowoo.Land.OA.TaskClient.Controls
 
         private void UpdateControl()
         {
-            if (Model.RowsHeight > 1)
+            if (Model.Children.Count == 0)
             {
-                ctrMasterTaskName.TextWrapping = TextWrapping.WrapWithOverflow;
+                container.ColumnDefinitions[1].Width = new GridLength(26, GridUnitType.Star);
+                container.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
+            }
+            else if (Model.Children.Count == 1 && Model.Children[0].Name == Model.TaskName)
+            {
+                Model.Children[0].Name = "";
+                container.ColumnDefinitions[1].Width = new GridLength(26, GridUnitType.Star);
+                container.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
             }
             ctrMasterTaskName.Text = Model.TaskName.Replace("\n"," ");
-            ctrTaskList.UpdateControl(Model.Rows);
+            ctrTaskList.UpdateControl(Model);
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public SubTaskStatus()
         {
             InitializeComponent();
+            ctrDoingStatus.FontSize = ctrDoneStatus.FontSize = Config.FontSize > Config.MaxFontSize ? Config.MaxFontSize : Config.FontSize;
         }
 
         public void UpdateControl(Models.SubTaskStatus status)

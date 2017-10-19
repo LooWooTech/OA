@@ -13,11 +13,11 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Label Width="130" Padding="24,0,0,0" x:Name="ctrDate" Content="10月20日" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="24" Foreground="#FF1E559A" >
+        <Label Width="130" Padding="23,0,0,0" x:Name="ctrDate" Content="10月20" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" FontSize="24" Foreground="#FF1E559A" >
             <Label.Background>
                 <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/icon_time.png" Stretch="None" AlignmentX="Left"  AlignmentY="Center"/>
             </Label.Background>
         </Label>
-        <Border Grid.Column="0" Height="1" Margin="10,0,10,0" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
+        <Border Grid.Column="0" Height="1" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
     </Grid>
 </UserControl>

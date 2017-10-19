@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient">
     <Style x:Key="BorderStyle1" TargetType="{x:Type Border}">
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="#1FACACAC" />
+        <Setter Property="BorderBrush" Value="#55000000" />
     </Style>
 
 </ResourceDictionary>
