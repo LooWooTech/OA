@@ -59,7 +59,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Info.FlowStep,
                     e.Info.FlowDataId,
                     e.Info.PostUserId,
-                    e.Important
+                    e.Important,
+                    Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed,
+                    e.Info.Uid,
                 }),
                 Page = parameter.Page
             };
@@ -163,7 +165,13 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public void Report(int id)
         {
-            Core.MissiveManager.AddMissiveServiceLog(id);
+            var info = Core.FormInfoManager.GetModel(id);
+            if (info.Form.FormType == FormType.SendMissive
+                && info.FlowData.Completed
+                )
+            {
+                Core.MissiveManager.AddMissiveServiceLog(id);
+            }
         }
     }
 }

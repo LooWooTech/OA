@@ -5,14 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="80">
+             d:DesignHeight="100" d:DesignWidth="100">
     <Grid>
-        <Label Visibility="Hidden" Padding="24,0,0,0" x:Name="ctrDoneStatus" Content="完成" FontSize="20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
+        <Label x:Name="ctrDoingStatus" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
             <Label.Background>
-                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/icon_complete.png" Stretch="None" AlignmentX="Left"/>
+                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/doing.png" Stretch="None" AlignmentX="Center"/>
             </Label.Background>
         </Label>
-        <Label Padding="0,0,0,0" x:Name="ctrDoingStatus" Content="未完成" FontSize="20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
+        <Label x:Name="ctrDoneStatus" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FF9B6336" >
+            <Label.Background>
+                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/done.png" Stretch="None" AlignmentX="Center"/>
+            </Label.Background>
         </Label>
     </Grid>
 </UserControl>

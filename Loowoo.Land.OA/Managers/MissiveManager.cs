@@ -102,12 +102,13 @@ namespace Loowoo.Land.OA.Managers
             {
                 log = new MissiveServiceLog
                 {
+                    Uid = Guid.NewGuid().ToString(),
                     MissiveId = id,
                     Type = formType,
                 };
-
                 DB.MissiveServiceLogs.Add(log);
             }
+            missive.Info.Uid = log.Uid;
             DB.SaveChanges();
         }
 

@@ -177,5 +177,12 @@
       <Name>Loowoo</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\date_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\doing.png" />
+    <Resource Include="Images\done.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

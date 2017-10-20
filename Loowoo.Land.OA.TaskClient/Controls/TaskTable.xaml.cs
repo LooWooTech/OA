@@ -57,7 +57,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                         Height = row.Rows * Config.RowHeight,
                         Margin = new Thickness(0, marginTop, 0, 0)
                     };
-                    if (prevDateControl != null && newDateControl.ctrDate.Content.ToString() == prevDateControl.ctrDate.Content.ToString())
+                    if (prevDateControl != null && newDateControl.Date == prevDateControl.Date)
                     {
                         prevDateControl.Height += newDateControl.Height;
                     }
@@ -112,6 +112,11 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         {
             ctrLoading.ctrMessage.Content = msg;
             ctrLoading.Visibility = Visibility.Visible;
+        }
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }

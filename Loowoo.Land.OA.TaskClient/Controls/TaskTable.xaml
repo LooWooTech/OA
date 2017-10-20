@@ -19,7 +19,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Border Background="#FF5284C2">
-            <Label Content="计划完成时间" Margin="0" Padding="10" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="24" Foreground="White">
+            <Label Content="计划完成时间" Margin="0" Padding="10" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="24" Foreground="White" MouseDoubleClick="Label_MouseDoubleClick">
                 <Label.Background>
                     <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/columnbg1.png" Stretch="None" AlignmentX="Left" AlignmentY="Bottom"/>
                 </Label.Background>

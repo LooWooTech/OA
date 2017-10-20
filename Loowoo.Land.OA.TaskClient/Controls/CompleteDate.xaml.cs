@@ -24,12 +24,15 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         public CompleteDate()
         {
             InitializeComponent();
-            ctrDate.FontSize = Config.FontSize > Config.MaxFontSize ? Config.MaxFontSize : Config.FontSize;
         }
+
+        public DateTime? Date { get; set; }
 
         public CompleteDate(DateTime? date) : this()
         {
-            ctrDate.Content = date.HasValue ? date.Value.ToString("M月d") : "待定";
+            Date = date;
+            ctrMonth.Content = date.HasValue ? date.Value.Month + "月" : "-";
+            ctrDay.Content = date.HasValue ? date.Value.Day.ToString() : "待定";
         }
     }
 }

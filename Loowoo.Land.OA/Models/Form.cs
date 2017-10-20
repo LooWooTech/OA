@@ -23,18 +23,7 @@ namespace Loowoo.Land.OA.Models
         public string EName { get; set; }
 
         [NotMapped]
-        public FormType FormType
-        {
-            get
-            {
-                FormType type;
-                if (Enum.TryParse(EName, true, out type))
-                {
-                    return type;
-                }
-                return 0;
-            }
-        }
+        public FormType FormType => (FormType)ID;
 
         public int FLowId { get; set; }
     }
