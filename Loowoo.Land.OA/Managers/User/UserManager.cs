@@ -22,6 +22,11 @@ namespace Loowoo.Land.OA.Managers
             }
             return model;
         }
+        public User GetModel(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            return DB.Users.FirstOrDefault(e => e.Username == name || e.RealName == name);
+        }
 
         public User GetModel(int id)
         {

@@ -12,7 +12,7 @@ namespace Loowoo.Land.OA.Service.Missive
         private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
         private IMissiveWebService _service;
         private Thread _worker;
-        private bool _stop = true;
+        private bool _stop = false;
 
         public void Start()
         {

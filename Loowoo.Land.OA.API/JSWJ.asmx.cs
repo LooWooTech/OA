@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,15 +65,23 @@ namespace Loowoo.Land.OA.API
                     string fromXxid,
                     string fromWebServicePath)
         {
+
             var info = Core.FormInfoManager.GetModelByUid(fromXxid);
             if (info == null)
             {
                 var form = Core.FormManager.GetModel(FormType.ReceiveMissive);
+                var poster = Core.UserManager.GetModel(cjrid);
+                var posterId = poster == null ? 0 : poster.ID;
+                if (posterId == 0)
+                {
+                    int.TryParse(System.Configuration.ConfigurationManager.AppSettings["DefaultMissivePosterId"], out posterId);
+                }
                 info = new FormInfo
                 {
                     Title = bt,
                     CreateTime = string.IsNullOrEmpty(qsrq) ? DateTime.Now : DateTime.Parse(qsrq),
                     FormId = form.ID,
+                    PostUserId = posterId,
                     Uid = fromXxid
                 };
                 Core.FormInfoManager.Save(info);
@@ -82,7 +91,6 @@ namespace Loowoo.Land.OA.API
                 Core.FlowDataManager.CreateFlowData(info);
             }
 
-            //TODO 关于推送用户，姓名是否一致
             var missive = new Missive
             {
                 WJ_MJ = mmjb == "普件" || string.IsNullOrEmpty(mmjb) ? WJMJ.Normal : WJMJ.Secret,
@@ -136,10 +144,18 @@ namespace Loowoo.Land.OA.API
             var model = Core.FileManager.GetModel(info.ID, fjmc);
             if (model != null)
             {
-                var data = File.Upload(file, fjmc, model.SavePath);
-                model.Size = file.Length;
-                Core.FileManager.Save(model);
-                return true;
+                try
+                {
+                    var data = File.Upload(file, fjmc, model.SavePath);
+                    model.Size = file.Length;
+                    Core.FileManager.Save(model);
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n");
+                }
             }
             return false;
         }
@@ -161,9 +177,16 @@ namespace Loowoo.Land.OA.API
             var model = Core.FileManager.GetModel(info.ID, fjmc);
             if (model != null)
             {
-                model.Size = File.Append(file, model.SavePath);
-                Core.FileManager.Save(model);
-                return true;
+                try
+                {
+                    model.Size = File.Append(file, model.SavePath);
+                    Core.FileManager.Save(model);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n");
+                }
             }
             return false;
         }

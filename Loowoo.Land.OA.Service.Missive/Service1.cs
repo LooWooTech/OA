@@ -19,6 +19,11 @@ namespace Loowoo.Land.OA.Service.Missive
 
         private MissiveSendService _service = new MissiveSendService();
 
+        public void Start()
+        {
+            OnStart(null);
+        }
+
         protected override void OnStart(string[] args)
         {
             _service.Start();

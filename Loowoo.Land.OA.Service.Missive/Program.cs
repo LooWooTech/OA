@@ -14,12 +14,12 @@ namespace Loowoo.Land.OA.Service.Missive
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+#if DEBUG
+            new Service1().Start();
+            Console.Read();
+#else
+            ServiceBase.Run(new[] { new Service1() });
+#endif
         }
     }
 }
