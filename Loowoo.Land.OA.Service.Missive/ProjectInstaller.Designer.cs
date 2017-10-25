@@ -28,31 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
-            this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
+            this.OAMissiveProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
+            this.OAMissiveService = new System.ServiceProcess.ServiceInstaller();
             // 
-            // serviceProcessInstaller1
+            // OAMissiveProcessInstaller
             // 
-            this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.NetworkService;
-            this.serviceProcessInstaller1.Password = null;
-            this.serviceProcessInstaller1.Username = null;
+            this.OAMissiveProcessInstaller.Account = System.ServiceProcess.ServiceAccount.NetworkService;
+            this.OAMissiveProcessInstaller.Password = null;
+            this.OAMissiveProcessInstaller.Username = null;
             // 
-            // serviceInstaller1
+            // OAMissiveService
             // 
-            this.serviceInstaller1.DisplayName = "OA公文收发服务";
-            this.serviceInstaller1.ServiceName = "Service1";
+            this.OAMissiveService.DisplayName = "OA公文收发服务";
+            this.OAMissiveService.ServiceName = "OAMissiveService";
             // 
             // ProjectInstaller
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
-            this.serviceProcessInstaller1,
-            this.serviceInstaller1});
+            this.OAMissiveProcessInstaller,
+            this.OAMissiveService});
 
         }
 
         #endregion
 
-        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
-        private System.ServiceProcess.ServiceInstaller serviceInstaller1;
+        private System.ServiceProcess.ServiceProcessInstaller OAMissiveProcessInstaller;
+        private System.ServiceProcess.ServiceInstaller OAMissiveService;
     }
 }

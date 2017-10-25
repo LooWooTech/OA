@@ -16,23 +16,24 @@ namespace Loowoo.Land.OA.Service.Missive
         {
             var model = Core.MissiveManager.GetModel(log.MissiveId);
             var files = Core.FileManager.GetList(new Parameters.FileParameter { InfoId = log.MissiveId });
-            var newId = Guid.NewGuid().ToString();
 
             var result = "false";
             using (var client = new WebReference.JSWJ())
             {
                 foreach (var file in files)
                 {
-                    result = client.wj_fj(newId, file.FileName, $"uploadFile\\{newId}\\{file.SaveName}", file.Inline ? "zw" : "fj");
+                    result = client.wj_fj(log.Uid, file.FileName, $"uploadFile\\{log.Uid}\\{file.FileName}", file.Inline ? "zw" : "fj");
                     if (result == "true")
                     {
                         try
                         {
-                            using (var fs = System.IO.File.OpenRead(file.PhysicalPath))
+                            var uploadDir = AppSettings.Get("UploadDir");
+                            var filePath = System.IO.Path.Combine(uploadDir, file.SavePath);
+                            using (var fs = System.IO.File.OpenRead(filePath))
                             {
                                 var fileData = new byte[fs.Length];
                                 fs.Read(fileData, 0, fileData.Length);
-                                client.getFile(fileData, file.FileName, newId);
+                                client.getFile(fileData, file.FileName, log.Uid);
                             }
                         }
                         catch (Exception ex)
@@ -42,7 +43,7 @@ namespace Loowoo.Land.OA.Service.Missive
                     }
                 }
 
-                result = client.js_wj2(newId,
+                result = client.js_wj2(log.Uid,
                     mmjb: model.WJ_MJ == WJMJ.Normal ? "普件" : "保密",
                     jjcd: model.JJ_DJ == JJDJ.Normal ? "普件" : "紧急",
                     lwbh: model.WJ_ZH,

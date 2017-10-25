@@ -123,7 +123,7 @@ namespace Loowoo.Land.OA.API
             {
                 FileName = fjmc,
                 InfoId = info.ID,
-                SavePath = fjpath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? fjmc,
+                SavePath = DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(fjmc),
                 Inline = lytype == "zw" ? true : false
             };
             Core.FileManager.Save(file);
