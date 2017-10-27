@@ -16,8 +16,22 @@ namespace Loowoo.Land.OA.Service.Attendance
         private bool _stop = false;
         private int _recountTimes = 0;
         private Thread _worker;
+        private AttendanceManager AttendanceManager = new AttendanceManager();
+        private List<AttendanceTime> _times;
+        private List<AttendanceGroup> _groups;
+        private Dictionary<int, AttendanceGroup> _userGroups;
+
+        private DateTime _minAMBeginTime;
+        private DateTime _minPMBeginTime;
+
         public void Start()
         {
+            _groups = AttendanceManager.GetAttendanceGroups();
+            _times = _groups.Select(e => new AttendanceTime(e)).ToList();
+            var defaultGroup = _groups.FirstOrDefault(e => e.Default);
+            _userGroups = AttendanceManager.GetUserGroups().ToDictionary(e => e.Key, e => e.Value == 0 ? defaultGroup : _groups.FirstOrDefault(g => g.ID == e.Value));
+            _minAMBeginTime = _times.Min(e => e.AMBeginTime);
+            _minPMBeginTime = _times.Min(e => e.PMBeginTime);
             _worker = new Thread(async () =>
             {
                 while (!_stop)
@@ -44,12 +58,10 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         private async System.Threading.Tasks.Task Dowork()
         {
-            var manager = new AttendanceManager();
-            var time = manager.GetAttendanceTime();
-            if (time.IsCheckTime(DateTime.Now, 3))
+            if (_times.Any(e => e.IsCheckTime(DateTime.Now, 3)))
             {
                 _recountTimes = 0;
-                var count = await Execute(time);
+                var count = await Execute();
                 if (count == 0)
                 {
                     //如果是上班时间，则调用次数比较快
@@ -64,20 +76,20 @@ namespace Loowoo.Land.OA.Service.Attendance
             {
                 if (_recountTimes < 3)
                 {
-                    var count = await CheckLogs(DateTime.Today, DateTime.Now);
+                    var count = await CheckLogs();
                     _recountTimes++;
                 }
                 //非打卡时间，每隔1小时，计算一次考勤情况
                 var now = DateTime.Now;
                 //如果还没到上午打卡时间
                 var ts = new TimeSpan(0, 1, 0);
-                if (now < time.AMBeginTime)
+                if (now < _minAMBeginTime)
                 {
-                    ts = time.AMBeginTime - now;
+                    ts = _minAMBeginTime - now;
                 }
-                else if (now < time.PMBeginTime)
+                else if (now < _minPMBeginTime)
                 {
-                    ts = time.PMBeginTime - now;
+                    ts = _minPMBeginTime - now;
                 }
 
                 var sleepLong = 60;
@@ -102,30 +114,18 @@ namespace Loowoo.Land.OA.Service.Attendance
             }
         }
 
-        private async Task<int> Execute(AttendanceTime time)
+        private async Task<int> Execute()
         {
-            if (DateTime.Now >= time.AMBeginTime && DateTime.Now <= time.AMEndTime)
-            {
-                return await CheckLogs(time.AMBeginTime, time.PMEndTime);
-            }
-            else if (DateTime.Now >= time.PMBeginTime && DateTime.Now <= time.PMEndTime)
-            {
-                return await CheckLogs(time.PMBeginTime, time.PMEndTime);
-            }
-            else
-            {
-                return await CheckLogs(DateTime.Today, DateTime.Now);
-            }
+            return await CheckLogs();
         }
 
-        private async Task<int> CheckLogs(DateTime beginTime, DateTime endTime)
+        private async Task<int> CheckLogs()
         {
-            var manager = new AttendanceManager();
             //根据当前时间 遍历打卡记录
-            var logs = manager.GetLogs(new Parameters.CheckInOutParameter
+            var logs = AttendanceManager.GetLogs(new Parameters.CheckInOutParameter
             {
-                BeginTime = beginTime,
-                EndTime = endTime,
+                BeginTime = DateTime.Today,
+                EndTime = DateTime.Now,
                 HasChecked = false,
             });
             foreach (var log in logs)
@@ -135,17 +135,29 @@ namespace Loowoo.Land.OA.Service.Attendance
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
                 log.ApiContent = data.ToJson();
-                manager.SaveApiResult(log);
+                AttendanceManager.SaveApiResult(log);
                 LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");
             }
             return logs.Count();
         }
 
+        private string GetApiHost(int userId)
+        {
+            if (_userGroups.ContainsKey(userId))
+            {
+                return _userGroups[userId].API;
+            }
+            var group = _groups.FirstOrDefault(e => e.Default) ?? _groups.FirstOrDefault();
+
+            return group?.API;
+        }
+
         private HttpClient _client = new HttpClient();
-        private string _apiUrl = AppSettings.Get("ApiUrl");
+        private string _apiUrlFormat = AppSettings.Get("ApiUrl");
         public async Task<string> InvokeApiAsync(CheckInOut log)
         {
-            var url = _apiUrl.Replace("{username}", log.User.RealName).Replace("{tel}", log.User.Mobile);
+            var host = GetApiHost(log.UserId);
+            var url = _apiUrlFormat.Replace("{host}", host).Replace("{username}", log.User.RealName).Replace("{tel}", log.User.Mobile);
             return await _client.GetStringAsync(url);
         }
     }

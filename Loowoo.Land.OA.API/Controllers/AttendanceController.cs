@@ -68,7 +68,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     OfficialLeave = leaves.Count(e => e.Category == (int)LeaveType.Official),
                     PersonalLeave = leaves.Count(e => e.Category == (int)LeaveType.Personal)
                 },
-                time = Core.AttendanceManager.GetAttendanceTime()
+                time = new AttendanceTime(Core.AttendanceManager.GetAttendanceGroup(CurrentUser.ID))
             };
         }
 
@@ -197,6 +197,18 @@ namespace Loowoo.Land.OA.API.Controllers
                 });
             }
             Core.FormInfoExtend1Manager.Save(model);
+        }
+
+        [HttpGet]
+        public IEnumerable<AttendanceGroup> Groups()
+        {
+            return Core.AttendanceManager.GetAttendanceGroups();
+        }
+
+        [HttpPost]
+        public void SaveGroup(AttendanceGroup data)
+        {
+            Core.AttendanceManager.SaveGroup(data);
         }
     }
 }

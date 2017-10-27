@@ -51,6 +51,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Holiday> Holidays { get; set; }
 
         public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<AttendanceGroup> AttendanceGroups { get; set; }
         public DbSet<CheckInOut> CheckInOuts { get; set; }
 
         public DbSet<Missive> Missives { get; set; }

@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="JSWJ.asmx" />
+    <Content Include="WebService\JSWJ\JSWJ.asmx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -183,7 +183,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="JSWJ.asmx.cs">
+    <Compile Include="WebService\JSWJ\JSWJ.asmx.cs">
       <DependentUpon>JSWJ.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>

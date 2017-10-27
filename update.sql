@@ -1,3 +1,24 @@
+-- 2017-10-26
+CREATE TABLE `attendance_group` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Default` BIT(1) NOT NULL,
+	`Name` VARCHAR(50) NOT NULL,
+	`AMBeginTime` VARCHAR(50) NULL DEFAULT NULL,
+	`AMEndTime` VARCHAR(50) NULL DEFAULT NULL,
+	`PMBeginTime` VARCHAR(50) NULL DEFAULT NULL,
+	`PMEndTime` VARCHAR(50) NULL DEFAULT NULL,
+	`API` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+ALTER TABLE `user`
+	ADD COLUMN `AttendanceGroupId` INT(11) NOT NULL DEFAULT '0' AFTER `Mobile`;
+
+INSERT INTO `oa`.`attendance_group` (`Default`, `Name`,`AMBeginTime`, `AMEndTime`, `PMBeginTime`, `PMEndTime`, `API`) VALUES (b'1', 'д╛хо','05:30','08:40','17:20','22:00','zs.pingshikaohe.com');
+
 -- 2017-10-20
 ALTER TABLE `missive_service_log`
 	CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT FIRST;

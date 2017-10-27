@@ -51,6 +51,8 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public string Token { get; set; }
 
+        public int AttendanceGroupId { get; set; }
+
         public int Sort { get; set; }
 
         public bool Deleted { get; set; }

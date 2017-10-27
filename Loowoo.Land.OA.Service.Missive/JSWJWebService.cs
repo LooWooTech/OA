@@ -15,8 +15,8 @@ namespace Loowoo.Land.OA.Service.Missive
         public bool Report(MissiveServiceLog log)
         {
             var model = Core.MissiveManager.GetModel(log.MissiveId);
+            log.Uid = Guid.NewGuid().ToString();
             var files = Core.FileManager.GetList(new Parameters.FileParameter { InfoId = log.MissiveId });
-
             var result = "false";
             using (var client = new WebReference.JSWJ())
             {
