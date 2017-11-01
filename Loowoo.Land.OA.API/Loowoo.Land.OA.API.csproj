@@ -155,6 +155,7 @@
     <Compile Include="App_Start\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Controllers\ConfigController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\SalaryController.cs" />
     <Compile Include="Controllers\SealController.cs" />
     <Compile Include="Controllers\MeetingRoomController.cs" />

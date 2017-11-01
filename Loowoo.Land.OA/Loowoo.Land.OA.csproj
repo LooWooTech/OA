@@ -85,6 +85,7 @@
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
     <Compile Include="Models\Attendance\AttendanceGroup.cs" />
+    <Compile Include="Models\Mail.cs" />
     <Compile Include="Models\MissiveServiceLog.cs" />
     <Compile Include="Models\Salary.cs" />
     <Compile Include="Models\Sms.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Parameters\FileParameter.cs" />
     <Compile Include="Parameters\FormInfoParameter.cs" />
     <Compile Include="Parameters\HolidayParameter.cs" />
+    <Compile Include="Parameters\MessageParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
     <Compile Include="Parameters\SalaryParameter.cs" />

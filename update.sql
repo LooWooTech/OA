@@ -1,3 +1,60 @@
+-- 2017-10-30
+CREATE TABLE `message` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`CreateTime` DATE NOT NULL,
+	`Content` VARCHAR(255) NULL DEFAULT NULL,
+	`FeedId` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `FeedId` (`FeedId`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `message_user` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`MessageId` INT(11) NOT NULL,
+	`FromUserId` INT(11) NOT NULL,
+	`ToUserId` INT(11) NOT NULL,
+	`HasRead` BIT(1) NOT NULL,
+	`Deleted` BIT(1) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `MessageId` (`MessageId`),
+	INDEX `FromUserId` (`FromUserId`),
+	INDEX `ToUserId` (`ToUserId`)
+)
+ENGINE=InnoDB
+;
+
+CREATE TABLE `mail` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Subject` VARCHAR(50) NOT NULL,
+	`Content` TEXT NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `mail_user` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`MailId` INT(11) NOT NULL,
+	`FromUserId` INT(11) NOT NULL,
+	`ToUserId` INT(11) NOT NULL,
+	`CC` BIT(1) NOT NULL,
+	`HasRead` BIT(1) NOT NULL,
+	`Deleted` BIT(1) NOT NULL,
+	`Star` BIT(1) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `MailId` (`MailId`),
+	INDEX `FromUserId` (`FromUserId`),
+	INDEX `ToUserId` (`ToUserId`)
+)
+ENGINE=InnoDB
+;
+
+
 -- 2017-10-26
 CREATE TABLE `attendance_group` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,20 +22,28 @@ namespace Loowoo.Land.OA.Service.Missive
                 while (!_stop)
                 {
                     //查找需要上报的公文，需要上报的公文是需要
-                    var log = Core.MissiveManager.GetLastNeedReportMissiveServiceLog();
-                    if (log == null)
+                    try
                     {
-                        Thread.Sleep(1000 * 60);
-                    }
-                    if (_service == null)
-                    {
-                        _service = WebServiceManager.GetInstance();
-                    }
+                        var log = Core.MissiveManager.GetLastNeedReportMissiveServiceLog();
+                        if (log == null)
+                        {
+                            Thread.Sleep(1000 * 60);
+                            continue;
+                        }
+                        if (_service == null)
+                        {
+                            _service = WebServiceManager.GetInstance();
+                        }
 
-                    var result = _service.Report(log);
-                    var msg = $"[{DateTime.Now}]\t {log.MissiveId}上报{(result ? "成功" : "失败")}\r\n";
-                    Console.Write(msg);
-                    Common.LogWriter.Instance.WriteLog(msg);
+                        var result = _service.Report(log);
+                        var msg = $"[{DateTime.Now}]\t {log.MissiveId}上报{(result ? "成功" : "失败")}\r\n";
+                        Console.Write(msg);
+                        LogWriter.Instance.WriteLog(msg);
+                    }
+                    catch(Exception ex)
+                    {
+                        LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n{ex.ToJson()}");
+                    }
                 }
             });
             _worker.Start();

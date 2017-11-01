@@ -47,6 +47,10 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<UserMessage> UserMessages { get; set; }
+        public DbSet<Mail> Mails { get; set; }
+        public DbSet<UserMail> UserMails { get; set; }
+
         public DbSet<Subscription> SubScriptions { get; set; }
         public DbSet<Holiday> Holidays { get; set; }
 
