@@ -22,8 +22,8 @@ namespace Loowoo.Land.OA.API.Controllers
             var info = Core.FormInfoManager.GetModel(infoId);
 
             var title = info.Title;
-            var content = $"您有待处理的{info.Form.FormType.GetDescription()}：{info.Title}，请及时处理。";
-            
+            var content = $"您有待处理的{info.Form.FormType.GetDescription()}：{info.Title}，请及时处理。发送人：" + CurrentUser.RealName;
+
             //10个号码为一批
             var pageSize = 10;
             for (var i = 0; i < userIds.Length / pageSize + 1; i++)

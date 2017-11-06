@@ -15,15 +15,14 @@ namespace Loowoo.Land.OA.Service.Attendance
     public class AttendanceService
     {
         private bool _stop = false;
-        private int _recountTimes = 0;
         private Thread _worker;
         private AttendanceManager AttendanceManager = new AttendanceManager();
         private List<AttendanceTime> _times;
         private List<AttendanceGroup> _groups;
         private Dictionary<int, AttendanceGroup> _userGroups;
 
-        private DateTime _minAMBeginTime;
-        private DateTime _minPMBeginTime;
+        private DateTime _minBeginTime;
+        private DateTime _maxEndTime;
 
         public void Start()
         {
@@ -31,8 +30,8 @@ namespace Loowoo.Land.OA.Service.Attendance
             _times = _groups.Select(e => new AttendanceTime(e)).ToList();
             var defaultGroup = _groups.FirstOrDefault(e => e.Default);
             _userGroups = AttendanceManager.GetUserGroups().ToDictionary(e => e.Key, e => e.Value == 0 ? defaultGroup : _groups.FirstOrDefault(g => g.ID == e.Value));
-            _minAMBeginTime = _times.Min(e => e.AMBeginTime);
-            _minPMBeginTime = _times.Min(e => e.PMBeginTime);
+            _minBeginTime = _times.Min(e => e.AMBeginTime);
+            _maxEndTime = _times.Min(e => e.PMBeginTime);
             _worker = new Thread(() =>
             {
                 while (!_stop)
@@ -59,63 +58,23 @@ namespace Loowoo.Land.OA.Service.Attendance
 
         private void Dowork()
         {
-            if (_times.Any(e => e.IsCheckTime(DateTime.Now, 3)))
+            var count = CheckLogs();
+            if (count == 0)
             {
-                _recountTimes = 0;
-                var count = Execute();
-                if (count == 0)
+                if (_times.Any(t => t.IsCheckTime(DateTime.Now, 10)))
                 {
-                    //如果是上班时间，则调用次数比较快
                     Thread.Sleep(500);
                 }
                 else
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(1000 * 60);
                 }
             }
             else
             {
-                if (_recountTimes < 3)
-                {
-                    var count = CheckLogs();
-                    _recountTimes++;
-                }
-                //非打卡时间，每隔1小时，计算一次考勤情况
-                var now = DateTime.Now;
-                //如果还没到上午打卡时间
-                var ts = new TimeSpan(0, 1, 0);
-                if (now < _minAMBeginTime)
-                {
-                    ts = _minAMBeginTime - now;
-                }
-                else if (now < _minPMBeginTime)
-                {
-                    ts = _minPMBeginTime - now;
-                }
-
-                var sleepLong = 60;
-                if (ts.TotalHours > 1)
-                {
-                    sleepLong = 60 * 60;
-                }
-                else if (ts.TotalMinutes > 1)
-                {
-                    sleepLong = 60;
-                }
-                else
-                {
-                    sleepLong = 1;
-                }
-
-                if (sleepLong > 60)
-                {
-                    LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t未到打卡时间，休息{sleepLong / 60}分钟\r\n");
-                }
-                Thread.Sleep(1000 * sleepLong);
+                Thread.Sleep(1);
             }
         }
-
-        private int Execute() => CheckLogs();
 
         private int CheckLogs()
         {

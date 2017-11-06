@@ -73,9 +73,33 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public void CheckInOut()
+        public IHttpActionResult CheckInOut()
         {
-            Core.AttendanceManager.AddCheckInOut(CurrentUser.ID);
+            var log = Core.AttendanceManager.AddCheckInOut(CurrentUser.ID);
+            try
+            {
+                var userGroup = Core.AttendanceManager.GetAttendanceGroup(CurrentUser.ID);
+
+                var url = AppSettings.Get("AttendanceApiUrl").Replace("{host}", userGroup.API).Replace("{username}", CurrentUser.RealName).Replace("{tel}", CurrentUser.Mobile);
+                using (var client = new WebClient())
+                {
+                    client.Encoding = System.Text.Encoding.UTF8;
+                    var json = client.DownloadString(url);
+                    var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                    log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
+                    log.ApiContent = data.ToJson();
+                    Core.AttendanceManager.SaveApiResult(log);
+                    if (log.ApiResult == false)
+                    {
+                        return Ok("打卡完成，同步失败："+ data["msg"]);
+                    }
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok($"打卡完成，同步失败：" + ex.Message);
+            }
         }
 
         [HttpGet]

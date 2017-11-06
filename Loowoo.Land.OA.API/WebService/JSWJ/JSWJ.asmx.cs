@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.API
         [WebMethod]
         public string HelloWorld()
         {
-            return "Hello World";
+            return "Hello World" + File.GetPhysicalSavePath("test.doc");
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Loowoo.Land.OA.API
         /// <param name="fromWebServicePath">来源地址，String值，填写外部OA自己的地址</param>
         /// <returns></returns>
         [WebMethod]
-        public bool js_wj2(
+        public string js_wj2(
                     string id,
                     string mmjb,
                     string jjcd,
@@ -65,44 +65,52 @@ namespace Loowoo.Land.OA.API
                     string fromXxid,
                     string fromWebServicePath)
         {
-
-            var info = Core.FormInfoManager.GetModelByUid(fromXxid);
-            if (info == null)
+            try
             {
-                var form = Core.FormManager.GetModel(FormType.ReceiveMissive);
-                var poster = Core.UserManager.GetModel(cjrid);
-                var posterId = poster == null ? 0 : poster.ID;
-                if (posterId == 0)
+                var info = Core.FormInfoManager.GetModelByUid(id);
+                if (info == null)
                 {
-                    int.TryParse(System.Configuration.ConfigurationManager.AppSettings["DefaultMissivePosterId"], out posterId);
+                    var form = Core.FormManager.GetModel(FormType.ReceiveMissive);
+                    var poster = Core.UserManager.GetModel(cjrid);
+                    var posterId = poster == null ? 0 : poster.ID;
+                    if (posterId == 0)
+                    {
+                        int.TryParse(System.Configuration.ConfigurationManager.AppSettings["DefaultReceivePosterId"], out posterId);
+                    }
+                    info = new FormInfo
+                    {
+                        Title = bt,
+                        CreateTime = string.IsNullOrEmpty(qsrq) ? DateTime.Now : DateTime.Parse(qsrq),
+                        FormId = form.ID,
+                        PostUserId = posterId,
+                        Uid = id
+                    };
+                    Core.FormInfoManager.Save(info);
                 }
-                info = new FormInfo
+                if (info.FlowDataId == 0)
                 {
-                    Title = bt,
-                    CreateTime = string.IsNullOrEmpty(qsrq) ? DateTime.Now : DateTime.Parse(qsrq),
-                    FormId = form.ID,
-                    PostUserId = posterId,
-                    Uid = fromXxid
-                };
-                Core.FormInfoManager.Save(info);
-            }
-            if (info.FlowDataId == 0)
-            {
-                Core.FlowDataManager.CreateFlowData(info);
-            }
+                    Core.FlowDataManager.CreateFlowData(info);
+                }
 
-            var missive = new Missive
+                var missive = new Missive
+                {
+                    ID = info.ID,
+                    WJ_MJ = mmjb == "普件" || string.IsNullOrEmpty(mmjb) ? WJMJ.Normal : WJMJ.Secret,
+                    JJ_DJ = jjcd == "普件" || string.IsNullOrEmpty(jjcd) ? JJDJ.Normal : JJDJ.Fast,
+                    WJ_ZH = lwbh,
+                    WJ_BT = bt,
+                    WJ_LY = lwdw,
+                    ZTC = ztc,
+                    WJ_ZY = zy,
+                };
+                Core.MissiveManager.Save(missive);
+                return "true";
+            }
+            catch (Exception ex)
             {
-                WJ_MJ = mmjb == "普件" || string.IsNullOrEmpty(mmjb) ? WJMJ.Normal : WJMJ.Secret,
-                JJ_DJ = jjcd == "普件" || string.IsNullOrEmpty(jjcd) ? JJDJ.Normal : JJDJ.Fast,
-                WJ_ZH = lwbh,
-                WJ_BT = bt,
-                WJ_LY = lwdw,
-                ZTC = ztc,
-                WJ_ZY = zy,
-            };
-            Core.MissiveManager.Save(missive);
-            return true;
+                LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n{ex.ToJson()}");
+                return "false";
+            }
         }
 
         /// <summary>
@@ -116,18 +124,34 @@ namespace Loowoo.Land.OA.API
         /// <param name="lytype">附件类型，String值，填写值“zw”或者“fj”，代表正文或者附件，通常正文只有一个</param>
         /// <returns></returns>
         [WebMethod]
-        public bool wj_fj(string ftableid, string fjmc, string fjpath, string lytype)
+        public string wj_fj(string ftableid, string fjmc, string fjpath, string lytype)
         {
-            var info = Core.FormInfoManager.GetModelByUid(ftableid);
-            var file = new File
+            try
             {
-                FileName = fjmc,
-                InfoId = info.ID,
-                SavePath = DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(fjmc),
-                Inline = lytype == "zw" ? true : false
-            };
-            Core.FileManager.Save(file);
-            return true;
+                var info = Core.FormInfoManager.GetModelByUid(ftableid);
+                if (info == null)
+                {
+                    throw new Exception("ftableid不正确，未找到该公文");
+                }
+                var file = new File
+                {
+                    FileName = fjmc,
+                    InfoId = info.ID,
+                    SavePath = DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(fjmc),
+                    Inline = lytype == "zw" ? true : false
+                };
+                Core.FileManager.Save(file);
+
+                var missive = Core.MissiveManager.GetModel(info.ID);
+                missive.ContentId = file.ID;
+                Core.MissiveManager.Save(missive);
+                return "true";
+            }
+            catch (Exception ex)
+            {
+                LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n{ex.ToJson()}");
+                return "false";
+            }
         }
 
         /// <summary>
@@ -138,26 +162,30 @@ namespace Loowoo.Land.OA.API
         /// <param name="newid">唯一识别值，String值，36位GUID值，与js_wjfj里面的ftableid一致</param>
         /// <returns></returns>
         [WebMethod]
-        public bool getFile(byte[] file, string fjmc, string newid)
+        public string getFile(byte[] file, string fjmc, string newid)
         {
-            var info = Core.FormInfoManager.GetModelByUid(newid);
-            var model = Core.FileManager.GetModel(info.ID, fjmc);
-            if (model != null)
+            try
             {
-                try
+                var info = Core.FormInfoManager.GetModelByUid(newid);
+                if (info == null)
+                {
+                    throw new Exception("newid，未找到该公文");
+                }
+                var model = Core.FileManager.GetModel(info.ID, fjmc);
+                if (model != null)
                 {
                     var data = File.Upload(file, fjmc, model.SavePath);
                     model.Size = file.Length;
                     Core.FileManager.Save(model);
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n");
+                    return "true";
                 }
             }
-            return false;
+            catch (Exception ex)
+            {
+                LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n");
+            }
+            return "false";
         }
 
         /// <summary>
@@ -169,7 +197,7 @@ namespace Loowoo.Land.OA.API
         /// <param name="ifCreate">判断追加还是新建，string值，填写true表示新建，填写false表示追加</param>
         /// <returns></returns>
         [WebMethod]
-        public bool getFile_DWJ(byte[] file, string fjmc, string newid, bool ifCreate = true)
+        public string getFile_DWJ(byte[] file, string fjmc, string newid, bool ifCreate = true)
         {
             if (ifCreate) return getFile(file, fjmc, newid);
 
@@ -181,14 +209,14 @@ namespace Loowoo.Land.OA.API
                 {
                     model.Size = File.Append(file, model.SavePath);
                     Core.FileManager.Save(model);
-                    return true;
+                    return "true";
                 }
                 catch (Exception ex)
                 {
                     LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n");
                 }
             }
-            return false;
+            return "false";
         }
     }
 }

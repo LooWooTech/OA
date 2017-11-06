@@ -119,10 +119,21 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
+        private static string CreateUploadDir()
+        {
+            var dir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _uploadDir);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            return dir;
+        }
+
         public static string GetPhysicalSavePath(string fileName)
         {
+            var dir = CreateUploadDir();
             if (string.IsNullOrEmpty(fileName)) return null;
-            return System.IO.Path.Combine(Environment.CurrentDirectory, GetAbsolutelyPath(fileName));
+            return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _uploadDir, fileName);
         }
 
         public static string GetAbsolutelyPath(string fileName)
@@ -133,14 +144,11 @@ namespace Loowoo.Land.OA.Models
 
         public static File Upload(HttpPostedFile file)
         {
-            var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
-            if (!System.IO.Directory.Exists(dir))
-            {
-                System.IO.Directory.CreateDirectory(dir);
-            }
             var fileExt = System.IO.Path.GetExtension(file.FileName);
             var fileName = DateTime.Now.Ticks + file.ContentLength + fileExt;
-            file.SaveAs(GetPhysicalSavePath(fileName));
+
+            var savePath = GetPhysicalSavePath(fileName);
+            file.SaveAs(savePath);
             return new File
             {
                 FileName = file.FileName,
@@ -151,11 +159,6 @@ namespace Loowoo.Land.OA.Models
 
         public static File Upload(byte[] data, string fileName, string saveName = null)
         {
-            var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
-            if (!System.IO.Directory.Exists(dir))
-            {
-                System.IO.Directory.CreateDirectory(dir);
-            }
             if (string.IsNullOrEmpty(saveName))
             {
                 var fileExt = System.IO.Path.GetExtension(fileName);
@@ -169,7 +172,7 @@ namespace Loowoo.Land.OA.Models
             {
                 FileName = fileName,
                 Size = data.Length,
-                SavePath = fileName
+                SavePath = saveName
             };
         }
 

@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Managers
         /// <summary>
         /// 添加打卡记录
         /// </summary>
-        public void AddCheckInOut(int userId)
+        public CheckInOut AddCheckInOut(int userId)
         {
             var time = new AttendanceTime(GetAttendanceGroup(userId));
             if (!time.IsCheckTime(DateTime.Now))
@@ -25,6 +25,7 @@ namespace Loowoo.Land.OA.Managers
             DB.CheckInOuts.Add(model);
             DB.SaveChanges();
             UpdateAttendance(model.UserId, time, model.CreateTime.Date);
+            return model;
         }
 
         public List<AttendanceGroup> GetAttendanceGroups()
