@@ -59,8 +59,9 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("你已经申请过该会议室，还未通过审核");
             }
+
             var info = Core.MeetingRoomManager.Apply(data);
-            Core.FeedManager.Save(new Feed
+            var feed = new Feed
             {
                 Action = UserAction.Apply,
                 Title = info.Title,
@@ -68,7 +69,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
-            });
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpDelete]

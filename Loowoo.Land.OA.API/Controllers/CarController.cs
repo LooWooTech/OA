@@ -60,7 +60,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("你已经申请过该车辆，还未通过审核");
             }
             Core.CarManager.Apply(data);
-            Core.FeedManager.Save(new Feed
+
+            var feed = new Feed
             {
                 Action = UserAction.Apply,
                 Title = "申请用车：" + car.Name + "（" + car.Number + "）",
@@ -68,7 +69,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
-            });
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpDelete]

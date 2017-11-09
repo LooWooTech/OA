@@ -11,12 +11,6 @@ namespace Loowoo.Land.OA.API.Controllers
     public class MessageController : ControllerBase
     {
         [HttpGet]
-        public object Count()
-        {
-            return Core.MessageManager.GetUnreadCount(CurrentUser.ID);
-        }
-
-        [HttpGet]
         public object List(bool? hasRead = false, int action = 0, int page = 1, int rows = 20)
         {
             var parameter = new MessageParameter
@@ -33,12 +27,16 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = list.Select(e => new
                 {
                     e.ID,
+                    e.Message.InfoId,
                     e.Message.Content,
-                    e.FromId,
+                    e.Message.CreateTime,
+                    e.FromUserId,
                     FromUser = e.FromUser == null ? null : e.FromUser.RealName,
                     e.ToUserId,
                     ToUser = e.ToUser == null ? null : e.ToUser.RealName,
 
+                    FormId = e.Message.Info == null ? 0 : e.Message.Info.FormId,
+                    Title = e.Message.Info == null ? null : e.Message.Info.Title,
                 }),
                 Page = parameter.Page
             };

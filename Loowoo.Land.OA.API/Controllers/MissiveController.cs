@@ -112,14 +112,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 }
             }
 
-            Core.FeedManager.Save(new Feed
+            var feed = new Feed
             {
                 InfoId = data.ID,
                 Title = data.WJ_BT,
                 Description = data.ZTC,
                 FromUserId = CurrentUser.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
-            });
+            };
+            Core.FeedManager.Save(feed);
         }
 
         [HttpGet]

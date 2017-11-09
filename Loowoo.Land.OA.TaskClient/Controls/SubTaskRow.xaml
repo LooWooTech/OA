@@ -14,6 +14,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="ctrName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF0F6F4E"/>
         <local:SubTaskStatus x:Name="ctrStatus" Grid.Column="2"/>
+        <Border Width="1" HorizontalAlignment="Left"  Style="{DynamicResource BorderStyle1}"/>
         <Border VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
         <Border Grid.Column="2" VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
     </Grid>

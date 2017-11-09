@@ -109,7 +109,8 @@ namespace Loowoo.Land.OA.API.Controllers
                         Status = FlowStatus.Doing,
                         UserId = nextNodedata.UserId,
                     });
-                    Core.FeedManager.Save(new Feed
+
+                    var feed = new Feed
                     {
                         InfoId = info.ID,
                         Action = UserAction.Submit,
@@ -118,7 +119,9 @@ namespace Loowoo.Land.OA.API.Controllers
                         Type = FeedType.Flow,
                         Title = info.Title,
                         Description = currentNodeData.Content
-                    });
+                    };
+                    Core.FeedManager.Save(feed);
+                    Core.MessageManager.Add(feed);
                 }
                 else
                 {
@@ -126,7 +129,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     var userIds = Core.UserFormInfoManager.GetUserIds(infoId);
                     foreach (var uid in userIds)
                     {
-                        Core.FeedManager.Save(new Feed
+                        var feed = new Feed
                         {
                             InfoId = info.ID,
                             Action = UserAction.Submit,
@@ -135,8 +138,10 @@ namespace Loowoo.Land.OA.API.Controllers
                             Type = FeedType.Flow,
                             Title = info.Title,
                             Description = currentNodeData.Content
-                        });
+                        };
+                        Core.FeedManager.Save(feed);
                     }
+                    Core.MessageManager.Add(new Message { Content = info.Title, InfoId = info.ID }, currentNodeData.UserId, userIds);
                 }
             }
             else
@@ -152,7 +157,8 @@ namespace Loowoo.Land.OA.API.Controllers
                         UserId = backNodeData.UserId,
                         Status = FlowStatus.Back,
                     });
-                    Core.FeedManager.Save(new Feed
+
+                    var feed = new Feed
                     {
                         Action = UserAction.Submit,
                         Type = FeedType.Flow,
@@ -160,7 +166,9 @@ namespace Loowoo.Land.OA.API.Controllers
                         FromUserId = CurrentUser.ID,
                         ToUserId = backNodeData.UserId,
                         Title = "[退回流程]" + info.Title,
-                    });
+                    };
+                    Core.FeedManager.Save(feed);
+                    Core.MessageManager.Add(feed);
                 }
                 else
                 {

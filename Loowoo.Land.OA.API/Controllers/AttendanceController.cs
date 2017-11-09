@@ -148,7 +148,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             data.UserId = CurrentUser.ID;
             var info = Core.AttendanceManager.Apply(data);
-            Core.FeedManager.Save(new Feed
+            var feed = new Feed
             {
                 InfoId = info.ID,
                 Action = UserAction.Apply,
@@ -156,7 +156,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
                 FromUserId = CurrentUser.ID,
-            });
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpGet]
@@ -191,7 +193,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     Status = FlowStatus.Doing,
                     UserId = toUserId
                 });
-                Core.FeedManager.Save(new Feed
+
+                var feed = new Feed
                 {
                     Action = UserAction.Submit,
                     InfoId = id,
@@ -199,7 +202,10 @@ namespace Loowoo.Land.OA.API.Controllers
                     FromUserId = CurrentUser.ID,
                     ToUserId = toUserId,
                     Type = FeedType.Info,
-                });
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
+
                 model.ApprovalUserId = toUserId;
                 model.UpdateTime = DateTime.Now;
             }
@@ -209,7 +215,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 model.Result = result;
                 model.UpdateTime = DateTime.Now;
                 Core.FlowDataManager.Complete(info);
-                Core.FeedManager.Save(new Feed
+
+                var feed = new Feed
                 {
                     Action = UserAction.Submit,
                     Type = FeedType.Info,
@@ -218,7 +225,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     Title = "你申请的假期已审核通过",
                     Description = info.Title,
                     InfoId = info.ID,
-                });
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
             }
             Core.FormInfoExtend1Manager.Save(model);
         }

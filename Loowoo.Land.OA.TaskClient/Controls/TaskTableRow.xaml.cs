@@ -25,6 +25,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
         {
             InitializeComponent();
             ctrMasterTaskName.FontSize = Config.FontSize;
+            ctrMasterDepartment.FontSize = Config.FontSize > Config.MaxFontSize ? Config.MaxFontSize : Config.FontSize;
         }
 
         public TaskTableRow(MasterTaskViewModel row) : this()
@@ -49,6 +50,7 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                 container.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
             }
             ctrMasterTaskName.Text = Model.TaskName.Replace("\n"," ");
+            ctrMasterDepartment.Text = Model.Department;
             ctrTaskList.UpdateControl(Model);
         }
     }

@@ -94,7 +94,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     UserId = userId,
                     Status = FlowStatus.Doing,
                 });
-                Core.FeedManager.Save(new Feed()
+
+                var feed = new Feed
                 {
                     FromUserId = CurrentUser.ID,
                     ToUserId = userId,
@@ -102,7 +103,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     InfoId = info.ID,
                     Title = info.Title,
                     Type = FeedType.FreeFlow,
-                });
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
             }
         }
 
@@ -156,7 +159,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FreeFlowDataManager.TryComplete(id, CurrentUser.ID, true);
 
                 var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
-                Core.FeedManager.Save(new Feed
+
+                var feed = new Feed
                 {
                     FromUserId = CurrentUser.ID,
                     ToUserId = freeFlowData.FlowNodeData.UserId,
@@ -165,7 +169,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     Title = info.Title,
                     Description = CurrentUser.RealName + "结束了传阅流程",
                     Type = FeedType.FreeFlow
-                });
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
             }
         }
     }

@@ -139,6 +139,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId, data.ID);
                 }
                 //通知相关人员
+
                 Core.FeedManager.Save(new Feed
                 {
                     Action = UserAction.Create,
@@ -149,6 +150,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Type = FeedType.Task,
                     InfoId = data.TaskId,
                 });
+
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
                     InfoId = data.TaskId,
@@ -162,6 +164,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     UserId = data.LeaderId,
                     Status = FlowStatus.Doing,
                 });
+
                 Core.FeedManager.Save(new Feed
                 {
                     Action = UserAction.Create,
@@ -172,6 +175,8 @@ namespace Loowoo.Land.OA.API.Controllers
                     Type = FeedType.Task,
                     InfoId = data.TaskId,
                 });
+
+                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title }, CurrentUser.ID, data.LeaderId, data.ToUserId);
             }
 
             return Ok(data);
@@ -255,7 +260,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 UserId = toUserId,
                 Status = FlowStatus.Doing,
             });
-            Core.FeedManager.Save(new Feed
+
+            var feed = new Feed
             {
                 FromUserId = model.ToUserId,
                 ToUserId = toUserId,
@@ -263,7 +269,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 Type = FeedType.Flow,
                 InfoId = model.TaskId,
                 Title = "[提交任务]" + model.Content,
-            });
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpGet]
@@ -330,7 +338,8 @@ namespace Loowoo.Land.OA.API.Controllers
 
                         toUserId = user.ID;
                         Core.FlowNodeDataManager.CreateNodeData(flowData.ID, flowNode, toUserId);
-                        Core.FeedManager.Save(new Feed
+
+                        var feed = new Feed
                         {
                             FromUserId = CurrentUser.ID,
                             ToUserId = toUserId,
@@ -338,10 +347,12 @@ namespace Loowoo.Land.OA.API.Controllers
                             Type = FeedType.Flow,
                             InfoId = subTask.TaskId,
                             Title = "[任务审核] " + info.Title
-                        });
+                        };
+                        Core.FeedManager.Save(feed);
+                        Core.MessageManager.Add(feed);
                     }
                 }
-                Core.FeedManager.Save(new Feed
+                var feed1 = new Feed
                 {
                     FromUserId = CurrentUser.ID,
                     ToUserId = subTask.ToUserId,
@@ -349,7 +360,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     Type = FeedType.Flow,
                     InfoId = subTask.TaskId,
                     Title = "[任务完成] " + subTask.Content
-                });
+                };
+                Core.FeedManager.Save(feed1);
+                Core.MessageManager.Add(feed1);
             }
             else
             {
@@ -357,7 +370,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 var parentFlowNodeData = Core.FlowNodeDataManager.GetModel(model.ParentId);
                 toUserId = parentFlowNodeData.UserId;
                 Core.FlowNodeDataManager.CreateChildNodeData(model, toUserId, subTask.ID);
-                Core.FeedManager.Save(new Feed
+
+                var feed = new Feed
                 {
                     FromUserId = CurrentUser.ID,
                     ToUserId = toUserId,
@@ -365,7 +379,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     Type = FeedType.Flow,
                     InfoId = subTask.TaskId,
                     Title = "[任务失败] " + subTask.Content
-                });
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
             }
             if (toUserId > 0)
             {
@@ -392,7 +408,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Status = FlowStatus.Doing
             });
 
-            Core.FeedManager.Save(new Feed
+            var feed = new Feed
             {
                 InfoId = subTask.TaskId,
                 ToUserId = model.ToUserId,
@@ -400,7 +416,9 @@ namespace Loowoo.Land.OA.API.Controllers
                 FromUserId = CurrentUser.ID,
                 Type = FeedType.Task,
                 Action = UserAction.Create,
-            });
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpGet]

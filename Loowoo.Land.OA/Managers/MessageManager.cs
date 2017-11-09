@@ -19,7 +19,7 @@ namespace Loowoo.Land.OA.Managers
             var query = DB.UserMessages.Where(e => !e.Deleted);
             if (parameter.FromUserId > 0)
             {
-                query = query.Where(e => e.FromId == parameter.FromUserId);
+                query = query.Where(e => e.FromUserId == parameter.FromUserId);
             }
             if (parameter.ToUserId > 0)
             {
@@ -34,7 +34,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Add(Feed feed)
         {
-            Add(new Message { Content = feed.Title, FeedId = feed.ID, }, feed.FromUserId, feed.ToUserId);
+            Add(new Message(feed), feed.FromUserId, feed.ToUserId);
         }
 
         public void Add(Message model, int fromUserId, params int[] toUserIds)
@@ -43,7 +43,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
             DB.UserMessages.AddRange(toUserIds.Select(toUserId => new UserMessage
             {
-                FromId = fromUserId,
+                FromUserId = fromUserId,
                 ToUserId = toUserId,
                 MessageId = model.ID,
             }));
@@ -65,7 +65,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        private UserMessage GetUserMessage(int messageId,int toUserId)
+        private UserMessage GetUserMessage(int messageId, int toUserId)
         {
             return DB.UserMessages.FirstOrDefault(e => e.MessageId == messageId && e.ToUserId == toUserId);
         }
@@ -80,7 +80,7 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
-        public void Delete(int msgId,int toUserId)
+        public void Delete(int msgId, int toUserId)
         {
             var entity = GetUserMessage(msgId, toUserId);
             if (entity != null)

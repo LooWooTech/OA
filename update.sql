@@ -1,3 +1,10 @@
+-- 2017-11-09
+ALTER TABLE `message`
+	ADD COLUMN `InfoId` INT NOT NULL AFTER `Content`,
+	DROP COLUMN `FeedId`,
+	ADD INDEX `InfoId` (`InfoId`);
+
+
 -- 2017-10-30
 CREATE TABLE `message` (
 	`ID` INT(11) NOT NULL AUTO_INCREMENT,

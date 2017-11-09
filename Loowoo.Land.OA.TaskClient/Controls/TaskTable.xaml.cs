@@ -37,10 +37,8 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                 ctrTaskName.Content = "项目内容：" + model.TaskName.Replace("\n", " ");
                 container_task.Children.Clear();
                 container_date.Children.Clear();
-                container_department.Children.Clear();
                 var marginTop = 0;
                 CompleteDate prevDateControl = null;
-                TaskDepartment prevDepartment = null;
                 foreach (var row in model.Children)
                 {
                     //添加任务列表
@@ -65,22 +63,6 @@ namespace Loowoo.Land.OA.TaskClient.Controls
                     {
                         prevDateControl = newDateControl;
                         container_date.Children.Add(newDateControl);
-                    }
-                    //添加部门列表，如果重复则合并
-                    var newDepartment = new TaskDepartment(row.Department)
-                    {
-                        VerticalAlignment = VerticalAlignment.Top,
-                        Height = row.Rows * Config.RowHeight,
-                        Margin = new Thickness(0, marginTop, 0, 0)
-                    };
-                    if (prevDepartment != null && newDepartment.ctrName.Text == prevDepartment.ctrName.Text)
-                    {
-                        prevDepartment.Height += newDepartment.Height;
-                    }
-                    else
-                    {
-                        prevDepartment = newDepartment;
-                        container_department.Children.Add(newDepartment);
                     }
 
                     marginTop += row.Rows * Config.RowHeight;
