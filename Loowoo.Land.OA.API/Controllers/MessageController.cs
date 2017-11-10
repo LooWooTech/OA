@@ -11,14 +11,15 @@ namespace Loowoo.Land.OA.API.Controllers
     public class MessageController : ControllerBase
     {
         [HttpGet]
-        public object List(bool? hasRead = false, int action = 0, int page = 1, int rows = 20)
+        public object List(bool? hasRead = false, int formId = 0, string action = "receive", int page = 1, int rows = 20)
         {
             var parameter = new MessageParameter
             {
                 Page = new Loowoo.Common.PageParameter(page, rows),
                 HasRead = hasRead,
-                FromUserId = action == 1 ? CurrentUser.ID : 0,
-                ToUserId = action == 0 ? CurrentUser.ID : 0,
+                FromUserId = action == "send" ? CurrentUser.ID : 0,
+                ToUserId = action == "receive" ? CurrentUser.ID : 0,
+                FormId = formId,
             };
             var list = Core.MessageManager.GetList(parameter);
 
@@ -30,6 +31,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Message.InfoId,
                     e.Message.Content,
                     e.Message.CreateTime,
+                    e.HasRead,
                     e.FromUserId,
                     FromUser = e.FromUser == null ? null : e.FromUser.RealName,
                     e.ToUserId,

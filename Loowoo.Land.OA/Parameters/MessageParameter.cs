@@ -16,5 +16,7 @@ namespace Loowoo.Land.OA.Models
         public bool? HasRead { get; set; }
 
         public PageParameter Page { get; set; }
+
+        public int FormId { get; set; }
     }
 }

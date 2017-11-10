@@ -29,6 +29,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.HasRead == parameter.HasRead.Value);
             }
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.Message.InfoId > 0 && e.Message.Info.FormId == parameter.FormId);
+            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
