@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\MailManager.cs" />
     <Compile Include="Managers\SalaryManager.cs" />
     <Compile Include="Managers\SmsManager.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Parameters\FileParameter.cs" />
     <Compile Include="Parameters\FormInfoParameter.cs" />
     <Compile Include="Parameters\HolidayParameter.cs" />
+    <Compile Include="Parameters\MailParameter.cs" />
     <Compile Include="Parameters\MessageParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />

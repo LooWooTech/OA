@@ -1,3 +1,45 @@
+-- 2017-11-19
+ALTER TABLE `file`
+	ADD COLUMN `FormId` INT(11) NOT NULL AFTER `InfoId`;
+
+update file left join form_info as info
+on file.InfoId = info.ID
+set file.FormId = info.FormId
+where file.InfoId > 0 and info.FormId is not null;
+
+ALTER TABLE `mail`
+	ADD COLUMN `IsDraft` BIT NOT NULL AFTER `HasAttachments`;
+
+ALTER TABLE `mail`
+	ADD COLUMN `ForwardId` INT NOT NULL AFTER `IsDraft`;
+
+ALTER TABLE `mail`
+	ADD COLUMN `ToUserIds` VARCHAR(200) NOT NULL AFTER `ForwardId`,
+	ADD COLUMN `CcUserIds` VARCHAR(1000) NOT NULL AFTER `ToUserIds`;
+
+-- 2017-11-17
+INSERT INTO `oa`.`form` (`Name`, `Ename`) VALUES ('ÓÊ¼þ', 'mail');
+
+-- 2017-11-15
+ALTER TABLE `mail`
+	ADD COLUMN `HasAttachments` BIT NOT NULL AFTER `CreateTime`;
+
+CREATE TABLE `contact` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`OwnerId` INT(11) NOT NULL,
+	`ContactId` INT(11) NOT NULL,
+	`Mobile` VARCHAR(20) NULL DEFAULT NULL,
+	`Email` VARCHAR(50) NULL DEFAULT NULL,
+	`RealName` VARCHAR(20) NULL DEFAULT NULL,
+	`Description` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `OwnerId` (`OwnerId`),
+	INDEX `ContactId` (`ContactId`)
+)
+ENGINE=InnoDB
+;
+
+
 -- 2017-11-09
 ALTER TABLE `message`
 	ADD COLUMN `InfoId` INT NOT NULL AFTER `Content`,

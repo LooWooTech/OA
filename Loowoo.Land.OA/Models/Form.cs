@@ -44,5 +44,7 @@ namespace Loowoo.Land.OA.Models
         Seal = 6,
         [Description("请假")]
         Leave = 7,
+        [Description("邮件")]
+        Mail = 8,
     }
 }
