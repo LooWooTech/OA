@@ -97,7 +97,7 @@ namespace Loowoo.Land.OA.API.Controllers
             else
             {
                 var userMails = Core.MailManager.GetList(new MailParameter { MailId = id });
-                if (!userMails.Any(e => e.UserId != CurrentUser.ID))
+                if (!userMails.Any(e => e.UserId == CurrentUser.ID))
                 {
                     throw new Exception("权限不足");
                 }
