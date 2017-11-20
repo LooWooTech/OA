@@ -22,5 +22,7 @@ namespace Loowoo.Land.OA.Parameters
         public PageParameter Page { get; set; }
 
         public int MailId { get; set; }
+
+        public bool? Draft { get; set; }
     }
 }

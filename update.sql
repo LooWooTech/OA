@@ -1,3 +1,13 @@
+-- 2017-11-20
+ALTER TABLE `mail`
+	ADD COLUMN `CreatorId` INT NOT NULL AFTER `CcUserIds`;
+
+ALTER TABLE `mail_user`
+	ALTER `ToUserId` DROP DEFAULT;
+ALTER TABLE `mail_user`
+	CHANGE COLUMN `ToUserId` `UserId` INT(11) NOT NULL AFTER `MailId`,
+	DROP COLUMN `FromUserId`;
+
 -- 2017-11-19
 ALTER TABLE `file`
 	ADD COLUMN `FormId` INT(11) NOT NULL AFTER `InfoId`;

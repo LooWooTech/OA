@@ -22,6 +22,8 @@ namespace Loowoo.Land.OA.Models
 
         public int CreatorId { get; set; }
 
+        public virtual User Creator { get; set; }
+
         public bool HasAttachments { get; set; }
 
         public int ForwardId { get; set; }
@@ -35,8 +37,9 @@ namespace Loowoo.Land.OA.Models
 
         public string CcUserIds { get; set; }
 
+
         [NotMapped]
-        public int[] AttachmentIds { get; set; }
+        public List<File> Attachments { get; set; }
     }
 
     [Table("mail_user")]
@@ -49,13 +52,10 @@ namespace Loowoo.Land.OA.Models
 
         public virtual Mail Mail { get; set; }
 
-        public int FromUserId { get; set; }
+        public int UserId { get; set; }
 
-        public virtual User FromUser { get; set; }
+        public virtual User User { get; set; }
 
-        public int ToUserId { get; set; }
-
-        public virtual User ToUser { get; set; }
         /// <summary>
         /// 是否为抄送
         /// </summary>

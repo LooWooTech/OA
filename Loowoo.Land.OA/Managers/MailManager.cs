@@ -19,7 +19,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void UpdateStar(int id, int userId, bool isStar = true)
         {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.ToUserId == userId);
+            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
             if (entity != null)
             {
                 entity.Star = isStar;
@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void UpdateDelete(int id, int userId, bool deleted = true)
         {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && (e.ToUserId == userId || e.FromUserId == userId));
+            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
             if (entity != null)
             {
                 entity.Deleted = deleted;
@@ -39,7 +39,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Read(int id, int userId)
         {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.ToUserId == userId);
+            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
             if (entity != null)
             {
                 entity.HasRead = true;
@@ -62,7 +62,7 @@ namespace Loowoo.Land.OA.Managers
             var query = DB.UserMails.AsQueryable();
             if (parameter.MailId > 0)
             {
-                query = query.Where(e => e.MailId == parameter.MailId);
+                query = query.Where(e => e.ID == parameter.MailId);
             }
             if (parameter.Deleted.HasValue)
             {
@@ -70,11 +70,11 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.FromUserId > 0)
             {
-                query = query.Where(e => e.FromUserId == parameter.FromUserId);
+                query = query.Where(e => e.Mail.CreatorId == parameter.FromUserId);
             }
             if (parameter.ToUserId > 0)
             {
-                query = query.Where(e => e.ToUserId == parameter.ToUserId);
+                query = query.Where(e => e.UserId == parameter.ToUserId);
             }
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
@@ -84,7 +84,10 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Star == parameter.Star.Value);
             }
-
+            if (parameter.Draft.HasValue)
+            {
+                query = query.Where(e => e.Mail.IsDraft == parameter.Draft.Value);
+            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
@@ -94,11 +97,11 @@ namespace Loowoo.Land.OA.Managers
             DB.Mails.AddOrUpdate(model);
             DB.SaveChanges();
 
+
             var toUsers = model.ToUserIds?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(userId => new UserMail
             {
                 MailId = model.ID,
-                FromUserId = model.CreatorId,
-                ToUserId = int.Parse(userId),
+                UserId = int.Parse(userId),
             });
 
             if (toUsers == null)
@@ -110,8 +113,7 @@ namespace Loowoo.Land.OA.Managers
             var ccUsers = model.CcUserIds?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(userId => new UserMail
             {
                 MailId = model.ID,
-                FromUserId = model.CreatorId,
-                ToUserId = int.Parse(userId),
+                UserId = int.Parse(userId),
                 CC = true
             });
             if (ccUsers != null)
@@ -124,6 +126,27 @@ namespace Loowoo.Land.OA.Managers
         public void Save(Mail model)
         {
             DB.Mails.AddOrUpdate(model);
+            DB.SaveChanges();
+
+            SaveUserMail(new UserMail
+            {
+                MailId = model.ID,
+                UserId = model.CreatorId,
+                HasRead = true,
+            });
+        }
+
+        public void SaveUserMail(UserMail model)
+        {
+            var entity = DB.UserMails.FirstOrDefault(e => e.MailId == model.ID && e.UserId == model.ID);
+            if (entity != null)
+            {
+                DB.Entry(entity).CurrentValues.SetValues(model);
+            }
+            else
+            {
+                DB.UserMails.Add(model);
+            }
             DB.SaveChanges();
         }
     }

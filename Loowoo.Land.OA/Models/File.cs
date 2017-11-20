@@ -76,6 +76,8 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoId { get; set; }
 
+        public int FormId { get; set; }
+
         public int ParentId { get; set; }
 
         public bool Inline { get; set; }

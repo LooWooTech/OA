@@ -58,7 +58,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public OA.Models.File Upload(string name = null, int id = 0, int infoId = 0, bool inline = false)
+        public OA.Models.File Upload(string name = null, int id = 0, int infoId = 0, int formId = 0, bool inline = false)
         {
             var files = HttpContext.Current.Request.Files;
             if (files.Count == 0)
@@ -71,10 +71,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("未找到指定的name");
             }
 
-            var file  = OA.Models.File.Upload(inputFile);
+            var file = OA.Models.File.Upload(inputFile);
             file.InfoId = infoId;
             file.ID = id;
             file.Inline = inline;
+            file.FormId = formId;
             Core.FileManager.Save(file);
 
             return file;

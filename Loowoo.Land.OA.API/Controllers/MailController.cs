@@ -13,17 +13,37 @@ namespace Loowoo.Land.OA.API.Controllers
     public class MailController : ControllerBase
     {
         [HttpGet]
-        public object List(bool? star = false, bool? deleted = false, string searchKey = null, string action = "receive", int page = 1, int rows = 20)
+        public object List(string searchKey = null, string type = "receive", int page = 1, int rows = 20)
         {
             var parameter = new MailParameter
             {
                 Page = new Loowoo.Common.PageParameter(page, rows),
-                Star = star,
-                Deleted = deleted,
                 SearchKey = searchKey,
-                FromUserId = action == "send" ? CurrentUser.ID : 0,
-                ToUserId = action == "receive" ? CurrentUser.ID : 0,
+                Deleted = false,
+                Draft = false,
             };
+            switch (type)
+            {
+                case "trash":
+                    parameter.Deleted = true;
+                    parameter.ToUserId = CurrentUser.ID;
+                    break;
+                case "draft":
+                    parameter.Draft = true;
+                    parameter.FromUserId = CurrentUser.ID;
+                    break;
+                case "star":
+                    parameter.Star = true;
+                    parameter.ToUserId = CurrentUser.ID;
+                    break;
+                case "send":
+                    parameter.FromUserId = CurrentUser.ID;
+                    break;
+                default:
+                    parameter.ToUserId = CurrentUser.ID;
+                    break;
+            }
+
             var list = Core.MailManager.GetList(parameter);
 
             return new PagingResult
@@ -34,10 +54,9 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Mail.Subject,
                     e.Mail.CreateTime,
                     e.HasRead,
-                    e.FromUserId,
-                    FromUser = e.FromUser == null ? null : e.FromUser.RealName,
-                    e.ToUserId,
-                    ToUser = e.ToUser == null ? null : e.ToUser.RealName,
+                    FromUser = e.Mail.Creator == null ? null : e.Mail.Creator.RealName,
+                    e.UserId,
+                    ToUser = e.User == null ? null : e.User.RealName,
                     e.Star,
                     e.Deleted,
                     e.CC,
@@ -50,13 +69,17 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void Send(Mail data)
         {
+            data.CreatorId = CurrentUser.ID;
             Core.MailManager.Send(data);
         }
 
         [HttpPost]
         public void Save(Mail data)
         {
-            Core.MailManager.Save(data);
+            data.IsDraft = true;
+            data.CreatorId = CurrentUser.ID;
+            if (data.Attachments != null)
+                Core.MailManager.Save(data);
         }
 
         [HttpGet]
@@ -67,20 +90,21 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("参数错误");
             }
-
-            var userMails = Core.MailManager.GetList(new MailParameter { MailId = id });
-            if (!userMails.Any(e => e.FromUserId == CurrentUser.ID || e.ToUserId == CurrentUser.ID))
+            if (model.IsDraft && model.CreatorId != CurrentUser.ID)
             {
-                throw new Exception("权限不足");
+                throw new Exception("没有权限查看他人草稿");
+            }
+            else
+            {
+                var userMails = Core.MailManager.GetList(new MailParameter { MailId = id });
+                if (!userMails.Any(e => e.UserId != CurrentUser.ID))
+                {
+                    throw new Exception("权限不足");
+                }
             }
 
-            return new
-            {
-                model,
-                ToUsers = userMails.Where(e => !e.CC).Select(e => new { e.ToUser.RealName }),
-                CcUsers = userMails.Where(e => e.CC).Select(e => new { e.ToUser.RealName }),
-                Attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id })
-            };
+            model.Attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id }).ToList();
+            return model;
         }
 
         [HttpGet]
