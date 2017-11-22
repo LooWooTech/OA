@@ -48,6 +48,24 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
+        public void Save(Feed model, int[] toUserIds)
+        {
+            foreach (var toUserId in toUserIds)
+            {
+                DB.Feeds.AddOrUpdate(new Feed
+                {
+                    Action = model.Action,
+                    Description = model.Description,
+                    InfoId = model.InfoId,
+                    Type = model.Type,
+                    Title = model.Title,
+                    FromUserId = model.FromUserId,
+                    ToUserId = toUserId
+                });
+            }
+            DB.SaveChanges();
+        }
+
         public void Delete(int id)
         {
             var model = DB.Feeds.Find(id);

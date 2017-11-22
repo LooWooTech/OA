@@ -1,3 +1,25 @@
+-- 2017-11-22
+ALTER TABLE `mail`
+	DROP COLUMN `ToUserIds`,
+	DROP COLUMN `CcUserIds`;
+ALTER TABLE `mail`
+	ADD COLUMN `ReplyId` INT NOT NULL AFTER `ForwardId`;
+
+
+-- 2017-11-21
+ALTER TABLE `message`
+	ADD COLUMN `CreatorId` INT NOT NULL AFTER `InfoId`,
+	ADD INDEX `CreatorId` (`CreatorId`);
+
+UPDATE message msg
+JOIN message_user mu ON msg.ID = mu.MessageId SET msg.CreatorId = mu.FromUserId
+
+ALTER TABLE `message_user`
+	ALTER `ToUserId` DROP DEFAULT;
+ALTER TABLE `message_user`
+	CHANGE COLUMN `ToUserId` `UserId` INT(11) NOT NULL AFTER `MessageId`,
+	DROP COLUMN `FromUserId`;
+
 -- 2017-11-20
 ALTER TABLE `mail`
 	ADD COLUMN `CreatorId` INT NOT NULL AFTER `CcUserIds`;

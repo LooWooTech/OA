@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void ReadAll(int userId)
         {
-            var list = DB.UserMessages.Where(e => e.ToUserId == userId);
+            var list = DB.UserMails.Where(e => e.UserId == userId);
             foreach (var item in list)
             {
                 item.HasRead = true;
@@ -57,16 +57,30 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public IEnumerable<UserMail> GetList(MailParameter parameter)
+        public IEnumerable<Mail> GetMails(MailParameter parameter)
         {
-            var query = DB.UserMails.AsQueryable();
-            if (parameter.MailId > 0)
+            var query = DB.Mails.AsQueryable();
+            if (parameter.FromUserId > 0)
             {
-                query = query.Where(e => e.ID == parameter.MailId);
+                query = query.Where(e => e.CreatorId == parameter.FromUserId);
             }
+            if (parameter.Draft.HasValue)
+            {
+                query = query.Where(e => e.IsDraft == parameter.Draft.Value);
+            }
+            if (!string.IsNullOrEmpty(parameter.SearchKey))
+            {
+                query = query.Where(e => e.Subject.Contains(parameter.SearchKey));
+            }
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
+
+        public IEnumerable<UserMail> GetUserMails(MailParameter parameter)
+        {
+            var query = DB.UserMails.Where(e => e.Mail.IsDraft == false);
             if (parameter.Deleted.HasValue)
             {
-                query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+                query = query.Where(e => e.Deleted == parameter.Deleted);
             }
             if (parameter.FromUserId > 0)
             {
@@ -84,70 +98,53 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Star == parameter.Star.Value);
             }
-            if (parameter.Draft.HasValue)
-            {
-                query = query.Where(e => e.Mail.IsDraft == parameter.Draft.Value);
-            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        public void Send(Mail model)
+        public void Send(int id)
         {
-            model.IsDraft = false;
-            DB.Mails.AddOrUpdate(model);
-            DB.SaveChanges();
-
-
-            var toUsers = model.ToUserIds?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(userId => new UserMail
-            {
-                MailId = model.ID,
-                UserId = int.Parse(userId),
-            });
-
-            if (toUsers == null)
-            {
-                throw new Exception("没有选择收件人");
-            }
-            DB.UserMails.AddRange(toUsers);
-
-            var ccUsers = model.CcUserIds?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(userId => new UserMail
-            {
-                MailId = model.ID,
-                UserId = int.Parse(userId),
-                CC = true
-            });
-            if (ccUsers != null)
-            {
-                DB.UserMails.AddRange(ccUsers);
-            }
+            var entity = DB.Mails.FirstOrDefault(e => e.ID == id);
+            entity.IsDraft = false;
             DB.SaveChanges();
         }
 
         public void Save(Mail model)
         {
-            DB.Mails.AddOrUpdate(model);
-            DB.SaveChanges();
-
-            SaveUserMail(new UserMail
+            if (model.ID > 0)
             {
-                MailId = model.ID,
-                UserId = model.CreatorId,
-                HasRead = true,
-            });
-        }
+                var entity = DB.Mails.FirstOrDefault(e => e.ID == model.ID);
+                entity.Content = model.Content;
+                entity.Subject = model.Subject;
 
-        public void SaveUserMail(UserMail model)
-        {
-            var entity = DB.UserMails.FirstOrDefault(e => e.MailId == model.ID && e.UserId == model.ID);
-            if (entity != null)
-            {
-                DB.Entry(entity).CurrentValues.SetValues(model);
+                var olds = DB.UserMails.Where(e => e.MailId == entity.ID);
+                DB.UserMails.RemoveRange(olds);
+
+                DB.UserMails.AddRange(model.Users);
             }
             else
             {
-                DB.UserMails.Add(model);
+                DB.Mails.Add(model);
             }
             DB.SaveChanges();
+        }
+
+        //public void SaveUserMail(UserMail model)
+        //{
+        //    var entity = DB.UserMails.FirstOrDefault(e => e.MailId == model.MailId && e.UserId == model.UserId);
+        //    if (entity != null)
+        //    {
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        DB.UserMails.Add(model);
+        //    }
+        //    DB.SaveChanges();
+        //}
+
+        public bool HasRight(int id, int userId)
+        {
+            return DB.Mails.Any(e => e.ID == id && e.CreatorId == userId) || DB.UserMails.Any(e => e.MailId == id && e.UserId == userId);
         }
     }
 }

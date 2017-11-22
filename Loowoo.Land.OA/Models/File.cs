@@ -169,7 +169,7 @@ namespace Loowoo.Land.OA.Models
 
             var savePath = GetPhysicalSavePath(saveName);
 
-            System.IO.File.WriteAllBytes(saveName, data);
+            System.IO.File.WriteAllBytes(savePath, data);
             return new File
             {
                 FileName = fileName,

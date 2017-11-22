@@ -43,8 +43,45 @@ namespace Loowoo.Land.OA.API.Controllers
                     parameter.ToUserId = CurrentUser.ID;
                     break;
             }
+            //发件箱、草稿箱
+            if (type == "send" || type == "draft")
+            {
+                return SendList(parameter);
+            }
+            else
+            {
+                //收件箱、回收站、星标邮件
+                return Receivelist(parameter);
+            }
+        }
 
-            var list = Core.MailManager.GetList(parameter);
+        /// <summary>
+        /// 发件箱、草稿箱
+        /// </summary>
+        public object SendList(MailParameter parameter)
+        {
+            var list = Core.MailManager.GetMails(parameter);
+            return new PagingResult
+            {
+                List = list.Select(e => new
+                {
+                    e.ID,
+                    MailId = e.ID,
+                    e.Subject,
+                    e.CreateTime,
+                    ToUsers = e.Users.Where(u => !u.CC).Select(u => new { u.UserId, u.User.RealName }),
+                }),
+                Page = parameter.Page,
+            };
+        }
+
+        /// <summary>
+        /// 收件箱、回收站、星标邮件
+        /// </summary>
+        [HttpGet]
+        public object Receivelist(MailParameter parameter)
+        {
+            var list = Core.MailManager.GetUserMails(parameter);
 
             return new PagingResult
             {
@@ -56,7 +93,6 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.HasRead,
                     FromUser = e.Mail.Creator == null ? null : e.Mail.Creator.RealName,
                     e.UserId,
-                    ToUser = e.User == null ? null : e.User.RealName,
                     e.Star,
                     e.Deleted,
                     e.CC,
@@ -67,19 +103,43 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Send(Mail data)
+        public void Send(Mail model)
         {
-            data.CreatorId = CurrentUser.ID;
-            Core.MailManager.Send(data);
+            Save(model);
+            Core.MailManager.Send(model.ID);
+
+            var feed = new Feed
+            {
+                FromUserId = CurrentUser.ID,
+                Action = UserAction.Create,
+                Title = model.Subject,
+                InfoId = model.ID,
+            };
+            var msg = new Message { InfoId = model.ID, Content = model.Subject, CreatorId = CurrentUser.ID };
+            var toUserIds = model.Users.Select(e => e.UserId).ToArray();
+            Core.FeedManager.Save(feed, toUserIds);
+            Core.MessageManager.Add(msg, toUserIds);
         }
 
         [HttpPost]
-        public void Save(Mail data)
+        public void Save(Mail model)
         {
-            data.IsDraft = true;
-            data.CreatorId = CurrentUser.ID;
-            if (data.Attachments != null)
-                Core.MailManager.Save(data);
+            model.IsDraft = true;
+            model.CreatorId = CurrentUser.ID;
+            //如果是转发，则拷贝附件的ID
+            var isForward = model.ID == 0 && model.ForwardId > 0;
+            Core.MailManager.Save(model);
+            if (model.Attachments != null)
+            {
+                if (isForward)
+                {
+                    Core.FileManager.CopyFiles(model.Attachments.Select(e => e.ID).ToArray(), model.ID);
+                }
+                else
+                {
+                    Core.FileManager.Relation(model.Attachments.Select(e => e.ID).ToArray(), model.ID);
+                }
+            }
         }
 
         [HttpGet]
@@ -94,17 +154,19 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有权限查看他人草稿");
             }
-            else
-            {
-                var userMails = Core.MailManager.GetList(new MailParameter { MailId = id });
-                if (!userMails.Any(e => e.UserId == CurrentUser.ID))
-                {
-                    throw new Exception("权限不足");
-                }
-            }
 
-            model.Attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id }).ToList();
-            return model;
+            if (!Core.MailManager.HasRight(id, CurrentUser.ID))
+            {
+                throw new Exception("权限不足");
+            }
+            return new
+            {
+                model,
+                fromName = model.Creator?.RealName,
+                toUsers = model.Users.Where(u => !u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
+                ccUsers = model.Users.Where(u => u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
+                attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id })
+            };
         }
 
         [HttpGet]

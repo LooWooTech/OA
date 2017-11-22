@@ -31,6 +31,10 @@ namespace Loowoo.Land.OA.Models
 
         public int InfoId { get; set; }
 
+        public int CreatorId { get; set; }
+
+        public virtual User Creator { get; set; }
+
         public virtual FormInfo Info { get; set; }
     }
 
@@ -44,17 +48,13 @@ namespace Loowoo.Land.OA.Models
 
         public virtual Message Message { get; set; }
 
-        public int FromUserId { get; set; }
-
-        public int ToUserId { get; set; }
+        public int UserId { get; set; }
 
         public bool HasRead { get; set; }
 
         public bool Deleted { get; set; }
 
-        public virtual User FromUser { get; set; }
-
-        public virtual User ToUser { get; set; }
+        public virtual User User { get; set; }
     }
 
 

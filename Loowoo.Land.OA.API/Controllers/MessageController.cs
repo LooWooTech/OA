@@ -29,13 +29,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     e.ID,
                     e.Message.InfoId,
+                    e.MessageId,
                     e.Message.Content,
                     e.Message.CreateTime,
                     e.HasRead,
-                    e.FromUserId,
-                    FromUser = e.FromUser == null ? null : e.FromUser.RealName,
-                    e.ToUserId,
-                    ToUser = e.ToUser == null ? null : e.ToUser.RealName,
+                    e.Message.CreatorId,
+                    FromUser = e.Message.Creator == null ? null : e.Message.Creator.RealName,
+                    e.UserId,
+                    ToUser = e.User == null ? null : e.User.RealName,
 
                     FormId = e.Message.Info == null ? 0 : e.Message.Info.FormId,
                     Title = e.Message.Info == null ? null : e.Message.Info.Title,

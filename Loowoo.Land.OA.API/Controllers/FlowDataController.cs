@@ -141,7 +141,7 @@ namespace Loowoo.Land.OA.API.Controllers
                         };
                         Core.FeedManager.Save(feed);
                     }
-                    Core.MessageManager.Add(new Message { Content = info.Title, InfoId = info.ID }, currentNodeData.UserId, userIds);
+                    Core.MessageManager.Add(new Message { Content = info.Title, InfoId = info.ID, CreatorId = currentNodeData.UserId }, userIds);
                 }
             }
             else

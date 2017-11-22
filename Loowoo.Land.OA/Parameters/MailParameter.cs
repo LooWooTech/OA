@@ -9,9 +9,9 @@ namespace Loowoo.Land.OA.Parameters
 {
     public class MailParameter
     {
-        public int ToUserId { get; set; }
-
         public int FromUserId { get; set; }
+
+        public int ToUserId { get; set; }
 
         public bool? Star { get; set; }
 
@@ -20,8 +20,6 @@ namespace Loowoo.Land.OA.Parameters
         public string SearchKey { get; set; }
 
         public PageParameter Page { get; set; }
-
-        public int MailId { get; set; }
 
         public bool? Draft { get; set; }
     }

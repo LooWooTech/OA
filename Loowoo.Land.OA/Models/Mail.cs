@@ -28,15 +28,14 @@ namespace Loowoo.Land.OA.Models
 
         public int ForwardId { get; set; }
 
+        public int ReplyId { get; set; }
+
         /// <summary>
         /// 草稿
         /// </summary>
         public bool IsDraft { get; set; }
 
-        public string ToUserIds { get; set; }
-
-        public string CcUserIds { get; set; }
-
+        public virtual List<UserMail> Users { get; set; }
 
         [NotMapped]
         public List<File> Attachments { get; set; }
