@@ -46,7 +46,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 InfoId = info.ID,
                 UserId = info.PostUserId,
-                Status = FlowStatus.Doing,
+                FlowStatus = FlowStatus.Doing,
             });
             return info.FlowData;
         }
@@ -237,7 +237,7 @@ namespace Loowoo.Land.OA.Managers
 
             if (nextNodeData != null)
             {
-                Core.UserFormInfoManager.Delete(infoId, toUserId);
+                Core.UserFormInfoManager.Remove(infoId, toUserId);
                 Core.FeedManager.Delete(new Feed
                 {
                     InfoId = infoId,
@@ -249,7 +249,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 InfoId = infoId,
                 UserId = fromUserId,
-                Status = FlowStatus.Doing
+                FlowStatus = FlowStatus.Doing
             });
         }
 
@@ -259,7 +259,7 @@ namespace Loowoo.Land.OA.Managers
             var list = DB.UserFormInfos.Where(e => e.InfoId == info.ID);
             foreach (var item in list)
             {
-                item.Status = FlowStatus.Completed;
+                item.FlowStatus = FlowStatus.Completed;
             }
 
             info.FlowData.Completed = true;

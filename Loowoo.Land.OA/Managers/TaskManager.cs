@@ -11,13 +11,20 @@ namespace Loowoo.Land.OA.Managers
 {
     public class TaskManager : ManagerBase
     {
-        public IEnumerable<Task> GetList(FormInfoParameter parameter)
+        public IEnumerable<UserTask> GetUserTasks(FormInfoParameter parameter)
         {
-            parameter.InfoIds = Core.UserFormInfoManager.GetUserInfoIds(parameter);
+            return Core.UserFormInfoManager.GetUserInfoList<UserTask>(parameter).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
 
-            var query = DB.Tasks.AsQueryable();
-            query = query.Where(e => parameter.InfoIds.Contains(e.ID));
-            return query.OrderByDescending(e => e.ID);
+        public IEnumerable<Task> GetTasks(FormInfoParameter parameter)
+        {
+            var query = DB.Tasks.Where(e => !e.Info.Deleted);
+            if(!string.IsNullOrEmpty(parameter.SearchKey))
+            {
+                query = query.Where(e => e.Name.Contains(parameter.SearchKey));
+            }
+
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Task data)
@@ -82,7 +89,7 @@ namespace Loowoo.Land.OA.Managers
             return DB.Todos.Find(id);
         }
 
-        public void DeleteTodo(TaskTodo model)
+        public void RemoveTodo(TaskTodo model)
         {
             DB.Todos.Remove(model);
             DB.SaveChanges();

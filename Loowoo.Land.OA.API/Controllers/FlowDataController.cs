@@ -92,7 +92,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = info.ID,
-                Status = FlowStatus.Done,
+                FlowStatus = FlowStatus.Done,
                 UserId = CurrentUser.ID,
             });
 
@@ -106,7 +106,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Core.UserFormInfoManager.Save(new UserFormInfo
                     {
                         InfoId = info.ID,
-                        Status = FlowStatus.Doing,
+                        FlowStatus = FlowStatus.Doing,
                         UserId = nextNodedata.UserId,
                     });
 
@@ -155,7 +155,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     {
                         InfoId = info.ID,
                         UserId = backNodeData.UserId,
-                        Status = FlowStatus.Back,
+                        FlowStatus = FlowStatus.Back,
                     });
 
                     var feed = new Feed

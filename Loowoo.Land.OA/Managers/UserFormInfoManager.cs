@@ -12,11 +12,11 @@ namespace Loowoo.Land.OA.Managers
     {
         public int[] GetUserInfoIds(FormInfoParameter parameter)
         {
-            var query = GetList(parameter);
+            var query = GetQuery(parameter);
 
             if (parameter.UserId > 0)
             {
-                return query.Select(e => e.InfoId).ToArray();
+                return query.Select(e => e.InfoId).SetPage(parameter.Page).ToArray();
             }
             else
             {
@@ -24,7 +24,61 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
-        public IEnumerable<UserFormInfo> GetList(FormInfoParameter parameter)
+        public IQueryable<T> GetUserInfoList<T>(FormInfoParameter parameter) where T : UserInfo
+        {
+            var query = DB.Set<T>().AsQueryable();
+            if (parameter.PostUserId > 0)
+            {
+                query = query.Where(e => e.PostUserId == parameter.PostUserId);
+            }
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.FormId == parameter.FormId);
+            }
+            if (!string.IsNullOrWhiteSpace(parameter.SearchKey))
+            {
+                query = query.Where(e => e.Title.Contains(parameter.SearchKey));
+            }
+            if (parameter.FlowStatus.HasValue)
+            {
+                query = query.Where(e => e.FlowStatus == parameter.FlowStatus.Value);
+            }
+            if (parameter.ExcludeStatus.HasValue)
+            {
+                query = query.Where(e => e.FlowStatus != parameter.ExcludeStatus.Value);
+            }
+            if (parameter.BeginTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime >= parameter.BeginTime.Value);
+            }
+            if (parameter.EndTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime <= parameter.EndTime.Value);
+            }
+            if (parameter.Starred.HasValue)
+            {
+                query = query.Where(e => e.Starred == parameter.Starred.Value);
+            }
+            if (parameter.Trash.HasValue)
+            {
+                query = query.Where(e => e.Trash == parameter.Trash.Value);
+            }
+            if (parameter.Read.HasValue)
+            {
+                query = query.Where(e => e.Read == parameter.Read.Value);
+            }
+            if (parameter.Completed.HasValue)
+            {
+                query = query.Where(e => e.FlowData != null && e.FlowData.Completed == parameter.Completed.Value);
+            }
+            if (parameter.UserId > 0)
+            {
+                return query.Where(e => e.UserId == parameter.UserId);
+            }
+            return query;
+        }
+
+        public IQueryable<UserFormInfo> GetQuery(FormInfoParameter parameter)
         {
             var query = DB.UserFormInfos.Where(e => !e.Info.Deleted);
             if (parameter.PostUserId > 0)
@@ -43,13 +97,13 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Info.CategoryId == parameter.CategoryId);
             }
-            if (parameter.Status.HasValue)
+            if (parameter.FlowStatus.HasValue)
             {
-                query = query.Where(e => e.Status == parameter.Status.Value);
+                query = query.Where(e => e.FlowStatus == parameter.FlowStatus.Value);
             }
             if (parameter.ExcludeStatus.HasValue)
             {
-                query = query.Where(e => e.Status != parameter.ExcludeStatus.Value);
+                query = query.Where(e => e.FlowStatus != parameter.ExcludeStatus.Value);
             }
             if (parameter.BeginTime.HasValue)
             {
@@ -59,18 +113,32 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Info.CreateTime <= parameter.EndTime.Value);
             }
+            if (parameter.Starred.HasValue)
+            {
+                query = query.Where(e => e.Starred == parameter.Starred.Value);
+            }
+            if (parameter.Trash.HasValue)
+            {
+                query = query.Where(e => e.Deleted == parameter.Trash.Value);
+            }
+            if (parameter.Read.HasValue)
+            {
+                query = query.Where(e => e.Read == parameter.Read.Value);
+            }
             if (parameter.Completed.HasValue)
             {
                 query = query.Where(e => e.Info.FlowData != null && e.Info.FlowData.Completed == parameter.Completed.Value);
             }
             if (parameter.UserId > 0)
             {
-                return query.Where(e => e.UserId == parameter.UserId).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+                return query.Where(e => e.UserId == parameter.UserId);
             }
-            else
-            {
-                return query.OrderByDescending(e => e.ID);
-            }
+            return query.OrderByDescending(e => e.ID);
+        }
+
+        public bool HasRight(int infoId, int userId)
+        {
+            return DB.UserFormInfos.Any(e => e.InfoId == infoId && e.UserId == userId && !e.Info.Deleted);
         }
 
         public int[] GetUserIds(int infoId)
@@ -83,26 +151,75 @@ namespace Loowoo.Land.OA.Managers
             return DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId && !e.Info.Deleted);
         }
 
-        public void Delete(int infoId, int userId)
+        public void Remove(int infoId, int userId)
         {
             var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == infoId && e.UserId == userId);
             DB.UserFormInfos.Remove(entity);
             DB.SaveChanges();
         }
 
-
         public void Save(UserFormInfo model)
         {
             var entity = DB.UserFormInfos.FirstOrDefault(e => e.InfoId == model.InfoId && e.UserId == model.UserId);
             if (entity != null)
             {
-                entity.Status = model.Status;
+                entity.FlowStatus = model.FlowStatus;
             }
             else
             {
                 DB.UserFormInfos.Add(model);
             }
             DB.SaveChanges();
+        }
+
+        public void UpdateStar(int id, int userId, bool isStar = true)
+        {
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == id && e.UserId == userId);
+            if (entity != null)
+            {
+                entity.Starred = isStar;
+                DB.SaveChanges();
+            }
+        }
+
+        public void UpdateTrash(int id, int userId, bool deleted = true)
+        {
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == id && e.UserId == userId);
+            if (entity != null)
+            {
+                entity.Deleted = deleted;
+                DB.SaveChanges();
+            }
+        }
+
+        public void Read(int id, int userId)
+        {
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == id && e.UserId == userId);
+            if (entity != null)
+            {
+                entity.Read = true;
+                DB.SaveChanges();
+            }
+        }
+
+        public void ReadAll(int userId)
+        {
+            var list = DB.UserFormInfos.Where(e => e.UserId == userId);
+            foreach (var item in list)
+            {
+                item.Read = true;
+            }
+            DB.SaveChanges();
+        }
+
+        public void Delete(int id, int userId)
+        {
+            var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == id && e.UserId == userId);
+            if (entity != null)
+            {
+                entity.Deleted = true;
+                DB.SaveChanges();
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new FormInfoParameter
             {
                 FormId = formId,
-                Status = status,
+                FlowStatus = status,
                 Page = new PageParameter(page, rows),
                 UserId = CurrentUser.ID,
                 PostUserId = postUserId,
@@ -28,7 +28,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var form = Core.FormManager.GetModel(formId);
             var flow = Core.FlowManager.Get(form.FLowId);
 
-            var list = Core.UserFormInfoManager.GetList(parameter).Select(e => new FormInfoViewModel
+            var list = Core.UserFormInfoManager.GetQuery(parameter).Select(e => new FormInfoViewModel
             {
                 ID = e.ID,
                 CategoryId = e.Info.CategoryId,
@@ -36,7 +36,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 FlowDataId = e.Info.FlowDataId,
                 InfoId = e.Info.ID,
                 PostUserId = e.Info.PostUserId,
-                Status = e.Status,
+                Status = e.FlowStatus,
                 UpdateTime = e.Info.UpdateTime,
                 UserId = e.UserId,
             }).ToList();
@@ -113,7 +113,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 canCancel,
                 canComplete,
                 canBack,
-                status = userformInfo == null ? FlowStatus.Done : userformInfo.Status,
+                status = userformInfo == null ? FlowStatus.Done : userformInfo.FlowStatus,
                 flowNodeData = lastNodeData,
                 freeFlowNodeData
             };

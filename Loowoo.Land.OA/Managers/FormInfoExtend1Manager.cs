@@ -25,10 +25,10 @@ namespace Loowoo.Land.OA.Managers
                     case CheckStatus.All:
                         break;
                     case CheckStatus.Uncheck:
-                        query = query.Where(e => e.Status == FlowStatus.Doing);
+                        query = query.Where(e => e.FlowStatus == FlowStatus.Doing);
                         break;
                     case CheckStatus.Checked:
-                        query = query.Where(e => e.Status != FlowStatus.Doing);
+                        query = query.Where(e => e.FlowStatus != FlowStatus.Doing);
                         break;
                 }
             }
@@ -121,14 +121,14 @@ namespace Loowoo.Land.OA.Managers
             {
                 InfoId = data.ID,
                 UserId = data.UserId,
-                Status = FlowStatus.Done,
+                FlowStatus = FlowStatus.Done,
             });
 
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = data.ID,
                 UserId = data.ApprovalUserId,
-                Status = FlowStatus.Doing,
+                FlowStatus = FlowStatus.Doing,
             });
         }
     }

@@ -41,7 +41,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 UserId = CurrentUser.ID,
                 InfoId = infoId,
-                Status = FlowStatus.Done
+                FlowStatus = FlowStatus.Done
             });
             var targetUserIds = toUserIds.ToIntArray();
             var ccTargetUserIds = ccUserIds.ToIntArray();
@@ -92,7 +92,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     InfoId = info.ID,
                     UserId = userId,
-                    Status = FlowStatus.Doing,
+                    FlowStatus = FlowStatus.Doing,
                 });
 
                 var feed = new Feed

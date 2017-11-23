@@ -26,18 +26,29 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new FormInfoParameter
             {
                 FormId = form.ID,
-                Status = status,
+                FlowStatus = status,
                 UserId = status == null && CurrentUser.HasRight(FormType.Task, UserRightType.View) ? 0 : CurrentUser.ID,
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows)
             };
-
-            var datas = Core.TaskManager.GetList(parameter);
-            return new PagingResult
+            if (parameter.UserId == 0)
             {
-                List = datas.Select(e => new Models.TaskViewModel(e)),
-                Page = parameter.Page
-            };
+                var datas = Core.TaskManager.GetTasks(parameter);
+                return new PagingResult
+                {
+                    List = datas.Select(e => new TaskViewModel(e)),
+                    Page = parameter.Page,
+                };
+            }
+            else
+            {
+                var datas = Core.TaskManager.GetUserTasks(parameter);
+                return new PagingResult
+                {
+                    List = datas.Select(e => new TaskViewModel(e)),
+                    Page = parameter.Page
+                };
+            }
         }
 
         [AllowAnonymous]
@@ -51,7 +62,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 ExcludeStatus = FlowStatus.Completed,
             };
 
-            var datas = Core.TaskManager.GetList(parameter);
+            var datas = Core.TaskManager.GetUserTasks(parameter);
             return datas.Select(e => new TaskViewModel(e));
         }
 
@@ -155,14 +166,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     InfoId = data.TaskId,
                     UserId = data.ToUserId,
-                    Status = FlowStatus.Doing,
+                    FlowStatus = FlowStatus.Doing,
                 });
                 //通知分管领导
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
                     InfoId = data.TaskId,
                     UserId = data.LeaderId,
-                    Status = FlowStatus.Doing,
+                    FlowStatus = FlowStatus.Doing,
                 });
 
                 Core.FeedManager.Save(new Feed
@@ -189,8 +200,8 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.TaskManager.DeleteSubTask(model);
 
             var flowNodeData = Core.FlowNodeDataManager.GetModelByExtendId(model.ID, model.ToUserId);
-            Core.FlowNodeDataManager.Delete(flowNodeData);
-            Core.UserFormInfoManager.Delete(model.TaskId, model.ToUserId);
+            Core.FlowNodeDataManager.Remove(flowNodeData);
+            Core.UserFormInfoManager.Remove(model.TaskId, model.ToUserId);
             //Core.FeedManager.Delete(new Feed
             //{
             //    ToUserId = model.ToUserId,
@@ -238,7 +249,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = model.TaskId,
                 UserId = model.ToUserId,
-                Status = FlowStatus.Done
+                FlowStatus = FlowStatus.Done
             });
 
             int toUserId = 0;
@@ -258,7 +269,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = model.TaskId,
                 UserId = toUserId,
-                Status = FlowStatus.Doing,
+                FlowStatus = FlowStatus.Doing,
             });
 
             var feed = new Feed
@@ -300,7 +311,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = subTask.TaskId,
-                Status = FlowStatus.Done,
+                FlowStatus = FlowStatus.Done,
                 UserId = model.UserId
             });
 
@@ -326,7 +337,7 @@ namespace Loowoo.Land.OA.API.Controllers
                         {
                             InfoId = info.ID,
                             UserId = firstNodeData.UserId,
-                            Status = FlowStatus.Done
+                            FlowStatus = FlowStatus.Done
                         });
                         //局领导的ID在主流程的最后一步
                         var flowNode = flowData.Flow.GetLastNode();
@@ -388,7 +399,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
                     InfoId = subTask.TaskId,
-                    Status = FlowStatus.Back,
+                    FlowStatus = FlowStatus.Back,
                     UserId = toUserId
                 });
             }
@@ -405,7 +416,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = subTask.TaskId,
                 UserId = model.ToUserId,
-                Status = FlowStatus.Doing
+                FlowStatus = FlowStatus.Doing
             });
 
             var feed = new Feed
@@ -436,10 +447,10 @@ namespace Loowoo.Land.OA.API.Controllers
             var model = Core.TaskManager.GetTodo(id);
             var subTask = Core.TaskManager.GetSubTask(model.SubTaskId);
             var infoId = subTask.TaskId;
-            Core.TaskManager.DeleteTodo(model);
+            Core.TaskManager.RemoveTodo(model);
             if (!subTask.Todos.Any(e => e.ToUserId == model.ToUserId))
             {
-                Core.UserFormInfoManager.Delete(infoId, model.ToUserId);
+                Core.UserFormInfoManager.Remove(infoId, model.ToUserId);
             }
         }
     }

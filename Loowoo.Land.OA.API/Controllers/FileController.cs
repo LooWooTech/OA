@@ -75,7 +75,6 @@ namespace Loowoo.Land.OA.API.Controllers
             file.InfoId = infoId;
             file.ID = id;
             file.Inline = inline;
-            file.FormId = formId;
             Core.FileManager.Save(file);
 
             return file;

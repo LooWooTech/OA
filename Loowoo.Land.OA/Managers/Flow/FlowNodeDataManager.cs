@@ -131,7 +131,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public void Delete(FlowNodeData model)
+        public void Remove(FlowNodeData model)
         {
             if (model == null) return;
             DB.FlowNodeDatas.Remove(model);

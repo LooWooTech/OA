@@ -13,12 +13,11 @@ namespace Loowoo.Land.OA.Managers
 {
     public class MissiveManager : ManagerBase
     {
-        public IEnumerable<Missive> GetList(FormInfoParameter parameter)
+        public IEnumerable<UserMissive> GetList(FormInfoParameter parameter)
         {
-            var query = DB.Missives.AsQueryable();
-            parameter.InfoIds = Core.UserFormInfoManager.GetUserInfoIds(parameter);
-            query = query.Where(e => parameter.InfoIds.Contains(e.ID));
-            return query.OrderByDescending(e => e.ID);
+            return Core.UserFormInfoManager.GetUserInfoList<UserMissive>(parameter)
+                .OrderByDescending(e => e.ID)
+                .SetPage(parameter.Page); ;
         }
 
         public void Save(Missive data)

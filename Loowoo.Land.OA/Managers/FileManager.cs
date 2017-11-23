@@ -33,7 +33,7 @@ namespace Loowoo.Land.OA.Managers
 
         public File GetModel(int infoId, string fileName)
         {
-            return DB.Files.FirstOrDefault(e => e.InfoId == infoId && e.SavePath == fileName);
+            return DB.Files.FirstOrDefault(e => e.InfoId == infoId && e.FileName == fileName);
         }
 
         public void Delete(int id)
@@ -109,7 +109,6 @@ namespace Loowoo.Land.OA.Managers
             {
                 InfoId = toInfoId,
                 FileName = e.FileName,
-                FormId = e.FormId,
                 Inline = e.Inline,
                 ParentId = e.ParentId,
                 SavePath = e.SavePath,

@@ -41,6 +41,9 @@ namespace Loowoo.Land.OA.Models
 
         public int PostUserId { get; set; }
 
+        [JsonIgnore]
+        public virtual User PostUser { get; set; }
+
         public int FlowDataId { get; set; }
 
         public virtual FlowData FlowData { get; set; }

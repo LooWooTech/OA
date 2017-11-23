@@ -100,6 +100,8 @@ namespace Loowoo.Land.OA.Models
         /// 文件摘要
         /// </summary>
         public string WJ_ZY { get; set; }
+
+        public string Uid { get; set; }
     }
 
     /// <summary>

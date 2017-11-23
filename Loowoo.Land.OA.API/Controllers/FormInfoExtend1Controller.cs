@@ -67,7 +67,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = id,
-                Status = FlowStatus.Done,
+                FlowStatus = FlowStatus.Done,
                 UserId = CurrentUser.ID
             });
             var model = Core.FormInfoExtend1Manager.GetModel(id);
@@ -78,7 +78,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
                     InfoId = id,
-                    Status = FlowStatus.Doing,
+                    FlowStatus = FlowStatus.Doing,
                     UserId = toUserId
                 });
 

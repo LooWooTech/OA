@@ -81,5 +81,10 @@ namespace Loowoo.Land.OA.Managers
         {
             return DB.FormInfos.FirstOrDefault(e => e.Uid == fromXxid);
         }
+
+        public bool HasRight(int infoId, int userId)
+        {
+            return DB.FormInfos.Any(e => e.ID == infoId && e.PostUserId == userId);
+        }
     }
 }

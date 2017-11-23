@@ -19,28 +19,28 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 Page = new Loowoo.Common.PageParameter(page, rows),
                 SearchKey = searchKey,
-                Deleted = false,
+                Trash = false,
                 Draft = false,
             };
             switch (type)
             {
                 case "trash":
-                    parameter.Deleted = true;
-                    parameter.ToUserId = CurrentUser.ID;
+                    parameter.Trash = true;
+                    parameter.UserId = CurrentUser.ID;
                     break;
                 case "draft":
                     parameter.Draft = true;
-                    parameter.FromUserId = CurrentUser.ID;
+                    parameter.PostUserId = CurrentUser.ID;
                     break;
                 case "star":
-                    parameter.Star = true;
-                    parameter.ToUserId = CurrentUser.ID;
+                    parameter.Starred = true;
+                    parameter.UserId = CurrentUser.ID;
                     break;
                 case "send":
-                    parameter.FromUserId = CurrentUser.ID;
+                    parameter.PostUserId = CurrentUser.ID;
                     break;
                 default:
-                    parameter.ToUserId = CurrentUser.ID;
+                    parameter.UserId = CurrentUser.ID;
                     break;
             }
             //发件箱、草稿箱
@@ -60,7 +60,7 @@ namespace Loowoo.Land.OA.API.Controllers
         /// </summary>
         public object SendList(MailParameter parameter)
         {
-            var list = Core.MailManager.GetMails(parameter);
+            var list = Core.MailManager.GetSendMails(parameter);
             return new PagingResult
             {
                 List = list.Select(e => new
@@ -69,6 +69,10 @@ namespace Loowoo.Land.OA.API.Controllers
                     MailId = e.ID,
                     e.Subject,
                     e.CreateTime,
+                    e.IsDraft,
+                    e.ReplyId,
+                    e.ForwardId,
+                    e.HasAttachments,
                     ToUsers = e.Users.Where(u => !u.CC).Select(u => new { u.UserId, u.User.RealName }),
                 }),
                 Page = parameter.Page,
@@ -88,15 +92,17 @@ namespace Loowoo.Land.OA.API.Controllers
                 List = list.Select(e => new
                 {
                     e.ID,
-                    e.Mail.Subject,
-                    e.Mail.CreateTime,
-                    e.HasRead,
-                    FromUser = e.Mail.Creator == null ? null : e.Mail.Creator.RealName,
+                    e.Subject,
+                    e.CreateTime,
+                    e.Read,
+                    FromUser = e.Poster == null ? null : e.Poster.RealName,
                     e.UserId,
-                    e.Star,
-                    e.Deleted,
+                    e.Starred,
+                    e.Trash,
                     e.CC,
-                    e.MailId,
+                    MailId = e.InfoId,
+                    e.ReplyId,
+                    e.ForwardId,
                 }),
                 Page = parameter.Page
             };
@@ -162,48 +168,23 @@ namespace Loowoo.Land.OA.API.Controllers
             return new
             {
                 model,
-                fromName = model.Creator?.RealName,
+                fromUser = new { model.Info.PostUser?.ID, model.Info.PostUser?.RealName },
+                userMail = model.Users.FirstOrDefault(e => e.InfoId == model.ID && e.UserId == CurrentUser.ID),
                 toUsers = model.Users.Where(u => !u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
                 ccUsers = model.Users.Where(u => u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
                 attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id })
             };
         }
 
-        [HttpGet]
-        public void Read(int id)
-        {
-            Core.MailManager.Read(id, CurrentUser.ID);
-        }
-
-        [HttpGet]
-        public void ReadAll()
-        {
-            Core.MailManager.ReadAll(CurrentUser.ID);
-        }
-
-        [HttpGet]
-        public void Star(int id)
-        {
-            Core.MailManager.UpdateStar(id, CurrentUser.ID, true);
-        }
-
-        [HttpGet]
-        public void UnStar(int id)
-        {
-            Core.MailManager.UpdateStar(id, CurrentUser.ID, false);
-        }
-
         [HttpDelete]
         public void Delete(int id)
         {
-            Core.MailManager.UpdateDelete(id, CurrentUser.ID, true);
+            var model = Core.MailManager.GetModel(id);
+            if(model.Info.PostUserId != CurrentUser.ID)
+            {
+                throw new Exception("无法删除别人创建的邮件");
+            }
+            Core.MailManager.Delete(id);
         }
-
-        [HttpGet]
-        public void Recovery(int id)
-        {
-            Core.MailManager.UpdateDelete(id, CurrentUser.ID, false);
-        }
-
     }
 }

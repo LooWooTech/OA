@@ -17,87 +17,28 @@ namespace Loowoo.Land.OA.Managers
             return DB.Mails.FirstOrDefault(e => e.ID == id);
         }
 
-        public void UpdateStar(int id, int userId, bool isStar = true)
-        {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
-            if (entity != null)
-            {
-                entity.Star = isStar;
-                DB.SaveChanges();
-            }
-        }
-
-        public void UpdateDelete(int id, int userId, bool deleted = true)
-        {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
-            if (entity != null)
-            {
-                entity.Deleted = deleted;
-                DB.SaveChanges();
-            }
-        }
-
-        public void Read(int id, int userId)
-        {
-            var entity = DB.UserMails.FirstOrDefault(e => e.ID == id && e.UserId == userId);
-            if (entity != null)
-            {
-                entity.HasRead = true;
-                DB.SaveChanges();
-            }
-        }
-
-        public void ReadAll(int userId)
-        {
-            var list = DB.UserMails.Where(e => e.UserId == userId);
-            foreach (var item in list)
-            {
-                item.HasRead = true;
-            }
-            DB.SaveChanges();
-        }
-
-        public IEnumerable<Mail> GetMails(MailParameter parameter)
+        public IEnumerable<Mail> GetSendMails(MailParameter parameter)
         {
             var query = DB.Mails.AsQueryable();
-            if (parameter.FromUserId > 0)
+            if (parameter.PostUserId > 0)
             {
-                query = query.Where(e => e.CreatorId == parameter.FromUserId);
+                query = query.Where(e => e.Info.PostUserId == parameter.PostUserId);
+            }
+            if (parameter.Trash.HasValue)
+            {
+                query = query.Where(e => e.Deleted == parameter.Trash.Value);
             }
             if (parameter.Draft.HasValue)
             {
                 query = query.Where(e => e.IsDraft == parameter.Draft.Value);
             }
-            if (!string.IsNullOrEmpty(parameter.SearchKey))
-            {
-                query = query.Where(e => e.Subject.Contains(parameter.SearchKey));
-            }
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        public IEnumerable<UserMail> GetUserMails(MailParameter parameter)
+        public IEnumerable<UserMail> GetUserMails(FormInfoParameter parameter)
         {
-            var query = DB.UserMails.Where(e => e.Mail.IsDraft == false);
-            if (parameter.Deleted.HasValue)
-            {
-                query = query.Where(e => e.Deleted == parameter.Deleted);
-            }
-            if (parameter.FromUserId > 0)
-            {
-                query = query.Where(e => e.Mail.CreatorId == parameter.FromUserId);
-            }
-            if (parameter.ToUserId > 0)
-            {
-                query = query.Where(e => e.UserId == parameter.ToUserId);
-            }
-            if (!string.IsNullOrEmpty(parameter.SearchKey))
-            {
-                query = query.Where(e => e.Mail.Subject.Contains(parameter.SearchKey));
-            }
-            if (parameter.Star.HasValue)
-            {
-                query = query.Where(e => e.Star == parameter.Star.Value);
-            }
+            var query = Core.UserFormInfoManager.GetUserInfoList<UserMail>(parameter);
+            query = query.Where(e => e.IsDraft == false);
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
@@ -112,20 +53,35 @@ namespace Loowoo.Land.OA.Managers
         {
             if (model.ID > 0)
             {
-                var entity = DB.Mails.FirstOrDefault(e => e.ID == model.ID);
-                entity.Content = model.Content;
-                entity.Subject = model.Subject;
+                var info = DB.FormInfos.FirstOrDefault(e => e.ID == model.ID);
+                info.Title = model.Subject;
 
-                var olds = DB.UserMails.Where(e => e.MailId == entity.ID);
-                DB.UserMails.RemoveRange(olds);
+                var mail = DB.Mails.FirstOrDefault(e => e.ID == model.ID);
+                mail.Content = model.Content;
+                mail.Subject = model.Subject;
 
-                DB.UserMails.AddRange(model.Users);
+                var olds = DB.UserFormInfos.Where(e => e.InfoId == model.ID);
+                DB.UserFormInfos.RemoveRange(olds);
+
+                DB.UserFormInfos.AddRange(model.Users);
+
+                //DB.UserMails.AddRange(model.Users);
             }
             else
             {
+                var info = new FormInfo
+                {
+                    FormId = (int)FormType.Mail,
+                    PostUserId = model.CreatorId,
+                    Title = model.Subject,
+                };
+                DB.FormInfos.Add(info);
+                DB.SaveChanges();
+
+                model.ID = info.ID;
                 DB.Mails.Add(model);
+                DB.SaveChanges();
             }
-            DB.SaveChanges();
         }
 
         //public void SaveUserMail(UserMail model)
@@ -142,9 +98,25 @@ namespace Loowoo.Land.OA.Managers
         //    DB.SaveChanges();
         //}
 
-        public bool HasRight(int id, int userId)
+        public bool HasRight(int mailId, int userId)
         {
-            return DB.Mails.Any(e => e.ID == id && e.CreatorId == userId) || DB.UserMails.Any(e => e.MailId == id && e.UserId == userId);
+            return Core.FormInfoManager.HasRight(mailId, userId) || Core.UserFormInfoManager.HasRight(mailId, userId);
+        }
+
+        public void Delete(int mailId)
+        {
+            var entity = DB.Mails.FirstOrDefault(e => e.ID == mailId);
+            if (entity != null)
+            {
+                entity.Deleted = true;
+                if (entity.IsDraft)
+                {
+                    entity.Info.Deleted = true;
+                    var userInfos = DB.UserFormInfos.Where(e => e.InfoId == entity.ID);
+                    DB.UserFormInfos.RemoveRange(userInfos);
+                }
+                DB.SaveChanges();
+            }
         }
     }
 }

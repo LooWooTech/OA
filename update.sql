@@ -1,3 +1,85 @@
+-- 2017-11-23
+ALTER TABLE `user_form_info`
+	CHANGE COLUMN `Status` `FlowStatus` INT(11) NOT NULL DEFAULT '0' AFTER `InfoID`,
+	ADD COLUMN `Starred` BIT NOT NULL AFTER `FlowStatus`,
+	ADD COLUMN `Read` BIT NOT NULL AFTER `Starred`,
+	ADD COLUMN `Deleted` BIT NOT NULL AFTER `Read`,
+	ADD COLUMN `Cc` BIT NOT NULL AFTER `Deleted`,
+	ADD COLUMN `Reminded` BIT NOT NULL AFTER `Cc`,
+	ADD COLUMN `Trash` BIT NOT NULL;
+
+ALTER TABLE `missive`
+	ADD COLUMN `Uid` VARCHAR(50) NULL AFTER `NotReport`;
+
+UPDATE missive m
+LEFT JOIN form_info info ON m.ID = info.ID SET m.Uid = info.Uid;
+
+
+ALTER TABLE `mail`
+	ALTER `ID` DROP DEFAULT;
+ALTER TABLE `mail`
+	CHANGE COLUMN `ID` `ID` INT(11) NOT NULL FIRST;
+
+ALTER TABLE `mail`
+	ADD COLUMN `Deleted` BIT NOT NULL AFTER `ReplyId`;
+
+-- 创建user info view
+SELECT `user`.`ID` AS `ID`,
+`user`.`InfoID` AS `InfoID`,
+`info`.`Uid` AS `Uid`,
+`info`.`Title` AS `Title`,
+`info`.`PostUserId` AS `PostUserId`,
+`info`.`CreateTime` AS `CreateTime`,
+`info`.`FormId` AS `FormId`,
+`info`.`FlowDataId` AS `FlowDataId`,
+`info`.`FlowStep` AS `FlowStep`,
+`info`.`UpdateTime` AS `UpdateTime`,
+`user`.`Trash` AS `Trash`,
+`user`.`Starred` AS `Starred`,
+`user`.`Read` AS `Read`,
+`user`.`Cc` AS `Cc`,
+`user`.`FlowStatus` AS `FlowStatus`,
+`user`.`UserID` AS `UserID`,
+`info`.`Reminded` AS `Reminded`
+FROM (`form_info` `info`
+LEFT JOIN `user_form_info` `user` ON((`info`.`ID` = `user`.`InfoID`)))
+WHERE info.Deleted = 0
+
+-- 创建user missive view
+SELECT `m`.`WJ_ZH` AS `WJ_ZH`,
+`m`.`Important` AS `Important`,
+`m`.`JJ_DJ` AS `JJ_DJ`,
+`m`.`WJ_MJ` AS `WJ_MJ`,
+m.QX_RQ,
+info.*
+FROM missive m
+JOIN user_info info ON m.ID = info.InfoID
+
+
+-- 创建user mail view
+SELECT 
+m.Subject,
+m.HasAttachments,
+m.IsDraft,
+m.ReplyId,
+m.ForwardId,
+info.*
+FROM mail m
+JOIN user_info info ON m.ID = info.InfoID
+
+-- 创建user task view
+SELECT 
+t.Number,
+t.FromType,
+t.`From`,
+t.ScheduleDate,
+t.Goal,
+info.*
+FROM task t
+JOIN user_info info ON t.ID = info.InfoID
+
+
+
 -- 2017-11-22
 ALTER TABLE `mail`
 	DROP COLUMN `ToUserIds`,
