@@ -19,6 +19,7 @@ namespace Loowoo.Land.OA.Models
         {
             Content = feed.Title ?? feed.Description;
             InfoId = feed.InfoId;
+            CreatorId = feed.FromUserId;
         }
 
         [Key]

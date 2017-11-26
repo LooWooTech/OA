@@ -187,7 +187,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     InfoId = data.TaskId,
                 });
 
-                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title }, CurrentUser.ID, data.LeaderId, data.ToUserId);
+                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title, CreatorId = CurrentUser.ID }, data.LeaderId, data.ToUserId);
             }
 
             return Ok(data);

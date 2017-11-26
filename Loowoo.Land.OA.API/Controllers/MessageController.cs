@@ -21,7 +21,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 ToUserId = action == "receive" ? CurrentUser.ID : 0,
                 FormId = formId,
             };
-            var list = Core.MessageManager.GetList(parameter);
+            var list = Core.MessageManager.GetList(parameter).ToList();
 
             return new PagingResult
             {
