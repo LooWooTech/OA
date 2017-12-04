@@ -44,12 +44,17 @@ namespace Loowoo.Land.OA.Managers
 
         public void Add(Message model, params int[] toUserIds)
         {
-            DB.Messages.AddOrUpdate(model);
-            DB.SaveChanges();
-            DB.UserMessages.AddRange(toUserIds.Select(toUserId => new UserMessage
+            var entity = DB.Messages.FirstOrDefault(e => e.CreatorId == model.CreatorId && e.InfoId == model.InfoId);
+            if (entity == null)
+            {
+                entity = model;
+                DB.Messages.Add(entity);
+                DB.SaveChanges();
+            }
+            DB.UserMessages.AddRange(toUserIds.Where(userId => userId != model.CreatorId).Select(toUserId => new UserMessage
             {
                 UserId = toUserId,
-                MessageId = model.ID,
+                MessageId = entity.ID,
             }));
             DB.SaveChanges();
         }
