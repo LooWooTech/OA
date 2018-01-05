@@ -34,7 +34,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.UserId == parameter.UserId);
             }
-            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderBy(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Salary model)
@@ -171,7 +171,7 @@ namespace Loowoo.Land.OA.Managers
                     break;
                 }
 
-                for (var rowIndex = header.StartRow + header.RowHeight; rowIndex < 250; rowIndex++)
+                for (var rowIndex = header.StartRow + header.RowHeight; rowIndex < 500; rowIndex++)
                 {
                     currentRowIndex = rowIndex;
                     var rowData = ReadData(sheet, header, rowIndex);
@@ -180,7 +180,7 @@ namespace Loowoo.Land.OA.Managers
                         currentRowIndex++;
                         break;
                     }
-                    var model = new Salary { Month = month, Year = year,Json = rowData.ToJson() };
+                    var model = new Salary { Month = month, Year = year, Json = rowData.ToJson() };
                     var userRealName = rowData["姓名"]?.ToString();
                     if (!string.IsNullOrEmpty(userRealName))
                     {
