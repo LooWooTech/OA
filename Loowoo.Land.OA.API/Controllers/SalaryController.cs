@@ -70,7 +70,7 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Import(int year, int month, string files)
+        public object Import(int year, int month, string files)
         {
             if (string.IsNullOrEmpty(files))
             {
@@ -88,10 +88,17 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("没有权限导入工资单");
             }
 
+            var fails = new List<object>();
             foreach (var filePath in files.Split(','))
             {
-                Core.SalaryManager.ImportData(year, month, filePath);
+                var failRows = Core.SalaryManager.ImportData(year, month, filePath);
+                if (failRows != null && failRows.Count > 0)
+                {
+                    var fileName = filePath.Split('/').Last();
+                    fails.Add(new { fileName, failRows });
+                }
             }
+            return fails;
         }
     }
 }

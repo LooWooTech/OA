@@ -1,3 +1,20 @@
+-- 2018-01-04
+-- É¾³ýÖØ¸´µÄuser_form_info
+DELETE FROM user_form_info WHERE id IN
+(
+	SELECT MAX(id) FROM 
+	(
+		SELECT u1.*	FROM user_form_info u1
+		JOIN
+		(
+			SELECT infoId,UserId FROM user_form_info
+			GROUP BY infoId,UserId
+			HAVING COUNT(1) > 1
+		) AS t1 
+		ON u1.InfoID = t1.infoId AND u1.UserID = t1.userid
+	) AS t2
+	GROUP BY userid,infoid
+)
 -- 2017-11-23
 ALTER TABLE `user_form_info`
 	CHANGE COLUMN `Status` `FlowStatus` INT(11) NOT NULL DEFAULT '0' AFTER `InfoID`,

@@ -14,10 +14,6 @@ namespace Loowoo.Land.OA.Managers
 {
     public class SalaryManager : ManagerBase
     {
-        private static readonly string[] ZsgColumns = "部门,员工类型,员工号,姓名,身份证号,信用卡号,岗位工资,薪级工资,生活补贴,岗位津贴,工龄补贴,提租,公积金(补),住房补贴,医疗补贴,应发工资,公积金,住房贴,医疗保险,失业金,养老金,预扣养老金,实发工资,计税工资,所得税,实际发放数".Split(',').ToArray();
-        private static readonly string[] LsgColumns = "序号,帐号,工号,姓名,工资,岗位津贴,工龄工资,加班,补贴,冷饮费,车贴,应发工资,养老保险,救助金5元/月,失业保险0.5%,补缴公积金,扣除,公积金,扣款合计,应发,个调税,实发工资".Split(',').ToArray();
-        private static readonly string[] BdcColumns = "序号,姓名,公积金,补缴个人部分,个人扣款合计,养老,失业保险,医疗,工伤,生育,公积金,补缴单位部分,单位扣款合计,合计,扣税工资,扣税,扣除差额,补上月多扣部分,实发数".Split(',').ToArray();
-
         public int[] GetYears(int userId)
         {
             return DB.Salaries.Where(e => e.UserId == userId).GroupBy(e => e.Year).Select(g => g.Key).ToArray();
@@ -41,48 +37,9 @@ namespace Loowoo.Land.OA.Managers
             return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
-        private List<SalaryColumn> GetColumns(string[] names)
-        {
-            var list = new List<SalaryColumn>();
-            for (var i = 0; i < names.Length; i++)
-            {
-                list.Add(new SalaryColumn(i, names[i]));
-            }
-            return list;
-        }
-
-        private SalaryDataDescriptor GetSalaryDataDescriptor(SalaryDataType type)
-        {
-            switch (type)
-            {
-                case SalaryDataType.BDC:
-                    return new SalaryDataDescriptor
-                    {
-                        Type = type,
-                        StartRow = 4,
-                        Columns = GetColumns(BdcColumns)
-                    };
-                case SalaryDataType.LSG:
-                    return new SalaryDataDescriptor
-                    {
-                        Type = type,
-                        StartRow = 3,
-                        Columns = GetColumns(LsgColumns)
-                    };
-                case SalaryDataType.ZSG:
-                    return new SalaryDataDescriptor
-                    {
-                        Type = type,
-                        StartRow = 1,
-                        Columns = GetColumns(ZsgColumns)
-                    };
-                default:
-                    return null;
-            }
-        }
-
         public void Save(Salary model)
         {
+            //TODO：如果姓名不存在，则创建一个新用户？
             if (model.UserId == 0) return;
 
             var entity = DB.Salaries.FirstOrDefault(e => e.Year == model.Year && e.Month == model.Month && e.UserId == model.UserId);
@@ -98,65 +55,150 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        public void ImportData(int year, int month, string filePath, SalaryDataType type = 0)
+        private static readonly string[] _columns = new[] { "部门,员工类型", "序号,帐号,工号,姓名", "序号,参保时间,姓名" };
+
+        private int FindHeader(ISheet sheet, int rowIndex = 0)
         {
-            if (string.IsNullOrEmpty(filePath)) return;
+            do
+            {
+                var row = sheet.GetRow(rowIndex);
+                if (row == null)
+                {
+                    break;
+                }
+                var headTitles = new List<string>();
+                foreach (var cell in row)
+                {
+                    if (cell.CellType != CellType.String)
+                    {
+                        break;
+                    }
+                    headTitles.Add(cell.StringCellValue);
+                    var titles = string.Join(",", headTitles);
+                    //如果符合
+                    if (_columns.Any(c => c == titles))
+                    {
+                        return rowIndex;
+                    }
+                }
+                rowIndex++;
+            } while (true);
+            return -1;
+        }
+
+        private SalaryHeader BuildHeader(ISheet sheet, int rowIndex)
+        {
+            var result = new SalaryHeader { StartRow = rowIndex };
+            var row = sheet.GetRow(rowIndex);
+            if (row == null) return null;
+            if (row.Cells.All(e => e.CellType == CellType.Blank) || row.Cells.All(e => e.CellType != CellType.String))
+            {
+                return null;
+            }
+            var columns = sheet.ReadRowData(rowIndex).AsEnumerable();
+            var firstColumn = columns.FirstOrDefault(e => e.Rowspan > 1);
+            if (firstColumn != null)
+            {
+                for (var i = 1; i < firstColumn.Rowspan; i++)
+                {
+                    columns = columns.Concat(sheet.ReadRowData(rowIndex + i));
+                }
+            }
+
+            result.Columns = columns.Where(e => e.Colspan == 1 && e.Value != null).Select(e => new SalaryColumn
+            {
+                Column = e.Column,
+                Row = e.Row,
+                ColumnSpan = e.Colspan,
+                RowSpan = e.Rowspan,
+                Name = e.Value.ToString()
+            }).ToList();
+            return result;
+        }
+
+        private Document ReadData(ISheet sheet, SalaryHeader header, int rowIndex)
+        {
+            var row = sheet.GetRow(rowIndex);
+            if (row == null) return null;
+
+            if (row.Cells.All(e => e.CellType == CellType.Blank))
+            {
+                return null;
+            }
+            if (row.Cells.Any(e => e.IsMergedCell)) return null;
+
+            var values = sheet.ReadRowData(rowIndex);
+            if (values == null) return null;
+
+            Document data = new Document();
+            foreach (var col in header.Columns)
+            {
+                if (col.ColumnSpan > 1)
+                {
+                    continue;
+                }
+                var cell = values.FirstOrDefault(e => e.Column == col.Column);
+                if (cell == null) continue;
+
+                if (col.Name == "序号" && cell.Value.ToString() == "合计")
+                {
+                    return null;
+                }
+                data[col.Name] = cell.Value;
+            }
+            return data;
+        }
+
+        public List<int> ImportData(int year, int month, string filePath, SalaryDataType type = 0)
+        {
+            if (string.IsNullOrEmpty(filePath)) return null;
 
             var excel = ExcelHelper.GetWorkbook(filePath);
             var sheet = excel.GetSheetAt(0);
-            var firstRow = sheet.GetRow(0);
-            if (firstRow == null)
-            {
-                throw new Exception("内容格式不正确");
-            }
-            var firstCell = firstRow.GetCell(0);
 
-            if (type == 0)
+            var currentRowIndex = 0;
+            var failList = new List<int>();
+            do
             {
-                if (firstCell.StringCellValue == "部门")
+                var headerRow = FindHeader(sheet, currentRowIndex);
+                if (headerRow == -1)
                 {
-                    type = SalaryDataType.ZSG;
+                    break;
                 }
-                else if (firstCell.StringCellValue.Contains("不动产"))
+                var header = BuildHeader(sheet, headerRow);
+                if (header == null)
                 {
-                    type = SalaryDataType.BDC;
+                    break;
                 }
-                else
-                {
-                    type = SalaryDataType.LSG;
-                }
-            }
-            if (type == 0)
-            {
-                throw new Exception("内容格式不正确");
-            }
 
-            var desc = GetSalaryDataDescriptor(type);
-            var data = sheet.ReadData(desc.StartRow);
-            for (var rownum = data.Min(e => e.Row); rownum <= data.Max(e => e.Row); rownum++)
-            {
-                var model = new Salary { Month = month, Year = year };
-                var vals = data.Where(e => e.Row == rownum);
-                if (vals.Count() != desc.Columns.Count)
+                for (var rowIndex = header.StartRow + header.RowHeight; rowIndex < 250; rowIndex++)
                 {
-                    throw new Exception("文档格式不正确，列数不一致");
-                }
-                foreach (var val in vals)
-                {
-                    var column = desc.Columns.FirstOrDefault(e => e.Order == val.Column);
-                    model.Data[column.Name] = val.Value;
-                    if (column.Name == "姓名")
+                    currentRowIndex = rowIndex;
+                    var rowData = ReadData(sheet, header, rowIndex);
+                    if (rowData == null)
                     {
-                        var name = val.Value?.ToString();
-                        var user = DB.Users.FirstOrDefault(e => e.Username == name);
+                        currentRowIndex++;
+                        break;
+                    }
+                    var model = new Salary { Month = month, Year = year,Json = rowData.ToJson() };
+                    var userRealName = rowData["姓名"]?.ToString();
+                    if (!string.IsNullOrEmpty(userRealName))
+                    {
+                        var user = DB.Users.FirstOrDefault(e => e.Username == userRealName);
                         if (user != null)
                         {
                             model.UserId = user.ID;
                         }
                     }
+                    if (model.UserId == 0)
+                    {
+                        failList.Add(rowIndex + 1);
+                    }
+                    Save(model);
                 }
-                Save(model);
-            }
+
+            } while (true);
+            return failList;
         }
     }
 }

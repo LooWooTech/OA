@@ -152,6 +152,21 @@ namespace Loowoo.Common
             return list;
         }
 
+        public static List<ExcelCell> ReadRowData(this ISheet sheet, int rowIndex)
+        {
+            var row = sheet.GetRow(rowIndex);
+            if (row == null) return null;
+
+            var list = new List<ExcelCell>();
+            foreach (var cell in row.Cells)
+            {
+                var excelCell = ConvertToExcelCell(cell);
+                excelCell.ComputeSpace(cell, list);
+                list.Add(excelCell);
+            }
+            return list;
+        }
+
         public static void WriteData(this ISheet sheet, List<ExcelCell> data)
         {
             foreach (var item in data)

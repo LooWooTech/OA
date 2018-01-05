@@ -39,6 +39,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     ToUser = e.User == null ? null : e.User.RealName,
 
                     FormId = e.Message.Info == null ? 0 : e.Message.Info.FormId,
+                    FormName = e.Message.Info.Form == null ? null : e.Message.Info.Form.Name,
                     Title = e.Message.Info == null ? null : e.Message.Info.Title,
                 }),
                 Page = parameter.Page

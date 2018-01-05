@@ -65,24 +65,30 @@ namespace Loowoo.Land.OA.Models
         BDC = 3
     }
 
-    public class SalaryDataDescriptor
+    public class SalaryHeader
     {
-        public SalaryDataType Type { get; set; }
-
         public int StartRow { get; set; }
 
-        public List<SalaryColumn> Columns { get; set; }
+        public int RowHeight
+        {
+            get
+            {
+                return Columns.Max(c => c.RowSpan);
+            }
+        }
+
+        public List<SalaryColumn> Columns { get; set; } = new List<SalaryColumn>();
     }
 
     public class SalaryColumn
     {
-        public SalaryColumn(int order, string name)
-        {
-            Order = order;
-            Name = name;
-        }
+        public int Row { get; set; }
 
-        public int Order { get; set; }
+        public int Column { get; set; }
+
+        public int RowSpan { get; set; } = 1;
+
+        public int ColumnSpan { get; set; } = 1;
 
         public string Name { get; set; }
     }
