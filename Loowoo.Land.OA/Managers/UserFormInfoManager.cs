@@ -192,6 +192,26 @@ namespace Loowoo.Land.OA.Managers
             }
         }
 
+        public void UpdateFlowStatusOnCompleteFreeFlow(int infoId, FlowData flowData, FreeFlowData freeflowData)
+        {
+            //当结束自由转发之后，如果该用户不在主流程，那么则待办箱的件将转移到已办件
+            var mainFlowUserIds = flowData.Nodes.Where(e => e.Result == null).Select(e => e.UserId).ToArray();
+            var freeFlowUserIds = freeflowData.Nodes.Select(e => e.UserId).ToArray();
+            var needUpdateStatusUserId = freeFlowUserIds.Where(id => !mainFlowUserIds.Contains(id)).ToArray();
+            if (needUpdateStatusUserId.Length > 0)
+            {
+                var list = DB.UserFormInfos.Where(e => e.InfoId == infoId && needUpdateStatusUserId.Contains(e.UserId));
+                foreach (var item in list)
+                {
+                    if (item.FlowStatus == FlowStatus.Doing)
+                    {
+                        item.FlowStatus = FlowStatus.Done;
+                    }
+                }
+                DB.SaveChanges();
+            }
+        }
+
         public void Read(int id, int userId)
         {
             var entity = DB.UserFormInfos.FirstOrDefault(e => e.ID == id && e.UserId == userId);

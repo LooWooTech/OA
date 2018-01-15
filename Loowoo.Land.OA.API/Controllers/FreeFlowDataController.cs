@@ -172,6 +172,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 };
                 Core.FeedManager.Save(feed);
                 Core.MessageManager.Add(feed);
+
+                Core.UserFormInfoManager.UpdateFlowStatusOnCompleteFreeFlow(info.ID, info.FlowData, freeFlowData);
             }
         }
     }
