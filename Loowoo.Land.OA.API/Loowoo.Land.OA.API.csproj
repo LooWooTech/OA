@@ -140,7 +140,6 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="WebService\JSWJ\JSWJ.asmx" />
-    <Content Include="Client\android-0.1.apk" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -231,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Client\" />
     <Folder Include="Controllers\Base\" />
   </ItemGroup>
   <ItemGroup>
