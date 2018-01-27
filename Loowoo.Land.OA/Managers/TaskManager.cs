@@ -19,7 +19,7 @@ namespace Loowoo.Land.OA.Managers
         public IEnumerable<Task> GetTasks(FormInfoParameter parameter)
         {
             var query = DB.Tasks.Where(e => !e.Info.Deleted);
-            if(!string.IsNullOrEmpty(parameter.SearchKey))
+            if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 query = query.Where(e => e.Name.Contains(parameter.SearchKey));
             }
@@ -111,6 +111,18 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SubTasks.Remove(model);
             DB.SaveChanges();
+        }
+
+        public bool HasDoingTask(int taskId, int userId)
+        {
+            var query = DB.SubTasks.Where(e => e.TaskId == taskId && (e.Status == SubTaskStatus.Back || e.Status == SubTaskStatus.Doing));
+            if (query.Any(e => e.ToUserId == userId))
+            {
+                return true;
+            }
+            return query.Join(DB.Todos, e => e.ID, t => t.SubTaskId, (e, t) => new { t.ToUserId, t.Completed })
+                .Where(e => e.ToUserId == userId)
+                .Any(e => e.Completed == false);
         }
     }
 }

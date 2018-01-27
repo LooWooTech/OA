@@ -245,12 +245,16 @@ namespace Loowoo.Land.OA.API.Controllers
             flowNodeData.Content = content;
             flowNodeData.Result = result;
             Core.FlowNodeDataManager.Submit(flowNodeData);
-            Core.UserFormInfoManager.Save(new UserFormInfo
+            //如果当前用户还有其他的任务或todo没有完成，则不能标记为done
+            if (!Core.TaskManager.HasDoingTask(model.TaskId, CurrentUser.ID))
             {
-                InfoId = model.TaskId,
-                UserId = model.ToUserId,
-                FlowStatus = FlowStatus.Done
-            });
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = model.TaskId,
+                    UserId = model.ToUserId,
+                    FlowStatus = FlowStatus.Done
+                });
+            }
 
             int toUserId = 0;
             //如果是协办科室，则直接提交结束

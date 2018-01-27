@@ -41,6 +41,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Info.FlowDataId,
                     ApprovalUser = e.ApprovalUser.RealName,
                     ApplyUser = e.User.RealName,
+                    e.Info.FormId,
                     Title = e.Info.Title,
                     FlowStep = e.Info.FlowStep,
                     Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed,

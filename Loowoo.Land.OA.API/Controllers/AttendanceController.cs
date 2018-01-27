@@ -41,6 +41,15 @@ namespace Loowoo.Land.OA.API.Controllers
                     BeginTime = beginDate,
                     EndTime = endDate,
                     UserId = CurrentUser.ID,
+                }).Select(e => new
+                {
+                    e.User.RealName,
+                    e.ID,
+                    e.UserId,
+                    e.UpdateTime,
+                    e.ApiContent,
+                    e.ApiResult,
+                    e.CreateTime,
                 }),
                 holiday = Core.HolidayManager.GetList(new HolidayParameter
                 {
@@ -91,7 +100,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Core.AttendanceManager.SaveApiResult(log);
                     if (log.ApiResult == false)
                     {
-                        return Ok("打卡完成，同步失败："+ data["msg"]);
+                        return Ok("打卡完成，同步失败：" + data["msg"]);
                     }
                 }
                 return Ok();
