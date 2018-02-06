@@ -1,3 +1,34 @@
+-- 2018-02-06
+DROP TABLE IF EXISTS `salary`;
+CREATE TABLE `salary` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Title` VARCHAR(50) NOT NULL,
+	`Year` INT(11) NOT NULL,
+	`CreateTime` DATETIME NOT NULL,
+	`FilePath` VARCHAR(250) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `UserId_Year_Month` (`Year`),
+	INDEX `Title` (`Title`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `salary_data` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`SalaryID` INT(11) NOT NULL,
+	`UserID` INT(11) NOT NULL,
+	`Data` TEXT NULL,
+	`UserName` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `SalaryID` (`SalaryID`),
+	INDEX `UserID` (`UserID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+
 -- 2018-01-04
 -- É¾³ýÖØ¸´µÄuser_form_info
 DELETE FROM user_form_info WHERE id IN

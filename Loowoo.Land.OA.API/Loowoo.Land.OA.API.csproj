@@ -193,7 +193,6 @@
     </Compile>
     <Compile Include="Models\AttendanceStatistic.cs" />
     <Compile Include="Models\FormInfoViewModel.cs" />
-    <Compile Include="Models\SalaryViewModel.cs" />
     <Compile Include="Models\SubTaskViewModel.cs" />
     <Compile Include="Models\TaskViewModel.cs" />
     <Compile Include="Models\TaskTodoViewModel.cs" />

@@ -14,16 +14,13 @@ namespace Loowoo.Land.OA.API.Controllers
     public class SalaryController : ControllerBase
     {
         [HttpGet]
-        public int[] GetYears(int userId = 0)
+        public int[] GetYears()
         {
-            if (userId == 0)
-                userId = CurrentUser.ID;
-
-            return Core.SalaryManager.GetYears(userId);
+            return Core.SalaryManager.GetYears();
         }
 
         [HttpGet]
-        public object List(int year, int month = 0, int userId = 0, int page = 1, int rows = 12)
+        public object SalaryDatas(int year = 0, int salaryId = 0, string searchKey = null, int userId = 0, int page = 1, int rows = 15)
         {
             var hasViewAllRight = CurrentUser.HasRight("Form.Salary.View");
             if (userId == 0)
@@ -31,7 +28,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 if (!hasViewAllRight)
                 {
                     userId = CurrentUser.ID;
-                    month = 0;
                 }
             }
             else if (userId != CurrentUser.ID)
@@ -43,13 +39,35 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             var parameter = new SalaryParameter
             {
+                SalaryId = salaryId,
                 Year = year,
-                Month = month,
+                SearchKey = searchKey,
                 UserId = userId,
                 Page = new PageParameter(page, rows)
             };
-            var list = Core.SalaryManager.GetList(parameter).Select(e => new Models.SalaryViewModel(e));
-            return new { List = list, Page = parameter.Page };
+            var list = Core.SalaryManager.GetSalaryDatas(parameter).Select(e => new
+            {
+                e.ID,
+                e.UserId,
+                e.UserName,
+                e.Salary.Title,
+                e.Salary.Year,
+                e.Data
+            });
+            return new { List = list, parameter.Page };
+        }
+
+        [HttpGet]
+        public object Salaries(int year = 0, string searchKey = null, int page = 1, int rows = 15)
+        {
+            var parameter = new SalaryParameter
+            {
+                Year = year,
+                SearchKey = searchKey,
+                Page = new PageParameter(page, rows)
+            };
+            var list = Core.SalaryManager.GetList(parameter);
+            return new { List = list, parameter.Page };
         }
 
         [HttpPost]
@@ -70,35 +88,34 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public object Import(int year, int month, string files)
+        public object Import(int year, string title, string file)
         {
-            if (string.IsNullOrEmpty(files))
-            {
-                throw new Exception("没有选择Excel文件");
-            }
-
-            var date = new DateTime(year, month, 1);
-            if (date > DateTime.Now)
-            {
-                throw new Exception("日期选择不正确");
-            }
-
             if (!CurrentUser.HasRight("Form.Salary.Edit"))
             {
                 throw new Exception("没有权限导入工资单");
             }
-
-            var fails = new List<object>();
-            foreach (var filePath in files.Split(','))
+            if (string.IsNullOrEmpty(file))
             {
-                var failRows = Core.SalaryManager.ImportData(year, month, filePath);
-                if (failRows != null && failRows.Count > 0)
-                {
-                    var fileName = filePath.Split('/').Last();
-                    fails.Add(new { fileName, failRows });
-                }
+                throw new Exception("没有选择Excel文件");
             }
-            return fails;
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new Exception("没有填写导入名称");
+            }
+            var model = new Salary
+            {
+                Title = title,
+                Year = year,
+                FilePath = file,
+            };
+            Core.SalaryManager.Save(model);
+
+            var failRows = Core.SalaryManager.ImportData(model);
+            if (failRows != null && failRows.Count > 0)
+            {
+                return failRows;
+            }
+            return null;
         }
     }
 }

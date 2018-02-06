@@ -14,9 +14,9 @@ namespace Loowoo.Land.OA.Managers
 {
     public class SalaryManager : ManagerBase
     {
-        public int[] GetYears(int userId)
+        public int[] GetYears()
         {
-            return DB.Salaries.Where(e => e.UserId == userId).GroupBy(e => e.Year).Select(g => g.Key).ToArray();
+            return DB.Salaries.GroupBy(e => e.Year).Select(g => g.Key).ToArray();
         }
 
         public IEnumerable<Salary> GetList(SalaryParameter parameter)
@@ -26,36 +26,62 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Year == parameter.Year);
             }
-            if (parameter.Month > 0)
+            if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
-                query = query.Where(e => e.Month == parameter.Month);
+                query = query.Where(e => e.Title.Contains(parameter.SearchKey));
+            }
+            return query.OrderBy(e => e.ID).SetPage(parameter.Page);
+        }
+
+        public IEnumerable<SalaryData> GetSalaryDatas(SalaryParameter parameter)
+        {
+            var query = DB.SalaryDatas.AsQueryable();
+            if (parameter.Year > 0)
+            {
+                query = query.Where(e => e.Salary.Year == parameter.Year);
+            }
+            if (!string.IsNullOrEmpty(parameter.SearchKey))
+            {
+                query = query.Where(e => e.Salary.Title.Contains(parameter.SearchKey));
             }
             if (parameter.UserId > 0)
             {
                 query = query.Where(e => e.UserId == parameter.UserId);
+            }
+            if(parameter.SalaryId>0)
+            {
+                query = query.Where(e => e.SalaryId == parameter.SalaryId);
             }
             return query.OrderBy(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Salary model)
         {
-            //TODO：如果姓名不存在，则创建一个新用户？
-            if (model.UserId == 0) return;
-
-            var entity = DB.Salaries.FirstOrDefault(e => e.Year == model.Year && e.Month == model.Month && e.UserId == model.UserId);
-            if (entity == null)
+            var entity = DB.Salaries.FirstOrDefault(e => e.Year == model.Year && (e.FilePath == model.FilePath || e.Title == model.Title));
+            if (entity != null)
             {
-                model.Json = model.Data.ToJson();
-                DB.Salaries.Add(model);
+                entity.Title = model.Title;
+                entity.FilePath = model.FilePath;
             }
             else
             {
-                entity.Json = model.Data.ToJson();
+                DB.Salaries.Add(model);
             }
             DB.SaveChanges();
         }
 
-        private static readonly string[] _columns = new[] { "部门,员工类型", "序号,帐号,工号,姓名", "序号,参保时间,姓名" };
+        public void SaveData(SalaryData model)
+        {
+            var entity = DB.SalaryDatas.FirstOrDefault(e => e.UserId == model.UserId && e.SalaryId == model.SalaryId);
+            if (entity != null)
+            {
+                DB.SalaryDatas.Remove(entity);
+            }
+            DB.SalaryDatas.AddOrUpdate(model);
+            DB.SaveChanges();
+        }
+
+        private static readonly string[] _columns = new[] { "序号,帐号,工号,姓名", "序号,账号,姓名", "部门,员工类型", "序号,参保时间,姓名" };
 
         private int FindHeader(ISheet sheet, int rowIndex = 0)
         {
@@ -149,11 +175,9 @@ namespace Loowoo.Land.OA.Managers
             return data;
         }
 
-        public List<int> ImportData(int year, int month, string filePath, SalaryDataType type = 0)
+        public List<int> ImportData(Salary salary)
         {
-            if (string.IsNullOrEmpty(filePath)) return null;
-
-            var excel = ExcelHelper.GetWorkbook(filePath);
+            var excel = ExcelHelper.GetWorkbook(salary.FilePath);
             var sheet = excel.GetSheetAt(0);
 
             var currentRowIndex = 0;
@@ -180,21 +204,22 @@ namespace Loowoo.Land.OA.Managers
                         currentRowIndex++;
                         break;
                     }
-                    var model = new Salary { Month = month, Year = year, Json = rowData.ToJson() };
+                    var data = new SalaryData { SalaryId = salary.ID, Json = rowData.ToJson() };
                     var userRealName = rowData["姓名"]?.ToString();
                     if (!string.IsNullOrEmpty(userRealName))
                     {
                         var user = DB.Users.FirstOrDefault(e => e.Username == userRealName);
                         if (user != null)
                         {
-                            model.UserId = user.ID;
+                            data.UserId = user.ID;
                         }
+                        data.UserName = userRealName;
                     }
-                    if (model.UserId == 0)
+                    if (data.UserId == 0)
                     {
                         failList.Add(rowIndex + 1);
                     }
-                    Save(model);
+                    SaveData(data);
                 }
 
             } while (true);

@@ -65,7 +65,7 @@ namespace Loowoo.Land.OA.Models
 
         public bool HasRight(string rightName)
         {
-            return UserGroups != null && UserGroups.Any(e => e.Group.HasRight(rightName));
+            return Role == UserRole.Administrator || UserGroups != null && UserGroups.Any(e => e.Group.HasRight(rightName));
         }
 
         public void Validate()

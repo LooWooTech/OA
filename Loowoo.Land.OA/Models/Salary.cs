@@ -17,20 +17,32 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public int UserId { get; set; }
-
-        public virtual User User { get; set; }
+        public string Title { get; set; }
 
         public int Year { get; set; }
 
-        public int Month { get; set; }
-
         public DateTime CreateTime { get; set; } = DateTime.Now;
+
+        public string FilePath { get; set; }
+    }
+
+    [Table("salary_data")]
+    public class SalaryData
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public int SalaryId { get; set; }
+
+        public virtual Salary Salary { get; set; }
 
         [Column("data")]
         [Newtonsoft.Json.JsonIgnore]
         public string Json { get; set; }
-
 
         private Document _data;
         [NotMapped]
@@ -53,16 +65,7 @@ namespace Loowoo.Land.OA.Models
                 return _data;
             }
         }
-    }
 
-    public enum SalaryDataType
-    {
-        [Description("正式工")]
-        ZSG = 1,
-        [Description("临时工")]
-        LSG = 2,
-        [Description("不动产")]
-        BDC = 3
     }
 
     public class SalaryHeader

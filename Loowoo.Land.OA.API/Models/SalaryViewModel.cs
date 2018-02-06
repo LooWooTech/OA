@@ -13,10 +13,6 @@ namespace Loowoo.Land.OA.API.Models
         {
             ID = model.ID;
             Year = model.Year;
-            Month = model.Month;
-            UserId = model.UserId;
-            UserName = model.User == null ? null : model.User.Username;
-            Data = model.Data;
         }
 
         public int ID { get; set; }
