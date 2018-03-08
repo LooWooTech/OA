@@ -117,5 +117,19 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             return null;
         }
+
+        [HttpDelete]
+        public void Delete(int id)
+        {
+            if (!CurrentUser.HasRight("Form.Salary.Edit"))
+            {
+                throw new Exception("没有权限删除工资单");
+            }
+            var model = Core.SalaryManager.GetModel(id);
+            if (model != null)
+            {
+                Core.SalaryManager.Delete(model);
+            }
+        }
     }
 }

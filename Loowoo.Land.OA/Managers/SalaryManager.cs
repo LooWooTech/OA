@@ -48,7 +48,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.UserId == parameter.UserId);
             }
-            if(parameter.SalaryId>0)
+            if (parameter.SalaryId > 0)
             {
                 query = query.Where(e => e.SalaryId == parameter.SalaryId);
             }
@@ -81,7 +81,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        private static readonly string[] _columns = new[] { "序号,帐号,工号,姓名", "序号,账号,姓名", "部门,员工类型", "序号,参保时间,姓名" };
+        private static readonly string[] _columns = AppSettings.Get("SalaryHeaders").Split('|');
 
         private int FindHeader(ISheet sheet, int rowIndex = 0)
         {
@@ -90,6 +90,11 @@ namespace Loowoo.Land.OA.Managers
                 var row = sheet.GetRow(rowIndex);
                 if (row == null)
                 {
+                    if (rowIndex < sheet.LastRowNum)
+                    {
+                        rowIndex++;
+                        continue;
+                    }
                     break;
                 }
                 var headTitles = new List<string>();
@@ -142,6 +147,19 @@ namespace Loowoo.Land.OA.Managers
             return result;
         }
 
+        public void Delete(Salary model)
+        {
+            var datas = DB.SalaryDatas.Where(e => e.SalaryId == model.ID);
+            DB.SalaryDatas.RemoveRange(datas);
+            DB.Salaries.Remove(model);
+            DB.SaveChanges();
+        }
+
+        public Salary GetModel(int id)
+        {
+            return DB.Salaries.FirstOrDefault(e => e.ID == id);
+        }
+
         private Document ReadData(ISheet sheet, SalaryHeader header, int rowIndex)
         {
             var row = sheet.GetRow(rowIndex);
@@ -166,7 +184,7 @@ namespace Loowoo.Land.OA.Managers
                 var cell = values.FirstOrDefault(e => e.Column == col.Column);
                 if (cell == null) continue;
 
-                if (col.Name == "序号" && cell.Value.ToString() == "合计")
+                if (col.Name == "序号" && (cell.Value == null || cell.Value.ToString() == "合计"))
                 {
                     return null;
                 }
@@ -178,7 +196,7 @@ namespace Loowoo.Land.OA.Managers
         public List<int> ImportData(Salary salary)
         {
             var excel = ExcelHelper.GetWorkbook(salary.FilePath);
-            var sheet = excel.GetSheetAt(0);
+            var sheet = excel.GetSheetAt(excel.NumberOfSheets - 1);
 
             var currentRowIndex = 0;
             var failList = new List<int>();

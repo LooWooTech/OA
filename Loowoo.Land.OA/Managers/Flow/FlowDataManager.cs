@@ -11,7 +11,15 @@ namespace Loowoo.Land.OA.Managers
 
         public int Save(FlowData flowData)
         {
-            DB.FlowDatas.Add(flowData);
+            var entity = DB.FlowDatas.FirstOrDefault(e => e.ID == flowData.ID);
+            if (entity == null)
+            {
+                DB.FlowDatas.Add(flowData);
+            }
+            else
+            {
+                DB.Entry(entity).CurrentValues.SetValues(flowData);
+            }
             DB.SaveChanges();
             return flowData.ID;
         }
