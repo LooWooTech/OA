@@ -13,15 +13,9 @@ namespace Loowoo.Land.OA.API.Controllers
 
     public class AttachmentController : Controller
     {
-        protected ManagerCore Core = ManagerCore.Instance;
+        protected ManagerCore Core => ManagerCore.Instance;
 
-        protected UserIdentity CurrentUser
-        {
-            get
-            {
-                return (UserIdentity)Thread.CurrentPrincipal.Identity;
-            }
-        }
+        protected UserIdentity Identity => (UserIdentity)Thread.CurrentPrincipal.Identity;
 
         public ActionResult Preview(int id)
         {
@@ -53,7 +47,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Caption = file.FileName,
 
             };
-            pc.WebOpen(file.PhysicalPath, PageOffice.OpenModeType.docAdmin, CurrentUser != null ? CurrentUser.RealName : "未知");
+            pc.WebOpen(file.PhysicalPath, PageOffice.OpenModeType.docAdmin, Identity != null ? Identity.Name : "未知");
             page.Controls.Add(pc);
             var sb = new StringBuilder();
             using (var sw = new StringWriter(sb))

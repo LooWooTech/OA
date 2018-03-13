@@ -21,7 +21,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Page = new PageParameter(page, rows),
                 FormId = formId,
                 BeginTime = DateTime.Today.AddDays(-15),
-                ToUserId = CurrentUser.ID
+                ToUserId = Identity.ID
             };
             var list = Core.FeedManager.GetList(parameter).GroupBy(e => new { e.Info, e.FromUserId, e.ToUserId }).Select(g => g.FirstOrDefault()).SetPage(parameter.Page);
 
@@ -53,7 +53,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
             var model = Core.FeedManager.GetModel(id);
-            if (model.FromUserId != CurrentUser.ID)
+            if (model.FromUserId != Identity.ID)
             {
                 throw new HttpException(403, "无法删除该动态");
             }

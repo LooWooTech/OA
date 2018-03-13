@@ -32,14 +32,14 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FreeFlowDataManager.Save(flowNodeData.FreeFlowData);
             }
             model.FreeFlowDataId = flowNodeData.FreeFlowData.ID;
-            model.UserId = CurrentUser.ID;
+            model.UserId = Identity.ID;
             model.UpdateTime = DateTime.Now;
             Core.FreeFlowNodeDataManager.Save(model);
             var info = Core.FormInfoManager.GetModel(infoId);
             //已阅则放到已读箱
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
                 InfoId = infoId,
                 FlowStatus = FlowStatus.Done
             });
@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if ((targetUserIds == null || targetUserIds.Length == 0)
                 && (ccTargetUserIds == null || ccTargetUserIds.Length == 0))
             {
-                Core.FreeFlowDataManager.TryComplete(model.FreeFlowDataId, CurrentUser.ID);
+                Core.FreeFlowDataManager.TryComplete(model.FreeFlowDataId, Identity.ID);
                 return model;
             }
 
@@ -77,7 +77,7 @@ namespace Loowoo.Land.OA.API.Controllers
         private void SubmitFreeFlowNodeData(FreeFlowNodeData model, FormInfo info, int userId, bool isCc = false)
         {
             //传阅流程不需要发给自己
-            if (userId == CurrentUser.ID) return;
+            if (userId == Identity.ID) return;
 
             var added = Core.FreeFlowNodeDataManager.Add(new FreeFlowNodeData
             {
@@ -97,7 +97,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
                 var feed = new Feed
                 {
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = userId,
                     Action = UserAction.Submit,
                     InfoId = info.ID,
@@ -145,29 +145,29 @@ namespace Loowoo.Land.OA.API.Controllers
                 parameters.TitleIds = new[] { parentTitle == null ? 0 : parentTitle.ID, CurrentUser.JobTitleId, subTitle == null ? 0 : subTitle.ID };
             }
 
-            return Core.UserManager.GetList(parameters).Where(e => e.ID != CurrentUser.ID)
+            return Core.UserManager.GetList(parameters).Where(e => e.ID != Identity.ID)
                 .Select(e => new UserViewModel(e));
         }
 
         [HttpGet]
         public void Complete(int id, int infoId)
         {
-            var user = Core.UserManager.GetModel(CurrentUser.ID);
+            var user = Core.UserManager.GetModel(Identity.ID);
             var info = Core.FormInfoManager.GetModel(infoId);
             if (Core.FreeFlowDataManager.CanComplete(info.FlowData, user))
             {
-                Core.FreeFlowDataManager.TryComplete(id, CurrentUser.ID, true);
+                Core.FreeFlowDataManager.TryComplete(id, Identity.ID, true);
 
                 var freeFlowData = Core.FreeFlowDataManager.GetModel(id);
 
                 var feed = new Feed
                 {
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = freeFlowData.FlowNodeData.UserId,
                     Action = UserAction.Complete,
                     InfoId = infoId,
                     Title = info.Title,
-                    Description = CurrentUser.RealName + "结束了传阅流程",
+                    Description = Identity.Name + "结束了传阅流程",
                     Type = FeedType.FreeFlow
                 };
                 Core.FeedManager.Save(feed);

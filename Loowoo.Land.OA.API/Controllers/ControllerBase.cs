@@ -18,15 +18,13 @@ namespace Loowoo.Land.OA.API.Controllers
     [Authorize]
     public class ControllerBase : ApiController
     {
-        protected ManagerCore Core = ManagerCore.Instance;
+        protected ManagerCore Core => ManagerCore.Instance;
 
-        protected UserIdentity CurrentUser
-        {
-            get
-            {
-                return (UserIdentity)Thread.CurrentPrincipal.Identity;
-            }
-        }
+        protected UserIdentity Identity => (UserIdentity)Thread.CurrentPrincipal.Identity;
+
+        private User _user = null;
+
+        protected User CurrentUser => _user ?? (_user = Core.UserManager.GetModel(Identity.ID));
 
         protected string TaskName { get; set; }
     }

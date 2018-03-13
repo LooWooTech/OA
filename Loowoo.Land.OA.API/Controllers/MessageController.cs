@@ -17,8 +17,8 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 Page = new Loowoo.Common.PageParameter(page, rows),
                 HasRead = hasRead,
-                FromUserId = action == "send" ? CurrentUser.ID : 0,
-                ToUserId = action == "receive" ? CurrentUser.ID : 0,
+                FromUserId = action == "send" ? Identity.ID : 0,
+                ToUserId = action == "receive" ? Identity.ID : 0,
                 FormId = formId,
             };
             var list = Core.MessageManager.GetList(parameter).ToList();
@@ -49,19 +49,19 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public void Read(int id)
         {
-            Core.MessageManager.Read(id, CurrentUser.ID);
+            Core.MessageManager.Read(id, Identity.ID);
         }
 
         [HttpGet]
         public void ReadAll()
         {
-            Core.MessageManager.ReadAll(CurrentUser.ID);
+            Core.MessageManager.ReadAll(Identity.ID);
         }
 
         [HttpDelete]
         public void Delete(int id)
         {
-            Core.MessageManager.Delete(id, CurrentUser.ID);
+            Core.MessageManager.Delete(id, Identity.ID);
         }
     }
 }

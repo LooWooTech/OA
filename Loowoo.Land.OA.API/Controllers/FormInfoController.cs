@@ -20,7 +20,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 FormId = formId,
                 FlowStatus = status,
                 Page = new PageParameter(page, rows),
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
                 PostUserId = postUserId,
                 Completed = completed
             };
@@ -76,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
             if (model.FlowDataId > 0)
             {
                 var flowData = model.FlowData ?? Core.FlowDataManager.Get(model.FlowDataId);
-                var currentFlowNodeData = flowData.GetUserLastNodeData(CurrentUser.ID);
+                var currentFlowNodeData = flowData.GetUserLastNodeData(Identity.ID);
                 canSubmitFlow = Core.FlowDataManager.CanSubmit(model.FlowData, currentFlowNodeData);
                 canEdit = canSubmitFlow;
                 canCancel = Core.FlowDataManager.CanCancel(flowData, currentFlowNodeData);
@@ -85,21 +85,21 @@ namespace Loowoo.Land.OA.API.Controllers
 
                 canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData);
 
-                canEdit = lastNodeData.UserId == CurrentUser.ID && !lastNodeData.Result.HasValue;
+                canEdit = lastNodeData.UserId == Identity.ID && !lastNodeData.Result.HasValue;
                 //当前步骤如果是流程的第一步，则不能退
                 canBack = Core.FlowDataManager.CanBack(flowData);
 
                 //如果该步骤开启了自由流程
-                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(CurrentUser.ID);
+                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(Identity.ID);
 
 
-                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, CurrentUser.ID);
+                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, Identity.ID);
 
-                var user = Core.UserManager.GetModel(CurrentUser.ID);
+                var user = Core.UserManager.GetModel(Identity.ID);
                 canCompleteFreeFlow = Core.FreeFlowDataManager.CanComplete(flowData, user);
             }
 
-            var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, CurrentUser.ID);
+            var userformInfo = Core.UserFormInfoManager.GetModel(model.ID, Identity.ID);
 
             return new
             {
@@ -130,7 +130,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var isAdd = model.ID == 0;
             if (isAdd)
             {
-                model.PostUserId = CurrentUser.ID;
+                model.PostUserId = Identity.ID;
             }
 
             Core.FormInfoManager.Save(model);
@@ -147,7 +147,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 Action = isAdd ? UserAction.Create : UserAction.Update,
                 InfoId = model.ID,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Type = FeedType.Info,
                 Title = model.Title,
             });

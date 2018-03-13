@@ -27,10 +27,10 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 if (!hasViewAllRight)
                 {
-                    userId = CurrentUser.ID;
+                    userId = Identity.ID;
                 }
             }
-            else if (userId != CurrentUser.ID)
+            else if (userId != Identity.ID)
             {
                 if (!hasViewAllRight)
                 {

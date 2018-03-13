@@ -12,43 +12,43 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public void Read(int id)
         {
-            Core.UserFormInfoManager.Read(id, CurrentUser.ID);
+            Core.UserFormInfoManager.Read(id, Identity.ID);
         }
 
         [HttpGet]
         public void ReadAll()
         {
-            Core.UserFormInfoManager.ReadAll(CurrentUser.ID);
+            Core.UserFormInfoManager.ReadAll(Identity.ID);
         }
 
         [HttpGet]
         public void Star(int id)
         {
-            Core.UserFormInfoManager.UpdateStar(id, CurrentUser.ID, true);
+            Core.UserFormInfoManager.UpdateStar(id, Identity.ID, true);
         }
 
         [HttpGet]
         public void UnStar(int id)
         {
-            Core.UserFormInfoManager.UpdateStar(id, CurrentUser.ID, false);
+            Core.UserFormInfoManager.UpdateStar(id, Identity.ID, false);
         }
 
         [HttpDelete]
         public void Trash(int id)
         {
-            Core.UserFormInfoManager.UpdateTrash(id, CurrentUser.ID, true);
+            Core.UserFormInfoManager.UpdateTrash(id, Identity.ID, true);
         }
 
         [HttpDelete]
         public void Delete(int id)
         {
-            Core.UserFormInfoManager.Delete(id, CurrentUser.ID);
+            Core.UserFormInfoManager.Delete(id, Identity.ID);
         }
 
         [HttpGet]
         public void Recovery(int id)
         {
-            Core.UserFormInfoManager.UpdateTrash(id, CurrentUser.ID, false);
+            Core.UserFormInfoManager.UpdateTrash(id, Identity.ID, false);
         }
     }
 }

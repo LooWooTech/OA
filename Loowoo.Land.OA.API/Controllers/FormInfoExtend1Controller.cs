@@ -55,7 +55,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var info = Core.FormInfoManager.GetModel(id);
             var currentNodeData = info.FlowData.GetLastNodeData();
-            if (currentNodeData.UserId != CurrentUser.ID)
+            if (currentNodeData.UserId != Identity.ID)
             {
                 currentNodeData = info.FlowData.GetChildNodeData(currentNodeData.ID);
             }
@@ -69,7 +69,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = id,
                 FlowStatus = FlowStatus.Done,
-                UserId = CurrentUser.ID
+                UserId = Identity.ID
             });
             var model = Core.FormInfoExtend1Manager.GetModel(id);
 
@@ -88,7 +88,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Action = UserAction.Submit,
                     InfoId = id,
                     Title = info.Title,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = toUserId,
                     Type = FeedType.Info,
                 };
@@ -100,7 +100,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
-                model.ApprovalUserId = CurrentUser.ID;
+                model.ApprovalUserId = Identity.ID;
                 model.Result = result;
                 model.UpdateTime = DateTime.Now;
                 Core.FlowDataManager.Complete(info);
@@ -109,7 +109,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     Action = UserAction.Submit,
                     Type = FeedType.Info,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = model.UserId,
                     Title = "你申请的假期已审核通过",
                     Description = info.Title,
@@ -133,7 +133,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var infoTypeName = info.Form.FormType.GetDescription();
 
-            if (apply.UserId == CurrentUser.ID)
+            if (apply.UserId == Identity.ID)
             {
                 apply.RealEndTime = backTime ?? DateTime.Now;
                 apply.UpdateTime = DateTime.Now;

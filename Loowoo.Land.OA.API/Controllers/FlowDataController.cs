@@ -15,7 +15,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Cancel(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            var flowNodeData = info.FlowData.GetUserLastNodeData(CurrentUser.ID);
+            var flowNodeData = info.FlowData.GetUserLastNodeData(Identity.ID);
             if (!Core.FlowDataManager.CanCancel(info.FlowData, flowNodeData))
             {
                 return BadRequest("无法撤销");
@@ -49,17 +49,17 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("参数不正确，没有获取到流程数据");
             }
-            var flowNodeData = flowData.GetUserLastNodeData(CurrentUser.ID);
+            var flowNodeData = flowData.GetUserLastNodeData(Identity.ID);
             var lastNodeData = flowData.GetLastNodeData();
             return new
             {
                 flowData,
                 flowNodeData = lastNodeData,
-                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(CurrentUser.ID),
+                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(Identity.ID),
                 canBack = Core.FlowDataManager.CanBack(flowData),
                 canSubmitFlow = Core.FlowDataManager.CanSubmit(flowData, flowNodeData),
                 canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData),
-                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, CurrentUser.ID),
+                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, Identity.ID),
             };
         }
 
@@ -76,7 +76,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("该信息还是草稿状态，无法提交");
             }
             var currentNodeData = Core.FlowNodeDataManager.GetModel(data.ID);
-            if (currentNodeData == null || currentNodeData.UserId != CurrentUser.ID)
+            if (currentNodeData == null || currentNodeData.UserId != Identity.ID)
             {
                 return BadRequest("参数错误，找不到当前流程");
             }
@@ -93,7 +93,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = info.ID,
                 FlowStatus = FlowStatus.Done,
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
             });
 
             if (currentNodeData.Result == true)
@@ -163,7 +163,7 @@ namespace Loowoo.Land.OA.API.Controllers
                         Action = UserAction.Submit,
                         Type = FeedType.Flow,
                         InfoId = info.ID,
-                        FromUserId = CurrentUser.ID,
+                        FromUserId = Identity.ID,
                         ToUserId = backNodeData.UserId,
                         Title = "[退回流程]" + info.Title,
                     };

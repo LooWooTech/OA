@@ -28,7 +28,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 FormId = formId,
                 FlowStatus = status,
                 Page = new PageParameter(page, rows),
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
                 PostUserId = postUserId,
                 Completed = completed,
                 SearchKey = searchKey,
@@ -73,7 +73,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 data.Info = new FormInfo
                 {
                     FormId = formId,
-                    PostUserId = CurrentUser.ID,
+                    PostUserId = Identity.ID,
                     Title = data.WJ_BT
                 };
                 Core.FormInfoManager.Save(data.Info);
@@ -113,7 +113,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = data.ID,
                 Title = data.WJ_BT,
                 Description = data.ZTC,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
             };
             Core.FeedManager.Save(feed);

@@ -33,17 +33,7 @@ namespace Loowoo.Land.OA.API.Controllers
             user.Token = AuthorizeHelper.GetToken(new UserIdentity
             {
                 ID = user.ID,
-                Username = user.Username,
-                Role = user.Role,
-                RealName = user.RealName,
-                DepartmentIds = user.DepartmentIds,
-                GroupIds = user.GroupIds,
-                JobTitleId = user.JobTitleId,
-                UserDepartments = user.UserDepartments,
-                UserGroups = user.UserGroups,
-                JobTitle = user.JobTitle,
-                Mobile = user.Mobile,
-                Sort = user.Sort,
+                Name = user.RealName
             });
 
             return user;
@@ -122,7 +112,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("两次输入密码不相同，请重新输入");
             }
-            var user = Core.UserManager.GetModel(CurrentUser.ID);
+            var user = Core.UserManager.GetModel(Identity.ID);
             if (user.Password != oldPassword.MD5())
             {
                 return BadRequest("旧密码填写不正确");
@@ -139,7 +129,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 FormId = formId,
                 BeginTime = DateTime.Today.AddDays(-30),
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Page = new PageParameter(1, 10)
             }).Where(e => e.ToUserId > 0).GroupBy(e => e.ToUserId).Select(g => g.Key).ToArray();
             if (userIds.Length > 0)
@@ -156,17 +146,17 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public IEnumerable<UserViewModel> FlowContactList()
         {
-            return Core.UserManager.GetFlowContacts(CurrentUser.ID).Select(e => new UserViewModel(e.Contact));
+            return Core.UserManager.GetFlowContacts(Identity.ID).Select(e => new UserViewModel(e.Contact));
         }
         [HttpGet]
         public void SaveFlowContact(int userId)
         {
-            Core.UserManager.SaveFlowContact(new UserFlowContact { UserId = CurrentUser.ID, ContactId = userId });
+            Core.UserManager.SaveFlowContact(new UserFlowContact { UserId = Identity.ID, ContactId = userId });
         }
         [HttpDelete]
         public void DeleteFlowContact(int userId)
         {
-            var entity = Core.UserManager.GetFlowContact(userId, CurrentUser.ID);
+            var entity = Core.UserManager.GetFlowContact(userId, Identity.ID);
             if (entity == null)
             {
                 throw new Exception("无法删除");
@@ -180,11 +170,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public IEnumerable<UserViewModel> ParentTitleUserList(int userId = 0)
         {
-            User user = CurrentUser;
-            if (userId > 0)
-            {
-                user = Core.UserManager.GetModel(userId);
-            }
+            var user = Core.UserManager.GetModel(userId > 0 ? userId : Identity.ID);
             return Core.UserManager.GetParentTitleUsers(user).Select(e => new UserViewModel(e));
         }
 

@@ -21,7 +21,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 BeginDate = beginDate,
                 EndDate = endDate,
-                UserId = CurrentUser.ID
+                UserId = Identity.ID
             };
 
             var list = Core.AttendanceManager.GetList(parameter);
@@ -30,7 +30,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 BeginTime = beginDate,
                 EndTime = endDate,
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
                 Result = true,
             });
             return new
@@ -40,7 +40,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     BeginTime = beginDate,
                     EndTime = endDate,
-                    UserId = CurrentUser.ID,
+                    UserId = Identity.ID,
                 }).Select(e => new
                 {
                     e.User.RealName,
@@ -77,19 +77,19 @@ namespace Loowoo.Land.OA.API.Controllers
                     OfficialLeave = leaves.Count(e => e.Category == (int)LeaveType.Official),
                     PersonalLeave = leaves.Count(e => e.Category == (int)LeaveType.Personal)
                 },
-                time = new AttendanceTime(Core.AttendanceManager.GetAttendanceGroup(CurrentUser.ID))
+                time = new AttendanceTime(Core.AttendanceManager.GetAttendanceGroup(Identity.ID))
             };
         }
 
         [HttpGet]
         public IHttpActionResult CheckInOut()
         {
-            var log = Core.AttendanceManager.AddCheckInOut(CurrentUser.ID);
+            var log = Core.AttendanceManager.AddCheckInOut(Identity.ID);
             try
             {
-                var userGroup = Core.AttendanceManager.GetAttendanceGroup(CurrentUser.ID);
+                var userGroup = Core.AttendanceManager.GetAttendanceGroup(Identity.ID);
 
-                var url = AppSettings.Get("AttendanceApiUrl").Replace("{host}", userGroup.API).Replace("{username}", CurrentUser.RealName).Replace("{tel}", CurrentUser.Mobile);
+                var url = AppSettings.Get("AttendanceApiUrl").Replace("{host}", userGroup.API).Replace("{username}", Identity.Name).Replace("{tel}", CurrentUser.Mobile);
                 using (var client = new WebClient())
                 {
                     client.Encoding = System.Text.Encoding.UTF8;
@@ -139,7 +139,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 //如果当前用户的流程的parentid>0，则表示为上级的上级在审批，不需要再往下级
                 var info = Core.FormInfoManager.GetModel(id);
-                var flowNodeData = info.FlowData.Nodes.OrderByDescending(e => e.ID).FirstOrDefault(e => e.UserId == CurrentUser.ID);
+                var flowNodeData = info.FlowData.Nodes.OrderByDescending(e => e.ID).FirstOrDefault(e => e.UserId == Identity.ID);
                 if (flowNodeData.ParentId > 0)
                 {
                     return null;
@@ -155,7 +155,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有选择审核人");
             }
-            data.UserId = CurrentUser.ID;
+            data.UserId = Identity.ID;
             var info = Core.AttendanceManager.Apply(data);
             var feed = new Feed
             {
@@ -164,7 +164,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Title = info.Title,
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
             };
             Core.FeedManager.Save(feed);
             Core.MessageManager.Add(feed);
@@ -175,7 +175,7 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             var info = Core.FormInfoManager.GetModel(id);
             var currentNodeData = info.FlowData.GetLastNodeData();
-            if (currentNodeData.UserId != CurrentUser.ID)
+            if (currentNodeData.UserId != Identity.ID)
             {
                 currentNodeData = info.FlowData.GetChildNodeData(currentNodeData.ID);
             }
@@ -189,7 +189,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 InfoId = id,
                 FlowStatus = FlowStatus.Done,
-                UserId = CurrentUser.ID
+                UserId = Identity.ID
             });
             var model = Core.FormInfoExtend1Manager.GetModel(id);
 
@@ -208,7 +208,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     Action = UserAction.Submit,
                     InfoId = id,
                     Title = info.Title,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = toUserId,
                     Type = FeedType.Info,
                 };
@@ -220,7 +220,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
-                model.ApprovalUserId = CurrentUser.ID;
+                model.ApprovalUserId = Identity.ID;
                 model.Result = result;
                 model.UpdateTime = DateTime.Now;
                 Core.FlowDataManager.Complete(info);
@@ -229,7 +229,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     Action = UserAction.Submit,
                     Type = FeedType.Info,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = model.UserId,
                     Title = "你申请的假期已审核通过",
                     Description = info.Title,

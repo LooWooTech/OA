@@ -26,21 +26,21 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 case "trash":
                     parameter.Trash = true;
-                    parameter.UserId = CurrentUser.ID;
+                    parameter.UserId = Identity.ID;
                     break;
                 case "draft":
                     parameter.Draft = true;
-                    parameter.PostUserId = CurrentUser.ID;
+                    parameter.PostUserId = Identity.ID;
                     break;
                 case "star":
                     parameter.Starred = true;
-                    parameter.UserId = CurrentUser.ID;
+                    parameter.UserId = Identity.ID;
                     break;
                 case "send":
-                    parameter.PostUserId = CurrentUser.ID;
+                    parameter.PostUserId = Identity.ID;
                     break;
                 default:
-                    parameter.UserId = CurrentUser.ID;
+                    parameter.UserId = Identity.ID;
                     break;
             }
             //发件箱、草稿箱
@@ -116,12 +116,12 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var feed = new Feed
             {
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Action = UserAction.Create,
                 Title = model.Subject,
                 InfoId = model.ID,
             };
-            var msg = new Message { InfoId = model.ID, Content = model.Subject, CreatorId = CurrentUser.ID };
+            var msg = new Message { InfoId = model.ID, Content = model.Subject, CreatorId = Identity.ID };
             var toUserIds = model.Users.Select(e => e.UserId).ToArray();
             Core.FeedManager.Save(feed, toUserIds);
             Core.MessageManager.Add(msg, toUserIds);
@@ -131,7 +131,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Save(Mail model)
         {
             model.IsDraft = true;
-            model.CreatorId = CurrentUser.ID;
+            model.CreatorId = Identity.ID;
             //如果是转发，则拷贝附件的ID
             var isForward = model.ID == 0 && model.ForwardId > 0;
             Core.MailManager.Save(model);
@@ -156,12 +156,12 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("参数错误");
             }
-            if (model.IsDraft && model.CreatorId != CurrentUser.ID)
+            if (model.IsDraft && model.CreatorId != Identity.ID)
             {
                 throw new Exception("没有权限查看他人草稿");
             }
 
-            if (!Core.MailManager.HasRight(id, CurrentUser.ID))
+            if (!Core.MailManager.HasRight(id, Identity.ID))
             {
                 throw new Exception("权限不足");
             }
@@ -169,7 +169,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 model,
                 fromUser = new { model.Info.PostUser?.ID, model.Info.PostUser?.RealName },
-                userMail = model.Users.FirstOrDefault(e => e.InfoId == model.ID && e.UserId == CurrentUser.ID),
+                userMail = model.Users.FirstOrDefault(e => e.InfoId == model.ID && e.UserId == Identity.ID),
                 toUsers = model.Users.Where(u => !u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
                 ccUsers = model.Users.Where(u => u.CC).Select(u => new { ID = u.UserId, u.User.RealName }),
                 attachments = Core.FileManager.GetList(new FileParameter { FormId = (int)FormType.Mail, InfoId = id })
@@ -180,7 +180,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
             var model = Core.MailManager.GetModel(id);
-            if(model.Info.PostUserId != CurrentUser.ID)
+            if(model.Info.PostUserId != Identity.ID)
             {
                 throw new Exception("无法删除别人创建的邮件");
             }

@@ -27,7 +27,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 FormId = form.ID,
                 FlowStatus = status,
-                UserId = status == null && CurrentUser.HasRight(FormType.Task, UserRightType.View) ? 0 : CurrentUser.ID,
+                UserId = status == null && CurrentUser.HasRight(FormType.Task, UserRightType.View) ? 0 : Identity.ID,
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows)
             };
@@ -84,7 +84,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 data.Info = new FormInfo
                 {
                     FormId = form.ID,
-                    PostUserId = CurrentUser.ID,
+                    PostUserId = Identity.ID,
                     Title = data.Name
                 };
                 Core.FormInfoManager.Save(data.Info);
@@ -106,7 +106,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = data.ID,
                 Title = data.Name,
                 Description = data.Goal,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
             });
         }
@@ -136,7 +136,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var isAdd = data.ID == 0;
             var department = Core.DepartmentManager.Get(data.ToDepartmentId);
             data.ToDepartmentName = department.Name;
-            data.CreatorId = CurrentUser.ID;
+            data.CreatorId = Identity.ID;
             Core.TaskManager.SaveSubTask(data);
 
             if (isAdd)
@@ -154,7 +154,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FeedManager.Save(new Feed
                 {
                     Action = UserAction.Create,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = data.ToUserId,
                     Title = "[创建任务]" + info.Title,
                     Description = data.Content,
@@ -179,7 +179,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FeedManager.Save(new Feed
                 {
                     Action = UserAction.Create,
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = data.LeaderId,
                     Title = "[创建任务]" + info.Title,
                     Description = data.Content,
@@ -187,7 +187,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     InfoId = data.TaskId,
                 });
 
-                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title, CreatorId = CurrentUser.ID }, data.LeaderId, data.ToUserId);
+                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title, CreatorId = Identity.ID }, data.LeaderId, data.ToUserId);
             }
 
             return Ok(data);
@@ -246,7 +246,7 @@ namespace Loowoo.Land.OA.API.Controllers
             flowNodeData.Result = result;
             Core.FlowNodeDataManager.Submit(flowNodeData);
             //如果当前用户还有其他的任务或todo没有完成，则不能标记为done
-            if (!Core.TaskManager.HasDoingTask(model.TaskId, CurrentUser.ID))
+            if (!Core.TaskManager.HasDoingTask(model.TaskId, Identity.ID))
             {
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
@@ -356,7 +356,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
                         var feed = new Feed
                         {
-                            FromUserId = CurrentUser.ID,
+                            FromUserId = Identity.ID,
                             ToUserId = toUserId,
                             Action = UserAction.Submit,
                             Type = FeedType.Flow,
@@ -369,7 +369,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 }
                 var feed1 = new Feed
                 {
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = subTask.ToUserId,
                     Action = UserAction.Submit,
                     Type = FeedType.Flow,
@@ -388,7 +388,7 @@ namespace Loowoo.Land.OA.API.Controllers
 
                 var feed = new Feed
                 {
-                    FromUserId = CurrentUser.ID,
+                    FromUserId = Identity.ID,
                     ToUserId = toUserId,
                     Action = UserAction.Submit,
                     Type = FeedType.Flow,
@@ -413,7 +413,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void SaveTodo(TaskTodo model)
         {
             var subTask = Core.TaskManager.GetSubTask(model.SubTaskId);
-            model.CreatorId = CurrentUser.ID;
+            model.CreatorId = Identity.ID;
             Core.TaskManager.SaveTodo(model);
 
             Core.UserFormInfoManager.Save(new UserFormInfo
@@ -428,7 +428,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = subTask.TaskId,
                 ToUserId = model.ToUserId,
                 Title = model.Content,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Type = FeedType.Task,
                 Action = UserAction.Create,
             };

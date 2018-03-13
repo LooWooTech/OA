@@ -49,7 +49,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有选择审核人");
             }
-            data.UserId = CurrentUser.ID;
+            data.UserId = Identity.ID;
             if (Core.FormInfoExtend1Manager.HasApply(data))
             {
                 throw new Exception("你已经申请过该图章，还未通过审核");
@@ -63,7 +63,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 InfoId = data.ID,
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
             };
             Core.FeedManager.Save(feed);
             Core.MessageManager.Add(feed);

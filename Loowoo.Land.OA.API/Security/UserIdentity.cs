@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Loowoo.Land.OA.API.Security
 {
     [NotMapped]
-    public class UserIdentity : User, System.Security.Principal.IIdentity
+    public class UserIdentity :System.Security.Principal.IIdentity
     {
         public static UserIdentity Anonymouse => new UserIdentity();
 
@@ -22,6 +22,8 @@ namespace Loowoo.Land.OA.API.Security
         [JsonIgnore]
         public bool IsAuthenticated => ID > 0;
 
-        public string Name => RealName;
+        public int ID { get; set; }
+
+        public string Name { get; set; }
     }
 }
