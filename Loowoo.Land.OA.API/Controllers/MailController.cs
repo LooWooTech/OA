@@ -180,11 +180,26 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
             var model = Core.MailManager.GetModel(id);
-            if(model.Info.PostUserId != Identity.ID)
+            if (model.IsDraft)
             {
-                throw new Exception("无法删除别人创建的邮件");
+                if (model.Info.PostUserId == Identity.ID)
+                {
+                    Core.MailManager.Delete(model.ID);
+                }
             }
-            Core.MailManager.Delete(id);
+            var userInfo = Core.UserFormInfoManager.GetModel(model.ID, Identity.ID);
+            if (userInfo.Trash)
+            {
+                if (model.Info.PostUserId == Identity.ID)
+                {
+                    Core.MailManager.Delete(model.ID);
+                }
+                Core.UserFormInfoManager.Delete(userInfo.ID, Identity.ID);
+            }
+            else
+            {
+                Core.UserFormInfoManager.UpdateTrash(userInfo.ID, Identity.ID, true);
+            }
         }
     }
 }

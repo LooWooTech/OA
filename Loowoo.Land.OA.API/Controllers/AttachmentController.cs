@@ -17,6 +17,23 @@ namespace Loowoo.Land.OA.API.Controllers
 
         protected UserIdentity Identity => (UserIdentity)Thread.CurrentPrincipal.Identity;
 
+        public ActionResult Download(int id)
+        {
+            var file = Core.FileManager.GetModel(id);
+            try
+            {
+                return File(file.PhysicalPath, file.ContentType);
+            }
+            catch (FileNotFoundException)
+            {
+                return Content("文件未找到");
+            }
+            catch
+            {
+                return Content("下载文件出现异常，请联系管理员");
+            }
+        }
+
         public ActionResult Preview(int id)
         {
             var file = Core.FileManager.GetModel(id);

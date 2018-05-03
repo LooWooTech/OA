@@ -48,10 +48,17 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
-        public FileResult Download()
+        public ActionResult Download()
         {
-            var filePath = System.IO.Path.Combine(_clientPath, $"android-{_lastVersion}.apk");
-            return File(filePath, "application/octet-stream", $"oa-{_lastVersion}.apk");
+            if (Request.UserAgent.Contains("Android"))
+            {
+                var filePath = System.IO.Path.Combine(_clientPath, $"android-{_lastVersion}.apk");
+                return File(filePath, "application/octet-stream", $"oa-{_lastVersion}.apk");
+            }
+            else
+            {
+                return Redirect(AppSettings.Get("iOSDownloadUrl"));
+            }
         }
     }
 }

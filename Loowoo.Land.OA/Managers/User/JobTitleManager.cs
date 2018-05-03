@@ -23,7 +23,8 @@ namespace Loowoo.Land.OA.Managers
 
         public void Delete(int id)
         {
-            if (DB.FlowNodes.Any(e => e.JobTitleIds.Contains(id)))
+            var val = id.ToString();
+            if (DB.FlowNodes.Any(e => e.JobTitleIdsValue.Contains(val)))
             {
                 throw new Exception("无法删除");
             }

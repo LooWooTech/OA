@@ -65,17 +65,20 @@ namespace Loowoo.Land.OA.Service.SMS
                 {
                     LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t发送短信失败：{sms.Content}===>{sms.Numbers}\r\n{ex}\r\n");
                 }
-
-                Core.SmsManager.Delete(sms);
             }
         }
-        private OpenMas.Sms _client = new OpenMas.Sms(ConfigurationManager.AppSettings["MASAddress"]);
+
+        private readonly static OpenMas.Sms SmsClient = new OpenMas.Sms(ConfigurationManager.AppSettings["MASAddress"]);
 
         private void SendSms(Sms sms)
         {
+            if (sms.SendTime.HasValue) return;
+
             var mobileList = sms.Numbers.Trim().Split(',');
-            var msgID = _client.SendMessage(mobileList, sms.Content, _extendCode, _applicationCode, _password);
-            LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t发送短信成功：{sms.Content}===>{sms.Numbers}\r\n");
+            sms.MessageID = SmsClient.SendMessage(mobileList, sms.Content, _extendCode, _applicationCode, _password);
+            Core.SmsManager.SetSentStatus(sms);
+
+            LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t[{sms.MessageID}]发送短信成功：{sms.Content}===>{sms.Numbers}\r\n");
         }
     }
 

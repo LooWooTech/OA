@@ -28,27 +28,25 @@ namespace Loowoo.Land.OA.API.Controllers
                     Content = new StringContent("文件未找到")
                 };
             }
-            var result = new HttpResponseMessage(HttpStatusCode.OK);
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
             var stream = new FileStream(file.PhysicalPath, FileMode.Open, FileAccess.Read);
-            result.Content = new StreamContent(stream);
-
+            response.Content = new StreamContent(stream);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             if (action == "download")
             {
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = file.FileName,
+                    FileName = HttpUtility.UrlPathEncode(file.FileName),
                 };
             }
             else
             {
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
                 {
-                    FileName = file.FileName,
+                    FileName = HttpUtility.UrlPathEncode(file.FileName),
                 };
             }
-            return result;
+            return response;
         }
 
         [HttpGet]

@@ -27,5 +27,9 @@ namespace Loowoo.Land.OA.Models
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
+
+        public DateTime? SendTime { get; set; }
+
+        public string MessageID { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public void Send(int infoId, string userId = null)
         {
-            var userIds = userId.ToIntArray();
+            var userIds = userId.ToIntArray().Distinct().ToArray();
             if (userIds == null || userIds.Length == 0)
             {
                 return;
@@ -25,10 +25,11 @@ namespace Loowoo.Land.OA.API.Controllers
             var content = $"您有待处理的{info.Form.FormType.GetDescription()}：{info.Title}，请及时处理。发送人：" + Identity.Name;
 
             //10个号码为一批
-            var pageSize = 10;
-            for (var i = 0; i < userIds.Length / pageSize + 1; i++)
+            var rows = 10;
+            var total = userIds.Length / rows + 1;
+            for (var page = 0; page < total; page++)
             {
-                var mobiles = string.Join(",", users.Skip(i * pageSize).Take(pageSize).Select(e => e.Mobile));
+                var mobiles = string.Join(",", users.Skip(page * rows).Take(rows).Select(e => e.Mobile));
                 Core.SmsManager.Create(new OA.Models.Sms
                 {
                     Content = content,

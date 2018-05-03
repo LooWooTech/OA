@@ -12,41 +12,41 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class FormInfoController : ControllerBase
     {
-        [HttpGet]
-        public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
-        {
-            var parameter = new FormInfoParameter
-            {
-                FormId = formId,
-                FlowStatus = status,
-                Page = new PageParameter(page, rows),
-                UserId = Identity.ID,
-                PostUserId = postUserId,
-                Completed = completed
-            };
+        //[HttpGet]
+        //public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
+        //{
+        //    var parameter = new FormInfoParameter
+        //    {
+        //        FormId = formId,
+        //        FlowStatus = status,
+        //        Page = new PageParameter(page, rows),
+        //        UserId = Identity.ID,
+        //        PostUserId = postUserId,
+        //        Completed = completed
+        //    };
 
-            var form = Core.FormManager.GetModel(formId);
-            var flow = Core.FlowManager.Get(form.FLowId);
+        //    var form = Core.FormManager.GetModel(formId);
+        //    var flow = Core.FlowManager.Get(form.FLowId);
 
-            var list = Core.UserFormInfoManager.GetQuery(parameter).Select(e => new FormInfoViewModel
-            {
-                ID = e.ID,
-                CategoryId = e.Info.CategoryId,
-                CreateTime = e.Info.CreateTime,
-                FlowDataId = e.Info.FlowDataId,
-                InfoId = e.Info.ID,
-                PostUserId = e.Info.PostUserId,
-                Status = e.FlowStatus,
-                UpdateTime = e.Info.UpdateTime,
-                UserId = e.UserId,
-            }).ToList();
+        //    var list = Core.UserFormInfoManager.GetQuery(parameter).Select(e => new FormInfoViewModel
+        //    {
+        //        ID = e.ID,
+        //        CategoryId = e.Info.CategoryId,
+        //        CreateTime = e.Info.CreateTime,
+        //        FlowDataId = e.Info.FlowDataId,
+        //        InfoId = e.Info.ID,
+        //        PostUserId = e.Info.PostUserId,
+        //        Status = e.FlowStatus,
+        //        UpdateTime = e.Info.UpdateTime,
+        //        UserId = e.UserId,
+        //    }).ToList();
 
-            return new PagingResult
-            {
-                List = list,
-                Page = parameter.Page
-            };
-        }
+        //    return new PagingResult
+        //    {
+        //        List = list,
+        //        Page = parameter.Page
+        //    };
+        //}
 
         [HttpGet]
         public object Model(int id)
