@@ -22,6 +22,12 @@ namespace Loowoo.Land.OA.Managers
             }
             return model;
         }
+
+        public User GetModelByFingerPrintId(int userId)
+        {
+            return DB.Users.FirstOrDefault(e => e.FingerPrintId == userId);
+        }
+
         public User GetModel(string name)
         {
             if (string.IsNullOrEmpty(name)) return null;

@@ -54,6 +54,10 @@ namespace Loowoo.Land.OA.Models
         public int AttendanceGroupId { get; set; }
 
         public int Sort { get; set; }
+        /// <summary>
+        /// 指纹编号
+        /// </summary>
+        public int FingerPrintId { get; set; }
 
         public bool Deleted { get; set; }
 

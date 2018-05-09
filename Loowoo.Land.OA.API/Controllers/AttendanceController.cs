@@ -81,15 +81,14 @@ namespace Loowoo.Land.OA.API.Controllers
             };
         }
 
-        [HttpGet]
-        public IHttpActionResult CheckInOut()
+        private void CheckInOut(User user)
         {
-            var log = Core.AttendanceManager.AddCheckInOut(Identity.ID);
+            var log = Core.AttendanceManager.AddCheckInOut(user.ID);
             try
             {
-                var userGroup = Core.AttendanceManager.GetAttendanceGroup(Identity.ID);
+                var userGroup = Core.AttendanceManager.GetAttendanceGroup(user.ID);
 
-                var url = AppSettings.Get("AttendanceApiUrl").Replace("{host}", userGroup.API).Replace("{username}", Identity.Name).Replace("{tel}", CurrentUser.Mobile);
+                var url = AppSettings.Get("AttendanceApiUrl").Replace("{host}", userGroup.API).Replace("{username}", user.RealName).Replace("{tel}", user.Mobile);
                 using (var client = new WebClient())
                 {
                     client.Encoding = System.Text.Encoding.UTF8;
@@ -100,14 +99,55 @@ namespace Loowoo.Land.OA.API.Controllers
                     Core.AttendanceManager.SaveApiResult(log);
                     if (log.ApiResult == false)
                     {
-                        return Ok("打卡完成，同步失败：" + data["msg"]);
+                        throw new Exception(data["msg"]);
                     }
                 }
-                return Ok();
             }
             catch (Exception ex)
             {
-                return Ok($"打卡完成，同步失败：" + ex.Message);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IHttpActionResult CheckInOut()
+        {
+            var user = Core.UserManager.GetModel(Identity.ID);
+            try
+            {
+                CheckInOut(user);
+                return Ok("打卡成功");
+            }
+            catch (Exception ex)
+            {
+                return Ok("打卡失败：" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 指纹打卡接口
+        /// </summary>
+        [AllowAnonymous]
+        public IHttpActionResult FingerPrint(string id)
+        {
+            var vals = id.Split('#').Select(str => int.Parse(str)).ToArray();
+            var machineId = vals[0];
+            var userId = vals[1];
+            var mixId = machineId | userId | DateTime.Now.Hour;
+            if (!id.EndsWith(mixId.ToString()))
+            {
+                return Ok("打卡失败,参数不正确");
+            }
+
+            var user = Core.UserManager.GetModelByFingerPrintId(userId);
+            try
+            {
+                CheckInOut(user);
+                return Ok("打卡成功," + user.RealName);
+            }
+            catch (Exception ex)
+            {
+                return Ok("打卡失败," + user.RealName + "," + ex.Message);
             }
         }
 
