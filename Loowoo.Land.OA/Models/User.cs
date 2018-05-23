@@ -72,6 +72,12 @@ namespace Loowoo.Land.OA.Models
             return Role == UserRole.Administrator || UserGroups != null && UserGroups.Any(e => e.Group.HasRight(rightName));
         }
 
+        public int GetDepartmentId()
+        {
+            var d = UserDepartments.OrderBy(e => e.Department.Sort).FirstOrDefault();
+            return d == null ? 0 : d.DepartmentId;
+        }
+
         public void Validate()
         {
             if (string.IsNullOrEmpty(RealName))

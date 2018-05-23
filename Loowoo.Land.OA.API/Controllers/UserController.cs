@@ -153,15 +153,11 @@ namespace Loowoo.Land.OA.API.Controllers
         {
             Core.UserManager.SaveFlowContact(new UserFlowContact { UserId = Identity.ID, ContactId = userId });
         }
+
         [HttpDelete]
-        public void DeleteFlowContact(int userId)
+        public void DeleteFlowContacts(string userIds)
         {
-            var entity = Core.UserManager.GetFlowContact(userId, Identity.ID);
-            if (entity == null)
-            {
-                throw new Exception("无法删除");
-            }
-            Core.UserManager.DeleteFlowContact(entity);
+            Core.UserManager.DeleteFlowContact(userIds.ToIntArray(), Identity.ID);
         }
 
         /// <summary>

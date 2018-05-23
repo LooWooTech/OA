@@ -64,9 +64,5 @@ namespace Loowoo.Land.OA.Models
         /// 是否提醒、催办
         /// </summary>
         public bool Reminded { get; set; }
-        /// <summary>
-        /// 是否为抄送
-        /// </summary>
-        public bool Cc { get; set; }
     }
 }

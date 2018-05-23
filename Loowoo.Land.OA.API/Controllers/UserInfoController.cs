@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Land.OA.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,31 @@ namespace Loowoo.Land.OA.API.Controllers
 {
     public class UserInfoController : ControllerBase
     {
+        [HttpGet]
+        public object MyList(int formId, FlowStatus status = FlowStatus.Doing, int page = 1, int rows = 5)
+        {
+            var list = Core.UserFormInfoManager.GetUserInfoList(new FormInfoParameter
+            {
+                FormId = formId,
+                UserId = Identity.ID,
+                FlowStatus = status,
+                Read = false,
+                Page = new Loowoo.Common.PageParameter(page, rows),
+            });
+            return list.Select(e => new
+            {
+                e.ID,
+                e.FormId,
+                e.InfoId,
+                e.Title,
+                e.CreateTime,
+                e.UpdateTime,
+                e.Reminded,
+                e.CC,
+                Poster = e.Poster == null ? null : e.Poster.RealName,
+            });
+        }
+
         [HttpGet]
         public void Read(int id)
         {

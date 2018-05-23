@@ -174,9 +174,10 @@ namespace Loowoo.Land.OA.Managers
             return DB.UserFlowContacts.FirstOrDefault(e => e.ContactId == contactId && e.UserId == userId);
         }
 
-        public void DeleteFlowContact(UserFlowContact model)
+        public void DeleteFlowContact(int[] contactIds, int userId)
         {
-            DB.UserFlowContacts.Remove(model);
+            var list = DB.UserFlowContacts.Where(e => contactIds.Contains(e.ContactId) && e.UserId == userId);
+            DB.UserFlowContacts.RemoveRange(list);
             DB.SaveChanges();
         }
     }

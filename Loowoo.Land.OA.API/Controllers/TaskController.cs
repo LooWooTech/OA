@@ -76,36 +76,36 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void Save([FromBody]Task data)
         {
+            var model = data.ID == 0 ? data : Core.TaskManager.GetModel(data.ID);
             var form = Core.FormManager.GetModel(FormType.Task);
-            var isAdd = data.ID == 0;
+            var isAdd = model.ID == 0;
             //判断id，如果不存在则创建forminfo
-            if (data.ID == 0)
+            if (model.ID == 0)
             {
-                data.Info = new FormInfo
+                model.Info = new FormInfo
                 {
                     FormId = form.ID,
                     PostUserId = Identity.ID,
-                    Title = data.Name
+                    Title = model.Name
                 };
-                Core.FormInfoManager.Save(data.Info);
+                Core.FormInfoManager.Save(model.Info);
             }
             else
             {
-                data.Info = Core.FormInfoManager.GetModel(data.ID);
-                data.Info.Title = data.Name;
+                model.Info.Title = model.Name;
             }
-            if (data.Info.FlowDataId == 0)
+            if (model.Info.FlowDataId == 0)
             {
-                data.Info.Form = form;
-                Core.FlowDataManager.CreateFlowData(data.Info);
+                model.Info.Form = form;
+                Core.FlowDataManager.CreateFlowData(model.Info);
             }
-            Core.TaskManager.Save(data);
+            Core.TaskManager.Save(model);
 
             Core.FeedManager.Save(new Feed
             {
-                InfoId = data.ID,
-                Title = data.Name,
-                Description = data.Goal,
+                InfoId = model.ID,
+                Title = model.Name,
+                Description = model.Goal,
                 FromUserId = Identity.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
             });
@@ -119,35 +119,98 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult SaveSubTask(SubTask data)
+        public void AddSubTasks(JToken data)
         {
-            if (data.ToDepartmentId == 0)
+            var model = data["data"].ToObject<SubTask>();
+            var mainUserId = data["mainUserId"] == null ? 0 : data["mainUserId"].Value<int>();
+            var subUserIds = data["subUserIds"].ToObject<int[]>();
+
+            if (model.ParentId == 0)
+            {
+                if (mainUserId == 0)
+                {
+                    throw new Exception("没有选择主办科室负责人");
+                }
+                var mainUser = Core.UserManager.GetModel(mainUserId);
+                model.ToUserId = mainUserId;
+                model.ToDepartmentId = mainUser.GetDepartmentId();
+
+                var parent = SaveSubTask(model);
+
+                if (subUserIds != null)
+                {
+                    foreach (var userId in subUserIds)
+                    {
+                        var subUser = Core.UserManager.GetModel(userId);
+
+                        var child = data["data"].ToObject<SubTask>();
+                        child.ParentId = parent.ID;
+                        child.ToDepartmentId = subUser.GetDepartmentId();
+                        child.ToUserId = userId;
+
+                        SaveSubTask(child);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var userId in subUserIds)
+                {
+                    var user = Core.UserManager.GetModel(userId);
+
+                    var child = data["data"].ToObject<SubTask>();
+                    child.ToDepartmentId = user.GetDepartmentId();
+                    child.ToUserId = user.ID;
+                    SaveSubTask(child);
+                }
+            }
+        }
+
+        [HttpPost]
+        public SubTask SaveSubTask(SubTask data)
+        {
+            var model = data.ID == 0 ? data : Core.TaskManager.GetSubTask(data.ID);
+            if (model.ToDepartmentId == 0)
             {
                 throw new Exception("没有指定科室");
             }
-            if (data.ToUserId == 0)
+            if (model.ToUserId == 0)
             {
                 throw new Exception("没有指定责任人");
             }
-            if (data.IsMaster && data.LeaderId == 0)
+            if (model.IsMaster && model.LeaderId == 0)
             {
                 throw new Exception("没有指定分管领导");
             }
-            var isAdd = data.ID == 0;
-            var department = Core.DepartmentManager.Get(data.ToDepartmentId);
-            data.ToDepartmentName = department.Name;
-            data.CreatorId = Identity.ID;
-            Core.TaskManager.SaveSubTask(data);
+
+            var isAdd = model.ID == 0;
+            if (isAdd)
+            {
+                var department = Core.DepartmentManager.Get(model.ToDepartmentId);
+                if (department == null)
+                {
+                    throw new Exception("部门id不正确");
+                }
+                model.ToDepartmentName = department.Name;
+                model.CreatorId = Identity.ID;
+            }
+            else
+            {
+                model.Content = data.Content;
+                model.UpdateTime = data.UpdateTime;
+                model.ScheduleDate = data.ScheduleDate;
+            }
+            Core.TaskManager.SaveSubTask(model);
 
             if (isAdd)
             {
-                var info = Core.FormInfoManager.GetModel(data.TaskId);
+                var info = Core.FormInfoManager.GetModel(model.TaskId);
                 var flowData = info.FlowData;
                 var flowNodeData = flowData.GetFirstNodeData();
-                var toUserNodeData = Core.FlowNodeDataManager.GetModelByExtendId(data.ID, data.ToUserId);
+                var toUserNodeData = Core.FlowNodeDataManager.GetModelByExtendId(model.ID, model.ToUserId);
                 if (toUserNodeData == null)
                 {
-                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, data.ToUserId, data.ID);
+                    toUserNodeData = Core.FlowNodeDataManager.CreateChildNodeData(flowNodeData, model.ToUserId, model.ID);
                 }
                 //通知相关人员
 
@@ -155,24 +218,24 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     Action = UserAction.Create,
                     FromUserId = Identity.ID,
-                    ToUserId = data.ToUserId,
+                    ToUserId = model.ToUserId,
                     Title = "[创建任务]" + info.Title,
-                    Description = data.Content,
+                    Description = model.Content,
                     Type = FeedType.Task,
-                    InfoId = data.TaskId,
+                    InfoId = model.TaskId,
                 });
 
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
-                    InfoId = data.TaskId,
-                    UserId = data.ToUserId,
+                    InfoId = model.TaskId,
+                    UserId = model.ToUserId,
                     FlowStatus = FlowStatus.Doing,
                 });
                 //通知分管领导
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
-                    InfoId = data.TaskId,
-                    UserId = data.LeaderId,
+                    InfoId = model.TaskId,
+                    UserId = model.LeaderId,
                     FlowStatus = FlowStatus.Doing,
                 });
 
@@ -180,17 +243,22 @@ namespace Loowoo.Land.OA.API.Controllers
                 {
                     Action = UserAction.Create,
                     FromUserId = Identity.ID,
-                    ToUserId = data.LeaderId,
+                    ToUserId = model.LeaderId,
                     Title = "[创建任务]" + info.Title,
-                    Description = data.Content,
+                    Description = model.Content,
                     Type = FeedType.Task,
-                    InfoId = data.TaskId,
+                    InfoId = model.TaskId,
                 });
 
-                Core.MessageManager.Add(new Message { InfoId = info.ID, Content = info.Title, CreatorId = Identity.ID }, data.LeaderId, data.ToUserId);
+                Core.MessageManager.Add(new Message
+                {
+                    InfoId = info.ID,
+                    Content = info.Title,
+                    CreatorId = Identity.ID
+                }, model.LeaderId, model.ToUserId);
             }
 
-            return Ok(data);
+            return model;
         }
 
         [HttpDelete]
@@ -385,7 +453,6 @@ namespace Loowoo.Land.OA.API.Controllers
                 var parentFlowNodeData = Core.FlowNodeDataManager.GetModel(model.ParentId);
                 toUserId = parentFlowNodeData.UserId;
                 Core.FlowNodeDataManager.CreateChildNodeData(model, toUserId, subTask.ID);
-
                 var feed = new Feed
                 {
                     FromUserId = Identity.ID,
@@ -403,7 +470,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.UserFormInfoManager.Save(new UserFormInfo
                 {
                     InfoId = subTask.TaskId,
-                    FlowStatus = FlowStatus.Back,
+                    FlowStatus = FlowStatus.Doing,
                     UserId = toUserId
                 });
             }

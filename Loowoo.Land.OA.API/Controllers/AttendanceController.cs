@@ -127,14 +127,15 @@ namespace Loowoo.Land.OA.API.Controllers
         /// <summary>
         /// 指纹打卡接口
         /// </summary>
+        [HttpGet]
         [AllowAnonymous]
-        public IHttpActionResult FingerPrint(string id)
+        public IHttpActionResult FingerPrint(string token)
         {
-            var vals = id.Split('#').Select(str => int.Parse(str)).ToArray();
+            var vals = token.Split('/').Select(str => int.Parse(str)).ToArray();
             var machineId = vals[0];
             var userId = vals[1];
-            var mixId = machineId | userId | DateTime.Now.Hour;
-            if (!id.EndsWith(mixId.ToString()))
+            var mixId = machineId | userId | DateTime.Today.Month;
+            if (!token.EndsWith(mixId.ToString()))
             {
                 return Ok("打卡失败,参数不正确");
             }

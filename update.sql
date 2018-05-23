@@ -98,7 +98,8 @@ SELECT `m`.`WJ_ZH` AS `WJ_ZH`,
 `m`.`Important` AS `Important`,
 `m`.`JJ_DJ` AS `JJ_DJ`,
 `m`.`WJ_MJ` AS `WJ_MJ`,
-m.QX_RQ,
+`m`.`WJ_LY` AS `WJ_LY`,
+`m`.`QX_RQ` AS `QX_RQ`,
 info.*
 FROM missive m
 JOIN user_info info ON m.ID = info.InfoID

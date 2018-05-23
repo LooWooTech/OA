@@ -14,6 +14,8 @@ namespace Loowoo.Land.OA.Models
 
         public WJMJ WJ_MJ { get; set; }
 
+        public string WJ_LY { get; set; }
+
         public DateTime? QX_RQ { get; set; }
 
         public bool Important { get; set; }

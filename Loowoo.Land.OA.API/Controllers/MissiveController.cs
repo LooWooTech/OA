@@ -46,6 +46,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Title,
                     e.QX_RQ,
                     e.WJ_MJ,
+                    e.WJ_LY,
                     e.Reminded,
                     e.Starred,
                     MJ = e.WJ_MJ.GetDescription(),

@@ -10,6 +10,11 @@ namespace Loowoo.Land.OA.Managers
 {
     public class UserFormInfoManager : ManagerBase
     {
+        public IQueryable<UserInfo> GetUserInfoList(FormInfoParameter parameter)
+        {
+            return GetUserInfoList<UserInfo>(parameter).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
+
         public IQueryable<T> GetUserInfoList<T>(FormInfoParameter parameter) where T : UserInfo
         {
             var query = DB.Set<T>().AsQueryable();
