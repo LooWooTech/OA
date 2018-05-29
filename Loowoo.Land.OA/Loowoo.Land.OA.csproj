@@ -99,6 +99,7 @@
     <Compile Include="Models\Seal.cs" />
     <Compile Include="Models\Task\TaskTodo.cs" />
     <Compile Include="Models\UserFlowContact.cs" />
+    <Compile Include="Models\UserFormExtend1.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Models\UserMissive.cs" />
     <Compile Include="Models\UserTask.cs" />

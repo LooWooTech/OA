@@ -17,7 +17,7 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 FormId = formId,
                 UserId = Identity.ID,
-                FlowStatus = status,
+                FlowStatus = new[] { status },
                 Read = false,
                 Page = new Loowoo.Common.PageParameter(page, rows),
             });

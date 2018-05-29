@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new FormInfoParameter
             {
                 FormId = formId,
-                FlowStatus = status,
+                FlowStatus = status.HasValue ? new[] { status.Value } : null,
                 Page = new PageParameter(page, rows),
                 UserId = Identity.ID,
                 PostUserId = postUserId,

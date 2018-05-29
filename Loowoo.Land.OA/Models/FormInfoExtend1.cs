@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 对应所申请的信息的ID（车辆ID，会议室ID等）
         /// </summary>
-        public int InfoId { get; set; }
+        public int ExtendInfoId { get; set; }
 
         public int Category { get; set; }
 

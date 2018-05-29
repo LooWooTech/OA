@@ -41,7 +41,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void Apply([FromBody]FormInfoExtend1 data)
         {
-            var car = Core.MeetingRoomManager.Get(data.InfoId);
+            var car = Core.MeetingRoomManager.Get(data.ExtendInfoId);
             if (car == null)
             {
                 throw new ArgumentException("参数不正确，没有找该会议室");

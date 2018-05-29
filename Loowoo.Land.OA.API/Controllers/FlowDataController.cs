@@ -231,5 +231,12 @@ namespace Loowoo.Land.OA.API.Controllers
             var lastNode = flow.GetLastNode();
             return nodeData.FlowNodeId == lastNode.ID;
         }
+
+        [HttpGet]
+        public IEnumerable<FlowNodeData> CheckList(int infoId, int userId = 0)
+        {
+            return Core.FlowNodeDataManager.GetList(infoId, userId);
+        }
+
     }
 }

@@ -9,9 +9,7 @@ namespace Loowoo.Land.OA.Models
 {
     public class FormInfoParameter
     {
-        public FlowStatus? FlowStatus { get; set; }
-
-        public FlowStatus? ExcludeStatus { get; set; }
+        public FlowStatus[] FlowStatus { get; set; }
 
         public int UserId { get; set; }
 

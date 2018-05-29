@@ -34,9 +34,9 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Apply([FromBody]FormInfoExtend1 data)
+        public int Apply([FromBody]FormInfoExtend1 data)
         {
-            var model = Core.SealManager.Get(data.InfoId);
+            var model = Core.SealManager.Get(data.ExtendInfoId);
             if (model == null)
             {
                 throw new ArgumentException("参数不正确，没有找该图章");
@@ -67,6 +67,8 @@ namespace Loowoo.Land.OA.API.Controllers
             };
             Core.FeedManager.Save(feed);
             Core.MessageManager.Add(feed);
+
+            return info.ID;
         }
 
         [HttpDelete]

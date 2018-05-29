@@ -31,6 +31,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 BeginTime = beginDate,
                 EndTime = endDate,
                 UserId = Identity.ID,
+                PostUserId = Identity.ID,
                 Result = true,
             });
             return new
@@ -58,7 +59,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 }),
                 leaves = leaves.Select(e => new
                 {
-                    e.Info.Title,
+                    e.Title,
                     e.ScheduleBeginTime,
                     e.ScheduleEndTime,
                     e.Reason,

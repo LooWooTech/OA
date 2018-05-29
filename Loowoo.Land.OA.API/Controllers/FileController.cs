@@ -84,6 +84,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.FileManager.Save(model);
         }
 
+        [HttpGet]
         public void UpdateRelation(int[] fileIds, int infoId)
         {
             Core.FileManager.Relation(fileIds, infoId);

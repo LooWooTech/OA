@@ -16,13 +16,23 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new Extend1Parameter
             {
                 FormId = formId,
-                InfoId = infoId,
+                ExtendInfoId = infoId,
                 UserId = userId,
-                Status = status,
                 ApprovalUserId = approvalUserId,
                 Page = new PageParameter(page, rows)
             };
-            var list = Core.FormInfoExtend1Manager.GetList(parameter);
+            switch (status)
+            {
+                case CheckStatus.All:
+                    break;
+                case CheckStatus.Checked:
+                    parameter.FlowStatus = new[] { FlowStatus.Completed, FlowStatus.Done };
+                    break;
+                case CheckStatus.Uncheck:
+                    parameter.FlowStatus = new[] { FlowStatus.Doing, FlowStatus.Back };
+                    break;
+            }
+            var list = Core.FormInfoExtend1Manager.GetList(parameter).GroupBy(e => e.InfoId).Select(g => g.FirstOrDefault());
             return new PagingResult
             {
                 List = list.Select(e => new
@@ -38,13 +48,14 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Result,
                     e.UpdateTime,
                     e.ApprovalUserId,
-                    e.Info.FlowDataId,
-                    ApprovalUser = e.ApprovalUser.RealName,
-                    ApplyUser = e.User.RealName,
-                    e.Info.FormId,
-                    Title = e.Info.Title,
-                    FlowStep = e.Info.FlowStep,
-                    Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed,
+                    e.FlowDataId,
+                    ApprovalUser = e.ApprovalUserName,
+                    ApplyUser = e.ApplyUserName,
+                    e.FormId,
+                    e.Title,
+                    e.FlowStep,
+                    Completed = e.FlowData == null ? false : e.FlowData.Completed,
+                    e.FlowData
                 }),
                 Page = parameter.Page,
             };
@@ -142,13 +153,13 @@ namespace Loowoo.Land.OA.API.Controllers
                 switch (info.Form.FormType)
                 {
                     case FormType.Car:
-                        Core.CarManager.UpdateStatus(apply.InfoId, CarStatus.Unused);
+                        Core.CarManager.UpdateStatus(apply.ExtendInfoId, CarStatus.Unused);
                         break;
                     case FormType.MeetingRoom:
-                        Core.MeetingRoomManager.UpdateStatus(apply.InfoId, MeetingRoomStatus.Unused);
+                        Core.MeetingRoomManager.UpdateStatus(apply.ExtendInfoId, MeetingRoomStatus.Unused);
                         break;
                     case FormType.Seal:
-                        Core.SealManager.UpdateStatus(apply.InfoId, SealStatus.Unused);
+                        Core.SealManager.UpdateStatus(apply.ExtendInfoId, SealStatus.Unused);
                         break;
                 }
             }

@@ -30,13 +30,9 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Title.Contains(parameter.SearchKey));
             }
-            if (parameter.FlowStatus.HasValue)
+            if (parameter.FlowStatus != null && parameter.FlowStatus.Length > 0)
             {
-                query = query.Where(e => e.FlowStatus == parameter.FlowStatus.Value);
-            }
-            if (parameter.ExcludeStatus.HasValue)
-            {
-                query = query.Where(e => e.FlowStatus != parameter.ExcludeStatus.Value);
+                query = query.Where(e => parameter.FlowStatus.Contains(e.FlowStatus));
             }
             if (parameter.BeginTime.HasValue)
             {

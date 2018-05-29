@@ -11,75 +11,22 @@ namespace Loowoo.Land.OA.Managers
 {
     public class FormInfoExtend1Manager : ManagerBase
     {
-        /// <summary>
-        /// 获取申请记录
-        /// </summary>
-        public IEnumerable<FormInfoExtend1> GetList(Extend1Parameter parameter)
+        public IEnumerable<UserFormExtend1> GetList(Extend1Parameter parameter)
         {
-            var query = DB.UserFormInfos.AsQueryable();
-            if (parameter.ApprovalUserId > 0)
+            var query = Core.UserFormInfoManager.GetUserInfoList<UserFormExtend1>(parameter);
+            if (parameter.ExtendInfoId > 0)
             {
-                query = query.Where(e => e.UserId == parameter.ApprovalUserId);
-                switch (parameter.Status)
-                {
-                    case CheckStatus.All:
-                        break;
-                    case CheckStatus.Uncheck:
-                        query = query.Where(e => e.FlowStatus == FlowStatus.Doing);
-                        break;
-                    case CheckStatus.Checked:
-                        query = query.Where(e => e.FlowStatus != FlowStatus.Doing);
-                        break;
-                }
-            }
-            if (parameter.FormId > 0)
-            {
-                query = query.Where(e => e.Info.FormId == parameter.FormId);
-            }
-            if (parameter.BeginTime.HasValue)
-            {
-                query = query.Where(e => e.Info.CreateTime > parameter.BeginTime);
-            }
-            if (parameter.UserId > 0)
-            {
-                query = query.Where(e => e.Info.PostUserId == parameter.UserId);
-
-            }
-
-            var formInfoIds = query.GroupBy(e => e.InfoId).Select(g => g.Key).OrderByDescending(id => id).SetPage(parameter.Page).ToArray();
-
-            var list = DB.FormInfoExtend1s.Where(e => formInfoIds.Contains(e.ID));
-            if (parameter.InfoId > 0)
-            {
-                list = list.Where(e => e.InfoId == parameter.InfoId);
-            }
-            if (parameter.UserId > 0)
-            {
-                list = list.Where(e => e.UserId == parameter.UserId);
+                query = query.Where(e => e.ExtendInfoId == parameter.ExtendInfoId);
             }
             if (parameter.Result.HasValue)
             {
-                list = list.Where(e => e.Result == parameter.Result.Value);
+                query = query.Where(e => e.Result == parameter.Result);
             }
-            if (parameter.Category.HasValue)
+            if (parameter.ApprovalUserId > 0)
             {
-                list = list.Where(e => e.Category == parameter.Category.Value);
+                query = query.Where(e => e.ApprovalUserId == parameter.ApprovalUserId);
             }
-            if (parameter.UserId > 0)
-            {
-                switch (parameter.Status)
-                {
-                    case CheckStatus.All:
-                        break;
-                    case CheckStatus.Uncheck:
-                        list = list.Where(e => e.Result == null);
-                        break;
-                    case CheckStatus.Checked:
-                        list = list.Where(e => e.Result.HasValue);
-                        break;
-                }
-            }
-            return list.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public FormInfoExtend1 GetModel(int id)
@@ -95,7 +42,7 @@ namespace Loowoo.Land.OA.Managers
 
         public bool HasApply(FormInfoExtend1 data)
         {
-            return DB.FormInfoExtend1s.Any(e => e.InfoId == data.InfoId
+            return DB.FormInfoExtend1s.Any(e => e.ExtendInfoId == data.ExtendInfoId
             && e.Result == null
             && e.UserId == data.UserId
             );

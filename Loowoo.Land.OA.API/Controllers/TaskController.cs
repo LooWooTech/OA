@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new FormInfoParameter
             {
                 FormId = form.ID,
-                FlowStatus = status,
+                FlowStatus = status.HasValue ? new[] { status.Value } : null,
                 UserId = status == null && CurrentUser.HasRight(FormType.Task, UserRightType.View) ? 0 : Identity.ID,
                 SearchKey = searchKey,
                 Page = new PageParameter(page, rows)
@@ -59,7 +59,7 @@ namespace Loowoo.Land.OA.API.Controllers
             var parameter = new FormInfoParameter
             {
                 FormId = form.ID,
-                ExcludeStatus = FlowStatus.Completed,
+                FlowStatus = new[] { FlowStatus.Doing, FlowStatus.Back, FlowStatus.Done },
             };
 
             var datas = Core.TaskManager.GetUserTasks(parameter);

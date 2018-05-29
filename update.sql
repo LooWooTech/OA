@@ -1,3 +1,25 @@
+-- 2018-05-29
+-- 创建扩展form 用户审批视图
+ALTER TABLE `form_info_extend1`
+	ALTER `InfoId` DROP DEFAULT;
+ALTER TABLE `form_info_extend1`
+	CHANGE COLUMN `InfoId` `ExtendInfoId` INT(11) NOT NULL AFTER `ID`;
+
+SELECT 
+e.ExtendInfoId,
+e.UserId AS ApplyUserId,
+e.ApprovalUserId,
+e.ScheduleBeginTime,
+e.ScheduleEndTime,
+e.RealEndTime,
+e.Result,
+e.Reason,
+e.Category,
+info.*
+FROM form_info_extend1 e
+JOIN user_info info ON e.ID = info.InfoID
+
+
 -- 2018-02-06
 DROP TABLE IF EXISTS `salary`;
 CREATE TABLE `salary` (
