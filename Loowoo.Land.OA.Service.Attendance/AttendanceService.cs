@@ -1,8 +1,10 @@
 ﻿using Loowoo.Common;
+using Loowoo.Land.OA.Managers;
 using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -12,19 +14,31 @@ namespace Loowoo.Land.OA.Service.Attendance
 {
     public class AttendanceService
     {
-        private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
         private bool _stop = false;
-        private int _recountTimes = 0;
         private Thread _worker;
+        private AttendanceManager AttendanceManager = new AttendanceManager();
+        private List<AttendanceTime> _times;
+        private List<AttendanceGroup> _groups;
+        private Dictionary<int, AttendanceGroup> _userGroups;
+
+        private DateTime _minBeginTime;
+        private DateTime _maxEndTime;
+
         public void Start()
         {
-            _worker = new Thread(async () =>
+            _groups = AttendanceManager.GetAttendanceGroups();
+            _times = _groups.Select(e => new AttendanceTime(e)).ToList();
+            var defaultGroup = _groups.FirstOrDefault(e => e.Default);
+            _userGroups = AttendanceManager.GetUserGroups().ToDictionary(e => e.Key, e => e.Value == 0 ? defaultGroup : _groups.FirstOrDefault(g => g.ID == e.Value));
+            _minBeginTime = _times.Min(e => e.AMBeginTime);
+            _maxEndTime = _times.Min(e => e.PMBeginTime);
+            _worker = new Thread(() =>
             {
                 while (!_stop)
                 {
                     try
                     {
-                        await Dowork();
+                        Dowork();
                     }
                     catch (Exception ex)
                     {
@@ -42,109 +56,70 @@ namespace Loowoo.Land.OA.Service.Attendance
             _worker = null;
         }
 
-        private async System.Threading.Tasks.Task Dowork()
+        private void Dowork()
         {
-            var time = Core.AttendanceManager.GetAttendanceTime();
-            if (time.IsCheckTime(DateTime.Now, 3))
+            var count = CheckLogs();
+            if (count == 0)
             {
-                _recountTimes = 0;
-                var count = await Execute(time);
-                if (count == 0)
+                if (_times.Any(t => t.IsCheckTime(DateTime.Now, 10)))
                 {
-                    //如果是上班时间，则调用次数比较快
                     Thread.Sleep(500);
                 }
                 else
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(1000 * 60);
                 }
             }
             else
             {
-                if (_recountTimes < 3)
-                {
-                    var count = await CheckLogs(DateTime.Today, DateTime.Now);
-                    _recountTimes++;
-                }
-                //非打卡时间，每隔1小时，计算一次考勤情况
-                var now = DateTime.Now;
-                //如果还没到上午打卡时间
-                var ts = new TimeSpan(0, 1, 0);
-                if (now < time.AMBeginTime)
-                {
-                    ts = time.AMBeginTime - now;
-                }
-                else if (now < time.PMBeginTime)
-                {
-                    ts = time.PMBeginTime - now;
-                }
-
-                var sleepLong = 60;
-                if (ts.TotalHours > 1)
-                {
-                    sleepLong = 60 * 60;
-                }
-                else if (ts.TotalMinutes > 1)
-                {
-                    sleepLong = 60;
-                }
-                else
-                {
-                    sleepLong = 1;
-                }
-
-                if (sleepLong > 60)
-                {
-                    LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t未到打卡时间，休息{sleepLong / 60}分钟\r\n");
-                }
-                Thread.Sleep(1000 * sleepLong);
+                Thread.Sleep(1);
             }
         }
 
-        private async Task<int> Execute(AttendanceTime time)
-        {
-            if (DateTime.Now >= time.AMBeginTime && DateTime.Now <= time.AMEndTime)
-            {
-                return await CheckLogs(time.AMBeginTime, time.PMEndTime);
-            }
-            else if (DateTime.Now >= time.PMBeginTime && DateTime.Now <= time.PMEndTime)
-            {
-                return await CheckLogs(time.PMBeginTime, time.PMEndTime);
-            }
-            else
-            {
-                return await CheckLogs(DateTime.Today, DateTime.Now);
-            }
-        }
-
-        private async Task<int> CheckLogs(DateTime beginTime, DateTime endTime)
+        private int CheckLogs()
         {
             //根据当前时间 遍历打卡记录
-            var logs = Core.AttendanceManager.GetLogs(new Parameters.CheckInOutParameter
+            var logs = AttendanceManager.GetLogs(new Parameters.CheckInOutParameter
             {
-                BeginTime = beginTime,
-                EndTime = endTime,
+                BeginTime = DateTime.Today,
+                EndTime = DateTime.Now,
                 HasChecked = false,
             });
             foreach (var log in logs)
             {
                 if (log.ApiResult.HasValue) continue;
-                var json = await InvokeApiAsync(log);
+                var json = InvokeApi(log);
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && data["msg"].Contains("成功");
+                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
                 log.ApiContent = data.ToJson();
-                Core.AttendanceManager.SaveApiResult(log);
+                AttendanceManager.SaveApiResult(log);
                 LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");
             }
             return logs.Count();
         }
 
-        private HttpClient _client = new HttpClient();
-        private string _apiUrl = AppSettings.Get("ApiUrl");
-        public async Task<string> InvokeApiAsync(CheckInOut log)
+        private string GetApiHost(int userId)
         {
-            var url = _apiUrl.Replace("{username}", log.User.RealName).Replace("{tel}", log.User.Mobile);
-            return await _client.GetStringAsync(url);
+            if (_userGroups.ContainsKey(userId))
+            {
+                return _userGroups[userId].API;
+            }
+            var group = _groups.FirstOrDefault(e => e.Default) ?? _groups.FirstOrDefault();
+
+            return group?.API;
+        }
+
+        private HttpClient _client = new HttpClient();
+        private string _apiUrlFormat = AppSettings.Get("ApiUrl");
+        public string InvokeApi(CheckInOut log)
+        {
+            var host = GetApiHost(log.UserId);
+            var url = _apiUrlFormat.Replace("{host}", host).Replace("{username}", log.User.RealName).Replace("{tel}", log.User.Mobile);
+            using (var client = new WebClient())
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                return client.DownloadString(url);
+            }
         }
     }
 }

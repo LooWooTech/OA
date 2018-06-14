@@ -12,15 +12,19 @@ namespace Loowoo.Land.OA.API.Security
     {
         public static UserIdentity GetIdentity(HttpContext context)
         {
-            var tokenKey = AppSettings.Get("TokenKey") ?? "Token";
+            var tokenKey = AppSettings.Get("TokenKey") ?? "token";
             var token = context.Request[tokenKey] ?? context.Request.Headers[tokenKey];
             if (!string.IsNullOrWhiteSpace(token))
             {
-                var ticket = FormsAuthentication.Decrypt(token);
-                if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                try
                 {
-                    return ticket.Name.ToObject<UserIdentity>();
+                    var ticket = FormsAuthentication.Decrypt(token);
+                    if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                    {
+                        return ticket.Name.ToObject<UserIdentity>();
+                    }
                 }
+                catch { }
             }
             return UserIdentity.Anonymouse;
         }

@@ -100,10 +100,10 @@ namespace Loowoo.Common
             var result = new ExcelCell();
             switch (cell.CellType)
             {
+                case CellType.Formula:
                 case CellType.Numeric:
                     result.Value = cell.NumericCellValue;
                     break;
-                case CellType.Formula:
                 case CellType.Blank:
                 case CellType.Error:
                 case CellType.Unknown:
@@ -135,23 +135,34 @@ namespace Loowoo.Common
             return ReadData(GetSheet(filePath, sheetIndex));
         }
 
-        public static List<ExcelCell> ReadData(this ISheet sheet)
+        public static List<ExcelCell> ReadData(this ISheet sheet, int startRow = 0)
         {
             var list = new List<ExcelCell>();
-            for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; i++)
+            for (var i = startRow; i <= sheet.LastRowNum; i++)
             {
                 var row = sheet.GetRow(i);
                 if (row == null) continue;
                 foreach (var cell in row.Cells)
                 {
-                    if (cell.CellType == CellType.Blank || cell.CellType == CellType.Formula)
-                    {
-                        continue;
-                    }
                     var excelCell = ConvertToExcelCell(cell);
                     excelCell.ComputeSpace(cell, list);
                     list.Add(excelCell);
                 }
+            }
+            return list;
+        }
+
+        public static List<ExcelCell> ReadRowData(this ISheet sheet, int rowIndex)
+        {
+            var row = sheet.GetRow(rowIndex);
+            if (row == null) return null;
+
+            var list = new List<ExcelCell>();
+            foreach (var cell in row.Cells)
+            {
+                var excelCell = ConvertToExcelCell(cell);
+                excelCell.ComputeSpace(cell, list);
+                list.Add(excelCell);
             }
             return list;
         }

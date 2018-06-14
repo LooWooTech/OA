@@ -12,7 +12,6 @@ namespace Loowoo.Common
         public static IQueryable<T> SetPage<T>(this IQueryable<T> query, PageParameter page)
         {
             if (page == null) return query;
-
             if (page.RecordCount == 0)
             {
                 page.RecordCount = query.Count();

@@ -43,7 +43,8 @@ namespace Loowoo.Land.OA.Managers
             {
                 throw new ArgumentException("该部门已有用户使用，无法删除");
             }
-            if (DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(id.ToString())))
+            var idStr = id.ToString();
+            if (DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(idStr)))
             {
                 throw new Exception("该部门已被流程使用，无法删除");
             }
@@ -54,7 +55,8 @@ namespace Loowoo.Land.OA.Managers
 
         public bool Used(int id)
         {
-            return DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(id.ToString()));
+            var val = id.ToString();
+            return DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(val));
         }
 
         public void UpdateUserDepartments(int userId, int[] departmentIds)

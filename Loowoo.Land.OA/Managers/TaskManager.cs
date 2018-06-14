@@ -11,25 +11,20 @@ namespace Loowoo.Land.OA.Managers
 {
     public class TaskManager : ManagerBase
     {
-        public IEnumerable<Task> GetList(FormInfoParameter parameter)
+        public IEnumerable<UserTask> GetUserTasks(FormInfoParameter parameter)
         {
-            var infos = Core.UserFormInfoManager.GetList(parameter);
-            parameter.InfoIds = infos.Select(e => e.InfoId).ToArray();
+            return Core.UserFormInfoManager.GetUserInfoList<UserTask>(parameter).OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
 
-            var query = DB.Tasks.AsQueryable();
-            if (parameter.InfoIds != null)
-            {
-                query = query.Where(e => parameter.InfoIds.Contains(e.ID));
-            }
-            if (parameter.FormId > 0)
-            {
-                query = query.Where(e => e.Info.FormId == parameter.FormId);
-            }
+        public IEnumerable<Task> GetTasks(FormInfoParameter parameter)
+        {
+            var query = DB.Tasks.Where(e => !e.Info.Deleted);
             if (!string.IsNullOrEmpty(parameter.SearchKey))
             {
                 query = query.Where(e => e.Name.Contains(parameter.SearchKey));
             }
-            return query.OrderByDescending(e => e.ID);
+
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public void Save(Task data)
@@ -94,7 +89,7 @@ namespace Loowoo.Land.OA.Managers
             return DB.Todos.Find(id);
         }
 
-        public void DeleteTodo(TaskTodo model)
+        public void RemoveTodo(TaskTodo model)
         {
             DB.Todos.Remove(model);
             DB.SaveChanges();
@@ -116,6 +111,18 @@ namespace Loowoo.Land.OA.Managers
             }
             DB.SubTasks.Remove(model);
             DB.SaveChanges();
+        }
+
+        public bool HasDoingTask(int taskId, int userId)
+        {
+            var query = DB.SubTasks.Where(e => e.TaskId == taskId && (e.Status == SubTaskStatus.Back || e.Status == SubTaskStatus.Doing));
+            if (query.Any(e => e.ToUserId == userId))
+            {
+                return true;
+            }
+            return query.Join(DB.Todos, e => e.ID, t => t.SubTaskId, (e, t) => new { t.ToUserId, t.Completed })
+                .Where(e => e.ToUserId == userId)
+                .Any(e => e.Completed == false);
         }
     }
 }

@@ -20,45 +20,45 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 20)
+        public object List(int formId, int postUserId = 0, string searchKey = null, bool? completed = null, FlowStatus? status = null, int page = 1, int rows = 10)
         {
+
             var parameter = new FormInfoParameter
             {
                 FormId = formId,
-                Status = status,
+                FlowStatus = status.HasValue ? new[] { status.Value } : null,
                 Page = new PageParameter(page, rows),
-                UserId = CurrentUser.ID,
+                UserId = Identity.ID,
                 PostUserId = postUserId,
                 Completed = completed,
                 SearchKey = searchKey,
             };
 
-            var datas = Core.MissiveManager.GetList(parameter);
+            var list = Core.MissiveManager.GetList(parameter);
 
             return new PagingResult
             {
-                List = datas.Select(e => new
+                List = list.Select(e => new
                 {
                     e.ID,
-                    e.WJ_BT,
+                    e.InfoId,
                     e.WJ_ZH,
-                    e.JJ_DJ,
-                    e.DJR,
-                    e.ZRR,
-                    e.ZS_JG,
-                    e.CS_JG,
-                    e.GK_FB,
-                    ZW_GK = e.ZW_GK.GetDescription(),
+                    e.Title,
                     e.QX_RQ,
-                    e.FW_RQ,
+                    e.WJ_MJ,
+                    e.WJ_LY,
+                    e.Reminded,
+                    e.Starred,
                     MJ = e.WJ_MJ.GetDescription(),
-                    e.Info.FormId,
-                    e.Info.CreateTime,
-                    e.Info.UpdateTime,
-                    e.Info.FlowStep,
-                    e.Info.FlowDataId,
-                    e.Info.PostUserId,
-                    e.Important
+                    e.FormId,
+                    e.CreateTime,
+                    e.UpdateTime,
+                    e.FlowStep,
+                    e.FlowDataId,
+                    e.PostUserId,
+                    e.Important,
+                    Completed = e.FlowData == null ? false : e.FlowData.Completed,
+                    e.Uid,
                 }),
                 Page = parameter.Page
             };
@@ -74,7 +74,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 data.Info = new FormInfo
                 {
                     FormId = formId,
-                    PostUserId = CurrentUser.ID,
+                    PostUserId = Identity.ID,
                     Title = data.WJ_BT
                 };
                 Core.FormInfoManager.Save(data.Info);
@@ -90,13 +90,16 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.FlowDataManager.CreateFlowData(data.Info);
             }
             data.ID = data.Info.ID;
+
+            var file = data.Content;
+            data.Content = null;
             Core.MissiveManager.Save(data);
             if (data.ContentId > 0)
             {
-                if (data.Content != null && data.Content.InfoId == 0)
+                if (file != null && file.InfoId == 0)
                 {
-                    data.Content = Core.FileManager.GetModel(data.ContentId);
-                    data.Content.InfoId = data.ID;
+                    file.InfoId = data.ID;
+                    Core.FileManager.Save(file);
                     //添加红头
                     if (data.RedTitleId > 0)
                     {
@@ -106,14 +109,15 @@ namespace Loowoo.Land.OA.API.Controllers
                 }
             }
 
-            Core.FeedManager.Save(new Feed
+            var feed = new Feed
             {
                 InfoId = data.ID,
                 Title = data.WJ_BT,
                 Description = data.ZTC,
-                FromUserId = CurrentUser.ID,
+                FromUserId = Identity.ID,
                 Action = isAdd ? UserAction.Create : UserAction.Update,
-            });
+            };
+            Core.FeedManager.Save(feed);
         }
 
         [HttpGet]
@@ -151,6 +155,21 @@ namespace Loowoo.Land.OA.API.Controllers
                 model.Template = null;
             }
             Core.MissiveManager.SaveRedTitle(model);
+        }
+
+        /// <summary>
+        /// 上报到市里OA
+        /// </summary>
+        [HttpGet]
+        public void Report(int id)
+        {
+            var info = Core.FormInfoManager.GetModel(id);
+            if (info.Form.FormType == FormType.SendMissive
+                && info.FlowData.Completed
+                )
+            {
+                Core.MissiveManager.AddMissiveServiceLog(id);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Loowoo.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -64,6 +65,20 @@ namespace Loowoo.Land.OA.Models
 
     public class AttendanceTime
     {
+        public AttendanceTime(AttendanceGroup group)
+        {
+            AMBeginTime = ConvertToDateTime(group.AMBeginTime);
+            AMEndTime = ConvertToDateTime(group.AMEndTime);
+            PMBeginTime = ConvertToDateTime(group.PMBeginTime);
+            PMEndTime = ConvertToDateTime(group.PMEndTime);
+        }
+
+        private static DateTime ConvertToDateTime(string value)
+        {
+            var timespan = value.ToTimeSpan();
+            return DateTime.Today.Add(timespan);
+        }
+
         /// <summary>
         /// 上班最早打卡时间
         /// </summary>
@@ -85,7 +100,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public bool IsCheckTime(DateTime time, int margin = 0)
         {
-            return (time >= AMBeginTime.AddMinutes(-margin) && time <= AMEndTime.AddMinutes(margin)) 
+            return (time >= AMBeginTime.AddMinutes(-margin) && time <= AMEndTime.AddMinutes(margin))
                 || (time >= PMBeginTime.AddMinutes(-margin) && time <= PMEndTime.AddMinutes(margin));
         }
 

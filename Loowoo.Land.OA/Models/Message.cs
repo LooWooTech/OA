@@ -13,15 +13,50 @@ namespace Loowoo.Land.OA.Models
     {
         public Message()
         {
-            CreateTime = DateTime.Now;
         }
+
+        public Message(Feed feed)
+        {
+            Content = feed.Title ?? feed.Description;
+            InfoId = feed.InfoId;
+            CreatorId = feed.FromUserId;
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
         public string Content { get; set; }
-        public int FormUserId { get; set; }
-        public int ToUserId { get; set; }
-        public DateTime CreateTime { get; set; }
-        public int FeedId { get; set; }
+
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+
+        public int InfoId { get; set; }
+
+        public int CreatorId { get; set; }
+
+        public virtual User Creator { get; set; }
+
+        public virtual FormInfo Info { get; set; }
     }
+
+    [Table("message_user")]
+    public class UserMessage
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+
+        public int MessageId { get; set; }
+
+        public virtual Message Message { get; set; }
+
+        public int UserId { get; set; }
+
+        public bool HasRead { get; set; }
+
+        public bool Deleted { get; set; }
+
+        public virtual User User { get; set; }
+    }
+
+
 }

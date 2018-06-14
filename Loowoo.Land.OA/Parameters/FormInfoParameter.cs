@@ -9,7 +9,7 @@ namespace Loowoo.Land.OA.Models
 {
     public class FormInfoParameter
     {
-        public FlowStatus? Status { get; set; }
+        public FlowStatus[] FlowStatus { get; set; }
 
         public int UserId { get; set; }
 
@@ -30,5 +30,11 @@ namespace Loowoo.Land.OA.Models
         public string SearchKey { get; set; }
 
         public int[] InfoIds { get; set; }
+
+        public bool? Read { get; set; }
+
+        public bool? Trash { get; set; }
+
+        public bool? Starred { get; set; }
     }
 }

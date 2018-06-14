@@ -40,7 +40,8 @@
             // serviceInstaller1
             // 
             this.serviceInstaller1.DisplayName = "OA打卡服务";
-            this.serviceInstaller1.ServiceName = "Service1";
+            this.serviceInstaller1.ServiceName = "OA.Attendance";
+            this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,6 +19,7 @@ namespace Loowoo.Land.OA.Models
 
         public int DepartmentId { get; set; }
 
+        [JsonIgnore]
         public virtual User User { get; set; }
 
         public virtual Department Department { get; set; }

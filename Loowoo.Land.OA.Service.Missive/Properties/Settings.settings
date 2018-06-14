@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Loowoo.Land.OA.Service.Missive.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Loowoo_Land_OA_Service_Missive_WebReference_JSWJ" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://115.231.121.254/Webservice/JSWJ/JSWJ.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

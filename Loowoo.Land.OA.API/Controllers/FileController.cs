@@ -28,27 +28,25 @@ namespace Loowoo.Land.OA.API.Controllers
                     Content = new StringContent("文件未找到")
                 };
             }
-            var result = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(file.PhysicalSavePath, FileMode.Open, FileAccess.Read);
-            result.Content = new StreamContent(stream);
-
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            var stream = new FileStream(file.PhysicalPath, FileMode.Open, FileAccess.Read);
+            response.Content = new StreamContent(stream);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             if (action == "download")
             {
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = file.FileName,
+                    FileName = HttpUtility.UrlPathEncode(file.FileName),
                 };
             }
             else
             {
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
                 {
-                    FileName = file.FileName,
+                    FileName = HttpUtility.UrlPathEncode(file.FileName),
                 };
             }
-            return result;
+            return response;
         }
 
         [HttpGet]
@@ -58,33 +56,26 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult Upload(string name = null, int id = 0, int infoId = 0, bool inline = false)
+        public OA.Models.File Upload(string name = null, int id = 0, int infoId = 0, int formId = 0, bool inline = false)
         {
-            TaskName = "文件上传";
             var files = HttpContext.Current.Request.Files;
             if (files.Count == 0)
             {
-                return BadRequest("没有上传文件");
+                throw new Exception("没有上传文件");
             }
             var inputFile = string.IsNullOrWhiteSpace(name) ? files[0] : files[name];
             if (inputFile == null)
             {
-                return BadRequest($"{TaskName}:未找到文件{name}相关信息");
+                throw new Exception("未找到指定的name");
             }
 
-            var fileName = OA.Models.File.Upload(inputFile);
-            var file = new OA.Models.File
-            {
-                FileName = inputFile.FileName,
-                Size = inputFile.ContentLength,
-                SavePath = fileName,
-                InfoId = infoId,
-                ID = id,
-                Inline = inline
-            };
+            var file = OA.Models.File.Upload(inputFile);
+            file.InfoId = infoId;
+            file.ID = id;
+            file.Inline = inline;
             Core.FileManager.Save(file);
 
-            return Ok(file);
+            return file;
         }
 
         [HttpPost]
@@ -93,6 +84,7 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.FileManager.Save(model);
         }
 
+        [HttpGet]
         public void UpdateRelation(int[] fileIds, int infoId)
         {
             Core.FileManager.Relation(fileIds, infoId);
@@ -142,7 +134,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 var pdfFile = Core.FileManager.GetList(new FileParameter { ParentId = file.ID }).ToList().Where(e => e.FileName.EndsWith("pdf")).FirstOrDefault();
                 if (pdfFile == null)
                 {
-                    var docPath = Path.Combine(Environment.CurrentDirectory, file.ServerSavePath);
+                    var docPath = Path.Combine(Environment.CurrentDirectory, file.AbsolutelyPath);
                     var pdfPath = docPath + ".pdf";
                     if (Core.FileManager.TryConvertToPdf(docPath, pdfPath))
                     {

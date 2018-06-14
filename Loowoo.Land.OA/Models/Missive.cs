@@ -90,6 +90,18 @@ namespace Loowoo.Land.OA.Models
         /// 是否为重要（局长、副局长填写了意见）
         /// </summary>
         public bool Important { get; set; }
+
+        /// <summary>
+        /// 是否不需要上报到市局OA
+        /// </summary>
+        public bool NotReport { get; set; }
+
+        /// <summary>
+        /// 文件摘要
+        /// </summary>
+        public string WJ_ZY { get; set; }
+
+        public string Uid { get; set; }
     }
 
     /// <summary>

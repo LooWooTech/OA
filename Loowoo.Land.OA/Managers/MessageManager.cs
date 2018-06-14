@@ -1,27 +1,101 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
 namespace Loowoo.Land.OA.Managers
 {
-    public class MessageManager:ManagerBase
+    public class MessageManager : ManagerBase
     {
-        /// <summary>
-        /// 作用：保存短消息
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月28日15:06:41
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public int Save(Message message)
+        public int GetUnreadCount(int userId)
         {
-            using (var db = GetDbContext())
+            return DB.UserMessages.Count(e => e.UserId == userId && !e.HasRead);
+        }
+
+        public IEnumerable<UserMessage> GetList(MessageParameter parameter)
+        {
+            var query = DB.UserMessages.Where(e => !e.Deleted);
+            if (parameter.FromUserId > 0)
             {
-                db.Messages.Add(message);
-                db.SaveChanges();
-                return message.ID;
+                query = query.Where(e => e.Message.CreatorId == parameter.FromUserId);
+            }
+            if (parameter.ToUserId > 0)
+            {
+                query = query.Where(e => e.UserId == parameter.ToUserId);
+            }
+            if (parameter.HasRead.HasValue)
+            {
+                query = query.Where(e => e.HasRead == parameter.HasRead.Value);
+            }
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.Message.InfoId > 0 && e.Message.Info.FormId == parameter.FormId);
+            }
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
+
+        public void Add(Feed feed)
+        {
+            Add(new Message(feed), feed.FromUserId, feed.ToUserId);
+        }
+
+        public void Add(Message model, params int[] toUserIds)
+        {
+            var entity = DB.Messages.FirstOrDefault(e => e.CreatorId == model.CreatorId && e.InfoId == model.InfoId);
+            if (entity == null)
+            {
+                entity = model;
+                DB.Messages.Add(entity);
+                DB.SaveChanges();
+            }
+            DB.UserMessages.AddRange(toUserIds.Where(userId => userId != model.CreatorId).Select(toUserId => new UserMessage
+            {
+                UserId = toUserId,
+                MessageId = entity.ID,
+            }));
+            DB.SaveChanges();
+        }
+
+        public Message GetModel(int id)
+        {
+            return DB.Messages.FirstOrDefault(e => e.ID == id);
+        }
+
+        public void ReadAll(int userId)
+        {
+            var list = DB.UserMessages.Where(e => e.UserId == userId);
+            foreach (var item in list)
+            {
+                item.HasRead = true;
+            }
+            DB.SaveChanges();
+        }
+
+        private UserMessage GetUserMessage(int messageId, int toUserId)
+        {
+            return DB.UserMessages.FirstOrDefault(e => e.MessageId == messageId && e.UserId == toUserId);
+        }
+
+        public void Read(int msgId, int toUserId)
+        {
+            var entity = GetUserMessage(msgId, toUserId);
+            if (entity != null)
+            {
+                entity.HasRead = true;
+                DB.SaveChanges();
+            }
+        }
+
+        public void Delete(int msgId, int toUserId)
+        {
+            var entity = GetUserMessage(msgId, toUserId);
+            if (entity != null)
+            {
+                entity.Deleted = true;
+                DB.SaveChanges();
             }
         }
     }

@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Loowoo.Land.OA.TaskClient.Controls.TaskDepartment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="150">
+    <Grid>
+        <TextBlock x:Name="ctrName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF717E0F"/>
+        <Border Height="1" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" />
+    </Grid>
+</UserControl>

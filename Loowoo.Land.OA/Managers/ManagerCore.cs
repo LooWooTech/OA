@@ -43,6 +43,8 @@ namespace Loowoo.Land.OA.Managers
         public FeedManager FeedManager { get; private set; }
         public MessageManager MessageManager { get; private set; }
 
+        public MailManager MailManager { get; private set; }
+
         public FlowManager FlowManager { get; private set; }
         public FlowNodeManager FlowNodeManager { get; private set; }
         public FlowDataManager FlowDataManager { get; private set; }
@@ -66,5 +68,7 @@ namespace Loowoo.Land.OA.Managers
         public TaskManager TaskManager { get; private set; }
 
         public SmsManager SmsManager { get; private set; }
+
+        public SalaryManager SalaryManager { get; private set; }
     }
 }

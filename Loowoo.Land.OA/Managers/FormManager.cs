@@ -20,8 +20,7 @@ namespace Loowoo.Land.OA.Managers
 
         public Form GetModel(FormType type)
         {
-            var name = type.ToString().ToLower();
-            return DB.Forms.FirstOrDefault(e => e.EName == name);
+            return DB.Forms.FirstOrDefault(e => e.ID == (int)type);
         }
     }
 }

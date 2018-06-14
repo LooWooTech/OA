@@ -34,9 +34,9 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Apply([FromBody]FormInfoExtend1 data)
+        public int Apply([FromBody]FormInfoExtend1 data)
         {
-            var model = Core.SealManager.Get(data.InfoId);
+            var model = Core.SealManager.Get(data.ExtendInfoId);
             if (model == null)
             {
                 throw new ArgumentException("参数不正确，没有找该图章");
@@ -49,21 +49,26 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有选择审核人");
             }
-            data.UserId = CurrentUser.ID;
+            data.UserId = Identity.ID;
             if (Core.FormInfoExtend1Manager.HasApply(data))
             {
                 throw new Exception("你已经申请过该图章，还未通过审核");
             }
             var info = Core.SealManager.Apply(data);
-            Core.FeedManager.Save(new Feed
+
+            var feed = new Feed
             {
                 Action = UserAction.Apply,
                 Title = info.Title,
                 InfoId = data.ID,
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
-                FromUserId = CurrentUser.ID,
-            });
+                FromUserId = Identity.ID,
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
+
+            return info.ID;
         }
 
         [HttpDelete]

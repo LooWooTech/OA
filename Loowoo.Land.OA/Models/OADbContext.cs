@@ -36,6 +36,7 @@ namespace Loowoo.Land.OA.Models
         public DbSet<UserFlowContact> UserFlowContacts { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
+        public DbSet<GroupRight> GroupRights { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
@@ -46,14 +47,20 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<Feed> Feeds { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<UserMessage> UserMessages { get; set; }
+        public DbSet<Mail> Mails { get; set; }
+        public DbSet<UserMail> UserMails { get; set; }
+
         public DbSet<Subscription> SubScriptions { get; set; }
         public DbSet<Holiday> Holidays { get; set; }
 
         public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<AttendanceGroup> AttendanceGroups { get; set; }
         public DbSet<CheckInOut> CheckInOuts { get; set; }
 
         public DbSet<Missive> Missives { get; set; }
         public DbSet<MissiveRedTitle> MissiveRedTitles { get; set; }
+        public DbSet<MissiveServiceLog> MissiveServiceLogs { get; set; }
 
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskTodo> Todos { get; set; }
@@ -62,6 +69,14 @@ namespace Loowoo.Land.OA.Models
         public DbSet<Config> Configs { get; set; }
 
         public DbSet<Sms> Sms { get; set; }
+
+        public DbSet<Salary> Salaries { get; set; }
+        public DbSet<SalaryData> SalaryDatas { get; set; }
+
+
+        public DbSet<UserInfo> UserInfos { get; set; }
+
+        public DbSet<UserMissive> UserMissives { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

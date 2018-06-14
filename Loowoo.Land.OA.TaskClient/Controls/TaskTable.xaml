@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="Loowoo.Land.OA.TaskClient.Controls.TaskTable"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="576" d:DesignWidth="1280">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="16*"/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="96"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Background="#FF5284C2">
+            <Label Content="计划完成时间" Margin="0" Padding="10" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="24" Foreground="White" MouseDoubleClick="Label_MouseDoubleClick">
+                <Label.Background>
+                    <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/columnbg1.png" Stretch="None" AlignmentX="Left" AlignmentY="Bottom"/>
+                </Label.Background>
+            </Label>
+        </Border>
+        <Border Grid.Row="1" Background="#FFF3F8FF"></Border>
+        <Border Grid.Column="1" Grid.ColumnSpan="2" Background="#FF489B7F">
+            <Label x:Name="ctrTaskName" Content="项目内容" Margin="0" Padding="10" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" FontSize="24" Foreground="White">
+                <Label.Background>
+                    <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/columnbg2.png" Stretch="None" AlignmentX="Left" AlignmentY="Bottom" />
+                </Label.Background>
+            </Label>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#F2FFFB"></Border>
+        <Border Grid.Column="3" Background="#FFAEB956">
+            <Label Content="责任科室" Margin="0" Padding="10" Grid.Column="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="24" Foreground="White">
+                <Label.Background>
+                    <ImageBrush Stretch="None" ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/columnbg3.png" AlignmentX="Left" AlignmentY="Bottom"/>
+                </Label.Background>
+            </Label>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="3" Background="#FDFFEC"></Border>
+        <Border Grid.Column="4" Background="#FFBB8E6A">
+            <Label Content="状态" Margin="0" Padding="10" Grid.Column="4" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="24" Foreground="White">
+                <Label.Background>
+                    <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/columnbg4.png" Stretch="None" AlignmentX="Left" AlignmentY="Bottom"/>
+                </Label.Background>
+            </Label>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="4" Background="#FFF8F3"></Border>
+        <Grid Grid.Row="1" Grid.ColumnSpan="5" x:Name="container_task">
+        </Grid>
+        <local:Loading x:Name="ctrLoading" Grid.Row="1" Grid.ColumnSpan="5"  Visibility="Hidden" />
+        <Grid Grid.Row="1" Name="container_date"></Grid>
+    </Grid>
+</UserControl>

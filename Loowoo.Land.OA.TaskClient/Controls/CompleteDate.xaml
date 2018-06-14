@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Loowoo.Land.OA.TaskClient.Controls.CompleteDate"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100">
+    <Grid>
+        <Grid Width="88" Height="78">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="14*"/>
+                <RowDefinition Height="25*"/>
+            </Grid.RowDefinitions>
+            <Grid.Background>
+                <ImageBrush ImageSource="/Loowoo.Land.OA.TaskClient;component/Images/date_bg.png"/>
+            </Grid.Background>
+            <Label x:Name="ctrMonth" Content="11月" HorizontalContentAlignment="Center" Foreground="White" FontSize="16"></Label>
+            <Label  x:Name="ctrDay" Padding="0,0,0,10" Content="11" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="32" Foreground="#FF5284C2" Grid.Row="1" ></Label>
+        </Grid>
+        <Border Grid.Column="0" Height="1" VerticalAlignment="Bottom" Style="{DynamicResource BorderStyle1}" Grid.Row="1" />
+    </Grid>
+</UserControl>

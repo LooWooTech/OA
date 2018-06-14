@@ -1,4 +1,5 @@
-﻿using Loowoo.Land.OA.Models;
+﻿using Loowoo.Common;
+using Loowoo.Land.OA.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -10,23 +11,26 @@ namespace Loowoo.Land.OA.Managers
     {
         public Sms PeekNew()
         {
-            return DB.Sms.FirstOrDefault();
+            return DB.Sms.FirstOrDefault(e => e.SendTime == null);
         }
 
-        public void Delete(int id)
+        public void Create(Sms sms)
         {
-            var sms = DB.Sms.FirstOrDefault(x => x.ID == id);
-            if(sms != null)
+            //LogWriter.Instance.WriteLog(sms.ToJson() + "\r\n", "sms");
+            var entity = DB.Sms.FirstOrDefault(e => e.Content == sms.Content && e.Numbers == sms.Numbers);
+            if (entity == null)
             {
-                DB.Sms.Remove(sms);
+                DB.Sms.Add(sms);
                 DB.SaveChanges();
             }
         }
-        public void Create(Sms sms)
+
+        public void SetSentStatus(Sms sms)
         {
-            DB.Sms.AddOrUpdate(sms);
+            var entity = DB.Sms.FirstOrDefault(e => e.ID == sms.ID);
+            entity.SendTime = DateTime.Now;
+            entity.MessageID = sms.MessageID;
             DB.SaveChanges();
         }
-
     }
 }

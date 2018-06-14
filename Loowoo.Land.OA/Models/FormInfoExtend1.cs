@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Loowoo.Land.OA.Models
 {
     /// <summary>
-    /// 车辆、会议室、公章 申请记录
+    /// 车辆、会议室、公章、请假的申请表单
     /// </summary>
     [Table("form_info_extend1")]
     public class FormInfoExtend1
@@ -23,7 +23,7 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 对应所申请的信息的ID（车辆ID，会议室ID等）
         /// </summary>
-        public int InfoId { get; set; }
+        public int ExtendInfoId { get; set; }
 
         public int Category { get; set; }
 
@@ -36,10 +36,6 @@ namespace Loowoo.Land.OA.Models
 
         public virtual User User { get; set; }
 
-        public int ApprovalUserId { get; set; }
-
-        public virtual User ApprovalUser { get; set; }
-
         public DateTime ScheduleBeginTime { get; set; }
 
         public DateTime? ScheduleEndTime { get; set; }
@@ -48,6 +44,14 @@ namespace Loowoo.Land.OA.Models
 
         public string Reason { get; set; }
 
+        /// <summary>
+        /// 最后审批人
+        /// </summary>
+        public int ApprovalUserId { get; set; }
+        public virtual User ApprovalUser { get; set; }
+        /// <summary>
+        /// 最后审批结果
+        /// </summary>
         public bool? Result { get; set; }
 
         public DateTime? UpdateTime { get; set; }

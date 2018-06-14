@@ -14,9 +14,9 @@ namespace Loowoo.Land.OA.Managers
         /// <summary>
         /// 添加打卡记录
         /// </summary>
-        public void AddCheckInOut(int userId)
+        public CheckInOut AddCheckInOut(int userId)
         {
-            var time = GetAttendanceTime();
+            var time = new AttendanceTime(GetAttendanceGroup(userId));
             if (!time.IsCheckTime(DateTime.Now))
             {
                 throw new Exception("该时间段签到无效");
@@ -25,7 +25,19 @@ namespace Loowoo.Land.OA.Managers
             DB.CheckInOuts.Add(model);
             DB.SaveChanges();
             UpdateAttendance(model.UserId, time, model.CreateTime.Date);
+            return model;
         }
+
+        public List<AttendanceGroup> GetAttendanceGroups()
+        {
+            return DB.AttendanceGroups.ToList();
+        }
+
+        public Dictionary<int,int> GetUserGroups()
+        {
+            return DB.Users.ToDictionary(e => e.ID, e => e.AttendanceGroupId);
+        }
+
         /// <summary>
         /// 更新考勤状态
         /// </summary>
@@ -56,21 +68,14 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        private DateTime ConvertConfigTimeToDateTime(string key, string defaultValue)
+        public AttendanceGroup GetAttendanceGroup(int userId)
         {
-            var timespan = Core.ConfigManager.GetValue(key, defaultValue).ToTimeSpan();
-            return DateTime.Today.Add(timespan);
-        }
-
-        public AttendanceTime GetAttendanceTime()
-        {
-            return new AttendanceTime
+            var user = DB.Users.FirstOrDefault(e => e.ID == userId);
+            if (user.AttendanceGroupId > 0)
             {
-                AMBeginTime = ConvertConfigTimeToDateTime("AMBeginTime", "05:30"),
-                AMEndTime = ConvertConfigTimeToDateTime("AMEndTime", "08:40"),
-                PMBeginTime = ConvertConfigTimeToDateTime("PMBeginTime", "17:20"),
-                PMEndTime = ConvertConfigTimeToDateTime("PMEndTime", "22:00"),
-            };
+                return DB.AttendanceGroups.FirstOrDefault(e => e.ID == user.AttendanceGroupId);
+            }
+            return DB.AttendanceGroups.FirstOrDefault(e => e.Default);
         }
 
         public IEnumerable<CheckInOut> GetLogs(CheckInOutParameter parameter)
@@ -98,15 +103,18 @@ namespace Loowoo.Land.OA.Managers
 
         public FormInfo Apply(FormInfoExtend1 data)
         {
+            var form = Core.FormManager.GetModel(FormType.Leave);
+            if (form == null || form.FLowId == 0)
+            {
+                throw new Exception("Form或流程未配置");
+            }
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
-                Title = $"申请{((LeaveType)data.Category).GetDescription()} 请假时间：{data.ScheduleBeginTime.ToString("yyyy-MM-dd HH:mm")} {data.ScheduleEndTime?.ToString("~ yyyy-MM-dd HH:mm")}",
+                Title = $"[{((LeaveType)data.Category).GetDescription()}请假] {data.ScheduleBeginTime.ToString("yyyy-MM-dd HH:mm")} {data.ScheduleEndTime?.ToString("~ yyyy-MM-dd HH:mm")}",
                 FormId = (int)FormType.Leave,
                 PostUserId = data.UserId,
             };
-            info.Form = Core.FormManager.GetModel(FormType.Leave);
-
+            info.Form = form;
             Core.FormInfoManager.Save(info);
             Core.FormInfoExtend1Manager.Apply(info, data);
             return info;
@@ -129,6 +137,44 @@ namespace Loowoo.Land.OA.Managers
                 query = query.Where(e => e.Date <= parameter.EndDate.Value);
             }
             return query.OrderBy(e => e.Date);
+        }
+
+        public void SaveGroup(AttendanceGroup data)
+        {
+            if (data.ID > 0)
+            {
+                var entity = DB.AttendanceGroups.FirstOrDefault(e => e.ID == data.ID);
+                if (entity.Default && !data.Default)
+                {
+                    data.Default = true;
+                }
+                else if (data.Default && !entity.Default)
+                {
+                    var defaultEntity = DB.AttendanceGroups.FirstOrDefault(e => e.Default);
+                    defaultEntity.Default = false;
+                }
+                DB.Entry(entity).CurrentValues.SetValues(data);
+            }
+            else
+            {
+                if (data.Default)
+                {
+                    var defaultEntity = DB.AttendanceGroups.FirstOrDefault(e => e.Default);
+                    if (defaultEntity != null)
+                    {
+                        defaultEntity.Default = false;
+                    }
+                }
+                else
+                {
+                    if (DB.AttendanceGroups.Count() == 0)
+                    {
+                        data.Default = true;
+                    }
+                }
+                DB.AttendanceGroups.Add(data);
+            }
+            DB.SaveChanges();
         }
     }
 }

@@ -43,11 +43,11 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.10\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.10\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -67,7 +67,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,11 +78,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\MailManager.cs" />
+    <Compile Include="Managers\SalaryManager.cs" />
     <Compile Include="Managers\SmsManager.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
     <Compile Include="Managers\FormInfoExtend1Manager.cs" />
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
+    <Compile Include="Models\Attendance\AttendanceGroup.cs" />
+    <Compile Include="Models\Mail.cs" />
+    <Compile Include="Models\MissiveServiceLog.cs" />
+    <Compile Include="Models\Salary.cs" />
     <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\Task\SubTask.cs" />
     <Compile Include="Managers\TaskManager.cs" />
@@ -90,6 +98,11 @@
     <Compile Include="Models\MissiveRedTitle.cs" />
     <Compile Include="Models\Seal.cs" />
     <Compile Include="Models\Task\TaskTodo.cs" />
+    <Compile Include="Models\UserFlowContact.cs" />
+    <Compile Include="Models\UserFormExtend1.cs" />
+    <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Models\UserMissive.cs" />
+    <Compile Include="Models\UserTask.cs" />
     <Compile Include="Parameters\Extend1Parameter.cs" />
     <Compile Include="Managers\AttendanceManager.cs" />
     <Compile Include="Managers\CarManager.cs" />
@@ -155,7 +168,7 @@
     <Compile Include="Models\UserDepartment.cs" />
     <Compile Include="Models\UserFormInfo.cs" />
     <Compile Include="Models\UserGroup.cs" />
-    <Compile Include="Models\UserRight.cs" />
+    <Compile Include="Models\GroupRight.cs" />
     <Compile Include="Parameters\AttendanceParameter.cs" />
     <Compile Include="Parameters\DiaryParameter.cs" />
     <Compile Include="Parameters\DocumentParameter.cs" />
@@ -163,17 +176,28 @@
     <Compile Include="Parameters\FileParameter.cs" />
     <Compile Include="Parameters\FormInfoParameter.cs" />
     <Compile Include="Parameters\HolidayParameter.cs" />
+    <Compile Include="Parameters\MailParameter.cs" />
+    <Compile Include="Parameters\MessageParameter.cs" />
     <Compile Include="Parameters\ParameterBase.cs" />
     <Compile Include="Parameters\ReceiveParameter.cs" />
+    <Compile Include="Parameters\SalaryParameter.cs" />
     <Compile Include="Parameters\SendParameter.cs" />
-    <Compile Include="Parameters\TaskParameter.cs" />
     <Compile Include="Parameters\UserParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Managers\App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Loowoo\Loowoo.csproj">
@@ -181,7 +205,9 @@
       <Name>Loowoo</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

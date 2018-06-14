@@ -13,99 +13,22 @@ namespace Loowoo.Land.OA.API.Controllers
     /// </summary>
     public class GroupController : ControllerBase
     {
-        /// <summary>
-        /// 作用：获取组
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:42:28
-        /// </summary>
-        /// <returns></returns>
         [HttpGet]
-        public List<Group> List()
+        public object List()
         {
             return Core.GroupManager.GetList();
         }
 
-        /// <summary>
-        /// 作用：保存或者更新编辑组
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日16:54:44
-        /// </summary>
-        /// <param name="group"></param>
-        /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Save([FromBody] Group group)
+        public void Save([FromBody] Group group)
         {
-            TaskName = "保存组";
-            if (group == null || string.IsNullOrEmpty(group.Name))
-            {
-                return BadRequest($"{TaskName}:无法获取组信息，以及组名称不能为空");
-            }
-            if (Core.GroupManager.Exist(group.Name, group.Type))
-            {
-                return BadRequest($"{TaskName}:系统中已存在相同类型名称的组");
-            }
-            if (group.ID > 0)
-            {
-                if (!Core.GroupManager.Edit(group))
-                {
-                    return BadRequest($"{TaskName}:未找到当前更新的组");
-                }
-            }
-            else
-            {
-                var id = Core.GroupManager.Save(group);
-                if (id <= 0)
-                {
-                    return BadRequest($"{TaskName}:保存失败");
-                }
-            }
-            return Ok(group);
+            Core.GroupManager.Save(group);
         }
 
-        /// <summary>
-        /// 作用：通过ID获取组
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月16日17:17:12
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IHttpActionResult Model(int id)
-        {
-            var group = Core.GroupManager.Get(id);
-            if (group == null)
-            {
-                return BadRequest(string.Format("未查询到ID为{0}的组信息", id));
-            }
-            return Ok(group);
-        }
-
-        /// <summary>
-        /// 作用：删除组
-        /// 作者：汪建龙
-        /// 编写时间：2017年2月24日14:45:58
-        /// 备注：删除的Group ID不能在UserGroup中使用过
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpDelete]
-        public IHttpActionResult Delete(int id)
+        public void Delete(int id)
         {
-            if (Core.GroupManager.Used(id))
-            {
-                return BadRequest("删除组：当前删除组已使用");
-            }
-            if (Core.GroupManager.Delete(id))
-            {
-                return Ok();
-            }
-            return BadRequest(string.Format("删除失败，未查找到ID为{0}的组", id));
+            Core.GroupManager.Delete(id);
         }
-
-        
-
-
-        
-
     }
 }

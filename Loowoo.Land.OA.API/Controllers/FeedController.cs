@@ -14,16 +14,16 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FeedController : ControllerBase
     {
         [HttpGet]
-        public object List(int formId = 0, int userId = 0, DateTime? beginTime = null, int page = 1, int rows = 20)
+        public object List(int formId = 0, int userId = 0, DateTime? beginTime = null, int page = 1, int rows = 10)
         {
             var parameter = new FeedParameter
             {
                 Page = new PageParameter(page, rows),
                 FormId = formId,
                 BeginTime = DateTime.Today.AddDays(-15),
-                ToUserId = CurrentUser.ID
+                ToUserId = Identity.ID
             };
-            var list = Core.FeedManager.GetList(parameter).GroupBy(e => new { e.Info, e.FromUserId, e.ToUserId }).Select(g => g.FirstOrDefault());
+            var list = Core.FeedManager.GetList(parameter).GroupBy(e => new { e.Info, e.FromUserId, e.ToUserId }).Select(g => g.FirstOrDefault()).SetPage(parameter.Page);
 
             return new PagingResult
             {
@@ -53,7 +53,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Delete(int id)
         {
             var model = Core.FeedManager.GetModel(id);
-            if (model.FromUserId != CurrentUser.ID)
+            if (model.FromUserId != Identity.ID)
             {
                 throw new HttpException(403, "无法删除该动态");
             }

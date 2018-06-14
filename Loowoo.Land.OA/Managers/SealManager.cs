@@ -29,7 +29,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void Delete(int id)
         {
-            if (DB.FormInfoExtend1s.Any(e => e.InfoId == id))
+            if (DB.FormInfoExtend1s.Any(e => e.ExtendInfoId == id))
             {
                 throw new Exception("会议室已被使用，无法删除");
             }
@@ -40,10 +40,9 @@ namespace Loowoo.Land.OA.Managers
 
         public FormInfo Apply(FormInfoExtend1 data)
         {
-            var model = Get(data.InfoId);
+            var model = Get(data.ExtendInfoId);
             var info = new FormInfo
             {
-                ExtendId = data.InfoId,
                 Title = "申请公章：" + model.Name,
                 FormId = (int)FormType.Seal,
                 PostUserId = data.UserId,

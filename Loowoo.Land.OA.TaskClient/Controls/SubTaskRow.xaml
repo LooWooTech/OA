@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Loowoo.Land.OA.TaskClient.Controls.SubTaskRow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Loowoo.Land.OA.TaskClient.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="120" d:DesignWidth="1280">
+    <Grid x:Name="container">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="16*"/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="ctrName" Text="" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20" Margin="10" Foreground="#FF0F6F4E"/>
+        <local:SubTaskStatus x:Name="ctrStatus" Grid.Column="2"/>
+        <Border Width="1" HorizontalAlignment="Left"  Style="{DynamicResource BorderStyle1}"/>
+        <Border VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
+        <Border Grid.Column="2" VerticalAlignment="Bottom" Height="1" Style="{DynamicResource BorderStyle1}"/>
+    </Grid>
+</UserControl>

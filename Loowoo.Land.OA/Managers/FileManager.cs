@@ -31,6 +31,11 @@ namespace Loowoo.Land.OA.Managers
             return DB.Files.FirstOrDefault(e => e.ID == id);
         }
 
+        public File GetModel(int infoId, string fileName)
+        {
+            return DB.Files.FirstOrDefault(e => e.InfoId == infoId && e.FileName == fileName);
+        }
+
         public void Delete(int id)
         {
             var entity = DB.Files.FirstOrDefault(e => e.ID == id);
@@ -70,11 +75,6 @@ namespace Loowoo.Land.OA.Managers
             }
             if (parameter.Type.HasValue)
             {
-                string[] fileExt = null;
-                switch (parameter.Type.Value)
-                {
-
-                }
                 query = query.Where(e => e.FileName.EndsWith(parameter.Type.Value.ToString()));
             }
             query = query.OrderBy(e => e.UpdateTime).SetPage(parameter.Page);
@@ -100,6 +100,24 @@ namespace Loowoo.Land.OA.Managers
                 return false;
             }
             return true;
+        }
+
+        public void CopyFiles(int[] fileIds, int toInfoId)
+        {
+            var files = DB.Files.Where(e => fileIds.Contains(e.ID)).ToList();
+            var newFiles = files.Select(e => new File
+            {
+                InfoId = toInfoId,
+                FileName = e.FileName,
+                Inline = e.Inline,
+                ParentId = e.ParentId,
+                SavePath = e.SavePath,
+                Size = e.Size,
+                UpdateTime = e.UpdateTime,
+                CreateTime = e.CreateTime,
+            });
+            DB.Files.AddRange(newFiles);
+            DB.SaveChanges();
         }
     }
 }

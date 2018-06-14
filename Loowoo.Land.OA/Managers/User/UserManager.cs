@@ -23,6 +23,17 @@ namespace Loowoo.Land.OA.Managers
             return model;
         }
 
+        public User GetModelByFingerPrintId(int userId)
+        {
+            return DB.Users.FirstOrDefault(e => e.FingerPrintId == userId);
+        }
+
+        public User GetModel(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            return DB.Users.FirstOrDefault(e => e.Username == name || e.RealName == name);
+        }
+
         public User GetModel(int id)
         {
             if (id <= 0)
@@ -41,6 +52,24 @@ namespace Loowoo.Land.OA.Managers
         public bool Exist(string name)
         {
             return DB.Users.Any(e => e.Username == name.ToLower());
+        }
+
+        public IEnumerable<User> GetParentTitleUsers(User currentUser)
+        {
+            var parentTitle = Core.JobTitleManager.GetParent(currentUser.JobTitleId);
+            if (parentTitle == null) return new User[0];
+            var parentTitleId = parentTitle.ID;
+            var query = DB.Users.Where(e => !e.Deleted && e.JobTitleId == parentTitleId);
+            var departmentIds = currentUser.DepartmentIds;
+            var departmentUsers = query.Where(e => e.UserDepartments.Any(d => departmentIds.Contains(d.DepartmentId)));
+            if (departmentUsers.Count() == 0)
+            {
+                return query.ToList();
+            }
+            else
+            {
+                return departmentUsers.ToList();
+            }
         }
 
         public IEnumerable<User> GetList(UserParameter parameter)
@@ -133,21 +162,22 @@ namespace Loowoo.Land.OA.Managers
         public void SaveFlowContact(UserFlowContact model)
         {
             var entity = DB.UserFlowContacts.FirstOrDefault(e => e.UserId == model.UserId && e.ContactId == model.ContactId);
-            if(entity == null)
+            if (entity == null)
             {
                 DB.UserFlowContacts.Add(model);
                 DB.SaveChanges();
             }
         }
 
-        public UserFlowContact GetFlowContact(int id)
+        public UserFlowContact GetFlowContact(int contactId, int userId)
         {
-            return DB.UserFlowContacts.FirstOrDefault(e => e.ID == id);
+            return DB.UserFlowContacts.FirstOrDefault(e => e.ContactId == contactId && e.UserId == userId);
         }
 
-        public void DeleteFlowContact(UserFlowContact model)
+        public void DeleteFlowContact(int[] contactIds, int userId)
         {
-            DB.UserFlowContacts.Remove(model);
+            var list = DB.UserFlowContacts.Where(e => contactIds.Contains(e.ContactId) && e.UserId == userId);
+            DB.UserFlowContacts.RemoveRange(list);
             DB.SaveChanges();
         }
     }

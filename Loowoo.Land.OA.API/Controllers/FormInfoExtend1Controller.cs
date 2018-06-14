@@ -11,18 +11,31 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoExtend1Controller : ControllerBase
     {
         [HttpGet]
-        public PagingResult List(int infoId = 0, int userId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
+        public PagingResult List(int formId, int infoId = 0, int userId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
         {
             var parameter = new Extend1Parameter
             {
-                InfoId = infoId,
+                FormId = formId,
+                ExtendInfoId = infoId,
                 UserId = userId,
-                Status = status,
+                ApprovalUserId = approvalUserId,
                 Page = new PageParameter(page, rows)
             };
+            switch (status)
+            {
+                case CheckStatus.All:
+                    break;
+                case CheckStatus.Checked:
+                    parameter.FlowStatus = new[] { FlowStatus.Completed, FlowStatus.Done };
+                    break;
+                case CheckStatus.Uncheck:
+                    parameter.FlowStatus = new[] { FlowStatus.Doing, FlowStatus.Back };
+                    break;
+            }
+            var list = Core.FormInfoExtend1Manager.GetList(parameter).GroupBy(e => e.InfoId).Select(g => g.FirstOrDefault());
             return new PagingResult
             {
-                List = Core.FormInfoExtend1Manager.GetList(parameter).Select(e => new
+                List = list.Select(e => new
                 {
                     e.ID,
                     e.UserId,
@@ -35,47 +48,95 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Result,
                     e.UpdateTime,
                     e.ApprovalUserId,
-                    ApprovalUser = e.ApprovalUser.RealName,
-                    ApplyUser = e.User.RealName,
-                    Title = e.Info.Title,
-                    FlowStep = e.Info.FlowStep,
-                    Completed = e.Info.FlowData == null ? false : e.Info.FlowData.Completed,
+                    e.FlowDataId,
+                    ApprovalUser = e.ApprovalUserName,
+                    ApplyUser = e.ApplyUserName,
+                    e.FormId,
+                    e.Title,
+                    e.FlowStep,
+                    Completed = e.FlowData == null ? false : e.FlowData.Completed,
+                    e.FlowData
                 }),
                 Page = parameter.Page,
             };
         }
 
-
         [HttpGet]
-        public void Approval(int infoId)
+        public void Approval(int id, bool result = true, int toUserId = 0)
         {
-            var info = Core.FormInfoManager.GetModel(infoId);
-            //如果流程审核完成
-            if (info.FlowData.Completed)
+            var info = Core.FormInfoManager.GetModel(id);
+            var currentNodeData = info.FlowData.GetLastNodeData();
+            if (currentNodeData.UserId != Identity.ID)
             {
-                var model = Core.FormInfoExtend1Manager.Get(infoId);
-                model.Result = info.FlowData.GetLastNodeData().Result.Value;
-                Core.FormInfoExtend1Manager.Save(model);
-                switch (info.Form.FormType)
-                {
-                    case FormType.Car:
-                        Core.CarManager.UpdateStatus(model.InfoId, CarStatus.Using);
-                        break;
-                    case FormType.MeetingRoom:
-                        Core.MeetingRoomManager.UpdateStatus(model.InfoId, MeetingRoomStatus.Using);
-                        break;
-                    case FormType.Seal:
-                        Core.SealManager.UpdateStatus(model.InfoId, SealStatus.Using);
-                        break;
-                }
+                currentNodeData = info.FlowData.GetChildNodeData(currentNodeData.ID);
             }
+            if (currentNodeData == null)
+            {
+                throw new Exception("您没有参与此次流程审核");
+            }
+            currentNodeData.Result = result;
+            Core.FlowNodeDataManager.Submit(currentNodeData);
+            Core.UserFormInfoManager.Save(new UserFormInfo
+            {
+                InfoId = id,
+                FlowStatus = FlowStatus.Done,
+                UserId = Identity.ID
+            });
+            var model = Core.FormInfoExtend1Manager.GetModel(id);
+
+            if (toUserId > 0)
+            {
+                Core.FlowNodeDataManager.CreateChildNodeData(currentNodeData, toUserId);
+                Core.UserFormInfoManager.Save(new UserFormInfo
+                {
+                    InfoId = id,
+                    FlowStatus = FlowStatus.Doing,
+                    UserId = toUserId
+                });
+
+                var feed = new Feed
+                {
+                    Action = UserAction.Submit,
+                    InfoId = id,
+                    Title = info.Title,
+                    FromUserId = Identity.ID,
+                    ToUserId = toUserId,
+                    Type = FeedType.Info,
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
+
+                model.ApprovalUserId = toUserId;
+                model.UpdateTime = DateTime.Now;
+            }
+            else
+            {
+                model.ApprovalUserId = Identity.ID;
+                model.Result = result;
+                model.UpdateTime = DateTime.Now;
+                Core.FlowDataManager.Complete(info);
+
+                var feed = new Feed
+                {
+                    Action = UserAction.Submit,
+                    Type = FeedType.Info,
+                    FromUserId = Identity.ID,
+                    ToUserId = model.UserId,
+                    Title = "你申请的假期已审核通过",
+                    Description = info.Title,
+                    InfoId = info.ID,
+                };
+                Core.FeedManager.Save(feed);
+                Core.MessageManager.Add(feed);
+            }
+            Core.FormInfoExtend1Manager.Save(model);
         }
 
         [HttpGet]
-        public void Back(int infoId)
+        public void Back(int id, DateTime? backTime = null)
         {
-            var info = Core.FormInfoManager.GetModel(infoId);
-            var apply = Core.FormInfoExtend1Manager.Get(infoId);
+            var info = Core.FormInfoManager.GetModel(id);
+            var apply = Core.FormInfoExtend1Manager.GetModel(id);
             if (apply == null)
             {
                 throw new Exception("参数错误");
@@ -83,22 +144,22 @@ namespace Loowoo.Land.OA.API.Controllers
 
             var infoTypeName = info.Form.FormType.GetDescription();
 
-            if (apply.UserId == CurrentUser.ID)
+            if (apply.UserId == Identity.ID)
             {
-                apply.RealEndTime = DateTime.Now;
+                apply.RealEndTime = backTime ?? DateTime.Now;
                 apply.UpdateTime = DateTime.Now;
 
                 Core.FormInfoExtend1Manager.Save(apply);
                 switch (info.Form.FormType)
                 {
                     case FormType.Car:
-                        Core.CarManager.UpdateStatus(apply.InfoId, CarStatus.Unused);
+                        Core.CarManager.UpdateStatus(apply.ExtendInfoId, CarStatus.Unused);
                         break;
                     case FormType.MeetingRoom:
-                        Core.MeetingRoomManager.UpdateStatus(apply.InfoId, MeetingRoomStatus.Unused);
+                        Core.MeetingRoomManager.UpdateStatus(apply.ExtendInfoId, MeetingRoomStatus.Unused);
                         break;
                     case FormType.Seal:
-                        Core.SealManager.UpdateStatus(apply.InfoId, SealStatus.Unused);
+                        Core.SealManager.UpdateStatus(apply.ExtendInfoId, SealStatus.Unused);
                         break;
                 }
             }

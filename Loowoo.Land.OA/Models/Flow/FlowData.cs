@@ -39,7 +39,7 @@ namespace Loowoo.Land.OA.Models
             return Nodes.Where(e => e.ParentId == 0).OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
-        public FlowNodeData GetLastNodeData(int userId)
+        public FlowNodeData GetUserLastNodeData(int userId)
         {
             if (Nodes == null) return null;
             return Nodes.Where(e => e.UserId == userId).OrderByDescending(e => e.ID).FirstOrDefault();
@@ -64,6 +64,25 @@ namespace Loowoo.Land.OA.Models
         {
             var step = Flow.GetStep(flowStep);
             return Nodes.Where(e => e.ParentId == 0 && e.FlowNodeId == step.ID).OrderByDescending(e => e.ID).FirstOrDefault();
+        }
+
+        public FlowNodeData GetPrevNodeData(FlowNodeData currentNodeData)
+        {
+            if (currentNodeData.ParentId > 0)
+            {
+                return Nodes.FirstOrDefault(e => e.ID == currentNodeData.ParentId);
+            }
+            return Nodes.Where(e => 
+            e.ParentId == 0 
+            && e.ID < currentNodeData.ID 
+            && e.Result == true
+            && e.FlowNodeId != currentNodeData.FlowNodeId
+            ).OrderByDescending(e => e.ID).FirstOrDefault();
+        }
+
+        public FlowNodeData GetChildNodeData(int parentId)
+        {
+            return Nodes.Where(e => e.ParentId == parentId).OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
         //public bool CanEdit(int userId)

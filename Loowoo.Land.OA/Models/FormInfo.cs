@@ -26,8 +26,6 @@ namespace Loowoo.Land.OA.Models
 
         public int FormId { get; set; }
 
-        public int ExtendId { get; set; }
-
         [ForeignKey("FormId")]
         public virtual Form Form { get; set; }
 
@@ -43,10 +41,17 @@ namespace Loowoo.Land.OA.Models
 
         public int PostUserId { get; set; }
 
+        [JsonIgnore]
+        public virtual User PostUser { get; set; }
+
         public int FlowDataId { get; set; }
 
         public virtual FlowData FlowData { get; set; }
 
+        /// <summary>
+        /// 是否提醒、催办
+        /// </summary>
+        public bool Reminded { get; set; }
         /// <summary>
         /// 当前办理的步骤，可以是人名或节点名称，每次创建新的节点，需要更新，如果完成
         /// </summary>
@@ -75,6 +80,8 @@ namespace Loowoo.Land.OA.Models
         }
 
         public string Title { get; set; }
+
+        public string Uid { get; set; }
     }
 
 }

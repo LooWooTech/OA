@@ -7,22 +7,25 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    public class Extend1Parameter
+    public class Extend1ApplyParameter
     {
-        public int InfoId { get; set; }
-
         public int UserId { get; set; }
+        public int FormId { get; set; }
+        public bool? Result { get; set; }
+        public CheckStatus Status { get; set; }
+        public PageParameter Page { get; set; }
+        public DateTime? BeginTime { get; set; }
+        public DateTime? EndTime { get; set; }
+    }
 
-        public int? Category { get; set; }
+    public class Extend1Parameter : FormInfoParameter
+    {
+        public int ExtendInfoId { get; set; }
+
+        public int ApprovalUserId { get; set; }
 
         public bool? Result { get; set; }
 
-        public CheckStatus Status { get; set; }
-
-        public DateTime? BeginTime { get; set; }
-
-        public DateTime? EndTime { get; set; }
-
-        public PageParameter Page { get; set; }
+        public int Category { get; set; }
     }
 }

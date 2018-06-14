@@ -31,6 +31,10 @@ namespace Loowoo.Land.OA.Models
 
         public virtual User ToUser { get; set; }
 
+        public int LeaderId { get; set; }
+
+        public virtual User Leader { get; set; }
+
         public int ToDepartmentId { get; set; }
 
         public string ToDepartmentName { get; set; }
@@ -41,7 +45,7 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public bool IsMaster { get { return ParentId == 0; } }
 
-        public DateTime ScheduleDate { get; set; }
+        public DateTime? ScheduleDate { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
 

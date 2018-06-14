@@ -40,6 +40,15 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
+        [NotMapped]
+        public string SaveName
+        {
+            get
+            {
+                return SavePath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
+            }
+        }
+
         public string SavePath { get; set; }
         /// <summary>
         /// 最小单位
@@ -72,15 +81,19 @@ namespace Loowoo.Land.OA.Models
         public bool Inline { get; set; }
 
         private static string _uploadDir = AppSettings.Get("UploadPath") ?? "upload_files/";
-
+        /// <summary>
+        /// 站点绝对路径
+        /// </summary>
         [NotMapped]
-        public string ServerSavePath
+        public string AbsolutelyPath
         {
-            get { return GetServerSavePath(SavePath); }
+            get { return GetAbsolutelyPath(SavePath); }
         }
-
+        /// <summary>
+        /// 物理路径
+        /// </summary>
         [NotMapped]
-        public string PhysicalSavePath
+        public string PhysicalPath
         {
             get { return GetPhysicalSavePath(SavePath); }
         }
@@ -106,29 +119,70 @@ namespace Loowoo.Land.OA.Models
             }
         }
 
-        public static string GetPhysicalSavePath(string fileName)
+        private static string CreateUploadDir()
         {
-            if (string.IsNullOrEmpty(fileName)) return null;
-            return System.IO.Path.Combine(Environment.CurrentDirectory, GetServerSavePath(fileName));
+            var dir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _uploadDir);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            return dir;
         }
 
-        public static string GetServerSavePath(string fileName)
+        public static string GetPhysicalSavePath(string fileName)
+        {
+            var dir = CreateUploadDir();
+            if (string.IsNullOrEmpty(fileName)) return null;
+            return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _uploadDir, fileName);
+        }
+
+        public static string GetAbsolutelyPath(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) return null;
             return System.IO.Path.Combine(_uploadDir, fileName);
         }
 
-        public static string Upload(HttpPostedFile inputFile)
+        public static File Upload(HttpPostedFile file)
         {
-            var dir = System.IO.Path.Combine(Environment.CurrentDirectory, _uploadDir);
-            if (!System.IO.Directory.Exists(dir))
+            var fileExt = System.IO.Path.GetExtension(file.FileName);
+            var fileName = DateTime.Now.Ticks + file.ContentLength + fileExt;
+
+            var savePath = GetPhysicalSavePath(fileName);
+            file.SaveAs(savePath);
+            return new File
             {
-                System.IO.Directory.CreateDirectory(dir);
+                FileName = file.FileName,
+                Size = file.ContentLength,
+                SavePath = fileName
+            };
+        }
+
+        public static File Upload(byte[] data, string fileName, string saveName = null)
+        {
+            if (string.IsNullOrEmpty(saveName))
+            {
+                var fileExt = System.IO.Path.GetExtension(fileName);
+                saveName = DateTime.Now.Ticks + data.Length + fileExt;
             }
-            var fileExt = System.IO.Path.GetExtension(inputFile.FileName);
-            var fileName = DateTime.Now.Ticks + inputFile.ContentLength + fileExt;
-            inputFile.SaveAs(GetPhysicalSavePath(fileName));
-            return fileName;
+
+            var savePath = GetPhysicalSavePath(saveName);
+
+            System.IO.File.WriteAllBytes(savePath, data);
+            return new File
+            {
+                FileName = fileName,
+                Size = data.Length,
+                SavePath = saveName
+            };
+        }
+
+        public static int Append(byte[] data, string saveName)
+        {
+            var savePath = GetPhysicalSavePath(saveName);
+            var oldData = System.IO.File.ReadAllBytes(savePath);
+            var newData = oldData.Concat(data).ToArray();
+            System.IO.File.WriteAllBytes(savePath, newData);
+            return newData.Length;
         }
 
         #region content types

@@ -39,7 +39,6 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public int[] DepartmentIds { get; set; }
 
-        [JsonIgnore]
         public virtual List<UserDepartment> UserDepartments { get; set; }
 
         public UserRole Role { get; set; }
@@ -47,19 +46,36 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public int[] GroupIds { get; set; }
 
-        [JsonIgnore]
         public virtual List<UserGroup> UserGroups { get; set; }
 
         [NotMapped]
         public string Token { get; set; }
 
+        public int AttendanceGroupId { get; set; }
+
         public int Sort { get; set; }
+        /// <summary>
+        /// 指纹编号
+        /// </summary>
+        public int FingerPrintId { get; set; }
 
         public bool Deleted { get; set; }
 
+        public bool HasRight(FormType form, UserRightType type)
+        {
+            var rightName = $"Form.{form.ToString()}.{type.ToString()}";
+            return HasRight(rightName);
+        }
+
         public bool HasRight(string rightName)
         {
-            return UserGroups.Any(e => e.Group.Rights.Any(r => r.Name.Contains(rightName)));
+            return Role == UserRole.Administrator || UserGroups != null && UserGroups.Any(e => e.Group.HasRight(rightName));
+        }
+
+        public int GetDepartmentId()
+        {
+            var d = UserDepartments.OrderBy(e => e.Department.Sort).FirstOrDefault();
+            return d == null ? 0 : d.DepartmentId;
         }
 
         public void Validate()

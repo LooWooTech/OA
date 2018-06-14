@@ -15,16 +15,13 @@ namespace Loowoo.Land.OA.API.Controllers
         public IHttpActionResult Cancel(int infoId)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
-            var flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            var flowNodeData = info.FlowData.GetUserLastNodeData(Identity.ID);
             if (!Core.FlowDataManager.CanCancel(info.FlowData, flowNodeData))
             {
                 return BadRequest("无法撤销");
             }
-            Core.FlowDataManager.Cancel(info.FlowData, flowNodeData);
 
-            //撤销后更新userforminfo
-            flowNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
-            Core.UserFormInfoManager.OnCancelFlowData(info, flowNodeData);
+            Core.FlowDataManager.Cancel(info.FlowData, flowNodeData);
             return Ok();
         }
 
@@ -52,22 +49,22 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 return BadRequest("参数不正确，没有获取到流程数据");
             }
-            var flowNodeData = flowData.GetLastNodeData(CurrentUser.ID);
+            var flowNodeData = flowData.GetUserLastNodeData(Identity.ID);
             var lastNodeData = flowData.GetLastNodeData();
             return new
             {
                 flowData,
                 flowNodeData = lastNodeData,
-                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(CurrentUser.ID),
+                freeFlowNodeData = lastNodeData.GetLastFreeNodeData(Identity.ID),
                 canBack = Core.FlowDataManager.CanBack(flowData),
                 canSubmitFlow = Core.FlowDataManager.CanSubmit(flowData, flowNodeData),
                 canComplete = Core.FlowDataManager.CanComplete(flowData.Flow, lastNodeData),
-                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, CurrentUser.ID),
+                canSubmitFreeFlow = Core.FreeFlowDataManager.CanSubmit(flowData, Identity.ID),
             };
         }
 
         [HttpPost]
-        public IHttpActionResult Submit([FromBody]FlowNodeData data, int infoId, int toUserId = 0)
+        public IHttpActionResult Submit([FromBody]FlowNodeData data, int infoId, int nextFlowNodeId = 0, int toUserId = 0)
         {
             var info = Core.FormInfoManager.GetModel(infoId);
             if (info == null)
@@ -76,16 +73,13 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             if (info.FlowDataId == 0)
             {
-                if (info.Form == null)
-                {
-                    info.Form = Core.FormManager.GetModel(info.FormId);
-                }
-                //创建流程
-                info.FlowData = Core.FlowDataManager.CreateFlowData(info);
-                info.FlowDataId = info.FlowData.ID;
+                throw new Exception("该信息还是草稿状态，无法提交");
             }
-
-            var currentNodeData = info.FlowData.GetLastNodeData(CurrentUser.ID);
+            var currentNodeData = Core.FlowNodeDataManager.GetModel(data.ID);
+            if (currentNodeData == null || currentNodeData.UserId != Identity.ID)
+            {
+                return BadRequest("参数错误，找不到当前流程");
+            }
             if (currentNodeData.Result.HasValue)
             {
                 return BadRequest("无法提交");
@@ -98,8 +92,8 @@ namespace Loowoo.Land.OA.API.Controllers
             Core.UserFormInfoManager.Save(new UserFormInfo
             {
                 InfoId = info.ID,
-                Status = FlowStatus.Done,
-                UserId = CurrentUser.ID,
+                FlowStatus = FlowStatus.Done,
+                UserId = Identity.ID,
             });
 
             if (currentNodeData.Result == true)
@@ -107,15 +101,16 @@ namespace Loowoo.Land.OA.API.Controllers
                 //判断是否流程结束
                 if (!Core.FlowDataManager.CanComplete(info.FlowData.Flow, currentNodeData))
                 {
-                    var nextNodedata = Core.FlowDataManager.SubmitToUser(info.FlowData, toUserId);
+                    var nextNodedata = Core.FlowDataManager.SubmitToUser(info.FlowData, toUserId, nextFlowNodeId);
                     info.FlowStep = nextNodedata.FlowNodeName;
                     Core.UserFormInfoManager.Save(new UserFormInfo
                     {
                         InfoId = info.ID,
-                        Status = FlowStatus.Doing,
+                        FlowStatus = FlowStatus.Doing,
                         UserId = nextNodedata.UserId,
                     });
-                    Core.FeedManager.Save(new Feed
+
+                    var feed = new Feed
                     {
                         InfoId = info.ID,
                         Action = UserAction.Submit,
@@ -124,7 +119,9 @@ namespace Loowoo.Land.OA.API.Controllers
                         Type = FeedType.Flow,
                         Title = info.Title,
                         Description = currentNodeData.Content
-                    });
+                    };
+                    Core.FeedManager.Save(feed);
+                    Core.MessageManager.Add(feed);
                 }
                 else
                 {
@@ -132,7 +129,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     var userIds = Core.UserFormInfoManager.GetUserIds(infoId);
                     foreach (var uid in userIds)
                     {
-                        Core.FeedManager.Save(new Feed
+                        var feed = new Feed
                         {
                             InfoId = info.ID,
                             Action = UserAction.Submit,
@@ -141,8 +138,10 @@ namespace Loowoo.Land.OA.API.Controllers
                             Type = FeedType.Flow,
                             Title = info.Title,
                             Description = currentNodeData.Content
-                        });
+                        };
+                        Core.FeedManager.Save(feed);
                     }
+                    Core.MessageManager.Add(new Message { Content = info.Title, InfoId = info.ID, CreatorId = currentNodeData.UserId }, userIds);
                 }
             }
             else
@@ -150,14 +149,26 @@ namespace Loowoo.Land.OA.API.Controllers
                 var flow = Core.FlowManager.Get(info.Form.FLowId);
                 if (flow.CanBack)
                 {
-                    var nextNodeData = Core.FlowDataManager.SubmitToBack(info.FlowData);
-                    info.FlowStep = nextNodeData.FlowNodeName;
+                    var backNodeData = Core.FlowDataManager.SubmitToBack(info.FlowData, currentNodeData);
+                    info.FlowStep = backNodeData.FlowNodeName;
                     Core.UserFormInfoManager.Save(new UserFormInfo
                     {
                         InfoId = info.ID,
-                        UserId = nextNodeData.UserId,
-                        Status = FlowStatus.Back,
+                        UserId = backNodeData.UserId,
+                        FlowStatus = FlowStatus.Back,
                     });
+
+                    var feed = new Feed
+                    {
+                        Action = UserAction.Submit,
+                        Type = FeedType.Flow,
+                        InfoId = info.ID,
+                        FromUserId = Identity.ID,
+                        ToUserId = backNodeData.UserId,
+                        Title = "[退回流程]" + info.Title,
+                    };
+                    Core.FeedManager.Save(feed);
+                    Core.MessageManager.Add(feed);
                 }
                 else
                 {
@@ -170,28 +181,29 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpGet]
-        public object UserList(int flowNodeDataId = 0, int flowId = 0, int flowStep = 1)
+        public object UserList(int flowNodeId = 0, int flowDataId = 0, int flowId = 0, int flowStep = 1)
         {
-            if (flowNodeDataId == 0 && flowId == 0)
+            if (flowNodeId == 0 && flowId == 0)
             {
-                throw new ArgumentException("缺少参数FlowNodeDataId或FlowId");
+                throw new ArgumentException("缺少参数flowNodeId或FlowId");
             }
 
-            FlowNode nextNode = null;
+            FlowNode flowNode = null;
             FlowData flowData = null;
-            if (flowNodeDataId > 0)
+            if (flowNodeId > 0)
             {
-                var flowNodeData = Core.FlowNodeDataManager.GetModel(flowNodeDataId);
-                flowData = Core.FlowDataManager.Get(flowNodeData.FlowDataId);
-                nextNode = flowData.Flow.GetNextStep(flowNodeData.FlowNodeId);
+                flowNode = Core.FlowNodeManager.Get(flowNodeId);
             }
-            else
+            else if (flowId > 0)
             {
                 var flow = Core.FlowManager.Get(flowId);
-                nextNode = flow.GetStep(flowStep);
+                flowNode = flow.GetStep(flowStep);
             }
-
-            return Core.FlowNodeManager.GetUserList(nextNode, flowData).Select(e => new UserViewModel(e));
+            if (flowDataId > 0 && flowNode.LimitMode == DepartmentLimitMode.Self)
+            {
+                flowData = Core.FlowDataManager.Get(flowDataId);
+            }
+            return Core.FlowNodeManager.GetUserList(flowNode, flowData).Select(e => new UserViewModel(e));
         }
 
         [HttpGet]
@@ -219,5 +231,12 @@ namespace Loowoo.Land.OA.API.Controllers
             var lastNode = flow.GetLastNode();
             return nodeData.FlowNodeId == lastNode.ID;
         }
+
+        [HttpGet]
+        public IEnumerable<FlowNodeData> CheckList(int infoId, int userId = 0)
+        {
+            return Core.FlowNodeDataManager.GetList(infoId, userId);
+        }
+
     }
 }

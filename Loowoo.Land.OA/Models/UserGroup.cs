@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +20,7 @@ namespace Loowoo.Land.OA.Models
 
         public int GroupId { get; set; }
 
+        [JsonIgnore]
         public virtual User User { get; set; }
 
         public virtual Group Group { get; set; }

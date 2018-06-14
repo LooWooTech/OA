@@ -41,7 +41,7 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpPost]
         public void Apply([FromBody]FormInfoExtend1 data)
         {
-            var car = Core.CarManager.Get(data.InfoId);
+            var car = Core.CarManager.Get(data.ExtendInfoId);
             if (car == null)
             {
                 throw new ArgumentException("参数不正确，没有找该车");
@@ -54,21 +54,24 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("没有选择审核人");
             }
-            data.UserId = CurrentUser.ID;
+            data.UserId = Identity.ID;
             if (Core.FormInfoExtend1Manager.HasApply(data))
             {
                 throw new Exception("你已经申请过该车辆，还未通过审核");
             }
             Core.CarManager.Apply(data);
-            Core.FeedManager.Save(new Feed
+
+            var feed = new Feed
             {
                 Action = UserAction.Apply,
                 Title = "申请用车：" + car.Name + "（" + car.Number + "）",
                 InfoId = data.ID,
                 Type = FeedType.Flow,
                 ToUserId = data.ApprovalUserId,
-                FromUserId = CurrentUser.ID,
-            });
+                FromUserId = Identity.ID,
+            };
+            Core.FeedManager.Save(feed);
+            Core.MessageManager.Add(feed);
         }
 
         [HttpDelete]

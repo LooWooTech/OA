@@ -242,4 +242,5 @@ ModelManifest.xml
 .fake/
 /Loowoo.Land.OA.API/logs
 /Loowoo.Land.OA.API/upload_files
+/Loowoo.Land.OA.API/Client
 /Loowoo.Land.OA.API/pageoffice/lic/license.lic

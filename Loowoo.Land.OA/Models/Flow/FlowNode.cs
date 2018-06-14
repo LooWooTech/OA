@@ -89,7 +89,10 @@ namespace Loowoo.Land.OA.Models
 
         public int PrevId { get; set; }
 
-        //public int ParentId { get; set; }
+        /// <summary>
+        /// 是否可以结束流程
+        /// </summary>
+        public bool CanSkip { get; set; }
     }
 
 }

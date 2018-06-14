@@ -11,6 +11,8 @@ namespace Loowoo.Land.OA.Parameters
     {
         public DateTime? BeginDate { get; set; }
 
+        public DateTime? EndDate { get; set; }
+
         public  PageParameter Page { get; set; }
     }
 }
