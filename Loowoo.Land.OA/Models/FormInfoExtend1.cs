@@ -17,13 +17,16 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 申请ID，和FormInfoID 一一对应
         /// </summary>
-        [Key,DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
         /// <summary>
         /// 对应所申请的信息的ID（车辆ID，会议室ID等）
         /// </summary>
         public int ExtendInfoId { get; set; }
+
+        [NotMapped]
+        public int InfoId { get { return ExtendInfoId; } set { ExtendInfoId = value; } }
 
         public int Category { get; set; }
 
@@ -55,5 +58,7 @@ namespace Loowoo.Land.OA.Models
         public bool? Result { get; set; }
 
         public DateTime? UpdateTime { get; set; }
+
+        public int AttachmentId { get; set; }
     }
 }

@@ -11,13 +11,14 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoExtend1Controller : ControllerBase
     {
         [HttpGet]
-        public PagingResult List(int formId, int infoId = 0, int userId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
+        public PagingResult List(int formId, int infoId = 0, int userId = 0, int applyUserId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
         {
             var parameter = new Extend1Parameter
             {
                 FormId = formId,
                 ExtendInfoId = infoId,
                 UserId = userId,
+                PostUserId = applyUserId,
                 ApprovalUserId = approvalUserId,
                 Page = new PageParameter(page, rows)
             };
@@ -54,15 +55,17 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.FormId,
                     e.Title,
                     e.FlowStep,
+                    e.AttachmentId,
                     Completed = e.FlowData == null ? false : e.FlowData.Completed,
-                    e.FlowData
+                    e.FlowData,
+                    e.FlowStatus,
                 }),
                 Page = parameter.Page,
             };
         }
 
         [HttpGet]
-        public void Approval(int id, bool result = true, int toUserId = 0)
+        public void Approval(int id, string content = null, bool result = true, int toUserId = 0)
         {
             var info = Core.FormInfoManager.GetModel(id);
             var currentNodeData = info.FlowData.GetLastNodeData();
@@ -75,6 +78,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 throw new Exception("您没有参与此次流程审核");
             }
             currentNodeData.Result = result;
+            currentNodeData.Content = content;
+
             Core.FlowNodeDataManager.Submit(currentNodeData);
             Core.UserFormInfoManager.Save(new UserFormInfo
             {

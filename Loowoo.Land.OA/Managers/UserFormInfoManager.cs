@@ -170,5 +170,10 @@ namespace Loowoo.Land.OA.Managers
                 DB.SaveChanges();
             }
         }
+
+        public UserFormInfo GetModel(int id)
+        {
+            return DB.UserFormInfos.FirstOrDefault(e => e.ID == id);
+        }
     }
 }

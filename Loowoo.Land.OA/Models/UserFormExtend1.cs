@@ -39,5 +39,7 @@ namespace Loowoo.Land.OA.Models
         public int Category { get; set; }
 
         public bool? Result { get; set; }
+
+        public int AttachmentId { get; set; }
     }
 }

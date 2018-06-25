@@ -62,7 +62,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 FlowStatus = new[] { FlowStatus.Doing, FlowStatus.Back, FlowStatus.Done },
             };
 
-            var datas = Core.TaskManager.GetUserTasks(parameter);
+            var datas = Core.TaskManager.GetUserTasks(parameter).GroupBy(e => e.InfoId).Select(g => g.FirstOrDefault());
             return datas.Select(e => new TaskViewModel(e));
         }
 
@@ -74,9 +74,8 @@ namespace Loowoo.Land.OA.API.Controllers
         }
 
         [HttpPost]
-        public void Save([FromBody]Task data)
+        public void Save([FromBody]Task model)
         {
-            var model = data.ID == 0 ? data : Core.TaskManager.GetModel(data.ID);
             var form = Core.FormManager.GetModel(FormType.Task);
             var isAdd = model.ID == 0;
             //判断id，如果不存在则创建forminfo
@@ -92,6 +91,7 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             else
             {
+                model.Info = Core.FormInfoManager.GetModel(model.ID);
                 model.Info.Title = model.Name;
             }
             if (model.Info.FlowDataId == 0)

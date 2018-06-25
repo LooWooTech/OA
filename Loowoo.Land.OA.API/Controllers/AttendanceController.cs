@@ -216,6 +216,11 @@ namespace Loowoo.Land.OA.API.Controllers
         public void Approval(int id, bool result = true, int toUserId = 0)
         {
             var info = Core.FormInfoManager.GetModel(id);
+            if (info == null)
+            {
+                var userInfo = Core.UserFormInfoManager.GetModel(id);
+                info = Core.FormInfoManager.GetModel(userInfo.InfoId);
+            }
             var currentNodeData = info.FlowData.GetLastNodeData();
             if (currentNodeData.UserId != Identity.ID)
             {
