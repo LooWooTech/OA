@@ -1,3 +1,51 @@
+-- 2018-07-02
+INSERT INTO `oa`.`form` (`Name`, `FlowID`, `Ename`) VALUES ('ŒÔ∆∑', '8', 'goods');
+
+-- 2018-06-26
+CREATE TABLE `goods` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Name` VARCHAR(50) NOT NULL,
+	`Description` VARCHAR(255) NULL DEFAULT NULL,
+	`PictureId` INT(11) NOT NULL,
+	`CategoryId` INT(11) NOT NULL,
+	`Number` INT(11) NOT NULL,
+	`Status` INT(11) NOT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `CategoryId` (`CategoryId`)
+)
+ENGINE=InnoDB
+;
+
+CREATE TABLE `goods_apply` (
+	`ID` INT(11) NOT NULL,
+	`ApplyUserId` INT(11) NOT NULL,
+	`Result` BIT(1) NULL DEFAULT NULL,
+	`ApprovalUserId` INT(11) NOT NULL,
+	`GoodsId` INT(11) NOT NULL,
+	`Number` INT(11) NOT NULL,
+	`Note` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`ID`),
+	INDEX `ApplyUserId` (`ApplyUserId`),
+	INDEX `GoodsId` (`GoodsId`),
+	INDEX `ApprovalUserId` (`ApprovalUserId`)
+)
+ENGINE=InnoDB
+;
+
+CREATE TABLE `goods_register` (
+	`ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`GoodsId` INT(11) NOT NULL,
+	`UserId` INT(11) NOT NULL,
+	`Number` INT(11) NOT NULL,
+	`CreateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`ID`),
+	INDEX `GoodsId` (`GoodsId`),
+	INDEX `UserId` (`UserId`)
+)
+ENGINE=InnoDB
+;
+
+
 -- 2018-06-11
 SELECT 
 e.ExtendInfoId,

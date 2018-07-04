@@ -46,5 +46,7 @@ namespace Loowoo.Land.OA.Models
         Leave = 7,
         [Description("邮件")]
         Mail = 8,
+        [Description("物品")]
+        Goods = 9
     }
 }

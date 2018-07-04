@@ -21,7 +21,7 @@ namespace Loowoo.Land.OA.Models
         /// </summary>
         public bool CanBack { get; set; }
 
-        public virtual ICollection<FlowNode> Nodes { get; set; }
+        public virtual List<FlowNode> Nodes { get; set; }
 
         public FlowNode GetFirstNode()
         {

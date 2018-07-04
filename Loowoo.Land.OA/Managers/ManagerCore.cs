@@ -70,5 +70,7 @@ namespace Loowoo.Land.OA.Managers
         public SmsManager SmsManager { get; private set; }
 
         public SalaryManager SalaryManager { get; private set; }
+
+        public GoodsManager GoodsManager { get; private set; }
     }
 }

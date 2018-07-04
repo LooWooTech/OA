@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\GoodsManager.cs" />
     <Compile Include="Managers\MailManager.cs" />
     <Compile Include="Managers\SalaryManager.cs" />
     <Compile Include="Managers\SmsManager.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Managers\SealManager.cs" />
     <Compile Include="Managers\MeetingRoomManager.cs" />
     <Compile Include="Models\Attendance\AttendanceGroup.cs" />
+    <Compile Include="Models\Goods.cs" />
     <Compile Include="Models\Mail.cs" />
     <Compile Include="Models\MissiveServiceLog.cs" />
     <Compile Include="Models\Salary.cs" />

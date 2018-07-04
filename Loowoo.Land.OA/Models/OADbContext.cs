@@ -78,6 +78,10 @@ namespace Loowoo.Land.OA.Models
 
         public DbSet<UserMissive> UserMissives { get; set; }
 
+        public DbSet<Goods> Goods { get; set; }
+        public DbSet<GoodsApply> GoodsApplies { get; set; }
+        public DbSet<GoodsRegister> GoodsRegisters { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }
