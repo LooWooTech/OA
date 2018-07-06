@@ -11,12 +11,12 @@ namespace Loowoo.Land.OA.API.Controllers
     public class FormInfoExtend1Controller : ControllerBase
     {
         [HttpGet]
-        public PagingResult List(int formId, int infoId = 0, int userId = 0, int applyUserId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
+        public PagingResult List(int formId, int infoId = 0, int extendInfoId = 0, int userId = 0, int applyUserId = 0, int approvalUserId = 0, CheckStatus status = CheckStatus.All, int page = 1, int rows = 20)
         {
             var parameter = new Extend1Parameter
             {
                 FormId = formId,
-                ExtendInfoId = infoId,
+                ExtendInfoId = extendInfoId == 0 ? infoId : extendInfoId,
                 UserId = userId,
                 PostUserId = applyUserId,
                 ApprovalUserId = approvalUserId,
@@ -62,6 +62,21 @@ namespace Loowoo.Land.OA.API.Controllers
                 }),
                 Page = parameter.Page,
             };
+        }
+
+        [HttpGet]
+        public void UpdateApproval(int id)
+        {
+            var model = Core.FormInfoExtend1Manager.GetModel(id);
+            var flowData = model.Info.FlowData;
+            var lastFlowNodeData = flowData.GetLastNodeData();
+            if (flowData.Completed)
+            {
+                model.Result = lastFlowNodeData.Result;
+            }
+            model.ApprovalUserId = lastFlowNodeData.UserId;
+            model.UpdateTime = DateTime.Now;
+            Core.FormInfoExtend1Manager.Save(model);
         }
 
         [HttpGet]

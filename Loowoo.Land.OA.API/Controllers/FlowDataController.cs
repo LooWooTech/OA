@@ -1,5 +1,6 @@
 ﻿using Loowoo.Land.OA.API.Models;
 using Loowoo.Land.OA.Models;
+using Loowoo.Land.OA.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -199,11 +200,11 @@ namespace Loowoo.Land.OA.API.Controllers
                 var flow = Core.FlowManager.Get(flowId);
                 flowNode = flow.GetStep(flowStep);
             }
-            if (flowDataId > 0 && flowNode.LimitMode == DepartmentLimitMode.Self)
+            if (flowDataId > 0)
             {
                 flowData = Core.FlowDataManager.Get(flowDataId);
             }
-            return Core.FlowNodeManager.GetUserList(flowNode, flowData).Select(e => new UserViewModel(e));
+            return Core.FlowNodeManager.GetUserList(flowNode, flowData, CurrentUser).Select(e => new UserViewModel(e));
         }
 
         [HttpGet]

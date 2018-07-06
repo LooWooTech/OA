@@ -105,9 +105,9 @@ namespace Loowoo.Land.OA.Models
     {
         [Description("指定部门")]
         Assign = 1,
-        [Description("拟稿人部门")]
+        [Description("发起人部门")]
         Poster = 2,
-        [Description("自己部门")]
+        [Description("本部门")]
         Self = 3,
     }
 }

@@ -67,7 +67,7 @@ namespace Loowoo.Land.OA.Managers
             return DB.FlowNodes.FirstOrDefault(e => e.ID == id);
         }
 
-        public IEnumerable<User> GetUserList(FlowNode node, FlowData flowData = null)
+        public IEnumerable<User> GetUserList(FlowNode node, FlowData flowData = null, User currentUser = null)
         {
             var parameter = new UserParameter
             {
@@ -81,11 +81,22 @@ namespace Loowoo.Land.OA.Managers
                 {
                     parameter.DepartmentIds = node.DepartmentIds;
                 }
-                else if (node.LimitMode == DepartmentLimitMode.Self && flowData != null)
+                else if (node.LimitMode == DepartmentLimitMode.Poster)
                 {
-                    var senderNodeData = flowData.GetFirstNodeData();
-                    var user = Core.UserManager.GetModel(senderNodeData.UserId);
-                    parameter.DepartmentIds = user.DepartmentIds;
+                    if (flowData != null)
+                    {
+                        var firstNodeData = flowData.GetFirstNodeData();
+                        var user = Core.UserManager.GetModel(firstNodeData.UserId);
+                        parameter.DepartmentIds = user.DepartmentIds;
+                    }
+                    else if(currentUser != null)
+                    {
+                        parameter.DepartmentIds = currentUser.DepartmentIds;
+                    }
+                }
+                else if(node.LimitMode == DepartmentLimitMode.Self)
+                {
+                    parameter.DepartmentIds = currentUser.DepartmentIds;
                 }
             }
             return Core.UserManager.GetList(parameter);

@@ -74,7 +74,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.GoodsId == parameter.GoodsId);
             }
-            if(parameter.Status.HasValue)
+            if(parameter.Status != CheckStatus.All && parameter.Status != null)
             {
                 if(parameter.Status == CheckStatus.Checked)
                 {
