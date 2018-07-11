@@ -31,6 +31,8 @@ namespace Loowoo.Land.OA.Models
         public GoodsStatus Status { get; set; }
 
         public int CategoryId { get; set; }
+
+        public virtual Category Category { get; set; }
     }
 
     [Table("goods_register")]

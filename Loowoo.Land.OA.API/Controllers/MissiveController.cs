@@ -171,5 +171,49 @@ namespace Loowoo.Land.OA.API.Controllers
                 Core.MissiveManager.AddMissiveServiceLog(id);
             }
         }
+
+        [HttpGet]
+        public object Transfer(int id)
+        {
+            var info = Core.FormInfoManager.GetModel(id);
+            if (info.FlowData == null
+                || !info.FlowData.Completed
+                || info.FlowData.GetLastNodeData().UserId != Identity.ID
+                )
+            {
+                throw new Exception("转发失败，请检查流程是否完结且具备转发权限");
+            }
+            var missive = Core.MissiveManager.GetModel(id);
+            var model = new Missive
+            {
+                ContentId = missive.ContentId,
+                DJR = missive.DJR,
+                FW_RQ = missive.FW_RQ,
+                GK_FB = missive.GK_FB,
+                JB_RQ = missive.JB_RQ ?? DateTime.Today,
+                JJ_DJ = missive.JJ_DJ,
+                QX_RQ = missive.QX_RQ,
+                WJ_BT = missive.WJ_BT,
+                WJ_MJ = missive.WJ_MJ,
+                WJ_ZH = missive.WJ_ZH,
+                WJ_ZY = missive.WJ_ZY,
+                ZRR = missive.ZRR,
+                ZTC = missive.ZTC,
+                ZW_GK = missive.ZW_GK,
+                ZS_JG = missive.ZS_JG ?? AppSettings.Get("Government") ?? "舟山市国土资源局定海分局",
+            };
+            var formInfo = new FormInfo
+            {
+                FormId = (int)FormType.ReceiveMissive,
+                Title = info.Title,
+                PostUserId = Identity.ID,
+            };
+            Core.FormInfoManager.Save(formInfo);
+            Core.FlowDataManager.CreateFlowData(formInfo);
+            model.ID = formInfo.ID;
+            Core.MissiveManager.Save(model);
+
+            return formInfo;
+        }
     }
 }

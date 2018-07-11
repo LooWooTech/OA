@@ -47,7 +47,8 @@ ENGINE=InnoDB
 
 
 -- 2018-06-11
-SELECT 
+-- 创建user_extend1 视图
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `user_extend1` AS SELECT  
 e.ExtendInfoId,
 e.UserId AS ApplyUserId,
 e.ApprovalUserId,
@@ -148,7 +149,7 @@ ALTER TABLE `mail`
 	ADD COLUMN `Deleted` BIT NOT NULL AFTER `ReplyId`;
 
 -- 创建user info view
-SELECT `user`.`ID` AS `ID`,
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `user_info` AS SELECT  `user`.`ID` AS `ID`,
 `user`.`InfoID` AS `InfoID`,
 `info`.`Uid` AS `Uid`,
 `info`.`Title` AS `Title`,
@@ -170,7 +171,7 @@ LEFT JOIN `user_form_info` `user` ON((`info`.`ID` = `user`.`InfoID`)))
 WHERE info.Deleted = 0
 
 -- 创建user missive view
-SELECT `m`.`WJ_ZH` AS `WJ_ZH`,
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `user_missive` AS SELECT  `m`.`WJ_ZH` AS `WJ_ZH`,
 `m`.`Important` AS `Important`,
 `m`.`JJ_DJ` AS `JJ_DJ`,
 `m`.`WJ_MJ` AS `WJ_MJ`,
@@ -182,7 +183,7 @@ JOIN user_info info ON m.ID = info.InfoID
 
 
 -- 创建user mail view
-SELECT 
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `user_mail` AS SELECT 
 m.Subject,
 m.HasAttachments,
 m.IsDraft,
@@ -190,10 +191,10 @@ m.ReplyId,
 m.ForwardId,
 info.*
 FROM mail m
-JOIN user_info info ON m.ID = info.InfoID
+JOIN user_info info ON m.ID = info.InfoID;
 
 -- 创建user task view
-SELECT 
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `user_task` AS SELECT 
 t.Number,
 t.FromType,
 t.`From`,
