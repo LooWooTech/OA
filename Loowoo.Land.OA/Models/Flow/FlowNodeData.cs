@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,6 +19,16 @@ namespace Loowoo.Land.OA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+
+        /// <summary>
+        /// 兼容旧版本的json序列化字段
+        /// </summary>
+        [JsonProperty("$id")]
+        [NotMapped]
+        public int JsonID => ID;
+        [JsonProperty("$ref")]
+        [NotMapped]
+        public int JsonRefID => ID;
 
         //public int ParentId { get; set; }
         public int FlowNodeId { get; set; }

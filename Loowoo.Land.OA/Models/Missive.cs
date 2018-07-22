@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,7 @@ namespace Loowoo.Land.OA.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ID { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("ID")]
         public virtual FormInfo Info { get; set; }
 

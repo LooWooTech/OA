@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,7 @@ namespace Loowoo.Land.OA.Models
         [ForeignKey("FlowNodeData")]
         public int ID { get; set; }
 
+        [JsonIgnore]
         public virtual FlowNodeData FlowNodeData { get; set; }
 
         public DateTime CreateTime { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Loowoo.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -84,6 +85,7 @@ namespace Loowoo.Land.OA.Models
 
         public int FreeFlowId { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("FreeFlowId")]
         public virtual FreeFlow FreeFlow { get; set; }
 
