@@ -30,7 +30,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.Title.Contains(parameter.SearchKey));
             }
-            return query.OrderBy(e => e.ID).SetPage(parameter.Page);
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
         }
 
         public IEnumerable<SalaryData> GetSalaryDatas(SalaryParameter parameter)
@@ -62,6 +62,7 @@ namespace Loowoo.Land.OA.Managers
             {
                 entity.Title = model.Title;
                 entity.FilePath = model.FilePath;
+                model.ID = entity.ID;
             }
             else
             {
@@ -196,7 +197,8 @@ namespace Loowoo.Land.OA.Managers
         public List<int> ImportData(Salary salary)
         {
             var excel = ExcelHelper.GetWorkbook(salary.FilePath);
-            var sheet = excel.GetSheetAt(excel.NumberOfSheets - 1);
+            var sheetIndex = excel.NumberOfSheets - 1;
+            var sheet = excel.GetSheetAt(sheetIndex);
 
             var currentRowIndex = 0;
             var failList = new List<int>();
@@ -205,7 +207,10 @@ namespace Loowoo.Land.OA.Managers
                 var headerRow = FindHeader(sheet, currentRowIndex);
                 if (headerRow == -1)
                 {
-                    break;
+                    sheetIndex--;
+                    if (sheetIndex < 0) break;
+                    sheet = excel.GetSheetAt(sheetIndex);
+                    continue;
                 }
                 var header = BuildHeader(sheet, headerRow);
                 if (header == null)

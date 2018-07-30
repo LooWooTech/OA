@@ -16,6 +16,40 @@ namespace Loowoo.Land.OA.Managers
             return DB.FormInfos.FirstOrDefault(e => e.ID == id);
         }
 
+        public IEnumerable<FormInfo> GetList(FormInfoParameter parameter)
+        {
+            var query = DB.FormInfos.Where(e => !e.Deleted);
+            if (parameter.CategoryId > 0)
+            {
+                query = query.Where(e => e.CategoryId == parameter.CategoryId);
+            }
+            if (parameter.BeginTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
+            }
+            if (parameter.Completed.HasValue)
+            {
+                query = query.Where(e => e.FlowData.Completed == parameter.Completed);
+            }
+            if (parameter.EndTime.HasValue)
+            {
+                query = query.Where(e => e.CreateTime < parameter.EndTime.Value);
+            }
+            if (parameter.FormId > 0)
+            {
+                query = query.Where(e => e.FormId == parameter.FormId);
+            }
+            if (parameter.InfoIds != null && parameter.InfoIds.Length > 0)
+            {
+                query = query.Where(e => parameter.InfoIds.Contains(e.ID));
+            }
+            if (parameter.PostUserId > 0)
+            {
+                query = query.Where(e => e.PostUserId == parameter.PostUserId);
+            }
+            return query.OrderByDescending(e => e.ID).SetPage(parameter.Page);
+        }
+
         //public bool HasApplied(int userId, DateTime? lastTime, int extendId = 0)
         //{
         //    var query = DB.FormInfos.Where(e => e.PostUserId == userId);

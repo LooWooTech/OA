@@ -36,17 +36,19 @@ namespace Loowoo.Land.OA.API.Controllers
 
         public ActionResult Preview(int id)
         {
-            var file = Core.FileManager.GetModel(id);
+            var missive = Core.MissiveManager.GetModel(id);
+            var file = Core.FileManager.GetModel(missive.ContentId);
             if (file == null) throw new Exception("文件未找到");
             if (file.IsWordFile)
             {
-                var url = $"PageOffice://|{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}{Url.Action("Doc", new { id })}";
+                var canEdit = missive.Info.FlowData.GetLastNodeData()?.UserId == Identity.ID;
+                var url = $"PageOffice://|{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}{Url.Action("Doc", new { file.ID, edit = canEdit })}";
                 return Redirect(url);
             }
             return File(file.PhysicalPath, file.ContentType);
         }
 
-        public ActionResult Doc(int id)
+        public ActionResult Doc(int id, bool edit = false)
         {
             var file = Core.FileManager.GetModel(id);
             if (file == null) throw new Exception("文件未找到");
@@ -64,7 +66,8 @@ namespace Loowoo.Land.OA.API.Controllers
                 Caption = file.FileName,
 
             };
-            pc.WebOpen(file.PhysicalPath, PageOffice.OpenModeType.docAdmin, Identity != null ? Identity.Name : "未知");
+
+            pc.WebOpen(file.PhysicalPath, edit ? PageOffice.OpenModeType.docNormalEdit : PageOffice.OpenModeType.docReadOnly, Identity != null ? Identity.Name : "未知");
             page.Controls.Add(pc);
             var sb = new StringBuilder();
             using (var sw = new StringWriter(sb))

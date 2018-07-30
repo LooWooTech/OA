@@ -50,7 +50,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     e.Number,
                     e.ApplyUserId,
                     ApplyUserName = e.ApplyUser.RealName,
-                    ApprovalUserName = e.ApplyUser.RealName,
+                    ApprovalUserName = e.ApprovalUser.RealName,
                     e.ApprovalUserId,
                     e.Goods.Name,
                     e.Info.CreateTime,

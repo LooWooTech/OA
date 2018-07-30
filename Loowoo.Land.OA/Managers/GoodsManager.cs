@@ -92,6 +92,10 @@ namespace Loowoo.Land.OA.Managers
         {
             DB.GoodsRegisters.AddOrUpdate(model);
             var goods = GetModel(model.GoodsId);
+            if (goods.Number == 0)
+            {
+                goods.Status = GoodsStatus.Enabled;
+            }
             goods.Number += model.Number;
             DB.SaveChanges();
         }

@@ -43,16 +43,16 @@ namespace Loowoo.Land.OA.API.Controllers
             }
             if (model.Status != SealStatus.Unused)
             {
-                throw new Exception("当前图章在使用中，无法申请");
+                //throw new Exception("当前图章在使用中，无法申请");
             }
             if (data.ApprovalUserId == 0)
             {
                 throw new Exception("没有选择审核人");
             }
             data.UserId = Identity.ID;
-            if (Core.FormInfoExtend1Manager.HasApply(data))
+            //if (Core.FormInfoExtend1Manager.HasApply(data))
             {
-                throw new Exception("你已经申请过该图章，还未通过审核");
+                //throw new Exception("你已经申请过该图章，还未通过审核");
             }
             var info = Core.SealManager.Apply(data);
 
