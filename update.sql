@@ -1,3 +1,7 @@
+-- 2018-07-30
+ALTER TABLE `missive`
+	ADD INDEX `ContentId` (`ContentId`);
+
 -- 2018-07-02
 INSERT INTO `oa`.`form` (`Name`, `FlowID`, `Ename`) VALUES ('ŒÔ∆∑', '8', 'goods');
 

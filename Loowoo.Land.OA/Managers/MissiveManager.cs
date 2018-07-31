@@ -44,6 +44,11 @@ namespace Loowoo.Land.OA.Managers
             return DB.MissiveRedTitles.Find(id);
         }
 
+        public Missive GetModelByContentId(int contentId)
+        {
+            return DB.Missives.FirstOrDefault(e => e.ContentId == contentId);
+        }
+
         public IEnumerable<MissiveRedTitle> GetRedTitles()
         {
             return DB.MissiveRedTitles;

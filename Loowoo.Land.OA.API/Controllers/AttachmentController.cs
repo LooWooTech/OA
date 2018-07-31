@@ -34,15 +34,18 @@ namespace Loowoo.Land.OA.API.Controllers
             }
         }
 
-        public ActionResult Preview(int id)
+        public ActionResult Preview(int id, bool disabled = true)
         {
-            var missive = Core.MissiveManager.GetModel(id);
-            var file = Core.FileManager.GetModel(missive.ContentId);
+            var file = Core.FileManager.GetModel(id);
             if (file == null) throw new Exception("文件未找到");
             if (file.IsWordFile)
             {
-                var canEdit = missive.Info.FlowData.GetLastNodeData()?.UserId == Identity.ID;
-                var url = $"PageOffice://|{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}{Url.Action("Doc", new { file.ID, edit = canEdit })}";
+                //if (!disabled)
+                //{
+                //    var doc = Core.MissiveManager.GetModelByContentId(id);
+                //    disabled = doc.Info.FlowData.GetLastNodeData()?.UserId != Identity.ID;
+                //}
+                var url = $"PageOffice://|{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}{Url.Action("Doc", new { file.ID, edit = !disabled })}";
                 return Redirect(url);
             }
             return File(file.PhysicalPath, file.ContentType);
