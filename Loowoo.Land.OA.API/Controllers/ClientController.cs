@@ -14,17 +14,7 @@ namespace Loowoo.Land.OA.API.Controllers
         public ClientController()
         {
             var versions = System.IO.Directory.GetFiles(_clientPath).Select(filePath => filePath.Substring(filePath.LastIndexOf("android-")).Replace("android-", "").Replace(".apk", ""));
-            foreach (var v in versions)
-            {
-                if (_lastVersion == null)
-                {
-                    _lastVersion = v;
-                }
-                if (float.Parse(v) > float.Parse(_lastVersion))
-                {
-                    _lastVersion = v;
-                }
-            }
+            _lastVersion = versions.OrderByDescending(v => v).FirstOrDefault();
         }
 
         private string _clientPath
