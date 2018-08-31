@@ -51,8 +51,6 @@ namespace Loowoo.Land.OA.Models
         [NotMapped]
         public string Token { get; set; }
 
-        public int AttendanceGroupId { get; set; }
-
         public int Sort { get; set; }
         /// <summary>
         /// 指纹编号

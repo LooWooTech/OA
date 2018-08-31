@@ -33,11 +33,6 @@ namespace Loowoo.Land.OA.Managers
             return DB.AttendanceGroups.ToList();
         }
 
-        public Dictionary<int,int> GetUserGroups()
-        {
-            return DB.Users.ToDictionary(e => e.ID, e => e.AttendanceGroupId);
-        }
-
         /// <summary>
         /// 更新考勤状态
         /// </summary>
@@ -54,7 +49,7 @@ namespace Loowoo.Land.OA.Managers
                 };
                 DB.Attendances.Add(model);
             }
-            var leaves = DB.FormInfoExtend1s.Where(e => e.Result.HasValue && e.ScheduleBeginTime <= date && e.ScheduleEndTime > date).ToList();
+            var leaves = DB.FormInfoExtend1s.Where(e => e.ApprovalUserId == userId && e.Result.HasValue && e.ScheduleBeginTime <= date && e.ScheduleEndTime > date).ToList();
             var logs = DB.CheckInOuts.Where(e => e.UserId == userId && e.CreateTime > date && e.CreateTime < tomorrow).OrderBy(e => e.CreateTime).ToList();
             model.Check(logs, leaves, time);
             DB.SaveChanges();
@@ -70,10 +65,11 @@ namespace Loowoo.Land.OA.Managers
 
         public AttendanceGroup GetAttendanceGroup(int userId)
         {
-            var user = DB.Users.FirstOrDefault(e => e.ID == userId);
-            if (user.AttendanceGroupId > 0)
+            var user = DB.UserDepartments.FirstOrDefault(e => e.UserId == userId);
+            var groupId = user.Department.AttendanceGroupId;
+            if (groupId > 0)
             {
-                return DB.AttendanceGroups.FirstOrDefault(e => e.ID == user.AttendanceGroupId);
+                return DB.AttendanceGroups.FirstOrDefault(e => e.ID == groupId);
             }
             return DB.AttendanceGroups.FirstOrDefault(e => e.Default);
         }

@@ -34,10 +34,17 @@ namespace Loowoo.Land.OA.Models
 
         public void Check(IEnumerable<CheckInOut> logs, IEnumerable<FormInfoExtend1> leaves, AttendanceTime time)
         {
-            var amLog = logs.FirstOrDefault(e => e.CreateTime >= time.AMBeginTime && e.CreateTime <= time.AMEndTime);
+            var amLog = logs.FirstOrDefault(e => e.CreateTime >= time.AMBeginTime && e.CreateTime <= time.AMLastTime);
             if (amLog != null)
             {
-                AMResult = AttendanceResult.Normal;
+                if (amLog.CreateTime < time.AMEndTime)
+                {
+                    AMResult = AttendanceResult.Normal;
+                }
+                else
+                {
+                    AMResult = AttendanceResult.Late;
+                }
             }
             else if (leaves.Any(e => e.ScheduleBeginTime <= time.AMBeginTime && e.ScheduleEndTime >= time.AMEndTime))
             {
@@ -47,10 +54,18 @@ namespace Loowoo.Land.OA.Models
             {
                 AMResult = AttendanceResult.Absent;
             }
-            var pmLog = logs.LastOrDefault(e => e.CreateTime >= time.PMBeginTime && e.CreateTime <= time.PMEndTime);
+
+            var pmLog = logs.LastOrDefault(e => e.CreateTime >= time.PMEarlyTime && e.CreateTime <= time.PMEndTime);
             if (pmLog != null)
             {
-                PMResult = AttendanceResult.Normal;
+                if (pmLog.CreateTime >= time.PMBeginTime)
+                {
+                    PMResult = AttendanceResult.Normal;
+                }
+                else
+                {
+                    PMResult = AttendanceResult.Early;
+                }
             }
             else if (leaves.Any(e => e.ScheduleBeginTime <= time.AMBeginTime && e.ScheduleEndTime >= time.AMEndTime))
             {
@@ -65,6 +80,8 @@ namespace Loowoo.Land.OA.Models
 
     public class AttendanceTime
     {
+        public int MarginMinutes { get; set; } = 30;
+
         public AttendanceTime(AttendanceGroup group)
         {
             AMBeginTime = ConvertToDateTime(group.AMBeginTime);
@@ -87,6 +104,10 @@ namespace Loowoo.Land.OA.Models
         /// 上班最晚打卡时间
         /// </summary>
         public DateTime AMEndTime { get; set; }
+
+        public DateTime AMLastTime => AMEndTime.AddMinutes(MarginMinutes);
+
+        public DateTime PMEarlyTime => PMBeginTime.AddMinutes(-MarginMinutes);
         /// <summary>
         /// 下班最早打卡时间
         /// </summary>
@@ -98,10 +119,10 @@ namespace Loowoo.Land.OA.Models
         /// <summary>
         /// 是否未打卡时间
         /// </summary>
-        public bool IsCheckTime(DateTime time, int margin = 0)
+        public bool IsCheckTime(DateTime time)
         {
-            return (time >= AMBeginTime.AddMinutes(-margin) && time <= AMEndTime.AddMinutes(margin))
-                || (time >= PMBeginTime.AddMinutes(-margin) && time <= PMEndTime.AddMinutes(margin));
+            return (time >= AMBeginTime && time <= AMLastTime)
+                || (time >= PMEarlyTime && time <= PMEndTime);
         }
 
         /// <summary>

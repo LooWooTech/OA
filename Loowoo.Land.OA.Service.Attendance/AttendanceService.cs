@@ -19,7 +19,7 @@ namespace Loowoo.Land.OA.Service.Attendance
         private AttendanceManager AttendanceManager = new AttendanceManager();
         private List<AttendanceTime> _times;
         private List<AttendanceGroup> _groups;
-        private Dictionary<int, AttendanceGroup> _userGroups;
+        private Dictionary<int, AttendanceGroup> _deptGroups;
 
         private DateTime _minBeginTime;
         private DateTime _maxEndTime;
@@ -29,7 +29,6 @@ namespace Loowoo.Land.OA.Service.Attendance
             _groups = AttendanceManager.GetAttendanceGroups();
             _times = _groups.Select(e => new AttendanceTime(e)).ToList();
             var defaultGroup = _groups.FirstOrDefault(e => e.Default);
-            _userGroups = AttendanceManager.GetUserGroups().ToDictionary(e => e.Key, e => e.Value == 0 ? defaultGroup : _groups.FirstOrDefault(g => g.ID == e.Value));
             _minBeginTime = _times.Min(e => e.AMBeginTime);
             _maxEndTime = _times.Min(e => e.PMBeginTime);
             _worker = new Thread(() =>
@@ -90,7 +89,7 @@ namespace Loowoo.Land.OA.Service.Attendance
                 if (log.ApiResult.HasValue) continue;
                 var json = InvokeApi(log);
                 var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
+                log.ApiResult = data["msg"].Contains("成功") || data["msg"].Contains("您已") || data["msg"].Contains("该用户不存在");
                 log.ApiContent = data.ToJson();
                 AttendanceManager.SaveApiResult(log);
                 LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t打卡{(log.ApiResult.Value ? "成功" : "失败")}：{log.ToJson()}\r\n");

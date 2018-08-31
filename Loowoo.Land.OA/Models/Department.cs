@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,11 @@ namespace Loowoo.Land.OA.Models
         public int ParentId { get; set; }
 
         public string Name { get; set; }
+
+        public int AttendanceGroupId { get; set; }
+
+        [JsonIgnore]
+        public virtual AttendanceGroup AttendanceGroup { get; set; }
 
         public int Sort { get; set; }
     }

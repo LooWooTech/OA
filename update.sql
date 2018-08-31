@@ -1,3 +1,10 @@
+-- 2018-08-21
+ALTER TABLE `department`
+	ADD COLUMN `AttendanceGroupId` INT NOT NULL AFTER `Sort`;
+ALTER TABLE `user`
+	DROP COLUMN `AttendanceGroupId`;
+
+
 -- 2018-07-30
 ALTER TABLE `missive`
 	ADD INDEX `ContentId` (`ContentId`);

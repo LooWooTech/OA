@@ -27,7 +27,15 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpGet]
         public object List()
         {
-            return Core.DepartmentManager.GetList().OrderBy(x=>x.Sort);
+            return Core.DepartmentManager.GetList().Select(e => new
+            {
+                e.AttendanceGroupId,
+                AttendanceGroup = e.AttendanceGroup == null ? null : e.AttendanceGroup.Name,
+                e.ID,
+                e.ParentId,
+                e.Sort,
+                e.Name
+            }).OrderBy(x => x.Sort);
         }
 
         /// <summary>

@@ -170,5 +170,16 @@ namespace Loowoo.Land.OA.API.Controllers
             return Core.UserManager.GetParentTitleUsers(user).Select(e => new UserViewModel(e));
         }
 
+        [HttpGet]
+        public void ResetPassword(int userId)
+        {
+            if (CurrentUser.Role != UserRole.Administrator)
+            {
+                throw new Exception("权限不足");
+            }
+            var user = Core.UserManager.GetModel(Identity.ID);
+            user.Password = "123456";
+            Core.UserManager.Save(user);
+        }
     }
 }

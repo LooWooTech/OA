@@ -95,7 +95,7 @@ namespace Loowoo.Land.OA.API.Controllers
                     client.Encoding = System.Text.Encoding.UTF8;
                     var json = client.DownloadString(url);
                     var data = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                    log.ApiResult = data.ContainsKey("success") && data["success"] == "true" && (data["msg"].Contains("成功") || data["msg"].Contains("您已"));
+                    log.ApiResult = data["msg"].Contains("成功") || data["msg"].Contains("您已") || data["msg"].Contains("该用户不存在") || data["msg"].Contains("用户名或号码为空");
                     log.ApiContent = data.ToJson();
                     Core.AttendanceManager.SaveApiResult(log);
                     if (log.ApiResult == false)
