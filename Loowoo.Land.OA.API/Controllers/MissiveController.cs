@@ -161,14 +161,20 @@ namespace Loowoo.Land.OA.API.Controllers
         /// 上报到市里OA
         /// </summary>
         [HttpGet]
-        public void Report(int id)
+        public void Report(int id, bool manual = false)
         {
             var info = Core.FormInfoManager.GetModel(id);
             if (info.Form.FormType == FormType.SendMissive
                 && info.FlowData.Completed
                 )
             {
-                Core.MissiveManager.AddMissiveServiceLog(id);
+                var missive = Core.MissiveManager.GetModel(id);
+                if (manual)
+                {
+                    missive.NotReport = false;
+                }
+
+                Core.MissiveManager.AddMissiveServiceLog(missive);
             }
         }
 

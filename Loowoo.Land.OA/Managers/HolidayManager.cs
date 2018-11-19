@@ -40,7 +40,9 @@ namespace Loowoo.Land.OA.Managers
             {
                 query = query.Where(e => e.EndDate <= parameter.EndDate);
             }
-            return query.OrderBy(e => e.BeginDate).SetPage(parameter.Page);
+            var list = query.OrderByDescending(e => e.BeginDate).SetPage(parameter.Page).ToList();
+
+            return list;
         }
 
         public static int GetWeekOfYear(DateTime todayTime)

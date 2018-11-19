@@ -82,9 +82,10 @@ namespace Loowoo.Land.OA.Managers
             doc.SaveAs(model.Content.AbsolutelyPath);
         }
 
-        public void AddMissiveServiceLog(int id)
+        public void AddMissiveServiceLog(Missive missive)
         {
-            var missive = GetModel(id);
+            if (missive.NotReport) return;
+
             var formType = missive.Info.Form.FormType;
             if (formType != FormType.SendMissive)
             {
@@ -93,7 +94,7 @@ namespace Loowoo.Land.OA.Managers
 
             missive.NotReport = false;
 
-            var log = DB.MissiveServiceLogs.FirstOrDefault(e => e.MissiveId == id);
+            var log = DB.MissiveServiceLogs.FirstOrDefault(e => e.MissiveId == missive.ID);
             if (log != null)
             {
                 //如果之前上报失败，则重新上报
@@ -107,7 +108,7 @@ namespace Loowoo.Land.OA.Managers
                 log = new MissiveServiceLog
                 {
                     Uid = Guid.NewGuid().ToString(),
-                    MissiveId = id,
+                    MissiveId = missive.ID,
                     Type = formType,
                 };
                 DB.MissiveServiceLogs.Add(log);
@@ -118,7 +119,7 @@ namespace Loowoo.Land.OA.Managers
 
         public void UpdateMissiveServiceLog(MissiveServiceLog model)
         {
-            var entity = DB.MissiveServiceLogs.FirstOrDefault(e=>e.ID == model.ID);
+            var entity = DB.MissiveServiceLogs.FirstOrDefault(e => e.ID == model.ID);
             entity.Result = model.Result;
             entity.UpdateTime = DateTime.Now;
             DB.SaveChanges();
