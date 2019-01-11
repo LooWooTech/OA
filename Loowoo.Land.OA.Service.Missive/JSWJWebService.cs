@@ -26,7 +26,7 @@ namespace Loowoo.Land.OA.Service.Missive
                 foreach (var file in files.GroupBy(f => f.Size + f.FileName).Select(g => g.FirstOrDefault()))
                 {
                     result = client.wj_fj(log.Uid, file.FileName, $"uploadFile\\{log.Uid}\\{file.FileName}", file.Inline ? "zw" : "fj");
-                    if (true)
+                    if (result == "true")
                     {
                         try
                         {
@@ -39,20 +39,23 @@ namespace Loowoo.Land.OA.Service.Missive
                                 //如果文件大于maxSize，则分批上传
                                 if (fs.Length > maxSize)
                                 {
-                                    long leftLength = fs.Length;
+                                    var leftLength = fs.Length;
                                     while (leftLength > 0)
                                     {
                                         var buffer = new byte[leftLength < maxSize ? (int)leftLength : maxSize];
+
                                         var block = fs.Read(buffer, 0, buffer.Length);
+
                                         client.getFile_DWJ(buffer, file.FileName, log.Uid, leftLength == fs.Length);
-                                        leftLength = leftLength - block;
+
+                                        leftLength -= block;
                                     }
                                 }
                                 else
                                 {
-                                    var fileData = new byte[fs.Length];
-                                    fs.Read(fileData, 0, fileData.Length);
-                                    client.getFile(fileData, file.FileName, log.Uid);
+                                    var buffer = new byte[fs.Length];
+                                    fs.Read(buffer, 0, buffer.Length);
+                                    client.getFile(buffer, file.FileName, log.Uid);
                                 }
                             }
                         }
