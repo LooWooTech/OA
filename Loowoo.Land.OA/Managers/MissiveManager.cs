@@ -130,6 +130,9 @@ namespace Loowoo.Land.OA.Managers
             return DB.MissiveServiceLogs.Where(e => e.Result == null && e.Type == FormType.SendMissive).OrderByDescending(e => e.ID).FirstOrDefault();
         }
 
-
+        public MissiveServiceLog GetMissiveServiceLogByMissiveId(int missiveId)
+        {
+            return DB.MissiveServiceLogs.FirstOrDefault(e => e.MissiveId == missiveId);
+        }
     }
 }

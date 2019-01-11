@@ -21,10 +21,11 @@ namespace Loowoo.Land.OA.Service.Missive
             {
                 while (!_stop)
                 {
+                    Models.MissiveServiceLog log = null;
                     //查找需要上报的公文，需要上报的公文是需要
                     try
                     {
-                        var log = Core.MissiveManager.GetLastNeedReportMissiveServiceLog();
+                        log = Core.MissiveManager.GetLastNeedReportMissiveServiceLog();
                         if (log == null)
                         {
                             Thread.Sleep(1000 * 60);
@@ -40,9 +41,10 @@ namespace Loowoo.Land.OA.Service.Missive
                         Console.Write(msg);
                         LogWriter.Instance.WriteLog(msg);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n{ex.ToJson()}");
+                        LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}{ex.ToJson()}{log.ToJson()}\r\n");
+                        Thread.Sleep(1000 * 60);
                     }
                 }
             });

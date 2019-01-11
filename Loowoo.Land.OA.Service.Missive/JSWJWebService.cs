@@ -15,15 +15,18 @@ namespace Loowoo.Land.OA.Service.Missive
         public bool Report(MissiveServiceLog log)
         {
             var model = Core.MissiveManager.GetModel(log.MissiveId);
-            log.Uid = Guid.NewGuid().ToString();
-            var files = Core.FileManager.GetList(new Parameters.FileParameter { InfoId = log.MissiveId });
+            if (log.Uid == null)
+            {
+                log.Uid = Guid.NewGuid().ToString();
+            }
+            var files = Core.FileManager.GetList(new Parameters.FileParameter { InfoId = log.MissiveId }).ToList();
             var result = "false";
             using (var client = new WebReference.JSWJ())
             {
-                foreach (var file in files)
+                foreach (var file in files.GroupBy(f => f.Size + f.FileName).Select(g => g.FirstOrDefault()))
                 {
                     result = client.wj_fj(log.Uid, file.FileName, $"uploadFile\\{log.Uid}\\{file.FileName}", file.Inline ? "zw" : "fj");
-                    if (result == "true")
+                    if (true)
                     {
                         try
                         {
@@ -31,14 +34,31 @@ namespace Loowoo.Land.OA.Service.Missive
                             var filePath = System.IO.Path.Combine(uploadDir, file.SavePath);
                             using (var fs = System.IO.File.OpenRead(filePath))
                             {
-                                var fileData = new byte[fs.Length];
-                                fs.Read(fileData, 0, fileData.Length);
-                                client.getFile(fileData, file.FileName, log.Uid);
+                                var maxSize = 1024 * 1024 * 2;
+
+                                //如果文件大于maxSize，则分批上传
+                                if (fs.Length > maxSize)
+                                {
+                                    long leftLength = fs.Length;
+                                    while (leftLength > 0)
+                                    {
+                                        var buffer = new byte[leftLength < maxSize ? (int)leftLength : maxSize];
+                                        var block = fs.Read(buffer, 0, buffer.Length);
+                                        client.getFile_DWJ(buffer, file.FileName, log.Uid, leftLength == fs.Length);
+                                        leftLength = leftLength - block;
+                                    }
+                                }
+                                else
+                                {
+                                    var fileData = new byte[fs.Length];
+                                    fs.Read(fileData, 0, fileData.Length);
+                                    client.getFile(fileData, file.FileName, log.Uid);
+                                }
                             }
                         }
                         catch (Exception ex)
                         {
-                            LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}");
+                            LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t上传文件失败：{ex.Message}{file.ToJson()}\r\n");
                         }
                     }
                 }

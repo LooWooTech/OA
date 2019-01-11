@@ -128,17 +128,33 @@ namespace Loowoo.Land.OA.Managers
             {
                 model.Password = model.Password.MD5();
             }
-            if (DB.Users.Any(e => e.Username == model.Username && e.ID != model.ID))
-            {
-                throw new Exception("用户名已被使用");
-            }
             if (model.ID == 0)
             {
-                DB.Users.Add(model);
+                var entity = DB.Users.FirstOrDefault(e => e.Username == model.Username);
+                if (entity != null)
+                {
+                    if (!entity.Deleted)
+                    {
+                        throw new Exception("用户名已被使用");
+                    }
+                    else
+                    {
+                        model.ID = entity.ID;
+                        DB.Entry(entity).CurrentValues.SetValues(model);
+                    }
+                }
+                else
+                {
+                    DB.Users.Add(model);
+                }
                 DB.SaveChanges();
             }
             else
             {
+                if (DB.Users.Any(e => e.Username == model.Username && e.ID != model.ID))
+                {
+                    throw new Exception("用户名已被使用");
+                }
                 var entity = DB.Users.FirstOrDefault(e => e.ID == model.ID);
                 if (string.IsNullOrEmpty(model.Password))
                 {

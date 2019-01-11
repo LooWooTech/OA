@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    [Table("User")]
+    [Table("user")]
     public class User
     {
         [Key]

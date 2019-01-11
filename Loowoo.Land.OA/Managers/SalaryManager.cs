@@ -82,7 +82,7 @@ namespace Loowoo.Land.OA.Managers
             DB.SaveChanges();
         }
 
-        private static readonly string[] _columns = AppSettings.Get("SalaryHeaders").Split('|');
+        private static readonly string[] _columns = AppSettings.Get("SalaryHeaders")?.Split('|');
 
         private int FindHeader(ISheet sheet, int rowIndex = 0)
         {
