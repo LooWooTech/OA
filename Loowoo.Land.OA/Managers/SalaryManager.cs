@@ -14,9 +14,9 @@ namespace Loowoo.Land.OA.Managers
 {
     public class SalaryManager : ManagerBase
     {
-        public int[] GetYears()
+        public List<int> GetYears()
         {
-            return DB.Salaries.GroupBy(e => e.Year).Select(g => g.Key).ToArray();
+            return DB.Salaries.GroupBy(e => e.Year).Select(g => g.Key).ToList();
         }
 
         public IEnumerable<Salary> GetList(SalaryParameter parameter)

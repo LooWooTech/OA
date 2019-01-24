@@ -21,7 +21,7 @@ namespace Loowoo.Land.OA.Service.SMS
         private readonly string _password = ConfigurationManager.AppSettings["Password"];
         private readonly string _extendCode = ConfigurationManager.AppSettings["ExtendCode"];
         private readonly string _masAddress = ConfigurationManager.AppSettings["MASAddress"];
-
+        private int _tryTimes;
         public void Start()
         {
             _worker = new Thread(() =>
@@ -35,7 +35,13 @@ namespace Loowoo.Land.OA.Service.SMS
                     }
                     catch (Exception ex)
                     {
+                        _tryTimes++;
+                        if (_tryTimes > 10)
+                        {
+                            _stop = true;
+                        }
                         LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}\r\n{ex.StackTrace}\r\n");
+                        Thread.Sleep(1000 * 60);
                     }
                 }
             });
@@ -65,6 +71,10 @@ namespace Loowoo.Land.OA.Service.SMS
                 {
                     LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t发送短信失败：{sms.Content}===>{sms.Numbers}\r\n{ex}\r\n");
                 }
+            }
+            else
+            {
+                Thread.Sleep(1000 * 60);
             }
         }
 

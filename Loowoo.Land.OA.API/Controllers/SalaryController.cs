@@ -14,9 +14,14 @@ namespace Loowoo.Land.OA.API.Controllers
     public class SalaryController : ControllerBase
     {
         [HttpGet]
-        public int[] GetYears()
+        public IEnumerable<int> GetYears()
         {
-            return Core.SalaryManager.GetYears();
+            var result = Core.SalaryManager.GetYears();
+            if (!result.Contains(DateTime.Today.Year))
+            {
+                result.Add(DateTime.Today.Year);
+            }
+            return result.OrderByDescending(e => e);
         }
 
         [HttpGet]

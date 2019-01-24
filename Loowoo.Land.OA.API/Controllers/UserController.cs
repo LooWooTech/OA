@@ -75,7 +75,7 @@ namespace Loowoo.Land.OA.API.Controllers
                 || string.IsNullOrEmpty(user.Username)
                 || string.IsNullOrEmpty(user.RealName))
             {
-                return BadRequest("编辑用户参数错误");
+                return BadRequest("用户名或姓名没有填写");
             }
             if (user.ID == 0)
             {

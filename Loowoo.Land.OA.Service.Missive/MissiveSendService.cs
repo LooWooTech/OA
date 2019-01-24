@@ -14,7 +14,7 @@ namespace Loowoo.Land.OA.Service.Missive
         private IMissiveWebService _service;
         private Thread _worker;
         private bool _stop = false;
-
+        private int retryTimes = 0;
         public void Start()
         {
             _worker = new Thread(() =>
@@ -43,6 +43,11 @@ namespace Loowoo.Land.OA.Service.Missive
                     }
                     catch (Exception ex)
                     {
+                        retryTimes++;
+                        if (retryTimes > 10)
+                        {
+                            _stop = true;
+                        }
                         LogWriter.Instance.WriteLog($"[{DateTime.Now}]\t{ex.Message}{ex.ToJson()}{log.ToJson()}\r\n");
                         Thread.Sleep(1000 * 60);
                     }
