@@ -67,10 +67,6 @@ namespace Loowoo.Land.OA.API.Controllers
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
-            if (Core.DepartmentManager.Used(id))
-            {
-                return BadRequest("删除部门：当前部门信息已在用户、审核流程节点使用");
-            }
             if (Core.DepartmentManager.Delete(id))
             {
                 return Ok();

@@ -11,11 +11,6 @@ namespace Loowoo.Land.OA.Managers
     {
         public void Save(Department model)
         {
-            if (DB.Departments.Any(e => e.Name == model.Name && e.ID != model.ID))
-            {
-                throw new Exception("部门名称已使用");
-            }
-
             DB.Departments.AddOrUpdate(model);
             DB.SaveChanges();
         }
@@ -29,7 +24,7 @@ namespace Loowoo.Land.OA.Managers
 
         public IEnumerable<Department> GetList()
         {
-            return DB.Departments.OrderBy(e => e.Sort);
+            return DB.Departments.Where(e => !e.Deleted).OrderBy(e => e.Sort);
         }
 
         public bool Delete(int id)
@@ -39,24 +34,13 @@ namespace Loowoo.Land.OA.Managers
             {
                 return false;
             }
-            if (DB.UserDepartments.Any(e => e.DepartmentId == id))
+            if (DB.UserDepartments.Any(e => e.DepartmentId == id && !e.User.Deleted))
             {
                 throw new ArgumentException("该部门已有用户使用，无法删除");
             }
-            var idStr = id.ToString();
-            if (DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(idStr)))
-            {
-                throw new Exception("该部门已被流程使用，无法删除");
-            }
-            DB.Departments.Remove(model);
+            model.Deleted = true;
             DB.SaveChanges();
             return true;
-        }
-
-        public bool Used(int id)
-        {
-            var val = id.ToString();
-            return DB.FlowNodes.Any(e => e.DepartmentIdsValue.Contains(val));
         }
 
         public void UpdateUserDepartments(int userId, int[] departmentIds)

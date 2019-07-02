@@ -177,8 +177,8 @@ namespace Loowoo.Land.OA.API.Controllers
             {
                 throw new Exception("权限不足");
             }
-            var user = Core.UserManager.GetModel(Identity.ID);
-            user.Password = "123456";
+            var user = Core.UserManager.GetModel(userId);
+            user.Password = !string.IsNullOrWhiteSpace(user.Mobile) ? user.Mobile : "123abc";
             Core.UserManager.Save(user);
         }
     }

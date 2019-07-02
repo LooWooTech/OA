@@ -32,18 +32,24 @@ namespace Loowoo.Land.OA.API.Controllers
             var stream = new FileStream(file.PhysicalPath, FileMode.Open, FileAccess.Read);
             response.Content = new StreamContent(stream);
             response.Content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+            var fileName = HttpUtility.UrlPathEncode(file.FileName);
+            if (Request.Headers.UserAgent.ToString().Contains("irefox"))
+            {
+                fileName = file.FileName;
+            }
             if (action == "download")
             {
                 response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = HttpUtility.UrlPathEncode(file.FileName),
+                    FileName = fileName,
                 };
             }
             else
             {
                 response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
                 {
-                    FileName = HttpUtility.UrlPathEncode(file.FileName),
+                    FileName = fileName,
                 };
             }
             return response;
