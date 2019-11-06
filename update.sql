@@ -1,3 +1,8 @@
+-- 2019-07-17
+ALTER TABLE `department`
+	ADD COLUMN `Deleted` BIT NOT NULL AFTER `AttendanceGroupId`;
+
+
 -- 2018-08-21
 ALTER TABLE `department`
 	ADD COLUMN `AttendanceGroupId` INT NOT NULL AFTER `Sort`;

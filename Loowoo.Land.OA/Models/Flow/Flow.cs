@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Loowoo.Land.OA.Models
 {
-    [Table("Flow")]
+    [Table("flow")]
     public class Flow
     {
         [Key]

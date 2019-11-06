@@ -10,8 +10,12 @@ namespace Loowoo.Land.OA.Service.Missive
 {
     public class JSWJWebService : IMissiveWebService
     {
-        private Managers.ManagerCore Core = Managers.ManagerCore.Instance;
-
+        private readonly Managers.ManagerCore Core = Managers.ManagerCore.Instance;
+        private readonly string LWDW_MC;
+        public JSWJWebService()
+        {
+            LWDW_MC = System.Configuration.ConfigurationManager.AppSettings["LWDW"];
+        }
         public bool Report(MissiveServiceLog log)
         {
             var model = Core.MissiveManager.GetModel(log.MissiveId);
@@ -73,7 +77,7 @@ namespace Loowoo.Land.OA.Service.Missive
                     lsh: null,
                     bt: model.WJ_BT,
                     wjzl: null,
-                    lwdw: "定海区国土资源局",
+                    lwdw: LWDW_MC,
                     ztc: model.ZTC,
                     zy: null,
                     cjrid: null,
